@@ -1,0 +1,224 @@
+<html lang="en">
+<head>
+<title>Walkthrough a simple example - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf" title="Fortran with Autoconf">
+<link rel="prev" href="Fortran-compilers-and-linkage.html#Fortran-compilers-and-linkage" title="Fortran compilers and linkage">
+<link rel="next" href="The-gory-details.html#The-gory-details" title="The gory details">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Walkthrough-a-simple-example"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-gory-details.html#The-gory-details">The gory details</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Fortran-compilers-and-linkage.html#Fortran-compilers-and-linkage">Fortran compilers and linkage</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf">Fortran with Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">8.3 Walkthrough a simple example</h3>
+
+<p>Now that we have brought up some of the issues about Fortran linkage, let's
+show you how to work around them. We will write a simple Fortran function,
+and a C program that calls it, and then show you how to turn these two into
+a GNU-like package, enhanced with a configure script and the works. 
+This discussion assumes that you have installed the utilities in
+&lsquo;<samp><span class="samp">autotools</span></samp>&rsquo;, the package with which this tutorial is being distributed.
+
+   <p>First, begin by building a directory for your new package. Because this project
+will involve Fortran, you need to pass the &lsquo;<samp><span class="samp">-f</span></samp>&rsquo; flag to &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo;:
+<pre class="example">     % acmkdir -t fortran foo
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">-t</span></samp>&rsquo; flag directs &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; to unpack a copy of the &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo;
+translator and to build proper toplevel &lsquo;<samp><span class="samp">configure.in</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">Makefile.am</span></samp>&rsquo; files. This will take a while, so relax and stretch a
+little bit.
+
+   <p>Now enter the <samp><span class="file">foo-0.1</span></samp> directory and look around:
+<pre class="example">     % cd foo-0.1
+     % cat configure.in
+     AC_INIT
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(hello,0.1)
+     LF_CONFIGURE_CC
+     LF_CONFIGURE_CXX
+     AC_PROG_RANLIB
+     LF_HOST_TYPE
+     LF_PROG_F77_PREFER_F2C_COMPATIBILITY
+     dnl LF_PROG_F77_PREFER_NATIVE_VERSION
+     LF_PROG_F77
+     LF_SET_WARNINGS
+     AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+     AC_OUTPUT([Makefile fortran/Makefile f2c_comp
+             doc/Makefile m4/Makefile src/Makefile ])
+     
+     % cat Makefile.am
+     EXTRA_DIST = reconf configure
+     SUBDIRS = fortran m4 doc src
+</pre>
+   <p class="noindent">There are some new macros in <samp><span class="file">configure.in</span></samp> and a new subdirectory:
+<samp><span class="file">fortran</span></samp>. There is also a file that looks like a shell script
+called <samp><span class="file">f2c_comp.in</span></samp>. 
+We will discuss the gory details about all this in the
+next section. 
+Now let's write the code. Enter the <samp><span class="file">src</span></samp> directory and type:
+<pre class="example">     $ cd src
+     $ mkf2c
+</pre>
+   <p class="noindent">This creates the following files:
+     <dl>
+<dt><samp><span class="file">f2c.h</span></samp><dd>This is the header file that we alluded to in the previous section. It
+needs to be present on all directory levels that contain Fortran code. 
+It defines all the funny typenames that appear in <samp><span class="file">f2c</span></samp> compatible
+prototype declarations. 
+<br><dt><samp><span class="file">f2c-main.c</span></samp><dd>This file contains some silly definitions. You need to link it in whenever
+you link together a program, but don't add it to various libraries, because
+then, when you link some of the libraries together you will get error
+messages for duplicate symbols. 
+The contents of this file are:
+     <pre class="example">          #ifdef __cplusplus
+          extern "C" {
+          #endif
+          
+          #if defined (sun)
+          int MAIN_ () { return 0; }
+          #elif defined (linux) &amp;&amp; defined(__ELF__)
+          int MAIN__ () { return 0; }
+          #endif
+          
+          #ifdef __cplusplus
+          }
+          #endif
+</pre>
+     <p class="noindent"></dl>
+   Now, time to write some code:
+<pre class="example">     $ vi fhello.f
+     $ vi hello.cc
+</pre>
+   <p class="noindent">with
+     <dl>
+<dt><samp><span class="file">fhello.f</span></samp><dd>
+     <pre class="example">          c....:++++++++++++++++++++++++++++++
+                SUBROUTINE FHELLO (C)
+                CHARACTER *(*) C
+                PRINT*,'From Fortran: ',C
+                RETURN
+                END
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">hello.cc</span></samp><dd>
+     <pre class="example">          #ifdef HAVE_CONFIG_H
+          #include &lt;config.h&gt;
+          #endif
+          #include &lt;string.h&gt;
+          #include "f2c.h"
+          #include "f77-fcn.h"
+          
+          extern "C"
+          {
+           extern int f77func(fhello,FHELLO)(char *c__, ftnlen c_len);
+          }
+          
+          main()
+          {
+           char s[30];
+           strcpy(s,"Hello world!");
+           f77func(fhello,FHELLO)(s,ftnlen(strlen(s)));
+          }
+</pre>
+     <p class="noindent"></dl>
+   The definition of the <code>f77func</code> macro is included in <samp><span class="file">acconfig.h</span></samp>
+automatically for you if the <code>LF_CONFIGURE_FORTRAN</code> macro is included
+in your <samp><span class="file">configure.in</span></samp>. The definition is as follows:
+<pre class="example">     #ifndef f77func
+     #if defined (F77_APPEND_UNDERSCORE)
+     #  if defined (F77_UPPERCASE_NAMES)
+     #    define f77func(f, F) F##_
+     #  else
+     #    define f77func(f, F) f##_
+     #  endif
+     #else
+     #  if defined (F77_UPPERCASE_NAMES)
+     #    define f77func(f, F) F
+     #  else
+     #    define f77func(f, F) f
+     #  endif
+     #endif
+     #endif
+</pre>
+   <p class="noindent">Recall that we said that the issue of whether to add an underscore and
+whether to capitalize the name of the routine can be dealt with conditional
+compilation. This macro is where this conditional compilation happens. 
+The <code>LF_PROG_F77</code> macro will define
+<pre class="example">     F77_APPEND_UNDERSCORE
+     F77_UPPERCASE_NAMES
+</pre>
+   <p class="noindent">appropriately so that <code>f77func</code> does the right thing.
+
+   <p>To compile this, create a <samp><span class="file">Makefile.am</span></samp> as follows:
+<pre class="example">     SUFFIXES = .f
+     .f.o:
+             $(F77) -c $&lt;
+     
+     bin_PROGRAMS = hello
+     hello_SOURCES = hello.cc fhello.f f2c.h f2c-main.c
+     hello_LDADD = $(FLIBS)
+</pre>
+   <p class="noindent">Note that the above <samp><span class="file">Makefile.am</span></samp> is only compatible with version
+1.3 of Automake, or newer versions. The previous versions don't grok
+Fortran filenames on the <samp><span class="file">hello_SOURCES</span></samp> so you may want to upgrade.
+
+   <p>Now you can compile and run the program:
+<pre class="example">     $ cd ..
+     $ reconf
+     $ configure
+     $ make
+     $ src/hello
+      From Fortran: Hello world!
+</pre>
+   <p class="noindent">If you have a native &lsquo;<samp><span class="samp">f77</span></samp>&rsquo; compiler that was used, or the portable
+&lsquo;<samp><span class="samp">g77</span></samp>&rsquo; compiler you missed out the coolness of using &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo;. 
+In order to check <em>that</em> out do:
+<pre class="example">     $ make distclean
+     $ configure --with-f2c
+     $ make
+</pre>
+   <p class="noindent">and witness the beauty! The package will begin by building an <samp><span class="file">f2c</span></samp>
+binary for your system. Then it will build the Fortran libraries. And finally,
+it will build the hello world program which you can run as before:
+<pre class="example">     $ src/hello
+</pre>
+   <p class="noindent">It may seem an overkill to carry around a Fortran compiler. On the other hand
+you will find it very convenient, and the &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; compiler isn't really
+that big. If you are spoiled on a system that is well equiped and with a good
+system administrator, you may find it a nasty surprise one day when you
+discover that the rest of the world is not necessarily like that.
+
+   <p>If you download a real Fortran package from Netlib you might find it very
+annoying having to enter the filenames for all the Fortran files in
+&lsquo;<samp><span class="samp">*_SOURCES</span></samp>&rsquo;. A work-around is to put all these files in their own
+directory and then do this <code>awk</code> trick:
+<pre class="example">     % ls *.f | awk '{ printf("%s ", $1) }' &gt; tmp
+</pre>
+   <p class="noindent">The awk filter will line-up the output of <code>ls</code> in one line. You can use
+your editor to insert its contents to your <samp><span class="file">Makefile.am</span></samp>. Eventually
+I may come around to write a utility for doing this automagically.
+
+<!-- ========================================================================= -->
+   </body></html>
+

@@ -1,0 +1,212 @@
+<html lang="en">
+<head>
+<title>Using Emacs as an email client - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Navigating-source-code.html#Navigating-source-code" title="Navigating source code">
+<link rel="next" href="Handling-patches.html#Handling-patches" title="Handling patches">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Using-Emacs-as-an-email-client"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Handling-patches.html#Handling-patches">Handling patches</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Navigating-source-code.html#Navigating-source-code">Navigating source code</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">2.6 Using Emacs as an email client</h3>
+
+<!-- Hackers get lots of email -->
+<!-- Explain about GNUS and RMAIL. -->
+<!-- How to configure RMAIL -->
+<!-- Running RMAIL -->
+<!-- keybindings for sending/reading mail -->
+<!-- all about labeling mail. advice on what labels are nice to use -->
+<!-- saving mail to other files -->
+<!-- replying to spam -->
+<p>You can use Emacs to read your email. If you maintain free software, or
+in general maintain a very active internet life, you will get a lot of
+email. The Emacs mail readers have been designed to address the needs
+of software developers who get endless tons of email every day.
+
+   <p>Emacs has two email programs: Rmail and Gnus. Rmail is simpler to learn,
+and it is similar to many other mail readers. The philosophy behind Rmail
+is that instead of separating messages to different folders, you attach
+<dfn>labels</dfn> to each message but leave the messages on the same folder. 
+Then you can tell Rmail to browse only messages that have specific labels. 
+Gnus, on the other hand, has a rather eccentric approach to email. It is
+a news-reader, so it makes your email look like another newsgroup! 
+This is actually very nice if you are subscribed to many mailing lists
+and want to sort your email messages automatically. To learn more about
+Gnus, read the excellent Gnus manual. In this manual, we will only describe
+Rmail.
+
+<!-- FIXME: This should change. I should learn GNUS and see how one can -->
+<!-- combine the two readers to sort out mailing list mail from -->
+<!-- communication mail -->
+   <p>When you start Rmail, it moves any new mail from your mailboxes to the file
+<samp><span class="file">~/RMAIL</span></samp> in your home directory. So, the
+first thing you need to tell Rmail is where your mailboxes are. 
+To do that, add the following to your <samp><span class="file">.emacs</span></samp>:
+<pre class="example">     (require 'rmail)
+     (setq rmail-primary-inbox-list
+           (list <var>"mailbox1"</var> <var>"mailbox2"</var> ...))
+</pre>
+   <p class="noindent">If your mailboxes are on a filesystem that is mounted to your computer,
+then you just have to list the corresponding filenames. 
+If your mailbox
+is on a remote computer, then you have to use the POP protocol to
+download it to your own computer. In order for this to work, the remote
+computer must support POP. Many hobbyist developers receive their email
+on an internet provider computer that is connected to the network 24/7
+and download it on their personal computer whenever they dial up.
+
+   <p>For example, if <code>karl@whitehouse.gov</code> is your email address at your
+internet provider, and they support POP, you would have to add the
+following to your <samp><span class="file">.emacs</span></samp>:
+<pre class="example">     (require 'rmail)
+     (setq rmail-primary-inbox-list
+           (list "po:karl"))
+     (setenv "MAILHOST" "whitehouse.gov")
+     (setq rmail-pop-password-required t)
+     (setq user-mail-address "karl@whitehouse.gov")
+     (setq user-full-name "President Karl Marx")
+</pre>
+   <p class="noindent">The string <samp><span class="file">"po:</span><var>username</var><span class="file">"</span></samp> is used to tell the POP daemon which
+mailbox you want to download. The environment variable <code>MAILHOST</code>
+tells Emacs which machine to connect to, to talk with a POP daemon. 
+We also tell Emacs to prompt in the minibuffer to request
+the password for logging in with the POP daemon. The alternative is to
+hardcode the password into the <samp><span class="file">.emacs</span></samp> file, but doing so is not
+a very good idea: if the security of your home computer is compromised, the
+cracker also gets your password for another system. Emacs will remember the
+password however, after the first time you enter it, so you won't have to
+enter it again later, during the same Emacs session. Finally, we tell Emacs
+our internet provider's email address and our &ldquo;real name&rdquo; in the internet
+provider's account. This way, when you send email from your home computer,
+Emacs will spoof it to make it look like it was sent from the internet
+provider's computer.
+
+   <p>In addition to telling Rmail where to find your email, you may also
+want to add the following configuration options:
+     <ol type=1 start=1>
+<li>Quote messages that you respond to with the <code>&gt;</code> prefix:
+     <pre class="example">          (setq mail-yank-prefix "&gt;")
+</pre>
+     <p class="noindent"><li>Send yourself a blind copy of every message
+     <pre class="example">          (setq mail-self-blind t)
+</pre>
+     <p class="noindent"><li>Alternatively, archive all your outgoing messages to a separate file:
+     <pre class="example">          (setq mail-archive-file-name "/home/<var>username</var>/mail/sent-mail")
+</pre>
+     <li>To have Rmail insert your signature in every message that you send:
+     <pre class="example">          (setq mail-signature t)
+</pre>
+     <p class="noindent">and add the actual contents of your signature to <samp><span class="file">.signature</span></samp>
+at your home directory.
+        </ol>
+
+   <p>Once Rmail is configured, to start downloading your email, run
+<code>M-x rmail</code> in Emacs. Emacs will load your mail, prompt you for
+your POP password if necessary, and download your email from the internet
+provider. Then, Emacs will display the first new message. You may quickly
+navigate by pressing <kbd>n</kbd> to go to the next message or <kbd>p</kbd> to go
+to the previous message. 
+It is much better however to tell Emacs to compile a summary of your messages
+and let you to navigate your mailbox using the summary. To do that, press
+<kbd>h</kbd>. Emacs will split your frame to two windows: one window will
+display the current message, and the other window the summary. A highlighted
+bar in the summary indicates what the current message is. Emacs will also
+display any labels that you have associated with your messages. 
+While the current buffer is the summary, you can navigate from message
+to message with the cursor keys (<kbd>up</kbd> and <kbd>down</kbd> in particular). 
+You can also run any of the following commands:
+     <dl>
+<dt><kbd>h</kbd><dd>display a summary of all the messages
+<br><dt><kbd>s</kbd><dd>save any changes made to the mail box
+<br><dt><kbd>&lt;</kbd><dd>go to the first message in the summary
+<br><dt><kbd>&gt;</kbd><dd>go to the last message in the summary
+<br><dt><kbd>g</kbd><dd>download any new email
+<br><dt><kbd>r</kbd><dd>reply to a message
+<br><dt><kbd>f</kbd><dd>forward a message
+<br><dt><kbd>m</kbd><dd>compose a new message
+<br><dt><kbd>d</kbd><dd>delete the current message
+<br><dt><kbd>u</kbd><dd>undelete the current message
+<br><dt><kbd>x</kbd><dd>expunge messages marked for deletion
+<br><dt><kbd>a </kbd><var>label</var><kbd> &lt;RET&gt;</kbd><dd>add the label <var>label</var> to the current message
+<br><dt><kbd>k </kbd><var>label</var><kbd> &lt;RET&gt;</kbd><dd>remove the label <var>label</var> from the current message
+<br><dt><kbd>l </kbd><var>label</var><kbd> &lt;RET&gt;</kbd><dd>display a summary only of the messages with label <var>label</var>
+<br><dt><kbd>o </kbd><var>folder</var><kbd> &lt;RET&gt;</kbd><dd>add the current message to another folder
+<br><dt><kbd>w </kbd><var>filename</var><kbd> &lt;RET&gt;</kbd><dd>write the body of the current message to a file
+</dl>
+   Other than browing email, here is some things that you will want to do:
+     <ul>
+<li><strong>Compose a message</strong>: To compose a message press <kbd>m</kbd>. Emacs
+will take you to a new buffer where you can write the actual contents of your
+message. Emacs separates this buffer with a line that says:
+     <pre class="example">          --text follows this line--
+</pre>
+     <p class="noindent">Before this line you may edit the message's headers. After this line,
+you edit the actual body of the of the message. 
+When you are done composing the message, you can do one of the following:
+          <dl>
+<dt><kbd>C-c C-w</kbd><dd>Insert the signature
+<br><dt><kbd>C-c C-y</kbd><dd>Quote (yank) the current message
+<br><dt><kbd>C-c C-c</kbd><dd>Send the message
+<br><dt><kbd>Mail ==&gt; Cancel</kbd><dd>Cancel the message
+</dl>
+     These commands are also available when you reply to or forward email messages. 
+<li><strong>Reply to a message</strong>: To reply to a message press <kbd>r</kbd>. 
+Emacs will do the same thing that it does when you ask it to compose a
+message. The only difference is that it writes the headers of the
+message for you automatically such that the response is sent to all the
+people that have received the original message. You may edit the headers
+to add or remove recipient email addresses. 
+Emacs will not quote the message that you respond to by default. 
+To quote it use <kbd>C-c C-y</kbd>. 
+<li><strong>Forward a message</strong>: To forward a message press <kbd>f</kbd>. 
+Emacs will write the headers for you and it will also quote the message
+that you are forwarding, however it will not prefix it with &lsquo;<samp><span class="samp">&gt;</span></samp>&rsquo;
+(or whatever character you use to prefix messages that you reply to). 
+The quoted message is clearly delimited with markers that indicate that
+it is the forwarded message. You can add commentary, preferably, before
+the markers so that the recipient can see it before seeing the forwarded
+message. 
+</ul>
+   In every one of these three cases you may need to edit the message's headers. 
+The most commonly used header entries that Emacs recognizes are:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">To:</span></samp>&rsquo;<dd>list address of the recipient to whom the message is directed
+<br><dt>&lsquo;<samp><span class="samp">Cc:</span></samp>&rsquo;<dd>list addresses of other recipients that need to recieve courtesy copies
+of the message
+<br><dt>&lsquo;<samp><span class="samp">BCC:</span></samp>&rsquo;<dd>list addresses of other recipients to send a copy to, without showing their
+email address on the actual message
+<br><dt>&lsquo;<samp><span class="samp">FCC:</span></samp>&rsquo;<dd>list folders (filenames) where you would like the outgoing message to be
+appended to
+<br><dt>&lsquo;<samp><span class="samp">Subject:</span></samp>&rsquo;<dd>the subject field for the message
+</dl>
+   The fields &lsquo;<samp><span class="samp">To:</span></samp>&rsquo;, &lsquo;<samp><span class="samp">CC:</span></samp>&rsquo;, &lsquo;<samp><span class="samp">BCC:</span></samp>&rsquo; and &lsquo;<samp><span class="samp">FCC:</span></samp>&rsquo; can also
+have continuation lines: any subsequent lines that begin with a space
+are considered part of the field.
+
+<!-- =============================================================== -->
+   </body></html>
+

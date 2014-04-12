@@ -1,0 +1,177 @@
+<html lang="en">
+<head>
+<title>Using configuration headers - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="prev" href="Understanding-the-hello-world-example.html#Understanding-the-hello-world-example" title="Understanding the hello world example">
+<link rel="next" href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files" title="Maintaining the documentation files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Using-configuration-headers"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Understanding-the-hello-world-example.html#Understanding-the-hello-world-example">Understanding the hello world example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">1.5 Using configuration headers</h3>
+
+<p>If you inspect the output of &lsquo;<samp><span class="samp">make</span></samp>&rsquo; while compiling the hello world
+example, you will see that the generated Makefile is passing &lsquo;<samp><span class="samp">-D</span></samp>&rsquo;
+flags to the compiler that define the macros <code>PACKAGE</code> and <code>VERSION</code>. 
+These macros are assigned the arguments that are passed to the
+<code>AM_INIT_AUTOMAKE</code> command in <samp><span class="file">configure.ac</span></samp>. 
+One of the ways in which <samp><span class="file">configure</span></samp> customizes your source code to
+a specific platform is by getting such C preprocessors defined. The
+definition is requested by appropriate commands in the <samp><span class="file">configure.ac</span></samp>. 
+The <code>AM_INIT_AUTOMAKE</code> command is one such command.
+
+   <p>The GNU build system by default implements C preprocessor macro definitions
+by passing &lsquo;<samp><span class="samp">-D</span></samp>&rsquo; flags to the compiler. When there is too many of these
+flags, we have two problems: the &lsquo;<samp><span class="samp">make</span></samp>&rsquo; output becomes hard to read,
+and more importantly we are running the risk of hitting the buffer limits
+of braindead Unix implementations of &lsquo;<samp><span class="samp">make</span></samp>&rsquo;. To work around this problem,
+you can ask Autoconf to use another approach in which all macros are
+defined in a special header file that is included in all the sources. 
+This header file is called a <dfn>configuration header</dfn>.
+
+   <p>A hello world program using this technique looks like this
+     <dl>
+<dt><samp><span class="file">configure.ac</span></samp><dd>
+     <pre class="example">          AC_INIT([Hello Program],[1.0],
+                  [Author Of The Program &lt;aotp@zxcv.com&gt;],
+                  [hello])
+          AC_CONFIG_AUX_DIR(config)
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE([dist-bzip2])
+          AC_PROG_CC
+          AC_PROG_INSTALL
+          AC_CONFIG_FILES([Makefile])
+          AC_OUTPUT
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">Makefile.am</span></samp><dd>
+     <pre class="example">          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">hello.c</span></samp><dd>
+     <pre class="example">          #ifdef HAVE_CONFIG_H
+          #include &lt;config.h&gt;
+          #endif
+          
+          #include &lt;stdio.h&gt;
+          main()
+          {
+           printf("Howdy, partner!\n");
+          }
+</pre>
+     <p class="noindent"></dl>
+   To request the use of a configuration header we use the
+<code>AM_CONFIG_HEADER</code> command. The configuration header must
+be installed conditionally with the following three lines:
+<pre class="example">     #if HAVE_CONFIG_H
+     #include &lt;config.h&gt;
+     #endif
+</pre>
+   <p class="noindent">It is important that <samp><span class="file">config.h</span></samp> is the first thing that gets included. 
+Now autoconfiscate the source code by typing:
+<pre class="example">     % aclocal
+     % autoconf
+     % autoheader
+     % touch NEWS README AUTHORS ChangeLog
+     % mkdir config
+     % automake -a
+     configure.ac: installing `config/install-sh'
+     configure.ac: installing `config/mkinstalldirs'
+     configure.ac: installing `config/missing'
+     Makefile.am: installing `./INSTALL'
+     Makefile.am: installing `./COPYING'
+     Makefile.am: installing `config/depcomp'
+</pre>
+   <p class="noindent">It is important to type these commands in the order shown. The difference
+between this, and what we did in <a href="Hello-world-example.html#Hello-world-example">Hello world example</a> is that
+we had to run a new program: &lsquo;<samp><span class="samp">autoheader</span></samp>&rsquo;. This program scans
+<samp><span class="file">configure.ac</span></samp> and generates a template file <samp><span class="file">config.h.in</span></samp> listing
+all the C preprocessor macros that might be defined and comments that should
+accompany the macros describing what they do. When you run <samp><span class="file">configure</span></samp>,
+it will load in <samp><span class="file">config.h.in</span></samp> and use it to generate the final
+<samp><span class="file">config.h</span></samp> that will be used by the source code during compilation.
+
+   <p>Now you can go ahead and build the program:
+<pre class="example">     % configure
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking whether build environment is sane... yes
+     checking for gawk... gawk
+     checking whether make sets $(MAKE)... yes
+     checking for gcc... gcc
+     checking for C compiler default output... a.out
+     checking whether the C compiler works... yes
+     checking whether we are cross compiling... no
+     checking for suffix of executables...
+     checking for suffix of object files... o
+     checking whether we are using the GNU C compiler... yes
+     checking whether gcc accepts -g... yes
+     checking for gcc option to accept ANSI C... none needed
+     checking for style of include used by make... GNU
+     checking dependency style of gcc... gcc3
+     checking for a BSD-compatible install... /usr/bin/install -c
+     configure: creating ./config.status
+     config.status: creating Makefile
+     config.status: creating config.h
+     config.status: executing depfiles commands
+     % make
+     make  all-am
+     make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello2'
+     source='hello.c' object='hello.o' libtool=no \
+     depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+     depmode=gcc3 /bin/sh ./config/depcomp \
+     gcc -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -c `test -f 'hello.c' ||
+        echo './'`hello.c
+     gcc  -g -O2   -o hello  hello.o
+     make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello2'
+</pre>
+   <p class="noindent">Note that now instead of multiple <code>-D</code> flags, there is only one
+such flag passed: <code>-DHAVE_CONFIG_H</code>. Also, appropriate <code>-I</code>
+flags are passed to make sure that <samp><span class="file">hello.c</span></samp> can find and include
+<samp><span class="file">config.h</span></samp>. 
+To test the distribution, type:
+<pre class="example">     % make distcheck
+     ......
+     ========================
+     hello-0.1.tar.gz is ready for distribution
+     ========================
+</pre>
+   <p class="noindent">and it should all work out.
+
+   <p>The <samp><span class="file">config.h</span></samp> files go a long way back in history. In the past, there
+used to be packages where you would have to manually edit <samp><span class="file">config.h</span></samp>
+files and adjust the macros you wanted defined by hand. This made these
+packages very difficult to install because they required intimate knowledge
+of your operating system. For example, it was not unusual to see a comment
+saying <em>&ldquo;if your system has a broken vfork, then define this macro&rdquo;</em>. 
+Many installers found this frustrating because they didn't really know how
+to configure the esoteric details of the <samp><span class="file">config.h</span></samp> files. 
+With autoconfiscated source code all of these details can be taken care
+of automatically, shifting this burden from the installer to the developer
+where it belongs.
+
+<!--  -->
+   </body></html>
+

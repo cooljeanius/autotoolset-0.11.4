@@ -1,0 +1,112 @@
+<html lang="en">
+<head>
+<title>Invoking acmkdir - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="Hello-world-revisited-again.html#Hello-world-revisited-again" title="Hello world revisited again">
+<link rel="next" href="Handling-Embedded-text.html#Handling-Embedded-text" title="Handling Embedded text">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Invoking-acmkdir"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Handling-Embedded-text.html#Handling-Embedded-text">Handling Embedded text</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hello-world-revisited-again.html#Hello-world-revisited-again">Hello world revisited again</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.6 Invoking &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo;</h3>
+
+<p>The &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; utility can be invoked in the simple manner that we
+showed in the last chapter to prepare the directory tree for writing
+C++ code. Alternatively, it can be instructed to create directory
+trees for Fortran/C++ code as well as documentation directories.
+
+   <p>In general, you invoke &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; in the following manner:
+<pre class="example">     % acmkdir [OPTIONS] "dirname"
+</pre>
+   <p class="noindent">If you are creating a toplevel directory, then everything will appear
+under &lsquo;<samp><span class="samp">dirname-0.1</span></samp>&rsquo;. Otherwise, the name &lsquo;<samp><span class="samp">dirname</span></samp>&rsquo; will be used
+instead.
+
+   <p>&lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; supports the following options:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">--help</span></samp>&rsquo;<dd>Print a short message reminding the usage of the &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; command. 
+<br><dt>&lsquo;<samp><span class="samp">--version</span></samp>&rsquo;<dd>Print the version information and copyright notice for &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo;. 
+<br><dt>&lsquo;<samp><span class="samp">-latex</span></samp>&rsquo;<dd>Instruct &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; to create a <code>latex</code> documentation directory
+(see <a href="Writing-documentation-with-LaTeX.html#Writing-documentation-with-LaTeX">Writing documentation with LaTeX</a>). 
+If your package will have more than
+one documentation texts, you usually want to invoke this under the
+&lsquo;<samp><span class="samp">doc</span></samp>&rsquo; subdirectory:
+     <pre class="example">          % cd doc
+          % acmkdir -latex tutorial
+          % acmkdir -latex manual
+</pre>
+     <p class="noindent">Of course, the <samp><span class="file">Makefile.am</span></samp> under the <samp><span class="file">doc</span></samp> directory will need
+to refer to these subdirectories with a <code>SUBDIRS</code> entry:
+     <pre class="example">          SUBDIRS = tutorial manual
+</pre>
+     <p class="noindent">Alternatively, if you decide to use the <samp><span class="file">doc</span></samp> directory itself
+for documentation (and you are massively sure about this), then you can
+     <pre class="example">          % rm -rf doc
+          % acmkdir -latex doc
+</pre>
+     <p class="noindent">You should use this feature if you wish to typeset your documentation
+using LaTeX instead of Texinfo. 
+The disadvantage of using &lsquo;<samp><span class="samp">latex</span></samp>&rsquo; for your documentation
+is that you can only produce a printed book; you can not also generate
+on-line documentation. The advantage is that you can typeset very complex
+mathematics, something which you can not do under Texinfo since it only
+uses plain TeX. If you are documentating mathematical software, you may
+prefer to write the documentation in Latex. Autotools will provide you
+with LaTeX macros to make your printed documentation look like Texinfo
+printed documentation. 
+<br><dt>&lsquo;<samp><span class="samp">-t, --type=TYPE</span></samp>&rsquo;<dd>Instruct &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; to create a top-level directory of type <code>TYPE</code>. 
+The types available are: <code>default</code>, <code>traditional</code>,
+<code>fortran</code>. Eventually I may implement two additional types:
+<code>f77</code>, <code>f90</code>. 
+</dl>
+
+   <p>Now, a brief description of these toplevel types:
+     <dl>
+<dt><strong>default</strong><dd>This is the default type of toplevel directory. It is intended for C++
+programs and uses the <code>LF</code> macros installed by Autotools. 
+The <samp><span class="file">acconfig.h</span></samp> file is automagically generated and a custom
+<samp><span class="file">INSTALL</span></samp> file is installed. The defaults reflect my own personal
+habits. 
+<br><dt><strong>traditional</strong><dd>This is much closer to the FSF default habits. The default language is C,
+the traditional Autoconf macros are used and the <samp><span class="file">acconfig.h</span></samp> file
+is not automatically generated, except for adding the lines
+     <pre class="example">          #undef PACKAGE
+          #undef VERSION
+</pre>
+     <p class="noindent">which are required by Automake. 
+<br><dt><strong>fortran</strong><dd>This is a rather complicated type. It is intended for programs that mix
+C++ and Fortran. It installs an appropriate <samp><span class="file">configure.in</span></samp>, and
+creates an entire directory under the toplevel directory called
+<samp><span class="file">fortran</span></samp>. In that directory, there's installed a copy of the
+<code>f2c</code> translator. The software is configured such that if a Fortran
+compiler is not available, <code>f2c</code> is built instead, and then used
+to compile the Fortran code. We will explain all about Fortran in the
+next chapter. 
+</dl>
+
+   </body></html>
+

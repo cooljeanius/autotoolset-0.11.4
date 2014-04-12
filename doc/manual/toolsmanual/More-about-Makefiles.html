@@ -1,0 +1,255 @@
+<html lang="en">
+<head>
+<title>More about Makefiles - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Basic-Makefile-concepts.html#Basic-Makefile-concepts" title="Basic Makefile concepts">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="More-about-Makefiles"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Basic-Makefile-concepts.html#Basic-Makefile-concepts">Basic Makefile concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.8 More about Makefiles</h3>
+
+<p>Now let's consider a more complicated example. Suppose that we want to
+build a program <samp><span class="file">foo</span></samp> whose source code is four source files
+<pre class="example">     foo1.c, foo2.c, foo3.c, foo4.c
+</pre>
+   <p class="noindent">and three header files:
+<pre class="example">     gleep1.h, gleep2.h, gleep3.h
+</pre>
+   <p class="noindent">Suppose also, for the sake of argument, that
+     <ol type=1 start=1>
+<li><samp><span class="file">foo1.c</span></samp> includes <samp><span class="file">gleep2.h</span></samp> and <samp><span class="file">gleep3.h</span></samp>
+<li><samp><span class="file">foo2.c</span></samp> includes <samp><span class="file">gleep1.h</span></samp>
+<li><samp><span class="file">foo3.c</span></samp> includes <samp><span class="file">gleep1.h</span></samp> and <samp><span class="file">gleep2.h</span></samp>
+<li><samp><span class="file">foo4.c</span></samp> includes <samp><span class="file">gleep3.h</span></samp>
+        </ol>
+To build the executable file <samp><span class="file">foo</span></samp>, we need to build the
+object files <samp><span class="file">foo1.o</span></samp>, <samp><span class="file">foo2.o</span></samp>, <samp><span class="file">foo3.o</span></samp> and <samp><span class="file">foo4.o</span></samp>
+that correspond to the source files and link them together. 
+If any of the <samp><span class="file">*.c</span></samp> files is modified, then only the corresponding
+object file and the executable need to be updated. However, if one
+of the header files is modified, then all the object files whose corresponding
+<samp><span class="file">*.c</span></samp> file includes the modified header file should be rebuilt. 
+It follows that each of the object files depends on the corresponding
+<samp><span class="file">*.c</span></samp> file and all the header files that that file includes. 
+We get then the following <samp><span class="file">Makefile</span></samp>:
+<pre class="example">     foo: foo1.o foo2.o foo3.o foo4.o
+     &lt;TAB&gt; gcc -o foo1.o foo2.o foo3.o foo4.o
+     
+     foo1.o: foo1.c gleep2.h gleep3.h
+     &lt;TAB&gt; gcc -c foo1.c
+     
+     foo2.o: foo2.c gleep1.h
+     &lt;TAB&gt; gcc -c foo2.c
+     
+     foo3.o: foo3.c gleep1.h gleep2.h
+     &lt;TAB&gt; gcc -c foo3.c
+     
+     foo4.o: foo4.c gleep3.h
+     &lt;TAB&gt; gcc -c foo4.c
+     
+     clean:
+     &lt;TAB&gt; rm -f foo foo1.o foo2.o foo3.o foo4.o
+     
+     install: foo
+     &lt;TAB&gt; mkdir -p /usr/local/bin
+     &lt;TAB&gt; rm -f /usr/local/bin/foo
+     &lt;TAB&gt; cp foo /usr/local/bin/foo
+</pre>
+   <p class="noindent">This idea can be easily generalized for any program. If you would like
+to build more than one programs, then you should add a phony target
+in the beginning that depends on the programs that you want to build. 
+The usual way we do this is by adding a line like
+<pre class="example">     all: prog1 prog2 prog3
+</pre>
+   <p class="noindent">to the beginning of the <samp><span class="file">Makefile</span></samp>.
+
+   <p>Unfortunately, this <samp><span class="file">Makefile</span></samp> has a lot of unnecessary redundancy:
+     <ul>
+<li>All object files get built the same way. It would be nice then, if
+we didn't have to write a rule for every one of them and instead
+describe how it's done in general. 
+<li>If we decide to change the compiler used, we would would need to edit
+the <samp><span class="file">Makefile</span></samp> in 6 places. It should be easier than that. 
+<li>The list of object files <code>foo1.o, ..., foo4.o</code> appears in at least
+two places. 
+<li>The directory name <samp><span class="file">/usr/local/bin</span></samp> appears in two places. 
+</ul>
+   This redundancy can be eliminated by using <dfn>makefile variables</dfn> and
+<dfn>abstract rules</dfn>.
+
+     <ul>
+<li><dfn>Makefile variables</dfn> are actually more like macro definitions. 
+The syntax for defining a <dfn>makefile variable</dfn> is:
+     <pre class="example">          <var>variable</var> = <var>value</var>
+</pre>
+     <p class="noindent">Then, in every other rule or variable definition, the symbol
+<var>$(variable)</var> is substituted with <var>value</var>.
+
+     <li>An <dfn>abstract rule</dfn> is a definition that explains how to build a
+file <samp><span class="file">*.</span><var>s2</var></samp> from a file <samp><span class="file">*.</span><var>s1</var></samp>, where <var>s1</var>
+and <var>s2</var> are suffixes. The general syntax for an abstract rule is:
+     <pre class="example">          .<var>s1</var>.<var>s2</var>:
+          &lt;TAB&gt; <span class="sc">Command</span>
+          &lt;TAB&gt; <span class="sc">Command</span>
+          &lt;TAV&gt; .....
+</pre>
+     <p class="noindent">where <var>s1</var> is the suffix of the source file, and <var>s2</var> is the
+suffix of the corresponded generated file and <span class="sc">Command</span> is the set
+of commands that generate <samp><span class="file">*.</span><var>s2</var></samp> from  <samp><span class="file">*.</span><var>s1</var></samp>. 
+Note that no dependencies are mentioned, because dependencies don't
+make sense in the general case. They must be explicitly provided for
+each individual case separately. 
+</ul>
+   In the context of an abstract rule, the following punctuation marks have
+the following meanings:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">$&lt;</span></samp>&rsquo;<dd>are the dependencies that changed causing the target to need to be rebuilt
+<br><dt>&lsquo;<samp><span class="samp">$@</span></samp>&rsquo;<dd>is the target
+<br><dt>&lsquo;<samp><span class="samp">$^</span></samp>&rsquo;<dd>are <em>all</em> the dependencies for the current rule
+</dl>
+   For example, the abstract rule for building an object file from a source
+file is:
+<pre class="example">     .c.o:
+     &lt;TAB&gt; gcc -c $&lt;
+</pre>
+   <p class="noindent">Similarly, the rule for building the executable file from a set of
+object files is:
+<pre class="example">     .o:
+     &lt;TAB&gt; gcc $^ -o $@
+</pre>
+   <p class="noindent">Note that because executables don't have a suffix, we only mention the
+suffix of the object files. When only one suffix appears, it is
+assumed that it is suffix <var>s1</var> and that suffix <var>s2</var> is the
+empty string.
+
+   <p>The suffixes involved in your abstract rules, need to be listed in
+a directory tha takes the form:
+<pre class="example">     .SUFFIXES: <var>s1</var> <var>s2</var> ... <var>sn</var>
+</pre>
+   <p class="noindent">where <var>s1</var>, <var>s2</var>, etc. are suffixes. Also,
+if you've written an abstract rule, you still need to write rules
+where you mention the specific targets and their dependencies, except
+that you can omit the command-part since they are covered by the abstract
+rule.
+
+   <p>Putting all of this together, we can enhance our <samp><span class="file">Makefile</span></samp> like
+this:
+<pre class="example">     CC = gcc
+     CFLAGS = -Wall -g
+     OBJECTS = foo1.o foo2.o foo3.o foo4.o
+     PREFIX = /usr/local
+     
+     .SUFFIXES: .c .o
+     
+     .c.o:
+     &lt;TAB&gt; $(CC) $(CFLAGS) -c $&lt;
+     
+     .o:
+     &lt;TAB&gt; $(CC) $(CFLAGS) $^ -o $@
+     
+     foo: $(OBJECTS)
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+     
+     clean:
+     &lt;TAB&gt; rm -f $(OBJECTS)
+     
+     install: foo
+     &lt;TAB&gt; mkdir -p $(PREFIX)/bin
+     &lt;TAB&gt; rm -f $(PREFIX)/bin/foo
+     &lt;TAB&gt; cp foo $(PREFIX)/bin/foo
+</pre>
+   <p class="noindent">The only part of this Makefile that still requires some thinking on your
+part, is the part where you list the object files and their dependencies:
+<pre class="example">     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+</pre>
+   <p class="noindent">Note however, that in principle even that can be automatically generated. 
+Even though the <samp><span class="file">make</span></samp> utility does not understand C source code
+and can not determine the dependencies, the GNU C compiler can. 
+If you use the &lsquo;<samp><span class="samp">-MM</span></samp>&rsquo; flag, then the compiler will compute and output
+the dependency lines that you need to include in your Makefile. For example:
+<pre class="example">     % gcc -MM foo1.c
+     foo1.o: foo1.c gleep2.h gleep3.h
+     % gcc -MM foo2.c
+     foo2.o: foo2.c gleep1.h
+     % gcc -MM foo3.c
+     foo3.o: foo3.c gleep1.h gleep2.h
+     % gcc -MM foo4.c
+     foo4.o: foo4.c gleep3.h
+</pre>
+   <p class="noindent">Unfortunately, unlike all the other compiler features we have described
+up until now, this feature is not portable in Unix. If you have installed
+the GNU compiler on your Unix system however, then you can also do this.
+
+   <p>Dealing with dependencies is one of the major drawbacks of writing
+makefiles by hand. Another drawback is that even though
+we have moved many of the parameters to makefile variables, these
+variables still need to be adjusted by somebody. There is something
+rude about asking the installer to edit <samp><span class="file">Makefile</span></samp>. 
+Developers that ask their users to edit <samp><span class="file">Makefile</span></samp> make their
+user's life more difficult in an unacceptable way. Yet another annoyance
+is writing <code>clean</code>, <code>install</code> and such targets. Doing so every
+time you write a makefile gets to be tedious on the long run. Also,
+because these targets are, in a way, mission critical, it is really important
+not to make mistakes when you are writing them. Finally, if you want
+to use multiple directories for every one of your libraries and
+programs, you need to setup your makefiles to recursively
+call &lsquo;<samp><span class="samp">make</span></samp>&rsquo; on the subdirectories, write a whole lot of makefiles,
+and have a way of propagating configuration information to every one of
+these makefiles from a centralized source.
+
+   <p>These problems are not impossible to deal with, but you need a lot of
+experience in makefile writing to overcome them. Most developers don't
+want to bother as much with all this, and would rather be debugging
+ther source code. The GNU build system helps you set up your source code
+to make this possible. For the same example, the GNU developer only needs to
+write the following <samp><span class="file">Makefile.am</span></samp> file:
+<pre class="example">     bin_PROGRAMS = foo
+     foo_SOURCES = foo1.c foo2.c foo3.c foo4.c
+     noinst_HEADERS = gleep1.h gleep2.h gleep3.h
+</pre>
+   <p class="noindent">and set a few more things up. This file is then compiled into an
+intermediate file, called <samp><span class="file">Makefile.in</span></samp>, by Automake, and during
+installation the final <samp><span class="file">Makefile</span></samp> is generated from <samp><span class="file">Makefile.in</span></samp>
+by a shell script called <samp><span class="file">configure</span></samp>. This shell script is provided
+by the developer and it is also automatically generated with Autoconf. 
+For more details see
+<a href="Hello-world-example-with-Autoconf-and-Automake.html#Hello-world-example-with-Autoconf-and-Automake">Hello world example with Autoconf and Automake</a>.
+
+   <p>In general you will not need to be writing makefiles by hand. It is
+useful however to understand how makefiles work and how to write
+abstract rules.
+
+<!-- ============================================================ -->
+<!-- ============================================================ -->
+   </body></html>
+

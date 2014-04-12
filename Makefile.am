@@ -28,7 +28,7 @@ MAINTAINERCLEANFILES = configure.scan
 noinst_SCRIPTS = fix-timestamp.sh
 
 configure.scan:
-	autoscan
+	autoscan || touch configure.scan
 
 distclean-local:
 	rm -f @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz

@@ -1,0 +1,268 @@
+<html lang="en">
+<head>
+<title>Handling very deep packages - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="Handling-Embedded-text.html#Handling-Embedded-text" title="Handling Embedded text">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Handling-very-deep-packages"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Handling-Embedded-text.html#Handling-Embedded-text">Handling Embedded text</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.8 Handling very deep packages</h3>
+
+<p>When making a package, you can organize it as a <dfn>flat</dfn> package or
+a <dfn>deep</dfn> package. In a flat package, all the source files are placed
+under <code>src</code> without any subdirectory structure. In a deep package,
+libraries and groups of executables are seperated by a subdirectory
+structure. The perennial problem with deep packages is dealing with
+interdirectory dependencies. What do you do if to compile one library you
+need header files from another library in another directory? What do you do if
+to compile the test suite of your library you need to link in another library
+that has just been compiled in a different directory?
+
+   <p>One approach is to just put all these interdependent things in the same
+directory. This is not very unreasonable since the <code>Makefile.am</code>
+can document quite thoroughly where each file belongs, in case you need to
+split them up in the future. On the other hand, this solution becomes less
+and less preferable as your project grows. You may not want to clutter
+a directory with source code for too many different things. What do you
+do then?
+
+   <p>The second approach is to be careful about these dependencies and just
+invoke the necessary features of Automake to make everything work out.
+
+   <p>For <code>*.a</code> files (library binaries), the recommended thing to do
+is to link them by giving the full relative pathname. Doing that allows
+Automake to work out the dependencies correctly accross multiple directories. 
+It also allows you to easily upgrade to shared libraries with Libtool. 
+To retain some flexibility it may be best to list these interdirectory
+link sequences in variables and then use these variables. This way, when you
+move things around you minimize the amount of editing you have to do. 
+In fact, if all you need these library binaries for is to build a test suite
+you can simply assign them to <code>LDFLAGS</code>. To make these assignments
+more uniform, you may want to start your pathnames with <code>$(top_builddir)</code>.
+
+   <p>For <code>*.h</code> files (header files), you can include an
+<pre class="example">     INCLUDES = -I../dir1 -I../dir2 -I../dir3 ...
+</pre>
+   <p class="noindent">assignment on every <samp><span class="file">Makefile.am</span></samp> of every directory level listing
+the directories that contain include files that you want to use. If your
+directory tree is very complicated, you may want to make these assignments
+more uniform by starting your pathnames from <code>$(top_srcdir)</code>. 
+In your source code, you should use the syntax
+<pre class="example">     #include "foo.h"
+</pre>
+   <p class="noindent">for include files in the current directory and
+<pre class="example">     #include &lt;foo.h&gt;
+</pre>
+   <p class="noindent">for include files in other directories.
+
+   <p>There is a better third approach, provided by Autotools, but it only
+applies to include files. There is nothing more that can be done with
+library binaries; you simply have to give the path. But with header files,
+it is possible to arrange at configure-time that all header files are
+symlinked under the directory <code>$(top_builddir)/include</code>. Then you will
+only need to list one directory instead of many.
+
+   <p>Autotools provides two Autoconf macros: <code>LF_LINK_HEADERS</code> and
+<code>LF_SET_INCLUDES</code>, to handle this symlinking.
+     <dl>
+<dt><strong>LF_LINK_HEADERS</strong><dd>This macro links the public header files under a certain set of directories
+under an include directory from the toplevel. A simple way to invoke this
+macro is by listing the set of directories that contain public header files:
+     <pre class="example">          LF_LINK_HEADERS(src/dir1 src/dir2 src/dir3 ... src/dirN)
+</pre>
+     <p class="noindent">When this macro is invoked for the first time, the directory
+<samp><span class="file">$(top_srcdir)/include</span></samp> is erased. Then for each directory
+<samp><span class="file">src/dirK</span></samp> listed, we look for the file <samp><span class="file">src/dirK/Headers</span></samp> and
+link the public header files mentioned in that file under
+<samp><span class="file">$(top_srcdir)/include</span></samp>. The link will be either symbolic or hard,
+depending on the capabilities of your operating system. If possible,
+a symbolic link will be prefered.
+
+     <p>You can invoke the same macro by passing an optional argument that specifies
+a directory name. For example:
+     <pre class="example">          LF_LINK_HEADERS(src/dir1 src/dir2 ... src/dirN , foo)
+</pre>
+     <p class="noindent">Then the symlinks will be created under the
+<samp><span class="file">$(top_srcdir)/include/foo</span></samp> directory instead. This can be significantly
+useful if you have very many header files to install and you'd like to
+call them something like:
+     <pre class="example">          #include &lt;foo/file1.h&gt;
+</pre>
+     <p class="noindent">During compilation, when you try to
+<br><dt><strong>LF_SET_INCLUDES</strong><dd>This macro will cause the <samp><span class="file">Makefile.am</span></samp> variable
+<code>$(default_includes)</code> to contain the correct collection of <code>-I</code>
+flags, such that the include files are accessible. If you invoke it with
+no arguments as
+     <pre class="example">          LF_SET_INCLUDES
+</pre>
+     <p class="noindent">then the following assignment will take place:
+     <pre class="example">          default_includes = -I$(prefix) -I$(top_srcdir)/include
+</pre>
+     <p class="noindent">If you invoke it with arguments:
+     <pre class="example">          LF_SET_INCLUDES(dir1 dir2 ... dirN)
+</pre>
+     <p class="noindent">then the following assignment will take place instead:
+     <pre class="example">          default_includes = -I$(prefix) -I$(top_srcdir)/include/dir1 \
+                             -I$(top_srcdir)/include/dir2 ...         \
+                             -I$(top_srcdir)/include/dirN
+</pre>
+     <p class="noindent">You may use this variable as part of your <code>INCLUDES</code> assignment
+in your <samp><span class="file">Makefile.am</span></samp> like this:
+     <pre class="example">          INCLUDES = $(default_includes)
+</pre>
+     <p class="noindent">If your distribution has a <samp><span class="file">lib</span></samp> directory, in which you install
+various codelets and header files, then a path to that library is
+added to <code>default_includes</code> also. In that case, you have one
+of the following:
+     <pre class="example">          default_includes = -I$(prefix) -I$(top_srcdir)/lib -I$(top_srcdir)/include
+</pre>
+     <p class="noindent">or
+     <pre class="example">          default_includes = -I$(prefix) -I$(top_srcdir)/lib \
+                             -I$(top_srcdir)/include/dir1 ... \
+                             -I$)top_srcdir)/include/dirN
+</pre>
+     <p class="noindent"></dl>
+
+   <p>A typical use of this system involves invoking
+<pre class="example">     LF_LINK_HEADERS(src/dir1 src/dir2 ... src/dirN)
+     LF_SET_INCLUDES
+</pre>
+   <p class="noindent">in your <samp><span class="file">configure.in</span></samp> and adding the following two lines in your
+<samp><span class="file">Makefile.am</span></samp>:
+<pre class="example">     INCLUDES = $(default_includes)
+     EXTRA_DIST = Headers
+</pre>
+   <p class="noindent">The variable <code>$(default_includes)</code> will be assigned by the
+<code>configure</code> script to point to the Right Thing. You will also
+need to include a file called <samp><span class="file">Headers</span></samp> in every directory level
+that you mention in <code>LF_LINK_HEADERS</code> containing the public header
+files that you wish to symlink. The filenames need to be separated by
+carriage returns in the <samp><span class="file">Headers</span></samp> file. You also need to mention
+these public header files in a
+<pre class="example">     include_HEADERS = foo1.h foo2.h ...
+</pre>
+   <p class="noindent">assignment, in your <samp><span class="file">Makefile.am</span></samp>, to make sure that they are installed.
+
+   <p>With this usage, other programs can access the installed header files
+as:
+<pre class="example">     #include &lt;foo1.h&gt;
+</pre>
+   <p class="noindent">Other directories within the same package can access the uninstalled yet
+header files in exactly the same manner. Finally, in the same directory
+you should access the header files as
+<pre class="example">     #include "foo1.h"
+</pre>
+   <p class="noindent">This will force the header file in the current directory to be installed,
+even when there is a similar header file already installed. This is very
+important when you are rebuilding a new version of an already installed
+library. Otherwise, building might be confused if your code tries to
+include the already installed, and not up-to-date, header files from the
+older version.
+
+   <p>Alternatively, you can categorize the header files under a directory,
+by invoking
+<pre class="example">     LF_LINK_HEADERS(src/dir1 src/dir2 , name1)
+     LF_LINK_HEADERS(src/dir3 src/dir4 , name2)
+     LF_SET_INCLUDES(name1 name2)
+</pre>
+   <p class="noindent">in your <samp><span class="file">configure.in</span></samp>. In your <samp><span class="file">Makefile.am</span></samp> files you still
+add the same two lines:
+<pre class="example">     INCLUDES = $(default_includes)
+     EXTRA_DIST = Headers
+</pre>
+   <p class="noindent">and maintain the <samp><span class="file">Headers</span></samp> file as before. However, now the header files
+will be symlinked to subdirectories of <samp><span class="file">$(top_srcdir)/include</span></samp>. 
+This means that although uninstalled header files in all directories must
+be included by code in the same directory as:
+<pre class="example">     #include "header.h"
+</pre>
+   <p class="noindent">code in other directories must access these uninstalled header files as
+<pre class="example">     #include &lt;name1/header.h&gt;
+</pre>
+   <p class="noindent">if the header file is under <samp><span class="file">src/dir1</span></samp> or <samp><span class="file">src/dir2</span></samp> or as
+<pre class="example">     #include &lt;name2/header.h&gt;
+</pre>
+   <p class="noindent">if the header file is under <samp><span class="file">src/dir3</span></samp> or <samp><span class="file">src/dir4</span></samp>. 
+It follows that you probably intend for these header files to be installed
+correspondingly in such a manner so that other programs can also include them
+the same way. To accomplish that, under <samp><span class="file">src/dir1</span></samp> and <samp><span class="file">src/dir2</span></samp>
+you should list the header files in your <samp><span class="file">Makefile.am</span></samp> like this:
+<pre class="example">     name1dir = $(includedir)/name1
+     name1_HEADERS = header.h ...
+</pre>
+   <p class="noindent">and under <samp><span class="file">src/dir3</span></samp> and <samp><span class="file">src/dir4</span></samp> like this:
+<pre class="example">     name2dir = $(includedir)/name2
+     name2_HEADERS = header.h
+     
+</pre>
+   <p class="noindent">One disadvantage of this approach is that the source tree is modified
+during configure-time, even during a VPATH build. Some may not like that, but
+it suits me just fine. 
+Unfortunately, because Automake requires the GNU compiler to compute
+dependencies, the header files need to be placed in a constant location
+with respect to the rest of the source code. If a <code>mkdep</code> utility
+were to be distributed by Automake to compute dependencies when the installer
+installs the software and not when the developer builds a source code
+distribution, then it would be possible to allow the location of the header
+files to be dynamic. If that development ever takes place in Automake,
+Autotools will immediate follow. If you really don't like this,
+then don't use this feature.
+
+   <p>Usually, if you are installing one or two header files per library you
+want them to be installed under <code>$(includedir)</code> and be includable
+with
+<pre class="example">     #include &lt;foo.h&gt;
+</pre>
+   <p class="noindent">On the other hand, there are many applications that install a lot of header
+files, just for one library. In that case, you should put them under a
+prefix and let them be included as:
+<pre class="example">     #include &lt;prefix/foo.h&gt;
+</pre>
+   <p class="noindent">Examples of libraries doing this X11 and Mesa.
+
+   <p>This mechanism for tracking include files is most useful for very large
+projects. You may not want to bother for simple homework-like throwaway
+hacks. When a project starts to grow, it is very easy to switch.
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

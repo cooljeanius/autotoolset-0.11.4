@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+<title>Installation directories. - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Built-sources.html#Built-sources" title="Built sources">
+<link rel="next" href="Handling-shell-scripts.html#Handling-shell-scripts" title="Handling shell scripts">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installation-directories."></a>
+<a name="Installation-directories_002e"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Handling-shell-scripts.html#Handling-shell-scripts">Handling shell scripts</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Built-sources.html#Built-sources">Built sources</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.10 Installation directories.</h3>
+
+<p>Previously, we mentioned that the symbols &lsquo;<samp><span class="samp">bin</span></samp>&rsquo;, &lsquo;<samp><span class="samp">lib</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">include</span></samp>&rsquo; refer to installation locations that are defined respectively
+by the variables &lsquo;<samp><span class="samp">bindir</span></samp>&rsquo;, &lsquo;<samp><span class="samp">libdir</span></samp>&rsquo; and &lsquo;<samp><span class="samp">includedir</span></samp>&rsquo;. 
+For completeness, we will now list the installation locations available by
+default by Automake and describe their purpose.
+
+   <p>All installation locations are placed under one of the following directories:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">prefix</span></samp>&rsquo;<dd>The default value of &lsquo;<samp><span class="samp">$(prefix)</span></samp>&rsquo; is <samp><span class="file">/usr/local</span></samp> and it is used
+to construct installation locations for machine-indepedent files. The actual
+value is specified at configure-time with the &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; argument. 
+For example:
+     <pre class="example">          configure --prefix=/home/lf
+</pre>
+     <p class="noindent"><br><dt>&lsquo;<samp><span class="samp">exec_prefix</span></samp>&rsquo;<dd>The default value of &lsquo;<samp><span class="samp">$(exec_prefix)</span></samp>&rsquo; is &lsquo;<samp><span class="samp">$(prefix)</span></samp>&rsquo; and it
+used to construct installation location for machine-dependent files. 
+The actual value is specified at configure-time with the &lsquo;<samp><span class="samp">--exec-prefix</span></samp>&rsquo;
+argument. For example:
+     <pre class="example">          configure --prefix=/home/lf --exec-prefix=/home/lf/gnulinux
+</pre>
+     <p class="noindent">The purpose of using a seperate location for machine-dependent files
+is because then it makes it possible to install the software
+on a networked file server and make that available to
+machines with different architectures. To do that there must be seperate
+copies of all the machine-dependent files for each architecture in use. 
+</dl>
+
+<p class="noindent">Executable files are installed in one of the following locations:
+<pre class="example">     bindir     = $(exec_prefix)/bin
+     sbindir    = $(exec_prefix)/sbin
+     libexecdir = $(exec_prefix)/libexec
+</pre>
+   <p class="noindent">
+     <dl>
+<dt>&lsquo;<samp><span class="samp">bin</span></samp>&rsquo;<dd>Executable programs that users can run. 
+<br><dt>&lsquo;<samp><span class="samp">sbin</span></samp>&rsquo;<dd>Executable programs for the super-user. 
+<br><dt>&lsquo;<samp><span class="samp">libexec</span></samp>&rsquo;<dd>Executable programs to be called by other programs. 
+</dl>
+
+<p class="noindent">Library files are installed under
+<pre class="example">     libdir = $(exec_prefix)/lib
+     
+</pre>
+   <p class="noindent">Include files are installed under
+<pre class="example">     includedir = $(prefix)/include
+     
+</pre>
+   <p class="noindent">Data files are installed in one of the following locations:
+<pre class="example">     datadir        = $(prefix)/share
+     sysconfdir     = $(prefix)/etc
+     sharedstatedir = $(prefix)/com
+     localstatedir  = $(prefix)/var
+</pre>
+   <p class="noindent">
+     <dl>
+<dt>&lsquo;<samp><span class="samp">data</span></samp>&rsquo;<dd>Read-only architecture indepedent data files. 
+<br><dt>&lsquo;<samp><span class="samp">sysconf</span></samp>&rsquo;<dd>Read-only configuration files that pertain to a specific machine. 
+All the files in this directory should be ordinary ASCII files. 
+<br><dt>&lsquo;<samp><span class="samp">sharedstate</span></samp>&rsquo;<dd>Architecture indepedent data files which programs modify while they run. 
+<br><dt>&lsquo;<samp><span class="samp">localstate</span></samp>&rsquo;<dd>Data files which programs modify while they run that pertain to a
+specific machine. 
+</dl>
+
+   <p>Autoconf macros should be installed in &lsquo;<samp><span class="samp">$(datadir)/aclocal</span></samp>&rsquo;. There is
+no symbol defined for this location, so you need to define it yourself:
+<pre class="example">     m4dir = $(datadir)/aclocal
+     
+</pre>
+   <p class="noindent">FIXME: Emacs Lisp files?
+
+<p class="noindent">FIXME: Documentation?
+
+   <p>Automake, to encourage tidyness, also provides the following locations
+such that each package can keep its stuff under its own subdirectory:
+<pre class="example">     pkglibdir         = $(libdir)/@PACKAGE@
+     pkgincludedir     = $(includedir)/@PACKAGE@
+     pkgdatadir        = $(datadir)/@PACKAGE@
+</pre>
+   <p class="noindent">There are a few other such &lsquo;<samp><span class="samp">pkg</span></samp>&rsquo; locations, but they are not practically
+useful.
+
+   </body></html>
+

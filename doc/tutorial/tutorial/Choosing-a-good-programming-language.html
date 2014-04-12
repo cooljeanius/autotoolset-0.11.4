@@ -1,0 +1,186 @@
+<html lang="en">
+<head>
+<title>Choosing a good programming language - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Writing-Good-Programs.html#Writing-Good-Programs" title="Writing Good Programs">
+<link rel="prev" href="Why-good-code-is-important.html#Why-good-code-is-important" title="Why good code is important">
+<link rel="next" href="Developing-libraries.html#Developing-libraries" title="Developing libraries">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Choosing-a-good-programming-language"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Developing-libraries.html#Developing-libraries">Developing libraries</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Why-good-code-is-important.html#Why-good-code-is-important">Why good code is important</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Writing-Good-Programs.html#Writing-Good-Programs">Writing Good Programs</a>
+<hr>
+</div>
+
+<h3 class="section">2.2 Choosing a good programming language</h3>
+
+<p>To write a good software, you must use the appropriate programming language
+and use it well. To make your software free, it should be possible to
+compile it with free tools on a free operating system. Therefore, you
+should avoid using programming languages that do not have a free compiler.
+
+   <p>The C programming language is the native language of GNU, and the GNU coding
+standards
+encourage you to program in C. The main advantages of C are that it can be
+compiled with the system's native compiler, many people know C, and it is
+easy to learn. Nevertheless, C has weaknesses: it forces you to manually manage
+memory allocation, and any mistakes you might make can lead to very
+difficult bugs. Also C forces you to program at a low level. Sometimes it is
+desirable to program at a low level, but there are also cases where you want
+to build on a higher level.
+
+   <p>For projects where you would like a higher-level <em>compiled</em> language,
+the recommended choice is to use C++. 
+The GNU project distributes a free C++ compiler and nowadays most GNU systems
+that have a C compiler also have the free C++ compiler. The main advantage of
+C++ is that it will automatically manage dynamic memory allocation for you. 
+C++ also has a lot of powerful features that allow you to program at a
+higher level than C, bringing you closer to the algorithms and the concepts
+involved, and making it easier to write robust programs. At the same time,
+C++ does not hide low-level details from you and you have the freedom to
+do the same low-level hacks that you had in C, if you choose to. 
+In fact C++ is 99% backwards compatible with C and it is very easy
+to mix C and C++ code. Finally, C++ is
+an industry standard. As a result, it has been used to solve a variety of
+real-world problems and its specification has evolved
+for many years to make it a powerful and mature
+language that can tackle such problems effectively. The C++ specification
+was frozen and became an ANSI standard in 1998.
+
+   <p>One of the disadvantages of C++ is that C++ object files compiled by
+different C++ compilers can not be linked together. 
+In order to compile C++ to machine language, a lot of compilation issues
+need to be defered to the linking stage. Because object file formats
+are not traditionally sophisticated enough to handle these issues, C++
+compilers do various ugly kludges. The problem is that different compilers
+do these kludges differently, making object files accross compilers
+incompatible. This is not a terrible problem, since object files are
+incompatible accross different platforms anyways. It is only a problem
+when you want to use more than one compiler on the same platform. 
+Another disadvantage of C++ is that it is harder
+to interface a C++ library to another language, than it is to interface
+a C library. Finally not as many people know C++ as well as they know C,
+and C++ is a very extensive and difficult language to master. 
+However these disadvantages must be weighted against the advantages. 
+There is a price to using C++ but the price comes with a reward.
+
+   <p>If you need a higher-level <em>interpreted</em> language, then the recommended
+choice is to use Guile. Guile is the GNU variant of Scheme, a LISP-like
+programming language. Guile is an interpreted language, and you can write
+full programs in Guile, or use the Guile interpreter interactively. 
+Guile is compatible with the R4RS standard but
+provides a lot of GNU extensions. The GNU extensions are so extensive that
+it is possible to write entire applications in Guile. Most of the low-level
+facilities that are available in C, are also available in Guile.
+
+   <p>What makes the Guile implementation of
+Scheme special is not the extensions themselves, but the fact that it
+it is very easy for any developer to add their own extensions to Guile, by
+implementing them in C. 
+By combining C and Guile you
+leverage the advantages of both compiled and interpreted languages. 
+Performance critical functionality can be implemented in C and
+higher-level software development can be done in Guile. 
+Also, because Guile is interpreted, when you make your C code available
+through an extended Guile interpreter, then the user can also use the
+functionality of that code interactively through the interpreter.
+
+   <p>The idea of extensible interpreted languages is not new. 
+Other examples of extensible interpreted languages are Perl, Python and Tcl. 
+What sets Guile apart from these languages is the elegance of Scheme. 
+Scheme is the holy grail in the quest for a programming language that
+can be extended to support any programming paradigm by using the least
+amount of syntax. Scheme has natural support for both arbitrary precision
+integer arithmetic and floating point arithmetic. The simplicity of
+Scheme syntax, and the completeness of Guile, make it very easy to
+implement specialized scripting languages simply by translating them to
+Scheme. In Scheme algorithms and data are interchangable. As a result,
+it is easy to write Scheme programs that manipulate Scheme source code. 
+This makes Scheme an ideal language for writing programs that manipulate
+algorithms instead of data, such as programs that do symbolic algebra. 
+Because Scheme can manipulate its own source code, a Scheme program can
+save its state by writing Scheme source code into a file, and by parsing
+it later to load it back up again. This feature alone is one reason why
+engineers should use Guile to configure and drive numerical simulations.
+
+   <p>Some people like to use Fortran 77. 
+This is in many ways a good language for developing the
+computational core of scientific applications. We do have free compilers
+for Fortran 77, so using it does not restrict our freedom. 
+(see <a href="Fortran-with-Autoconf.html#Fortran-with-Autoconf">Fortran with Autoconf</a>)
+Also, Fortran 77 is an aggresively optimizable language, and this makes it
+very attractive to engineers that want to write code optimized for speed. 
+Unfortunately,
+Fortran 77 can not do well <em>anything</em> except array-oriented
+numerical computations. 
+Managing input/output is unnecessarily difficult with Fortran,
+and there's even computational areas, such as infinite precision integer
+arithmetic and symbolic computation that are not supported.
+
+   <p>There are many variants of Fortran like Fortran 90, and HPF. 
+Fortran 90 attempts, quite miserably, to make Fortran 77 more like
+C++. HPF allows engineers to write numerical code that runs on parallel
+computers. These variants should be avoided for two reasons:
+     <ol type=1 start=1>
+<li>There are no free compilers for Fortran 90 or HPF. 
+If you happen to use a proprietary
+operating system, you might as well make use of proprietary compilers
+if they generate highly optimized code and that is important to you. 
+Nevertheless, in order for your software to be freed, it should be
+possible to compile it with free tools on a free operating system. 
+Because it is possible to make parallel computers using GNU/Linux
+(see the Beowulf project), parallelized software can also be free. 
+Therefore both Fortran 90 and HPF should be avoided. 
+<li>Another problem with these variants is that they are ad hoc languages
+that have been invented to enable Fortran to do things that it can not
+do by design. Eventually, when engineers will like to do things that Fortran
+90 can't do either, it will be necessary to extend Fortran again, rewrite the
+compilers and produce yet another variant. What engineers need is a
+programming language that has the ability to self extend itself by writing
+software in the same programming language. The C++ programming language
+can do this without loss of performance. The departmentalization of
+disciplines in academia has made it very difficult for such a project
+to take off. Despite that, there is ongoing research in this area. 
+(for example, see the Blitz++ project)
+        </ol>
+It is almost impossible to write good programs entirely in Fortran, so
+please use Fortran only for the numerical core of your application
+and do the bookeeping tasks, including input/output using a more appropriate
+language.
+
+   <p>If you have written a program entirely in Fortran, please do not ask anyone
+else to maintain your code, unless person is like you and also knows only
+Fortran. If Fortran is the only language that you know, then please learn
+at least C and C++ and use Fortran only when necessary. Please do not
+hold the opinion that contributions in science and engineering
+are &ldquo;true&rdquo; contributions and software development is just a &ldquo;tool&rdquo;. 
+This bigotted attitude is behind the thousands of lines of ugly unmaintainable
+code that goes around in many places. Good software development can be
+an important contribution in its own right, and regardless of what your
+goals are, please appreciate it and encourage it. To maximize the benefits
+of good software, please make your software free. 
+(<strong>FIXME: Crossreference copyright section in this chapter</strong>)
+
+<!--  -->
+   </body></html>
+

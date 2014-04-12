@@ -1,0 +1,161 @@
+<html lang="en">
+<head>
+<title>Hello World revisited - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="next" href="OLD-Using-configuration-headers.html#OLD-Using-configuration-headers" title="OLD Using configuration headers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Hello-World-revisited"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="OLD-Using-configuration-headers.html#OLD-Using-configuration-headers">OLD Using configuration headers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.1 Hello World revisited</h3>
+
+<p>To begin, let's review the simplest example, the hello world program:
+     <dl>
+<dt><samp><span class="file">hello.c</span></samp><dd>
+     <pre class="example">          #include &lt;stdio.h&gt;
+          main()
+          {
+           printf("Howdy, world!\n");
+          }
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">Makefile.am</span></samp><dd>
+     <pre class="example">          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">configure.in</span></samp><dd>
+     <pre class="example">          AC_INIT(hello.cc)
+          AM_INIT_AUTOMAKE(hello,1.0)
+          AC_PROG_CC
+          AC_PROG_INSTALL
+          AC_OUTPUT(Makefile)
+</pre>
+     <p class="noindent"></dl>
+
+   <p>The language of <samp><span class="file">Makefile.am</span></samp> is a <dfn>logic language</dfn>. There is no
+explicit statement of execution. Only a statement of relations from which
+execution is inferred. On the other hand, the language of <samp><span class="file">configure.in</span></samp>
+is <dfn>procedural</dfn>. Each line of <samp><span class="file">configure.in</span></samp> is a command that
+is executed.
+
+   <p>Seen in this light, here's what the <samp><span class="file">configure.in</span></samp> commands shown do:
+     <ul>
+<li>The <code>AC_INIT</code> command initializes the configure script. It must be
+passed as argument the name of one of the source files. Any source file
+will do. 
+<li>The <code>AM_INIT_AUTOMAKE</code> performs some further initializations that are
+related to the fact that we are using &lsquo;<samp><span class="samp">automake</span></samp>&rsquo;. If you are writing
+your <samp><span class="file">Makefile.in</span></samp> by hand, then you don't need to call this command. 
+The two comma-separated arguments are the name of the package and the
+version number. 
+<li>The <code>AC_PROG_CC</code> checks to see which C compiler you have. 
+<li>The <code>AC_PROG_INSTALL</code> checks to see whether your system has a BSD
+compatible install utility. If not then it uses <samp><span class="file">install-sh</span></samp> which
+<samp><span class="file">automake</span></samp> will install at the root of your package directory if it's
+not there yet. 
+<li>The <code>AC_OUTPUT</code> tells the configure script to generate <samp><span class="file">Makefile</span></samp>
+from <samp><span class="file">Makefile.in</span></samp>
+</ul>
+
+   <p>The <samp><span class="file">Makefile.am</span></samp> is more obvious. The first line specifies the name
+of the program we are building. The second line specifies the source files
+that compose the program.
+
+   <p>For now, as far as <samp><span class="file">configure.in</span></samp> is concerned you need to know the
+following additional facts:
+     <ul>
+<li>If you are building a library, then your configure script must determine
+how to handle &lsquo;<samp><span class="samp">ranlib</span></samp>&rsquo;. To do that, add the <code>AC_PROG_RANLIB</code>
+command. 
+<li>If you want to have your makefiles call recursively makefiles at subdirectories
+then the configure script needs to be told to find out how to do that. 
+For this purpose you add the <code>AC_PROG_MAKE_SET</code> command. 
+<li>If you have any makefiles in subdirectories you must also put them in the
+<code>AC_OUTPUT</code> statement like this:
+     <pre class="example">          AC_OUTPUT(Makefile          \
+                    dir1/Makefile     \
+                    dir2/Makefile     \
+                   )
+</pre>
+     <p class="noindent">Note that the backslashes are not needed if you are using the bash shell. 
+For portability reasons, however, it is a good idea to include them. 
+</ul>
+
+   <p>As we explained before to build this package you need to execute the following
+commands:
+<pre class="example">     % aclocal
+     % autoconf
+     % touch README AUTHORS NEWS ChangeLog
+     % automake -a
+     % configure
+     % make
+</pre>
+   <p class="noindent">The first three commands, are for the maintainer only. When the user unpacks
+a distribution, he should be able to start from &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; and move on.
+     <ul>
+<li>The &lsquo;<samp><span class="samp">aclocal</span></samp>&rsquo; command installs a file called <samp><span class="file">aclocal.m4</span></samp>. Normally,
+in that file you are supposed to place the definitions of any &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo;
+macros that you've written that happen to be in use in <samp><span class="file">configure.in</span></samp>. 
+We will teach you how to write &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; macros later. 
+The &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; utility uses the <code>AM_INIT_AUTOMAKE</code> macro which is
+not part of the standard &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; macros. For this reason, it's
+definition needs to be placed in <samp><span class="file">aclocal.m4</span></samp>. If you call &lsquo;<samp><span class="samp">aclocal</span></samp>&rsquo;
+with no arguments then it will generate the appropriate <samp><span class="file">aclocal.m4</span></samp> file. 
+Later we will show you how to use &lsquo;<samp><span class="samp">aclocal</span></samp>&rsquo; to also install your
+own &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; macros. 
+<li>The &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; command combines the <samp><span class="file">aclocal.m4</span></samp> and
+<samp><span class="file">configure.in</span></samp> files and produces the <samp><span class="file">configure</span></samp> script. 
+And now we are in bussiness. 
+<li>The &lsquo;<samp><span class="samp">touch</span></samp>&rsquo; command makes the files <samp><span class="file">README</span></samp> and friends exist. 
+It is important that these files exist before calling Automake, because
+Automake decides whether to include them in a distribution by checking
+if they exist at the time that you invoke &lsquo;<samp><span class="samp">automake</span></samp>&rsquo;. Automake
+<em>must</em> decide to include these files, because when you type
+&lsquo;<samp><span class="samp">make distcheck</span></samp>&rsquo; the presense of these files will be required. 
+<li>The &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; command compiles a <samp><span class="file">Makefile.in</span></samp> file from
+<samp><span class="file">Makefile.am</span></samp> and if absent it installs various files that are required
+either by the GNU coding standards or by the makefile that will be generated. 
+</ul>
+
+   <p>If you are curious you can take a look at the generated <samp><span class="file">Makefile</span></samp>. 
+It looks like gorilla spit but it will give you an idea of how one gets
+there from the <samp><span class="file">Makefile.am</span></samp>.
+
+   <p>The &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script is an information gatherer. It finds out things
+about your system. That information is given to you in two ways. One way
+is through defining C preprocessor macros that you can test for directly
+in your source code with preprocessor directives. This is done by passing
+<code>-D</code> flags to the compiler. The other way is by making certain
+variables defined at the <samp><span class="file">Makefile.am</span></samp> level. This way you can, for
+example, have the configure script find out how a certain library is linked,
+export is as a <samp><span class="file">Makefile.am</span></samp> variable and use that variable in your
+<samp><span class="file">Makefile.am</span></samp>. Also, through certain special variables, <samp><span class="file">configure</span></samp>
+can control how the compiler is invoked by the <samp><span class="file">Makefile</span></samp>.
+
+<!-- ========================================================================= -->
+   </body></html>
+

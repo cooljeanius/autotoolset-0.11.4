@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Installing the GNU build system - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="prev" href="Installing-a-GNU-package.html#Installing-a-GNU-package" title="Installing a GNU package">
+<link rel="next" href="Hello-world-example.html#Hello-world-example" title="Hello world example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installing-the-GNU-build-system"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hello-world-example.html#Hello-world-example">Hello world example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installing-a-GNU-package.html#Installing-a-GNU-package">Installing a GNU package</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">1.2 Installing the GNU build system</h3>
+
+<p>It is not unusual to be stuck on a system that does not have the GNU build
+tools installed. If you do have them installed, check to see whether you
+have the most recent versions. To do that type:
+<pre class="example">     % autoconf --version
+     % automake --version
+     % libtool --version
+</pre>
+   <p class="noindent">If you don't have any of the above packages, you need to get a copy and
+install them on your computer. The distribution filenames for the GNU build
+tools, sans the version numbers, are:
+<pre class="example">     autoconf-*.tar.gz
+     automake-*.tar.gz
+     libtool-*.tar.gz
+</pre>
+   <p class="noindent">Before installing these packages however, you will need to install the
+following needed packages from the FSF:
+<pre class="example">     make-*.tar.gz
+     m4-*.tar.gz
+     texinfo-*.tar.gz
+     tar-*.shar.gz
+</pre>
+   <p class="noindent">You will need the GNU versions of <code>make</code>, <code>m4</code> and
+<code>tar</code> even if your system already has native versions of these utilities. 
+To check whether you do have the GNU versions see whether they accept the
+<code>--version</code> flag. If you have proprietory versions of <code>make</code> or
+<code>m4</code>, rename them and then install the GNU ones. 
+You will also need to install <em>Perl</em>, the <em>GNU C compiler</em>,
+and the <em>TeX</em> typesetter.
+
+   <p>It is important to note that the end user will only need a decent shell
+and a working <code>make</code> to build a source code distribution. The developer
+however needs to gather all of these tools in order to create the distribution.
+
+   <p>Finally, to install <em>Autotoolset</em> begin by installing the following
+additional utilities from FSF:
+<pre class="example">     bash-*.tar.gz
+     sharutils-*.tar.gz
+</pre>
+   <p class="noindent">and then install
+<pre class="example">     autotools-*.tar.gz
+</pre>
+   <p class="noindent">You should be able to obtain a copy of Autotoolset from the same site from
+which you received this document.
+
+   <p>The installation process, for most of these tools is rather straightforward:
+<pre class="example">     % ./configure
+     % make
+     % make check
+     % make install
+</pre>
+   <p class="noindent">Most of these tools include documentation which you can build with
+<pre class="example">     % make dvi
+</pre>
+   <p class="noindent">Exceptions to the rule are Perl, the GNU C compiler and TeX which have a more
+complicated installation procedure. However, you are very likely to have these
+installed already.
+
+<!--  -->
+   </body></html>
+

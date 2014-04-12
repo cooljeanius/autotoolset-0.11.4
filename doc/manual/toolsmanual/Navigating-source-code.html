@@ -1,0 +1,204 @@
+<html lang="en">
+<head>
+<title>Navigating source code - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Using-vi-emulation.html#Using-vi-emulation" title="Using vi emulation">
+<link rel="next" href="Using-Emacs-as-an-email-client.html#Using-Emacs-as-an-email-client" title="Using Emacs as an email client">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Navigating-source-code"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-Emacs-as-an-email-client.html#Using-Emacs-as-an-email-client">Using Emacs as an email client</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">2.5 Navigating source code</h3>
+
+<p>When you develop software, you need to edit many files at the same time,
+and you need an efficient way to switch from one file to another. 
+The most general solution in Emacs is by going through <dfn>Dired</dfn>, the
+Emacs Directory Editor.
+
+   <p>To use Dired effectively, we recommend that you add the following
+customizations to your <samp><span class="file">.emacs</span></samp> file:
+First, add
+<pre class="example">     (add-hook 'dired-load-hook (function (lambda () (load "dired-x"))))
+     (setq dired-omit-files-p t)
+</pre>
+   <p class="noindent">to activate the extended features of <dfn>Dired</dfn>. 
+Then add the following key-bindings to the global keymap:
+<pre class="example">     (global-set-key [f1] 'dired)
+     (global-set-key [f2] 'dired-omit-toggle)
+     (global-set-key [f3] 'shell)
+     (global-set-key [f4] 'find-file)
+     (global-set-key [f5] 'compile)
+     (global-set-key [f6] 'visit-tags-table)
+     (global-set-key [f8] 'add-change-log-entry-other-window)
+     (global-set-key [f12] 'make-frame)
+</pre>
+   <p class="noindent">If you use viper (see <a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>), you should also add the
+following customization to your <samp><span class="file">.emacs</span></samp>:
+<pre class="example">     (add-hook 'compilation-mode-hook 'viper-change-state-to-emacs)
+</pre>
+   <p class="noindent">With these bindings, you can navigate from file to file or switch between
+editing and the shell simply by pressing the right function keys. 
+Here's what these key bindings do:
+     <dl>
+<dt><kbd>f1</kbd><dd>Enter the directory editor. 
+<br><dt><kbd>f2</kbd><dd>Toggle the omission of boring files. 
+<br><dt><kbd>f3</kbd><dd>Get a shell at the current Emacs window. 
+<br><dt><kbd>f4</kbd><dd>Jump to a file, by filename. 
+<br><dt><kbd>f5</kbd><dd>Run a compilation job. 
+<br><dt><kbd>f6</kbd><dd>Load a <samp><span class="file">TAGS</span></samp> file. 
+<br><dt><kbd>f8</kbd><dd>Update the <samp><span class="file">ChangeLog</span></samp> file. 
+<br><dt><kbd>f12</kbd><dd>Make a new frame. 
+</dl>
+   When you first start Emacs, you should create a few frames with <kbd>f12</kbd>
+and move them around on your screen. Then press <kbd>f1</kbd> to enter the
+directory editor and begin navigating the file system. To select a
+file for editing, move the cursor over the filename and press enter. 
+You can select the same file from more than one emacs window, and edit
+different parts of it in every different window, or use the mouse to
+cut and paste text from one part of the file to another. 
+If you want to take a direct jump to a specific file, and you know the
+filename of that file, it may be faster to press <kbd>f4</kbd> and enter the
+filename rather than navigate your way there through the directory editor.
+
+   <p>To go down a directory, move the cursor over the directory filename and
+press enter. To go up a few directories, press <kbd>f1</kbd> and when you
+are prompted for the new directory, with the current directory as the
+default choice, erase your way up the hierarchy and press &lt;RET&gt;. 
+To take a jump to a substantially different directort that you have
+visited recently, press <kbd>f1</kbd> and then when prompted for the destination
+directory name, use the cursor keys to select the directory that you want
+among the list of directories that you have recently visited.
+
+   <p>While in the directory navigator, you can use the cursor keys to move
+to another file. Pressing &lt;&lt;RET&gt;&gt; will bring that file up for editing. 
+However there are many other things that Dired will let you do instead:
+     <dl>
+<dt><kbd>Z</kbd><dd>Compress the file. If already compressed, uncompress it. 
+<br><dt><kbd>L</kbd><dd>Parse the file through the Emacs Lisp interpreter. Use this
+only on files that contain Emacs Lisp code. 
+<br><dt><kbd>I, N</kbd><dd>Visit the current file as an Info file, or as a <dfn>man page</dfn>. 
+See <a href="Browsing-documentation.html#Browsing-documentation">Browsing documentation</a>. 
+<br><dt><kbd>d</kbd><dd>Mark the file for deletion
+<br><dt><kbd>u</kbd><dd>Remove a mark on the file for deletion
+<br><dt><kbd>x</kbd><dd>Delete all the files marked for deletion
+<br><dt><kbd>C </kbd><var>destination</var><kbd> &lt;RET&gt;</kbd><dd>Copy the file to <var>destination</var>. 
+<br><dt><kbd>R </kbd><var>filename</var><kbd> &lt;RET&gt;</kbd><dd>Rename the file to <var>filename</var>. 
+<br><dt><kbd>+ </kbd><var>directoryname</var><kbd> &lt;RET&gt;</kbd><dd>Create a directory with name <var>directoryname</var>. 
+</dl>
+   Dired has many other features. See the <cite>GNU Emacs User Manual</cite>,
+for more details.
+
+   <p>Emacs provides another method for jumping from file to file: <dfn>tags</dfn>. 
+Suppose that you are editing a C program whose source code is distributed
+in many files, and while editing the source for the function <code>foo</code>,
+you note that it is calling another function <code>gleep</code>. If you move
+your cursor on <code>gleep</code>, then Emacs will let you jump to the file
+where <code>gleep</code> is defined by pressing <kbd>M-.</kbd>. You can also jump to
+other occurances in your code where <code>gleep</code> is invoked by pressing
+<kbd>M-,</kbd>. In order for this
+to work, you need to do two things: you need to generate a tags
+file, and you need to tell emacs to load the file. If your source code
+is maintained with the GNU build system, you can create that tags files
+by typing:
+<pre class="example">     % make tags
+</pre>
+   <p class="noindent">from the top-level directory of your source tree. Then load the tags
+file in Emacs by navigating Dired to the toplevel directory of your
+source code, and pressing <kbd>f6</kbd>.
+
+   <p>While editing a file, you may want to hop to the shell prompt to run a
+program. You can do that at any time, on any frame, by pressing
+<kbd>f3</kbd>. To get out of the shell, and back into the file that you were
+editing, enter the directory editor by pressing <kbd>f1</kbd>, and then
+press <kbd>&lt;RET&gt;</kbd> repeatedly. The default selections will take you back
+to the file that you were most recently editing on that frame.
+
+   <p>One very nice feature of Emacs is that it understands tar files. 
+If you have a tar file <samp><span class="file">foo.tar</span></samp> and you select it under Dired,
+then Emacs will load the entire file, parse it, and let you edit the
+individual files that it includes directly. This only works, however,
+when the tar file is not compressed. Usually tar files are distributed
+compressed, so you should uncompress them first with <kbd>Z</kbd> before
+entering them. Also, be careful not to load an extremely huge tar file. 
+Emacs may mean &ldquo;eating memory and constantly swaping&rdquo; to some people, but
+don't push it!
+
+   <p>Another very powerful feature of Emacs is the Ange-FTP package: it allows
+you to edit files on other computers, remotely, over an FTP connection. 
+From a user perspective, remote files behave just like local files. 
+All you have to do is press <kbd>f1</kbd> or <kbd>f4</kbd> and request a directory
+or file with filename following this form:
+<pre class="example">     /<var>username</var>@<var>host</var>:/<var>pathname</var>
+</pre>
+   <p class="noindent">Then Emacs will access for you the file <samp><span class="file">/</span><var>pathname</var></samp> on the
+remote machine <var>host</var> by logging in over FTP as <var>username</var>. 
+You will be prompted for a password, but that will happen only once per
+host. Emacs will then
+download the file that you want to edit and let you make your changes locally. 
+When you save your changes, Emacs will use an FTP connection again to upload
+the new version back to the remote machine, replacing the older version of
+the file there. When you develop software on a remote computer, this feature
+can be very useful, especially if your connection to the Net is over
+a slow modem line. This way you can edit remote files just like you do
+with local files. You will still have to telnet to the remote computer
+to get a shell prompt. In Emacs, you can do this with <code>M-x telnet</code>. 
+An advantage to telneting under Emacs is that it records your session,
+and you can save it to a file to browse it later.
+
+   <p>While you are making changes to your files, you should also be keeping
+a diary of these changes in a <samp><span class="file">ChangeLog</span></samp> file
+(see <a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>). Whenever you are done
+with a modification that you would like to log, press <kbd>f8</kbd>,
+<em>while the cursor is still at the same file</em>, and preferably near the
+modification (for example, if you are editing a C program, be inside the
+same C function). Emacs will split the frame
+to two windows. The new window brings up your <samp><span class="file">ChangeLog</span></samp> file. 
+Record your changes and click on the status bar that separates the two
+windows with the 2nd mouse button to get rid of the <samp><span class="file">ChangeLog</span></samp> file. 
+Because updating the log is a frequent chore, this Emacs help is
+invaluable.
+
+   <p>If you would like to compile your program, you can use the shell prompt
+to run &lsquo;<samp><span class="samp">make</span></samp>&rsquo;. However, the Emacs way is to use the <code>M-x compile</code>
+command. Press <kbd>f5</kbd>. Emacs will prompt you for the command that you
+would like to run. You can enter something like: &lsquo;<samp><span class="samp">configure</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">make</span></samp>&rsquo;, &lsquo;<samp><span class="samp">make dvi</span></samp>&rsquo;, and so on
+(see <a href="Installing-a-GNU-package.html#Installing-a-GNU-package">Installing a GNU package</a>). The directory on which this command
+will run is the current directory of the current buffer. If your current
+buffer is visiting a file, then your command will run on the same directory
+as the file. If your current buffer is the directory editor, then your
+command will run on that directory. When you press <kbd>&lt;RET&gt;</kbd>, Emacs will
+split the frame into another window, and it will show you the command's
+output on that window. If there are error messages, then Emacs converts
+these messages to hyperlinks and you can follow them by pressing <kbd>&lt;RET&gt;</kbd>
+while the cursor is on them, or by clicking on them with the 2nd mouse button. 
+When you are done, click on the status bar with the 2nd mouse button to
+get the compilation window off your screen.
+
+<!-- ============================================================== -->
+   </body></html>
+

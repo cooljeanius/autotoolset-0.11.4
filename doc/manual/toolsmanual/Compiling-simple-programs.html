@@ -1,0 +1,113 @@
+<html lang="en">
+<head>
+<title>Compiling simple programs - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="next" href="Programs-with-many-source-files.html#Programs-with-many-source-files" title="Programs with many source files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Compiling-simple-programs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Programs-with-many-source-files.html#Programs-with-many-source-files">Programs with many source files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.1 Compiling simple programs</h3>
+
+<p>It is very easy to compile simple C programs on the GNU system. For example,
+consider the famous &ldquo;Hello world&rdquo; program:
+     <dl>
+<dt><samp><span class="file">hello.c</span></samp><dd>
+     <pre class="example">          #include &lt;stdio.h&gt;
+          int
+          main ()
+          {
+            printf ("Hello world\n");
+          }
+</pre>
+     </dl>
+   The simplest way to compile this program is to type:
+<pre class="example">     % gcc hello.c
+</pre>
+   <p class="noindent">on your shell. The resulting executable file is called <samp><span class="file">a.out</span></samp>
+and you can run it from the shell like this:
+<pre class="example">     % ./a.out
+     Hello world
+</pre>
+   <p class="noindent">To cause the executable to be stored under a different filename pass the
+&lsquo;<samp><span class="samp">-o</span></samp>&rsquo; flag to the compiler:
+<pre class="example">     % gcc hello.c -o hello
+     % ./hello
+     Hello world
+</pre>
+   <p class="noindent">Even with simple one-file hacks like this, the GNU compiler can accept
+many options that modify its behaviour:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">-g</span></samp>&rsquo;<dd>The &lsquo;<samp><span class="samp">-g</span></samp>&rsquo; flag causes the compiler to output debugging information
+to the executable. This way, you can step your program through a debugger
+if it crashes. 
+(<em>FIXME: Crossreference</em>)
+<br><dt>&lsquo;<samp><span class="samp">-O, -O2, -O3</span></samp>&rsquo;<dd>The &lsquo;<samp><span class="samp">-O</span></samp>&rsquo;, &lsquo;<samp><span class="samp">-O2</span></samp>&rsquo;, &lsquo;<samp><span class="samp">-O3</span></samp>&rsquo; flags activate <dfn>optimization</dfn>. 
+The numbers are called <dfn>optimization levels</dfn>. 
+ When you compile your program with optimization
+enabled, the compiler applies certain algorithms to the machine code output
+to make it go faster. The cost is that your program compiles much more slowly
+and that although you can step it through a debugger if you used the &lsquo;<samp><span class="samp">-g</span></samp>&rsquo;
+flag, things will be a little strange. During development the programmer
+usually uses no optimization, and only activates it when person is about to
+run the program for a production run. A good advice: always test your code
+with optimization activated as well. 
+If optimization breaks your code, then this is telling you that you have
+a memory bug. Good luck finding it. 
+<br><dt>&lsquo;<samp><span class="samp">-Wall</span></samp>&rsquo;<dd>The &lsquo;<samp><span class="samp">-Wall</span></samp>&rsquo; flag tells the compiler to issue warnings when it sees
+bad programming style. Some of these warning catch actual bugs, but
+occasionally some of the warnings complain about something correct that you
+did on purpose. For this reason this flag is feature is not activated
+by default. 
+</dl>
+   Here are some variations of the above example:
+<pre class="example">     % gcc -g -O3 hello.c hello
+     % gcc -g -Wall hello.c -o hello
+     % gcc -g -Wall -O3 hello.c -o hello
+</pre>
+   <p class="noindent">To run a compiled executable in the current directory just type its
+name, prepended by &lsquo;<samp><span class="samp">./</span></samp>&rsquo;. In general, once you compile a useful
+program, you should <dfn>install</dfn> it so that it can be run from any current
+directory, simply by typing its name without prepending &lsquo;<samp><span class="samp">./</span></samp>&rsquo;. 
+To install an executable, you need to move it to a standard directory
+such as <samp><span class="file">/usr/bin</span></samp> or <samp><span class="file">/usr/local/bin</span></samp>. If you don't have
+permissions to install files there, you can instead install them on
+your home directory at <samp><span class="file">/home/username/bin</span></samp> where <code>username</code>
+is your username. When you write the name of an executable, the shell
+looks for the executable in a set of directories listed in the environment
+variable &lsquo;<samp><span class="samp">PATH</span></samp>&rsquo;. To add a nonstandard directory to your path do
+<pre class="example">     % export PATH="$PATH:/home/username/bin"
+</pre>
+   <p class="noindent">if you are using the Bash shell, or
+<pre class="example">     % setenv PATH "$PATH:/home/username/bin"
+</pre>
+   <p class="noindent">if you are using a different shell.
+
+<!-- ============================================================ -->
+   </body></html>
+

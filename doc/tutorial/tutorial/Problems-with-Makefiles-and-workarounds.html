@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Problems with Makefiles and workarounds - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Enter-Makefiles.html#Enter-Makefiles" title="Enter Makefiles">
+<link rel="next" href="Building-libraries.html#Building-libraries" title="Building libraries">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Problems-with-Makefiles-and-workarounds"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Building-libraries.html#Building-libraries">Building libraries</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Enter-Makefiles.html#Enter-Makefiles">Enter Makefiles</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">4.3 Problems with Makefiles and workarounds</h3>
+
+<p>The main problem with maintaining Makefiles, in fact what we <em>mean</em> when
+we complain about maintaining Makefiles, is keeping track of the dependencies. 
+The &lsquo;<samp><span class="samp">make</span></samp>&rsquo; utility will do its job if you tell it what the dependencies
+are, but it won't figure them out for you. There's a good reason for this
+of course, and herein lies the wisdom of Unix. To figure out the dependencies,
+you <em>need to know something about the syntax of the files that you
+are working with!</em>. And <dfn>syntax</dfn> is the turf of the <dfn>compiler</dfn>, and
+not &lsquo;<samp><span class="samp">make</span></samp>&rsquo;. 
+The GNU compiler honors this responsibility and if you type:
+<pre class="example">     % gcc -MM foo1.c
+     % gcc -MM foo2.c
+     % gcc -MM foo3.c
+     % gcc -MM foo4.c
+</pre>
+   <p class="noindent">it will compute the dependencies and put them out in standard output. 
+Even so, it is clear that something <em>else</em> is needed to take
+advantage of this feature, if available, to generate a correct &lsquo;<samp><span class="samp">Makefile</span></samp>&rsquo;
+automatically. This is the main problem for which the only work-around is
+to use <em>another</em> tool that generates Makefiles.
+
+   <p>The other big problem comes about with situations in which a software project
+spans many subdirectories. Each subdirectory needs to have a Makefile,
+and every Makefile must have a way to make sure that &lsquo;<samp><span class="samp">make</span></samp>&rsquo; gets called
+recursively to handle the subdirectories. This can be done, but it is quite
+cumbersome and annoying. Some programmers may choose to do without the
+advantages of a well-organized directory tree for this reason.
+
+   <p>There are a few other little problems, but they have for most part solutions
+within the realm of the &lsquo;<samp><span class="samp">make</span></samp>&rsquo; utility. One such problem is that if
+you move to a system where the compiler is called &lsquo;<samp><span class="samp">cc</span></samp>&rsquo; instead of
+&lsquo;<samp><span class="samp">gcc</span></samp>&rsquo; you need to edit the Makefile everywhere. Here's a solution:
+<pre class="example">     CC = gcc
+     
+     #CFLAGS = -Wall -g -O3
+     CFLAGS = -Wall -g
+     
+     foo: foo1.o foo2.o foo3.o foo4.o
+             $(CC) $(CFLAGS) foo1.o foo2.o foo3.o foo4.o -o foo
+     
+     foo1.o: foo1.c gleep2.h gleep3.h
+             $(CC) $(CFLAGS) -c foo1.c
+     
+     foo2.o: foo2.c gleep1.h
+             $(CC) $(CFLAGS) -c foo2.c
+     
+     foo3.o: foo3.c gleep1.h gleep2.h
+             $(CC) $(CFLAGS) -c foo3.c
+     
+     foo4.o: foo4.c gleep3.h
+             $(CC) $(CFLAGS) -c foo4.c
+</pre>
+   <p class="noindent">Now the user just has to modify the first line where he defines the
+<dfn>macro-variable</dfn> &lsquo;<samp><span class="samp">CC</span></samp>&rsquo;, and whatever he puts there gets
+substituted in the rules bellow. The other macro variable, &lsquo;<samp><span class="samp">CFLAGS</span></samp>&rsquo;
+can be used to turn optimization on and off. Putting a &lsquo;<samp><span class="samp">#</span></samp>&rsquo; mark in the
+beginning of a line, makes the line a comment, and the line is ignored.
+
+   <p>Another problem is that there is a lot of redundancy in this makefile. 
+<em>Every object file is built from the source file the same way.</em>
+Clearly there should be a way to take advantage of that right? 
+Here it is:
+<pre class="example">     CC = gcc
+     CFLAGS = -Wall -g
+     
+     .SUFFIXES: .c .o
+     
+     .c.o:
+             $(CC) $(CFLAGS) -c $&lt;
+     
+     .o:
+             $(CC) $(CFLAGS) $&lt; -o $@
+     
+     foo: foo1.o foo2.o foo3.o foo4.o
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+</pre>
+   <p class="noindent">Now this is more abstract, and has some cool punctuation. The &lsquo;<samp><span class="samp">SUFFIXES</span></samp>&rsquo;
+thing tells &lsquo;<samp><span class="samp">make</span></samp>&rsquo; that files that are possible targets, fall under
+three categories: files that end in &lsquo;<samp><span class="samp">.c</span></samp>&rsquo;, files that end in &lsquo;<samp><span class="samp">.o</span></samp>&rsquo;
+and files that end in nothing. 
+Now let's look at the next line:
+<pre class="example">     .c.o:
+             $(CC) $(CFLAGS) -c $&lt;
+</pre>
+   <p class="noindent">This line is an <dfn>abstract</dfn> rule that tells &lsquo;<samp><span class="samp">make</span></samp>&rsquo; how to make
+&lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files from &lsquo;<samp><span class="samp">.c</span></samp>&rsquo; files. The punctuation marks have the
+following meanings:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">$&lt;</span></samp>&rsquo;<dd>are the dependencies that changed causing the target to need to be rebuilt
+<br><dt>&lsquo;<samp><span class="samp">$@</span></samp>&rsquo;<dd>is the target
+<br><dt>&lsquo;<samp><span class="samp">$^</span></samp>&rsquo;<dd>are <em>all</em> the dependencies for the current rule
+</dl>
+   In the same spirit, the next rule tells how to make the executable file from
+the &lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files.
+<pre class="example">     .o:
+             $(CC) $(CFLAGS) $&lt; -o $@
+</pre>
+   <p class="noindent">All that has to follow the abstract rules is the dependencies,
+<em>without</em> the specific rules! If you are using &lsquo;<samp><span class="samp">gcc</span></samp>&rsquo; these
+dependencies can be generated automatically and then you can <dfn>include</dfn> them
+from your Makefile. Unfortunately
+this approach doesn't work with all of the other compilers. And there is
+no standard way to include another file into Makefile source. 
+<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+Of course, what we will point out eventually is that &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; can take
+care of the dependencies for you.
+
+   <p>The Makefile in our example can be enhanced in the following way:
+<pre class="example">     CC = gcc
+     CFLAGS = -Wall -g
+     OBJECTS = foo1.o foo2.o foo3.o foo4.o
+     PREFIX = /usr/local
+     
+     .SUFFIXES: .c .o
+     
+     .c.o:
+             $(CC) $(CFLAGS) -c $&lt;
+     
+     .o:
+             $(CC) $(CFLAGS) $&lt; -o $@
+     
+     foo: $(OBJECTS)
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+     
+     clean:
+             rm -f $(OBJECTS)
+     
+     distclean:
+             rm -f $(OBJECTS) foo
+     
+     install:
+             rm -f $(PREFIX)/bin/foo
+             cp foo $(PREFIX)/bin/foo
+</pre>
+   <p class="noindent">We've added three fake targets called &lsquo;<samp><span class="samp">clean</span></samp>&rsquo; and &lsquo;<samp><span class="samp">distclean</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">install</span></samp>&rsquo; and introduced a few more macro-variables to control
+redundancy. I am sure some bells are ringing now. When you type:
+<pre class="example">     % make
+</pre>
+   <p class="noindent">the first target (which is &lsquo;<samp><span class="samp">foo</span></samp>&rsquo;) gets build, and your program compiles. 
+When you type
+<pre class="example">     % make install
+</pre>
+   <p class="noindent">since there is no file called <samp><span class="file">install</span></samp> anywhere, the rule there
+is executed which has the effect of copying the executable over at
+<samp><span class="file">/usr/local/bin</span></samp>. To get rid of the object files,
+<pre class="example">     % make clean
+</pre>
+   <p class="noindent">and to get rid of the executable as well
+<pre class="example">     % make distclean
+</pre>
+   <p class="noindent">Such fake targets are called <dfn>phony targets</dfn> in makefile parlance. 
+As you can see, the &lsquo;<samp><span class="samp">make</span></samp>&rsquo; utility is quite powerful and there's a lot
+it can do. If you want to become a &lsquo;<samp><span class="samp">make</span></samp>&rsquo; wizard, all you need to do
+is read the <em>GNU Make Manual</em> and waste a lot of time spiffying up your
+makefiles, instead of getting your programs debugged, The GNU Make manual
+is extremely well written, and will make for enjoyable reading. It is also
+<dfn>free</dfn>, unlike &ldquo;published&rdquo; books.
+
+   <p>The reason we went to the trouble to explain &lsquo;<samp><span class="samp">make</span></samp>&rsquo; is because it is
+important to understand what happens behind the hood, and because in many
+cases, &lsquo;<samp><span class="samp">make</span></samp>&rsquo; is a fine thing to use. It works for simple programs. 
+And it works for many other things such as formatting TeX documents and
+so on.
+
+   <p>As we evolve to more and more complicated projects, there's two things that
+we need. A more high-level way of specifying what you want to build, and
+a way of automatically determining the values that you want to put to
+things like <span class="sc">cflags</span>, <span class="sc">prefix</span> and so on. The first thing is what
+&lsquo;<samp><span class="samp">automake</span></samp>&rsquo; does, the second thing is what &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; does.
+
+<!-- ========================================================================== -->
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> If this sounds surprising, don't forget that there is no ANSI
+standard for Makefiles</p>
+
+   <hr></div>
+
+   </body></html>
+

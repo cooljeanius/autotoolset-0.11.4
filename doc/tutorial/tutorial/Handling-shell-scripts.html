@@ -1,0 +1,273 @@
+<html lang="en">
+<head>
+<title>Handling shell scripts - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Installation-directories_002e.html#Installation-directories_002e" title="Installation directories.">
+<link rel="next" href="Handling-other-obscurities.html#Handling-other-obscurities" title="Handling other obscurities">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Handling-shell-scripts"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Handling-other-obscurities.html#Handling-other-obscurities">Handling other obscurities</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installation-directories_002e.html#Installation-directories_002e">Installation directories.</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.11 Handling shell scripts</h3>
+
+<p>Sometimes you may feel the need to implement some of your programs in
+a scripting language like Bash or Perl. For example, the &lsquo;<samp><span class="samp">autotools</span></samp>&rsquo;
+package is exclusively a collection of shell scripts. 
+Theoretically, a script does
+not need to be compiled. However, there are still issues pertaining to
+scripts such as:
+     <ul>
+<li>You want scripts to be installed with <code>make install</code>, uninstalled
+with <code>make uninstall</code> and distributed with <code>make dist</code>. 
+<li>You want scripts to get the path in the <code>#!</code> right. 
+</ul>
+   To let Automake deal with all this, you need to use the &lsquo;<samp><span class="samp">SCRIPTS</span></samp>&rsquo;
+primitive. 
+By listing a file under a &lsquo;<samp><span class="samp">SCRIPTS</span></samp>&rsquo; primitive assignment, you are telling
+Automake that this file needs to be built, and must be allowed to be installed
+in a location where executable files are normally installed. Automake by
+default will not clean scripts when you invoke the &lsquo;<samp><span class="samp">clean</span></samp>&rsquo; target. 
+To force Automake to clean all the scripts, you need to add the following
+line to your <samp><span class="file">Makefile.am</span></samp>:
+<pre class="example">     CLEANFILES = $(bin_SCRIPTS)
+</pre>
+   <p class="noindent">You also need to write your own targets for building the script by hand.
+
+<p class="noindent">For example:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">hello1.sh</span></samp>&rsquo;<dd>
+     <pre class="example">          # -* bash *-
+          echo "Howdy, world!"
+          exit 0
+</pre>
+     <p class="noindent"><br><dt>&lsquo;<samp><span class="samp">hello2.pl</span></samp>&rsquo;<dd>
+     <pre class="example">          # -* perl *-
+          print "Howdy, world!\n";
+          exit(0);
+</pre>
+     <p class="noindent"><br><dt>&lsquo;<samp><span class="samp">Makefile.am</span></samp>&rsquo;<dd>
+     <pre class="example">          bin_SCRIPTS = hello1 hello2
+          CLEANFILES = $(bin_SCRIPTS)
+          EXTRA_DIST = hello1.sh hello2.pl
+          
+          hello1: $(srcdir)/hello1.sh
+                rm -f hello1
+                echo "#! " $(BASH) &gt; hello1
+                cat $(srcdir)/hello1.sh &gt;&gt; hello1
+                chmod ugo+x hello1
+          
+          hello2: $(srcdir)/hello2.pl
+                $(PERL) -c hello2.pl
+                rm -f hello2
+                echo "#! " $(PERL) &gt; hello2
+                cat $(srcdir)/hello2.pl &gt;&gt; hello2
+                chmod ugo+x hello2
+</pre>
+     <p class="noindent"><br><dt>&lsquo;<samp><span class="samp">configure.in</span></samp>&rsquo;<dd>
+     <pre class="example">          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PATH_PROGS(BASH, bash sh)
+          AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+          AC_OUTPUT(Makefile)
+</pre>
+     <p class="noindent"></dl>
+   Note that in the &ldquo;source&rdquo; files <samp><span class="file">hello1.sh</span></samp> and <samp><span class="file">hello2.pl</span></samp>
+we do not include a line like
+<pre class="example">     #!/bin/bash
+     #!/usr/bin/perl
+</pre>
+   <p class="noindent">Instead we let Autoconf pick up the correct path, and then we insert it
+during <code>make</code>. Since we omit the <code>#!</code> line, we leave a comment
+instead that indicates what kind of file this is.
+
+   <p>In the special case of <code>perl</code> we also invoke
+<pre class="example">     perl -c hello2.pl
+</pre>
+   <p class="noindent">This checks the perl script for correct syntax. If your scripting language
+supports this feature I suggest that you use it to catch errors at
+&ldquo;compile&rdquo; time. 
+The <code>AC_PATH_PROGS</code> macro looks for a specific utility and returns
+the full path.
+
+   <p>If you wish to conform to the GNU coding standards, you may want your script
+to support the <code>--help</code> and <code>--version</code> flags, and you may want
+<code>--version</code> to pick up the version number from
+<code>AM_INIT_AUTOMAKE</code>.
+
+   <p>Here's an enhanced hello world scripts:
+     <ul>
+<li><strong>version.sh.in</strong>
+     <pre class="example">          VERSION=@VERSION@
+</pre>
+     <p class="noindent"><li><strong>version.pl.in</strong>
+     <pre class="example">          $VERSION="@VERSION@";
+</pre>
+     <p class="noindent"><li><strong>hello1.sh</strong>
+     <pre class="example">          # -* bash *-
+          function usage
+          {
+           cat &lt;&lt; EOF
+          Usage:
+          % hello [OPTION]
+          
+          Options:
+            --help     Print this message
+            --version  Print version information
+          
+          Bug reports to: monica@whitehouse.gov
+          EOF
+          }
+          
+          function version
+          {
+           cat &lt;&lt; EOF
+          hello $VERSION - The friendly hello world program
+          Copyright (C) 1997 Monica Lewinsky &lt;monica@whitehouse.gov&gt;
+          This is free software, and you are welcome to redistribute it and modify it
+          under certain conditions. There is ABSOLUTELY NO WARRANTY for this software.
+          For legal details see the GNU General Public License.
+          EOF
+          }
+          
+          function invalid
+          {
+           echo "Invalid usage. For help:"
+           echo "% hello --help"
+          }
+          
+          # -------------------------
+          if test $# -ne 0
+          then
+            case $1 in
+            --help)
+              usage
+              exit
+              ;;
+            --version)
+              version
+              exit
+              ;;
+            *)
+              invalid
+              exit
+              ;;
+          fi
+          
+          # ------------------------
+          echo "Howdy world"
+          exit
+</pre>
+     <p class="noindent"><li><strong>hello2.pl</strong>
+     <pre class="example">          # -* perl *-
+          sub usage
+          {
+           print &lt;&lt;"EOF";
+          Usage:
+          % hello [OPTION]
+          
+          Options:
+            --help     Print this message
+            --version  Print version information
+          
+          Bug reports to: monica@whitehouse.gov
+          EOF
+          exit(1);
+          }
+          
+          sub version
+          {
+           print &lt;&lt;"EOF";
+          hello $VERSION - The friendly hello world program
+          Copyright (C) 1997 Monica Lewinsky &lt;monica@whitehouse.gov&gt;
+          This is free software, and you are welcome to redistribute it and modify it
+          under certain conditions. There is ABSOLUTELY NO WARRANTY for this software.
+          For legal details see the GNU General Public License.
+          EOF
+           exit(1);
+          }
+          
+          sub invalid
+          {
+           print "Invalid usage. For help:\n";
+           print "% hello --help\n";
+           exit(1);
+          }
+          
+          # --------------------------
+          if ($#ARGV == 0)
+          {
+           do version() if ($ARGV[0] eq "--version");
+           do usage()   if ($ARGV[0] eq "--help");
+           do invalid();
+          }
+          # --------------------------
+          print "Howdy world\n";
+          exit(0);
+</pre>
+     <p class="noindent"><li><strong>Makefile.am</strong>
+     <pre class="example">          bin_SCRIPTS = hello1 hello2
+          CLEANFILES = $(bin_SCRIPTS)
+          EXTRA_DIST = hello1.sh hello2.pl
+          
+          hello1: $(srcdir)/hello1.sh $(srcdir)/version.sh
+                rm -f hello1
+                echo "#! " $(BASH) &gt; hello1
+                cat $(srcdir)/version.sh $(srcdir)/hello1.sh &gt;&gt; hello1
+                chmod ugo+x hello1
+          
+          hello2: $(srcdir)/hello2.pl $(srcdir)/version.pl
+                $(PERL) -c hello2.pl
+                rm -f hello2
+                echo "#! " $(PERL) &gt; hello2
+                cat $(srcdir)/version.pl $(srcdir)/hello2.pl &gt;&gt; hello2
+                chmod ugo+x hello2
+</pre>
+     <p class="noindent"><li><strong>configure.in</strong>
+     <pre class="example">          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PATH_PROGS(BASH, bash sh)
+          AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+          AC_OUTPUT(Makefile
+                    version.sh
+                    version.pl
+                   )
+</pre>
+     <p class="noindent"></ul>
+
+   <p>Basically the idea with this approach is that when <code>configure</code> calls
+<code>AC_OUTPUT</code> it will substitute the files <code>version.sh</code> and
+<code>version.pl</code> with the correct version information. Then, during
+building, the version files are merged with the scripts. The scripts
+themselves need some standard boilerplate code to handle the options. 
+I've included that code here as a sample implementation, which I hereby
+place in the public domain.
+
+   <p>This approach can be easily generalized with other scripting languages
+as well, like Python and Guile.
+
+   </body></html>
+

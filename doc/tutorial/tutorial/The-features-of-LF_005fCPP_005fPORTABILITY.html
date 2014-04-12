@@ -1,0 +1,208 @@
+<html lang="en">
+<head>
+<title>The features of LF_CPP_PORTABILITY - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="Compiler-configuration-with-the-LF-macros.html#Compiler-configuration-with-the-LF-macros" title="Compiler configuration with the LF macros">
+<link rel="next" href="Writing-portable-C_002b_002b.html#Writing-portable-C_002b_002b" title="Writing portable C++">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="The-features-of-LF_CPP_PORTABILITY"></a>
+<a name="The-features-of-LF_005fCPP_005fPORTABILITY"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Writing-portable-C_002b_002b.html#Writing-portable-C_002b_002b">Writing portable C++</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Compiler-configuration-with-the-LF-macros.html#Compiler-configuration-with-the-LF-macros">Compiler configuration with the LF macros</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.3 The features of  &lsquo;<samp><span class="samp">LF_CPP_PORTABILITY</span></samp>&rsquo;</h3>
+
+<p>In order for <code>LF_CPP_PORTABILITY</code> to work correctly you need to append
+certain things at the bottom of your <samp><span class="file">acconfig.h</span></samp>. This is done for you
+automatically by <code>acmkdir</code>. 
+When the <code>LF_CPP_PORTABILITY</code> macro is invoked by <samp><span class="file">configure.in</span></samp>
+then the following portability problems are checked:
+     <ul>
+<li><strong>The bool data type</strong>:
+It is rather unfortunate that most proprietary compilers don't have such
+a beautiful and handy feature.   If the configure
+script detects that you have no bool, then it defines the macro
+<code>CXX_HAS_NO_BOOL</code>. It is possible to emulate <code>bool</code> with the
+following C preprocessor directives:
+     <pre class="example">          #ifdef CXX_HAS_NO_BOOL
+          #define bool int
+          #define true 1
+          #define false 0
+          #endif
+</pre>
+     <p class="noindent">To make your code portable to compilers that don't support
+bool, through this workaround, you must follow one rule: never
+overload your functions in a way in which the only distinguishing feature is
+<code>bool</code> vs <code>int</code>. 
+This workaround is included in the default <samp><span class="file">acconfig.h</span></samp> after
+<code>@BOTTOM@</code> that gets installed by <code>acmkdir</code>. 
+<li><strong>Incorrect for-loop scoping</strong>:
+Another obnoxious bug with many compilers is that they refuse to compile
+the following code:
+     <pre class="example">          #include &lt;iostream.h&gt;
+          main()
+          {
+           for (int i=0;i&lt;10;i++) { }
+           for (int i=0;i&lt;10;i++) { }
+          }
+</pre>
+     <p class="noindent">This is legal C++ and the variable <code>i</code> is supposed to have scope only
+inside the forloop braces and the parentheses. Unfortunately, most C++
+compilers use an obsolete version of the standard's draft in which the
+scope of <code>i</code> is the entire <code>main</code> in this example. 
+The workaround we use is as follows:
+     <pre class="example">          #ifdef CXX_HAS_BUGGY_FOR_LOOPS
+          #define for if(1) for
+          #endif
+</pre>
+     <p class="noindent">By nesting the forloop inside an if-statement, the variable <code>i</code> is
+assigned the correct scope. Now if your if-statement scoping is also broken
+then you really need to get another compiler. 
+The macro <code>CXX_HAS_BUGGY_FOR_LOOPS</code> is defined for you if appropriate,
+and the code for the work-around is included with the
+default <code>acconfig.h</code>. 
+</ul>
+
+   <p>In addition to these workarounds, the following additional features are
+introduced at the end of the default <code>acconfig.h</code>. The features are
+enabled only if your <samp><span class="file">configure.in</span></samp> calls <code>LF_CPP_PORTABILITY</code>.
+     <ul>
+<li><strong>Looping macros:</strong>
+The macro <code>loop</code> is defined such that
+     <pre class="example">          loop(i,a,b)
+</pre>
+     <p class="noindent">is equivalent
+     <pre class="example">          for (int i = a; i &lt;= b; i++)
+</pre>
+     <p class="noindent">This is syntactic sugar that makes it easier on the hand to write
+nested loops like:
+     <pre class="example">          int Ni,Nj,Nk;
+          loop(i,0,Ni) loop(j,0,Nj) loop(k,0,Nk) { ... }
+</pre>
+     <p class="noindent">minimizing the probability of making a spelling bug. 
+If you need to do more unusual looping you can use one of the following
+macros:
+     <pre class="example">          inverse_loop(i,a,b)   &lt;--&gt; for (int i = a; i &gt;= b; i--)
+          integer_loop(i,a,b,s) &lt;--&gt; for (int i = a; i &lt;= b; i += s)
+</pre>
+     <p class="noindent">This feature depends on having correct scoping in <samp><span class="file">for</span></samp> which
+fortunately is easily taken care of. 
+<li><strong>Class protection levels:</strong>
+The following macros are defined:
+     <pre class="example">          #define pub public:
+          #define pro protected:
+          #define pri private:
+</pre>
+     <p class="noindent">Now you can declare a class prototype in a java-like style like this:
+     <pre class="example">          class foo
+          {
+           pri double a,b;
+           pub double c,d;
+          
+           pub foo();
+           pub virtual ~foo();
+          
+           pri void method1(void);
+           pub void method2(void);
+          };
+</pre>
+     <p class="noindent">Personally I find this notation more lucid than the standard C++ syntax
+because this way I can see the protection level of each variable and
+method without having to possibly scroll up to see what it is. Also,
+it is less bug-prone this way. 
+<li><strong>The Pi</strong>:
+Every mathematician would like to know what pi is, so this is as good a
+place as any to throw it in:
+     <pre class="example">          const double pi = 3.14159265358979324;
+</pre>
+     <p class="noindent"><li><strong>Assert</strong>:
+The idea behind <code>assert</code> is simple. Suppose that at a certain point
+in your code, you expect two variables to be equal. If this expectation
+is a <dfn>precondition</dfn> that must be satisfied in order for the subsequent
+code to execute correctly, you must <code>assert</code> it with a statement
+like this:
+     <pre class="example">          assert(var1 == var2);
+</pre>
+     <p class="noindent">In general <code>assert</code> takes as argument a <dfn>boolean expression</dfn>. 
+If the boolean expression is true, execution continues. Otherwise the
+&lsquo;<samp><span class="samp">abort</span></samp>&rsquo; system call is invoked and the program execution is stopped. 
+If a bug prevents the precondition from being true, then you
+can trace the bug at the point where the precondition breaks down instead
+of further down in execution or not at all. The &lsquo;<samp><span class="samp">assert</span></samp>&rsquo; call is
+implemented as a C preprocessor macro, so it can be enabled or disabled
+at will.
+
+     <p>One way to enable assertions is to include <samp><span class="file">assert.h</span></samp>.
+     <pre class="example">          #include &lt;assert.h&gt;
+</pre>
+     <p class="noindent">Then it's possible to disable them by defining the &lsquo;<samp><span class="samp">NDEBUG</span></samp>&rsquo; macro. 
+Alternatively, because it is easy to provide our own assert, if your
+<samp><span class="file">configure.in</span></samp> invokes &lsquo;<samp><span class="samp">LF_CPP_PORTABILITY</span></samp>&rsquo; then &lsquo;<samp><span class="samp">assert</span></samp>&rsquo;
+will be conditionally defined for you in the <samp><span class="file">config.h</span></samp> file. 
+By default, the &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script will enable assertions. You can
+disable assertions at configure-time like this:
+     <pre class="example">          % configure ... --disable-assert ...
+</pre>
+     <p class="noindent">During debugging and testing it is a good idea to leave assertions enabled. 
+However, for production runs it's best to disable them.
+
+     <p>If your program crashes at an assertion, then the first thing you should
+do is to find out where the error happens. To do this, run the program
+under the <samp><span class="file">gdb</span></samp> debugger. First invoke the debugger:
+     <pre class="example">          % gdb
+          ...copyright notice...
+</pre>
+     <p class="noindent">Then load the executable and set a breakpoint at the &lsquo;<samp><span class="samp">abort</span></samp>&rsquo; system
+call:
+     <pre class="example">          (gdb) file "executable"
+          (gdb) break abort
+</pre>
+     <p class="noindent">Now run the program:
+     <pre class="example">          (gdb) run
+</pre>
+     <p class="noindent">Instead of crashing, under the debugger the program will be paused when the
+&lsquo;<samp><span class="samp">abort</span></samp>&rsquo; system call is invoked, and you will get back the debugger
+prompt. Now type:
+     <pre class="example">          (gdb) where
+</pre>
+     <p class="noindent">to see where the crash happened. You can use the &lsquo;<samp><span class="samp">print</span></samp>&rsquo; command to
+look at the contents of variables and you can use the &lsquo;<samp><span class="samp">up</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">down</span></samp>&rsquo; commands to navigate the stack. For more information, see
+the GDB documentation or type &lsquo;<samp><span class="samp">help</span></samp>&rsquo; at the prompt of gdb.
+
+     <p>Another suggestion is to never call the <code>abort</code> system call directly. 
+Instead, please do this:
+     <pre class="example">          assert(false);
+          exit(1);
+</pre>
+     <p class="noindent">This way if assertions are enabled, the program will stop and the stack will
+be retained. Otherwise the program will simply exit.
+
+   </ul>
+
+<!-- =========================================================================== -->
+   </body></html>
+

@@ -19,28 +19,28 @@ targetname =
 # You should not have to modify anything bellow this line #
 ###########################################################
 
-# These are the filenames that we wish to generate
+# These are the filenames that we wish to generate:
 texifile  = $(targetname).texi
 dvifile   = $(targetname).dvi
 htmlfiles = $(targetname).html $(targetname)_toc.html $(targetname)_foot.html
 
-# These are the files that should be part of the distribution
+# These are the files that should be part of the distribution:
 EXTRA_DIST = $(documentation) texi2html.pl texidoc.pl texirm.sh
 
-# These are the tools
+# These are the tools:
 TEXIDOC   = $(PERL)  $(srcdir)/texidoc.pl
 TEXI2HTML = $(PERL)  $(srcdir)/texi2html.pl
 TEXIRM    = $(SHELL) $(srcdir)/texirm.sh
 
-# FIXME: i really need an autoconf macro for this documentation crap.
+# FIXME: I really need an autoconf macro for this documentation crap.
 TEXI2DVI = texi2dvi
 
-# Target for building the texinfo file from the documentation
+# Target for building the texinfo file from the documentation:
 $(texifile): $(documentation)
 	rm -f $(texifile)
 	(cd $(srcdir); cat $(documentation)) | $(TEXIDOC) > $(texifile)
 
-# This is how to build my html files
+# This is how to build my html files:
 $(targetname).html: $(texifile)
 	$(TEXI2HTML) $(texifile)
 
@@ -49,18 +49,18 @@ $(targetname)_toc.html: $(targetname).html
 $(targetname)_foot.html: $(targetname).html
 	touch $(targetname)_foot.html
 
-# This is how to build the dvi files
+# This is how to build the dvi files:
 $(dvifile): $(texifile)
 	$(TEXI2DVI) $(texifile)
 
-# This is how to build the postscript file
+# This is how to build the postscript file:
 $(psfile): $(dvifile)
 	$(DVIPS) -f $(dvifile) > $(psfile)
 
-# HTML generation should be triggered by the HTML target
+# HTML generation should be triggered by the HTML target:
 dvi: $(dvifile) $(htmlfiles) $(psfile)
 
-# Clean target
+# Clean target:
 clean-local:
 	$(TEXIRM) $(targetname)
 	rm -f $(targetname).texi

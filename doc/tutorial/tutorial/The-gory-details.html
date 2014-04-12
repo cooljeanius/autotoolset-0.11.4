@@ -1,0 +1,228 @@
+<html lang="en">
+<head>
+<title>The gory details - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf" title="Fortran with Autoconf">
+<link rel="prev" href="Walkthrough-a-simple-example.html#Walkthrough-a-simple-example" title="Walkthrough a simple example">
+<link rel="next" href="Portability-problems-with-Fortran.html#Portability-problems-with-Fortran" title="Portability problems with Fortran">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="The-gory-details"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Portability-problems-with-Fortran.html#Portability-problems-with-Fortran">Portability problems with Fortran</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Walkthrough-a-simple-example.html#Walkthrough-a-simple-example">Walkthrough a simple example</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf">Fortran with Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">8.4 The gory details</h3>
+
+<p>The best way to get started is by building the initial directory tree with
+&lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; like this:
+<pre class="example">     % acmkdir -t fortran &lt;directory-filename&gt;
+</pre>
+   <p class="noindent">This will install all the standard stuff. It will also install a directory
+called <samp><span class="file">fortran</span></samp> containing a copy of the f2c compiler and
+<samp><span class="file">f2c_comp</span></samp>, a shell script invoking the compiler in a way that it
+looks the same as invoking a real compiler
+
+   <p>The file <samp><span class="file">configure.in</span></samp> uses the following special macros:
+     <dl>
+<dt><strong>LF_PROG_F77_PREFER_F2C_COMPATIBILITY</strong><dd>This macro directs Autoconf that the user prefers <code>f2c</code> compatibility
+over performance. In general Fortran programmers are willing to sacrifice
+everything for the sake of performance. However, if you want to use
+Fortran code with C and C++ code, you will have many reasons to also
+give importance to <code>f2c</code> compatibility. Use this macro to state this
+preference. The effect is that if the installer's platform has a native
+Fortran compiler installed, it will be used only if it is <code>f2c</code>
+compatible. This macro must be invoked before invoking
+<code>LF_PROG_F77</code>. 
+<br><dt><strong>LF_PROG_F77_PREFER_NATIVE_VERSION</strong><dd>This macro directs Autoconf that the user prefers performance and
+doesn't care about <code>f2c</code> compatibility. You may want to invoke this
+instead if your entire program is written in Fortran. 
+This macro must be invoked before invoking <code>LF_PROG_F77</code>. 
+<br><dt><strong>LF_PROG_F77</strong><dd>This macro probes the installer platform for an appropriate Fortran
+compiler. It exports the following variables to Automake:
+          <dl>
+<dt>&lsquo;<samp><span class="samp">F77</span></samp>&rsquo;<dd>The name of the Fortran compiler
+<br><dt>&lsquo;<samp><span class="samp">FFLAGS</span></samp>&rsquo;<dd>Flags for the Fortran compiler
+<br><dt>&lsquo;<samp><span class="samp">FLIBS</span></samp>&rsquo;<dd>The link sequence for the compiler runtime libraries
+</dl>
+     It also checks whether the compiler appends underscores to the symbols
+and whether the symbols are written in lowercase or uppercase characters
+and defines the following preprocessor macros:
+          <dl>
+<dt><code>F77_APPEND_UNDERSCORE</code><dd>Define if the compiler appends an underscore to the symbol names. 
+<br><dt><code>F77_UPPERCASE_NAMES</code><dd>Define if the compiler uses uppercase for symbol names. 
+</dl>
+     These macros are used to define &lsquo;<samp><span class="samp">f77func</span></samp>&rsquo; macro which takes two arguments;
+the name of the Fortan subroutine or function in lower case, and then in
+upper case, and returns the correct symbol name to use for invoking it from
+C or C++. To obtain the calling sequence for the symbol do:
+     <pre class="example">          % f2c -P foo.f
+</pre>
+     <p class="noindent">on the file containing the subroutine and examine the file <samp><span class="file">foo.P</span></samp>. 
+In order for this macro to work properly you must precede it with calls
+to
+     <pre class="example">          AC_PROG_CC
+          AC_PROG_RANLIB
+          LF_HOST_TYPE
+</pre>
+     <p class="noindent">You also need to call one of the two <code>*_PREFER_*</code> macros. The default
+is to prefer <code>f2c</code> compatibility. 
+</dl>
+   In addition to invoking all of the above, you need to make provision for
+the bundled fortran compiler by adding the following lines at the end of
+your <samp><span class="file">configure.in</span></samp>:
+<pre class="example">     AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+     AC_OUTPUT([Makefile fortran/Makefile f2c_comp
+                doc/Makefile m4/Makefile src/Makefile])
+</pre>
+   <p class="noindent">The <code>AC_CONFIG_SUBDIRS</code> macro directs <samp><span class="file">configure</span></samp> to execute the
+configure scripts in <samp><span class="file">fortran/f2c</span></samp> and <samp><span class="file">fortran/libf2c</span></samp>. 
+The stuff in <code>AC_OUTPUT</code> that are important to Fortran support are
+building <samp><span class="file">fortran/Makefile</span></samp> and <samp><span class="file">f2c_comp</span></samp>. Because,
+<samp><span class="file">f2c_comp</span></samp> is mention in <code>AC_OUTPUT</code>, Automake will automagically
+bundle it when you build a source code distribution.
+
+   <p>If you have originally set up your directory tree for a C or C++ only
+project and later you realize that you need to also use Fortran, you can
+upgrade your directory tree to Fortran as follows:
+     <ul>
+<li>Create the <samp><span class="file">fortran</span></samp> directory by invoking
+     <pre class="example">          % mkfortran
+</pre>
+     <p class="noindent">and the <samp><span class="file">f2c_oomp</span></samp> by invoking
+     <pre class="example">          % mkf2c_comp
+</pre>
+     <p class="noindent">both on the toplevel directory level. 
+<li>Add the following macro invokations in the middle of <samp><span class="file">configure.in</span></samp>, in
+this order:
+     <pre class="example">          AC_PROG_CC
+          AC_PROG_RANLIB
+          LF_HOST_TYPE
+          LF_PROG_F77_PREFER_F2C_COMPATIBILITY
+          LF_PROG_F77
+</pre>
+     <p class="noindent">If you have invoked <code>LF_CONFIGURE_CC</code> then there is no need to
+invoke <code>AC_PROG_CC</code> again. 
+<li>Add the following invokation just before <code>AC_OUTPUT</code>:
+     <pre class="example">          AC_CONFIG_SUBDIRS([fortran/f2c fortran/libf2c])
+</pre>
+     <p class="noindent">and add the following files to <code>AC_OUTPUT</code>:
+     <pre class="example">          fortran/Makefile f2c_comp
+</pre>
+     <p class="noindent"><li>Rebuild with
+     <pre class="example">          % make distclean
+          % ./reconf
+          % ./configure
+          % make
+</pre>
+     <p class="noindent">It is important to call <samp><span class="file">reconf</span></samp> for the changes to take effect. 
+</ul>
+
+   <p>If a directory level contains Fortran source code, then it is important
+to let Automake know about it by adding the following lines in the
+beginning.
+<pre class="example">     SUFFIXES = .f
+     .f.o:
+             $(F77) -c $&lt;
+</pre>
+   <p class="noindent">This is pretty much the same idea with the embedded text compiler. 
+You can list the Fortran source code filenames in the <code>SOURCES</code>
+assignments together with your C and C++ code. To link executables,
+you must add <code>$(FLIBS)</code> to <code>LDADD</code> and link against
+<samp><span class="file">f2c-main.c</span></samp> just as in the hello world example. Please do
+not include <samp><span class="file">f2c-main.c</span></samp> in any libraries however.
+
+   <p>Now consider the file <samp><span class="file">hello.cc</span></samp> line by line. 
+First we include the standard configuration stuff:
+<pre class="example">     #ifdef HAVE_CONFIG_H
+     #include &lt;config.h&gt;
+     #endif
+     #include &lt;string.h&gt;
+</pre>
+   <p class="noindent">Then we include the Fortran related header files:
+<pre class="example">     #include "f2c.h"
+</pre>
+   <p class="noindent">Then we declare the prototypes for the Fortran subroutine:
+<pre class="example">     extern "C"
+     {
+      extern int f77func(fhello,FHELLO)(char *c__, ftnlen c_len);
+     }
+</pre>
+   <p class="noindent">There is a few things to note here:
+     <ul>
+<li>You should never ever declare Fortran prototypes in header files. The
+definition of prototypes is dependent on the &lsquo;<samp><span class="samp">f77func</span></samp>&rsquo; macro,
+which is dependent on a correct definition of the
+&lsquo;<samp><span class="samp">F77_APPEND_UNDERSCORE</span></samp>&rsquo; and &lsquo;<samp><span class="samp">F77_UPPERCASE_NAMES</span></samp>&rsquo; C preprocessor
+macros. You should be nice and not force people who don't want to use Fortran
+to have to get these macros defined in order to use your header files. 
+If you want to export functionality written in Fortran to C users, then wrap
+the Fortran subroutines and functions with corresponding C subroutines and
+functions and export these instead on your header file. 
+<li>You should never use the actual name of the Fortran routine in C, because
+doing so is not portable. Instead you should use the &lsquo;<samp><span class="samp">f77func</span></samp>&rsquo; macro,
+which takes two arguments: the name of the routine in small letters, and
+the name of the routine in all-caps. The right name of the two is chosen,
+and the underscore is appended if necessary. 
+<li>If the source file in which you are writing down the Fortran declarations
+is compiled with a C++ compiler, as is true in this case, then you must
+surround the declarations with:
+     <pre class="example">          extern "C"
+          {
+          }
+</pre>
+     <p class="noindent">The C++ language uses <dfn>name mangling</dfn> to support function overloading. 
+This means that if you have two C++ functions called:
+     <pre class="example">          int foo(double x);
+          int foo(double x,double y);
+</pre>
+     <p class="noindent">the C++ compiler internally assigns them different names in an intelligent
+fashion to avoid conflict. Just like the Fortran compiler does things
+behind your back, so does the C++ compiler to support some of its special
+features. Any code written between &lsquo;<samp><span class="samp">extern "C"</span></samp>&rsquo; is compiled with name
+mangling disabled. This is necessary for the Fortran declarations because
+we don't want the names of the Fortran subroutines to be mangled. 
+<li>When we actually invoke the Fortran subroutine in the &lsquo;<samp><span class="samp">main</span></samp>&rsquo; we
+make sure to type-cast all the types to what appears on the prototype
+above. In this case we do:
+     <pre class="example">          f77func(fhello,FHELLO)(s,ftnlen(strlen(s)));
+</pre>
+     <p class="noindent">This may seem pedantic but it is necessary for the C++ compiler,
+and it is a good habit even for C programmers. Since Fortran routines
+are supposed to be wrapped, this is not too much to ask. 
+<li>You need to be very careful with integers. On some systems &lsquo;<samp><span class="samp">long int</span></samp>&rsquo;
+is 64 bit and &lsquo;<samp><span class="samp">int</span></samp>&rsquo; is 32 bit. This means that you should avoid
+&lsquo;<samp><span class="samp">long int</span></samp>&rsquo; like the plague! The safest way to deal with integers is to
+make sure that you always cast your integer stuff to <code>integer</code>
+explicitly. Unfortunately the standard header file distributed with
+<code>f2c</code> defines <code>integer</code> as <code>long int</code> to account for 16-bit
+machines. That's a bad idea, and on the 64-bit Dec Alpha it is a bug. The
+header file distributed with
+<samp><span class="file">mkf2c</span></samp> does the right thing. 
+<li>Make sure to list both <samp><span class="file">f2c.h</span></samp> and <samp><span class="file">f2c-main.c</span></samp> in
+<code>SOURCES</code> assignments on your <samp><span class="file">Makefile.am</span></samp> to make sure that
+they are included in the source code distribution. 
+</ul>
+
+   </body></html>
+

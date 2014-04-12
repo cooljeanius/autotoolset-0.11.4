@@ -1,0 +1,200 @@
+<html lang="en">
+<head>
+<title>Basic Emacs concepts - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Installing-GNU-Emacs.html#Installing-GNU-Emacs" title="Installing GNU Emacs">
+<link rel="next" href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs" title="Configuring GNU Emacs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Basic-Emacs-concepts"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs">Configuring GNU Emacs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installing-GNU-Emacs.html#Installing-GNU-Emacs">Installing GNU Emacs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">2.2 Basic Emacs concepts</h3>
+
+<p>In this section we describe what Emacs is and what it does. We will not
+yet discuss how to make Emacs work. That discussion is taken up in the
+subsequent sections, starting with <a href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs">Configuring GNU Emacs</a>. This
+section instead covers the fundamental ideas that you need to understand
+in order to make sense out of Emacs.
+
+   <p>You can run Emacs from a text terminal, such as a vt100 terminal, but it is
+usually nicer to run Emacs under the X-windows system. 
+To start Emacs type
+<pre class="example">     % emacs &amp;
+</pre>
+   <p class="noindent">on your shell prompt. The seasoned GNU developer usually sets up per
+X configuration such that it starts Emacs when person logs in. Then,
+person uses that Emacs process for all of per work until person logs out. 
+To quit Emacs press <kbd>C-x C-c</kbd>, or select
+<pre class="example">     Files ==&gt; Exit Emacs
+</pre>
+   <p class="noindent">from the menu. The notation <kbd>C-c</kbd> means <kbd>&lt;CTRL&gt;-c</kbd>. The
+separating dash &lsquo;<samp><span class="samp">-</span></samp>&rsquo; means that you press the key after the dash while
+holding down the key before the dash. 
+Be sure to quit Emacs before logging out, to ensure that your work
+is properly saved. If there are any files that you haven't yet saved,
+Emacs will prompt you and ask you if you want to save them, before quiting. 
+If at any time you want Emacs to stop doing what it's doing, press
+<kbd>C-g</kbd>.
+
+<!-- FIXME: describe minibuffer and what the other mouse-buttons do -->
+   <p>Under the X window system, Emacs controls multiple x-windows which are
+called <dfn>franes</dfn>. Each frame has a menubar and the main editing area. 
+The editing area is divided into <dfn>windows</dfn>
+<!--  -->
+<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+<!--  -->
+by horizontal bars, called <dfn>status bars</dfn>. Every status bar contains
+concise information about the status of the window <em>above</em> the status
+bar. The minimal editing area has at least one big window, where editing
+takes place, and a small one-line window called the <dfn>minibuffer</dfn>. 
+Emacs uses the minibuffer to display brief messages and to prompt the user
+to enter commands or other input. The minibuffer has no status bar of
+its own.
+
+   <p>Each window is bound to a <dfn>buffer</dfn>. A buffer is an Emacs data structure
+that contains text. Most editing commands operate on buffers, modifying
+their contents. When a buffer is bound to a window, then you can see its
+contents as they are being changed. It is possible for a buffer to be bound
+to two windows, on different frames or on the same frame. Then whenever
+a change is made to the buffer, it is reflected on both windows. It is
+not necessary for a buffer to be bound to a window, in order to operate on
+it. In a typical Emacs session you may be manipulating more buffers than
+the windows that you actually have on your screen.
+
+   <p>A buffer can be <dfn>visiting</dfn> files. In that case, the contents of the
+buffer reflect the contents of a file that is being editted. But buffers
+can be associated with anything you like, so long as you program
+it up. For example, under the Dired directory editor, a buffer is bound
+to a directory, showing you the contents of the directory. When you
+press &lt;RET&gt; while the cursor is over a file name, Emacs creates
+a new buffer, visits the file, and rebinds the window with that buffer. 
+From the user's perspective, by pressing &lt;RET&gt; person &ldquo;opened&rdquo; the
+file for editing. If the file has already been &ldquo;opened&rdquo; then Emacs
+simply rebinds the existing buffer for that file.
+
+   <p>Sometimes Emacs will divide a frame to two or more windows. 
+You can switch from one window to another by clicking the 1st mouse button,
+while the mouse is inside the destination window. 
+To resize these windows, grab the status bar with the
+1st mouse button and move it up or down. Pressing the 2nd mouse
+button, while the mouse is on a status bar, will <dfn>bury</dfn> the window bellow
+the status bar. 
+Pressing the 3rd mouse button will <dfn>bury</dfn> the window above the
+status bar, instead. Buried windows are not killed; they still exist and you
+can get back to them by selecting them from the menu bar, under:
+<pre class="example">     Buffers ==&gt; <var>name-of-buffer</var>
+</pre>
+   <p class="noindent">Buffers, with some exceptions, are usually named after the filenames of
+the files that they correspond to.
+
+   <p>Once you visit a file for editing, then all you need to do is to edit it! 
+The best way to learn how to edit files using the standard Emacs <em>editor</em>
+is by working through the on-line Emacs tutorial. To start the on-line tutorial
+type <kbd>C-h t</kbd> or select:
+<pre class="example">     Help ==&gt; Emacs Tutorial
+</pre>
+   <p class="noindent">If you are a vi user, or you simply prefer to use `vi' keybindings, then
+read <a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>.
+
+   <p>In Emacs, every <dfn>event</dfn> causes a Lisp function to be executed. 
+An <dfn>event</dfn> can be any keystroke, mouse movement, mouse clicking or
+dragging, or a menu bar selection. The function implements the appropriate
+response to the event. Almost all of these functions are written in a
+variant of Lisp called Emacs Lisp. The actual Emacs program, the executable,
+is an Emacs Lisp interpreter with the implementation of frames, buffers,
+and so on. However, the actual functionality that makes Emacs usable is
+implemented in Emacs Lisp.
+
+   <p>Sometimes, Emacs will bind a few words of text to an Emacs function. 
+For example, when you use Emacs to browse Info documentation, certain
+words that corresponds to hyperlinks to other nodes are bound to a function
+that makes Emacs follow the hyperlink. When such a binding is actually
+installed, moving the mouse over the bound text highlights it momentarily. 
+While the text is highlighted, you can invoke the binding by clicking the
+2nd mouse button.
+
+   <p>Sometimes, an Emacs function might go into an infinite loop, or it might
+start doing something that you want to stop. You can <strong>always</strong> make
+Emacs abort
+<a rel="footnote" href="#fn-2" name="fnd-2"><sup>2</sup></a>
+the function it is currently running by pressing <kbd>C-g</kbd>.
+
+   <p>Emacs functions are usually spawned by Emacs itself in response to an
+event. However, the user can also spawn an Emacs function by typing:
+<pre class="example">     &lt;ALT&gt;-x <var>function-name</var> &lt;RET&gt;
+</pre>
+   <p class="noindent">These functions can also be aborted with <kbd>C-g</kbd>.
+
+   <p>It is standard in Emacs documentation to refer to the &lt;ALT&gt; key with
+the letter &lsquo;<samp><span class="samp">M</span></samp>&rsquo;. So, in the future, we will be refering to function
+invokations as:
+<pre class="example">     M-x <var>function-name</var>
+</pre>
+   <p class="noindent">Because Emacs functionality is implemented in an <dfn>event-driven</dfn> fashion,
+the Emacs developer has to write Lisp functions that implement functionality,
+and then bind these functions to events. Tables of such bindings are
+called <dfn>keymaps</dfn>.
+
+   <p>Emacs has a <dfn>global keymap</dfn>, which is in effect
+at all times, and then it has specialized keymaps depending on what
+<dfn>editing mode</dfn> you use. Editing modes are selected when you visit a
+file depending on the name of the file. So, for example, if you visit a
+C file, Emacs goes into the C mode. If you visit <samp><span class="file">Makefile</span></samp>, Emacs
+goes into makefile mode. The reason for associating different modes
+with different types of files is that the user's editing needs depend
+on the type of file that person is editing.
+
+   <p>You can also enter a mode by running the Emacs function that
+initializes the mode. 
+Here are the most commonly used modes:
+     <dl>
+<dt><code>M-x c-mode</code><dd>Mode for editing C programs according to the GNU coding standards. 
+<br><dt><code>M-x c++-mode</code><dd>Mode for editing C++ programs
+<br><dt><code>M-x sh-mode</code><dd>Mode for editing shell scripts. 
+<br><dt><code>M-x m4-mode</code><dd>Mode for editing Autoconf macros. 
+<br><dt><code>M-x texinfo-mode</code><dd>Mode for editing documentation written in the Texinfo formatting language. 
+See <a href="Introduction-to-Texinfo.html#Introduction-to-Texinfo">Introduction to Texinfo</a>. 
+<br><dt><code>M-x makefile-mode</code><dd>Mode for editing makefiles. 
+</dl>
+   As a user you shouldn't have to worry too much about the modes. The defaults
+do the right thing. However, you might want to enhance Emacs to suit your
+needs better.
+
+<!-- ============================================================ -->
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Note that in Emacs lingo a <dfn>window</dfn> does not correspond
+to an X window. It is the <dfn>frame</dfn> that corresponds to an X window. 
+A <dfn>window</dfn> is merely a region within the frame. And the same Emacs
+process can actually be responsible for more than one frame</p>
+
+   <p class="footnote"><small>[<a name="fn-2" href="#fnd-2">2</a>]</small> Proposed Federal censorship regulations may prohibit us from giving you information about the possibility of aborting Emacs functions. We would be required to say that this is not an acceptable way of terminating an unwanted  function</p>
+
+   <hr></div>
+
+   </body></html>
+

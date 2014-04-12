@@ -1,0 +1,202 @@
+<html lang="en">
+<head>
+<title>Programs and Libraries with Automake - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Standard-organization-with-Automake.html#Standard-organization-with-Automake" title="Standard organization with Automake">
+<link rel="next" href="General-Automake-principles.html#General-Automake-principles" title="General Automake principles">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Programs-and-Libraries-with-Automake"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="General-Automake-principles.html#General-Automake-principles">General Automake principles</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Standard-organization-with-Automake.html#Standard-organization-with-Automake">Standard organization with Automake</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.6 Programs and Libraries with Automake</h3>
+
+<p>Next we explain how to develop <samp><span class="file">Makefile.am</span></samp> files for the source code
+directory levels. A <samp><span class="file">Makefile.am</span></samp> is a set of assignments. 
+These assignments imply the Makefile, a set of targets, dependencies
+and rules, and the Makefile implies the execution of building.
+
+   <p>The first set of assignments going at the beginning look like this:
+<pre class="example">     INCLUDES = -I/dir1 -I/dir2 -I/dir3 ....
+     LDFLAGS = -L/dir1 -L/dir2 -L/dir3 ....
+     LDADD = -llib1 -llib2 -llib3 ...
+</pre>
+   <p class="noindent">
+     <ul>
+<li>The &lsquo;<samp><span class="samp">INCLUDES</span></samp>&rsquo; assignment is where you insert the <code>-I</code> flags that
+you need to pass to your compiler. If the stuff in this directory is
+dependent on a library in another directory of the same package, then
+the <code>-I</code> flag must point to that directory. 
+<li>The &lsquo;<samp><span class="samp">LDFLAGS</span></samp>&rsquo; assignment is where you insert the <code>-L</code> flags
+that are needed by the compiler when it links all the object files to
+an executable. 
+<li>The &lsquo;<samp><span class="samp">LDADD</span></samp>&rsquo; assignment is where you list a long set of installed
+libraries that you want to link in with all of your executables. 
+Use the <code>-l</code> flag only for installed libraries. You can list
+libraries that have been built but not installed yet as well, but
+do this only be providing the full path to these libraries. 
+</ul>
+   If your package contains subdirectories with libraries and you want to
+link these libraries in another subdirectory you need to put &lsquo;<samp><span class="samp">-I</span></samp>&rsquo;
+and &lsquo;<samp><span class="samp">-L</span></samp>&rsquo; flags in the two variables above. To express the path to
+these other subdirectories, use the &lsquo;<samp><span class="samp">$(top_srcdir)</span></samp>&rsquo; variable. 
+For example if you want to access a library under <samp><span class="file">src/libfoo</span></samp>
+you can put something like:
+<pre class="example">     INCLUDES = ... -I$(top_srcdir)/src/libfoo ...
+     LDFLAGS  = ... -L$(top_srcdir)/src/libfoo ...
+</pre>
+   <p class="noindent">on the <samp><span class="file">Makefile.am</span></samp> of every directory level that wants access to
+these libraries. Also, you must make sure that the libraries are built
+before the directory level is built. To guarantee that, list the library
+directories in &lsquo;<samp><span class="samp">SUBDIRS</span></samp>&rsquo; <strong>before</strong> the directory levels that
+depend on it. One way to do this is to put all the library directories under
+a <samp><span class="file">lib</span></samp> directory and all the executable directories under a <samp><span class="file">bin</span></samp>
+directory and on the <samp><span class="file">Makefile.am</span></samp> for the directory level that
+contains <samp><span class="file">lib</span></samp> and <samp><span class="file">bin</span></samp> list them as:
+<pre class="example">     SUBDIRS = lib bin
+</pre>
+   <p class="noindent">This will guarantee that all the libraries are available before building
+any executables. Alternatively, you can simply order your directories
+in such a way so that the library directories are built first.
+
+   <p>Next we list the things that are to be built in this directory level:
+<pre class="example">     bin_PROGRAMS    = prog1 prog2 prog3 ....
+     lib_LIBRARIES   = libfoo1.a libfoo2.a libfoo3.a ....
+     check_PROGRAMS  = test1 test2 test3 ....
+     TESTS           = $(check_PROGRAMS)
+     include_HEADERS = header1.h header2.h ....
+</pre>
+   <p class="noindent">
+     <ul>
+<li>The &lsquo;<samp><span class="samp">bin_PROGRAMS</span></samp>&rsquo; line lists all the executable files that will be
+compiled with <code>make</code> and installed with <code>make install</code> under
+<samp><span class="file">/prefix/bin</span></samp>, where <samp><span class="file">prefix</span></samp> is usually <samp><span class="file">/usr/local</span></samp>. 
+<li>The &lsquo;<samp><span class="samp">lib_LIBRARIES</span></samp>&rsquo; line lists all the library files that will be
+compiled with <code>make</code> and installed with <code>make install</code> under
+<samp><span class="file">/prefix/lib</span></samp>. 
+<li>The &lsquo;<samp><span class="samp">check_PROGRAMS</span></samp>&rsquo; line lists executable files that are
+<strong>not</strong> compiled with a simple <code>make</code> but only with a
+<code>make check</code>. These programs serve as tests that you, the user
+can use to test the library. 
+<li>The &lsquo;<samp><span class="samp">TESTS</span></samp>&rsquo; line lists executable files which are to be compiled
+<em>and executed</em> when you run <code>make check</code>. These programs
+constitute the <dfn>test suite</dfn> and they are indispensible when you
+develop a library. It is common to just set
+     <pre class="example">          TESTS = $(check_PROGRAMS)
+</pre>
+     <p class="noindent">This way by commenting the line in and out, you can modify the behaviour
+of <code>make check</code>. While debugging your test suite, you will want to
+comment out this line so that <code>make check</code> doesn't run it. However,
+in the end product, you will want to comment it back in. 
+<li>The &lsquo;<samp><span class="samp">include_HEADERS</span></samp>&rsquo; line lists public headers present in this
+directory that you want to install in <code>/prefix/include</code>. You must
+list a header file here if you want to cause it to be installed. You
+can also list it under <code>libfoo_a_SOURCES</code> for the library that it
+belongs to, but it is imperative to list public headers here so that they
+can be installed. 
+</ul>
+   It is good programming practice to keep libraries and executables under
+seperate directory levels. However, it is okey to keep the library and
+the <em>check</em> executables that test the library under the same directory
+level because that makes it easier for you to link them with the library.
+
+   <p>For each of these types of targets, we must state information that
+will allow <code>automake</code> and <code>make</code> to infer the building process.
+
+     <ul>
+<li><strong>For each Program:</strong> You need to declare the set of files that are
+sources of the program, the set of libraries that must be linked with the
+program and (optionally) a set of dependencies that need to be built before
+the program is built. These are declared in assignments that look like
+this:
+     <pre class="example">          prog1_SOURCES = foo1.cc foo2.cc ... header1.h header2.h ....
+          prog1_LDADD   = -lbar1 -lbar2 -lbar3
+          prog1_LDFLAGS = -L/dir1 -L/dir2 -L/dir3 ...
+          prog1_DEPENDENCIES = dep1 dep2 dep3 ...
+</pre>
+     <p class="noindent">In each assignment substitute &lsquo;<samp><span class="samp">prog1</span></samp>&rsquo; with the name of the program that
+you are building as it appeared in &lsquo;<samp><span class="samp">bin_PROGRAMS</span></samp>&rsquo; or
+&lsquo;<samp><span class="samp">check_PROGRAMS</span></samp>&rsquo;.
+          <ul>
+<li>&lsquo;<samp><span class="samp">prog1_SOURCES</span></samp>&rsquo;: Here you list all the <samp><span class="file">*.cc</span></samp> and <samp><span class="file">*.h</span></samp> files
+that compose the source code of the program. The presense of a header file
+here doesn't cause the file to be installed at <samp><span class="file">/prefix/include</span></samp> but
+it does cause it to be added to the distribution when you do <code>make dist</code>. 
+To cause header files to be installed you must also put them in
+&lsquo;<samp><span class="samp">include_HEADERS</span></samp>&rsquo;. 
+<li>&lsquo;<samp><span class="samp">prog1_LDADD</span></samp>&rsquo;: Here you add primarily the <code>-l</code> flags for linking
+whatever libraries are needed by your code. You may also list object files,
+which have been compiled in an exotic way, as well as paths to uninstalled
+yet libraries. 
+<li>&lsquo;<samp><span class="samp">prog_LDFLAGS</span></samp>&rsquo;: Here you add the <code>-L</code> flags that are needed to
+resolve the libraries you passed in &lsquo;<samp><span class="samp">prog_LDADD</span></samp>&rsquo;. Certain flags that
+need to be passed on <em>every</em> program can be expressed on a global
+basis by assigning them at &lsquo;<samp><span class="samp">LDFLAGS</span></samp>&rsquo;. 
+<li>&lsquo;<samp><span class="samp">prog1_DEPENDENCIES</span></samp>&rsquo;:
+If for any reason you want certain other targets to be built before building
+this program, you can list them here. 
+</ul>
+     This is all you need to do. There is no need to write an extended Makefile
+with all the targets, dependencies and rules that are required to build
+the program. They are computed for you by this minimal information by
+<samp><span class="file">automake</span></samp>. Moreover, the targets &lsquo;<samp><span class="samp">dist</span></samp>&rsquo;, &lsquo;<samp><span class="samp">install</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">clean</span></samp>&rsquo; and &lsquo;<samp><span class="samp">distclean</span></samp>&rsquo; are appropriately setup to handle the
+program. You don't need to take care of them by yourself.
+
+     <li><strong>For each Library:</strong>
+There's a total of four assignments that are relevant to building libraries:
+     <pre class="example">          lib_LIBRARIES = ... libfoo1.a ...
+          libfoo1_a_SOURCES      = foo1.cc foo2.cc private1.h private2.h ...
+          libfoo1_a_LIBADD       = obj1.o obj2.o obj3.o
+          libfoo1_a_DEPENDENCIES = dep1 dep2 dep3 ...
+</pre>
+     <p class="noindent">Note that if the name of the library is <samp><span class="file">libfoo1.a</span></samp> the prefix that
+appears in the variables that are related with that library is
+&lsquo;<samp><span class="samp">libfoo1_a_</span></samp>&rsquo;.
+          <ul>
+<li>&lsquo;<samp><span class="samp">libfoo1_a_SOURCES</span></samp>&rsquo;: Just like with programs, here you list all the
+<samp><span class="file">*.cc</span></samp> files as well as all the <strong>private</strong> header files that
+compose the library. By <dfn>private header file</dfn> we mean a header file
+that is used internally by the library and the maintainers of the library,
+but is not exported to the end-user. You can list <dfn>public header files</dfn>
+also if you like, and perhaps you should for documentation purposes, but
+if you mention them in <code>include_HEADERS</code> it is not required to repeat
+them a second time here. 
+<li>&lsquo;<samp><span class="samp">libfoo1_a_DEPENDENCIES</span></samp>&rsquo;: If there are any other targets that need to
+be built before this library is built, list them here. 
+<li>&lsquo;<samp><span class="samp">libfoo1_a_LIBADD</span></samp>&rsquo;: If there are any other object files that you want
+to include in the library list them here. You might be tempted to list
+them as dependencies in &lsquo;<samp><span class="samp">libfoo1_a_DEPENDENCIES</span></samp>&rsquo;, but that will not
+work. If you do that, the object files will be built before the library
+is built <em>but they will not be included in the library!</em> By listing
+an object file here, you are stating that you want it to be built <strong>and</strong>
+you want it to be included in the library. 
+</ul>
+     </ul>
+
+<!-- ======================================================================== -->
+   </body></html>
+

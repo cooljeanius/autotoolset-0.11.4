@@ -1,0 +1,203 @@
+<html lang="en">
+<head>
+<title>Hello world example with Autoconf and Automake - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="prev" href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system" title="Installing the GNU build system">
+<link rel="next" href="Understanding-the-hello-world-example.html#Understanding-the-hello-world-example" title="Understanding the hello world example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Hello-world-example-with-Autoconf-and-Automake"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Understanding-the-hello-world-example.html#Understanding-the-hello-world-example">Understanding the hello world example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system">Installing the GNU build system</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">4.3 Hello world example with Autoconf and Automake</h3>
+
+<p>To get started we will show you how to do the Hello world program using
+&lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; and &lsquo;<samp><span class="samp">automake</span></samp>&rsquo;. In the fine tradition of <span class="sc">k&amp;r</span>, the
+C version of the hello world program is:
+<pre class="example">     #include &lt;stdio.h&gt;
+     main()
+     {
+      printf("Howdy world!\n");
+     }
+</pre>
+   <p class="noindent">Call this <samp><span class="file">hello.c</span></samp> and place it under an empty directory. 
+Simple programs like this can be compiled and ran directly with the
+following commands:
+<pre class="example">     % gcc hello.c -o hello
+     % hello
+</pre>
+   <p class="noindent">If you are on a Unix system instead of a GNU system, your compiler might
+be called &lsquo;<samp><span class="samp">cc</span></samp>&rsquo; but the usage will be pretty much the same.
+
+   <p>Now to do the same thing the &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; and &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; way
+create first the following files:
+
+     <dl>
+<dt><samp><span class="file">Makefile.am</span></samp><dd>
+     <pre class="example">          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+</pre>
+     <br><dt><samp><span class="file">configure.in</span></samp><dd>
+     <pre class="example">          AC_INIT(hello.c)
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PROG_CC
+          AC_PROG_INSTALL
+          AC_OUTPUT(Makefile)
+</pre>
+     </dl>
+
+<p class="noindent">Now run &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo;:
+<pre class="example">     % aclocal
+     % autoconf
+</pre>
+   <p class="noindent">This will create the shell script <samp><span class="file">configure</span></samp>. 
+Next, run &lsquo;<samp><span class="samp">automake</span></samp>&rsquo;:
+<pre class="example">     % automake -a
+     required file "./install-sh" not found; installing
+     required file "./mkinstalldirs" not found; installing
+     required file "./missing" not found; installing
+     required file "./INSTALL" not found; installing
+     required file "./NEWS" not found
+     required file "./README" not found
+     required file "./COPYING" not found; installing
+     required file "./AUTHORS" not found
+     required file "./ChangeLog" not found
+</pre>
+   <p class="noindent">The first time you do this, &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; will complain a couple of things. 
+First it notices that the files <samp><span class="file">install-sh</span></samp>, <samp><span class="file">mkinstalldirs</span></samp>
+and <samp><span class="file">missing</span></samp> are not present, and it installs copies. These files
+contain boiler-plate shell scripts that are needed by the makefiles that
+&lsquo;<samp><span class="samp">automake</span></samp>&rsquo; generates. It also complains that the following files
+are not around:
+<pre class="example">     INSTALL, COPYING, NEWS, README, AUTHORS, ChangeLog
+</pre>
+   <p class="noindent">These files are required to be present by the GNU coding standards, and
+we discuss them in detail in
+<a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>. 
+At this point, it is important to at least touch these files, otherwise
+if you attempt to do a &lsquo;<samp><span class="samp">make distcheck</span></samp>&rsquo; it will deliberately fail. 
+To make these files exist, type:
+<pre class="example">     % touch NEWS README AUTHORS ChangeLog
+</pre>
+   <p class="noindent">and to make Automake aware of the existence of these files, rerun it:
+<pre class="example">     % automake -a
+</pre>
+   <p class="noindent">You can assume that the generated <samp><span class="file">Makefile.in</span></samp> is correct, only
+when Automake completes without any error messages.
+
+   <p>Now the package is exactly in the state that the end-user will find
+it when person unpacks it from a source code distribution. For future
+reference, we will call this state <dfn>autoconfiscated</dfn>. 
+Being in an autoconfiscated state means that, you are ready to type:
+<pre class="example">     % ./configure
+     % make
+     % ./hello
+</pre>
+   <p class="noindent">to compile and run the hello world program. If you really want to install it,
+go ahead and call the &lsquo;<samp><span class="samp">install</span></samp>&rsquo; target:
+<pre class="example">     # make install
+</pre>
+   <p class="noindent">To undo installation, that is to <dfn>uninstall</dfn> the package, do:
+<pre class="example">     # make uninstall
+</pre>
+   <p class="noindent">If you didn't use the &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; argument to point to your home directory,
+or a directory in which you have permissions to write and execute,
+you may need to be superuser to invoke the install and uninstall commands. 
+If you feel like cutting a source code distribution, type:
+<pre class="example">     make distcheck
+</pre>
+   <p class="noindent">This will create a file called <samp><span class="file">hello-0.1.tar.gz</span></samp> in the current
+working directory that contains the project's source code, and test it
+out to see whether all the files are actually included and whether the
+source code passes the regression test suite.
+
+   <p>In order to do all of the above, you need to use the
+GNU &lsquo;<samp><span class="samp">gcc</span></samp>&rsquo; compiler. Automake depends on &lsquo;<samp><span class="samp">gcc</span></samp>&rsquo;'s ability to
+compute dependencies. Also, the &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo; target requires
+GNiU make and GNU tar.
+
+   <p>The GNU build tools assume that there are two types of hats that people
+like to wear: the
+<dfn>developer</dfn> hat and the <dfn>installer</dfn> hat. Developers develop
+the source code and create the source code distribution. 
+Installers just want to compile and install a source code distribution on
+their system. In the free software community, the same people get to wear
+either hat depending on what they want to do. If you are a developer, then
+you need to install the entire GNU build system, period
+(see <a href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system">Installing the GNU build system</a>). 
+If you are an installer, then all you need to compile and install a
+GNU package is a minimal &lsquo;<samp><span class="samp">make</span></samp>&rsquo; utility and a minimal shell. 
+Any native Unix shell and &lsquo;<samp><span class="samp">make</span></samp>&rsquo; will work.
+
+   <p>Both Autoconf and Automake take special
+steps to ensure that packages generated through the &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo;
+target can be easily installed with minimal tools. Autoconf generates
+<samp><span class="file">configure</span></samp> shell scripts that use only portable Bourne shell features. 
+(see <a href="Portable-shell-programming.html#Portable-shell-programming">Portable shell programming</a>)
+Automake ensures that the source code is in an autoconfiscated state
+when it is unpacked. It also regenerates the makefiles before adding them
+to the distribution, such that the installer targets
+(&lsquo;<samp><span class="samp">all</span></samp>&rsquo;, &lsquo;<samp><span class="samp">install</span></samp>&rsquo;, &lsquo;<samp><span class="samp">uninstall</span></samp>&rsquo;, &lsquo;<samp><span class="samp">check</span></samp>&rsquo;, &lsquo;<samp><span class="samp">clean</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">distclean</span></samp>&rsquo;) do not depend on GNU make features. The regenerated
+makefiles also do not use the &lsquo;<samp><span class="samp">gcc</span></samp>&rsquo; cruft to compute dependencies. 
+Instead, precomputed dependencies are included in the regenerated makefiles,
+and the dependencies generation mechanism is disabled. This will allow
+the end-user to compile the package using a native compiler, if the GNU
+compiler is not available. For future reference we will call this the
+<dfn>installer state</dfn>.
+
+   <p>Now wear your installer hat, and install <samp><span class="file">hello-0.1.tar.gz</span></samp>:
+<pre class="example">     % gunzip hello-0.1.tar.gz
+     % tar xf hello-0.1.tar
+     % cd hello-0.1
+     % configure
+     % make
+     % ./hello
+</pre>
+   <p class="noindent">This is the full circle. The distribution compiles, and by typing
+&lsquo;<samp><span class="samp">make install</span></samp>&rsquo; it installs. If you need to switch back to the
+developer hat, then you should rerun &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; to get regenerate
+the makefiles.
+
+   <p>When you run the &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo; target, &lsquo;<samp><span class="samp">make</span></samp>&rsquo; will create the
+source code distribution &lsquo;<samp><span class="samp">hello-0.1.tar.gz</span></samp>&rsquo; <em>and</em> it will
+pretend that it is an installer and see if it the distribution can be
+unpacked, configured, compiled and installed. It will also run the
+test suite, if one is bundled. If you would like to skip these tests,
+then run the &lsquo;<samp><span class="samp">dist</span></samp>&rsquo; target instead:
+<pre class="example">     % make dist
+</pre>
+   <p class="noindent">Nevertheless, running &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo; is extremely helpful in debugging
+your build cruft. Please never release a distribution without getting
+it through &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo;. If you make daily distributions for off-site
+backup, please do pass them through &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo;. If there are
+files missing from your distribution, the &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo; target will
+detect them. If you fail to notice such problems, then your backups
+will be incomplete leading you to a false sense of security.
+
+<!-- ============================================================ -->
+   </body></html>
+

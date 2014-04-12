@@ -1,0 +1,194 @@
+<html lang="en">
+<head>
+<title>Fortran compilers and linkage - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf" title="Fortran with Autoconf">
+<link rel="prev" href="Introduction-to-Fortran-support.html#Introduction-to-Fortran-support" title="Introduction to Fortran support">
+<link rel="next" href="Walkthrough-a-simple-example.html#Walkthrough-a-simple-example" title="Walkthrough a simple example">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Fortran-compilers-and-linkage"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Walkthrough-a-simple-example.html#Walkthrough-a-simple-example">Walkthrough a simple example</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introduction-to-Fortran-support.html#Introduction-to-Fortran-support">Introduction to Fortran support</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf">Fortran with Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">8.2 Fortran compilers and linkage</h3>
+
+<p>The traditional Hello world program in Fortran looks like this:
+<pre class="example">     c....:++++++++++++++=
+           PROGRAM MAIN
+           PRINT*,'Hello World!'
+           END
+</pre>
+   <p class="noindent">All lines that begin with &lsquo;<samp><span class="samp">c</span></samp>&rsquo; are comments. The first line is the
+equivalent of <code>main()</code> in C. The second line says hello, and the
+third line indicates the end of the code. It is important that all command
+lines are indented by 7 spaces, otherwise the compiler will issue a syntax
+error. Also, if you want to be ANSI compliant, you must write your code all
+in caps. Nowadays most compilers don't care, but some may still do.
+
+   <p>To compile this with &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; (or &lsquo;<samp><span class="samp">f77</span></samp>&rsquo;) you do something like:
+<pre class="example">     % g77 -o hello hello.f
+     % hello
+</pre>
+   <p class="noindent">To compile it with the f2c translator:
+<pre class="example">     % f2c hello.f
+     % gcc -o hello hello.c -lf2c -lm
+</pre>
+   <p class="noindent">where &lsquo;<samp><span class="samp">-lf2c</span></samp>&rsquo; links in the translator's system library. 
+In order for this to work, you will have to make sure that the header file
+<code>f2c.h</code> is present since the translated code in <samp><span class="file">hello.c</span></samp> includes
+it with a statement like
+<pre class="example">     #include "f2c.h"
+</pre>
+   <p class="noindent">which explicitly requires it to be present in the current working directory.
+
+   <p>In this case, the &lsquo;<samp><span class="samp">main</span></samp>&rsquo; is written in Fortran. However most of the
+Fortran you will be using will actually be subroutines and functions. 
+A subroutine looks like this:
+<pre class="example">     c....:++++++++++++++
+           SUBROUTINE FHELLO (C)
+           CHARACTER *(*) C
+           PRINT*,'From Fortran: ',C
+           RETURN
+           END
+</pre>
+   <p class="noindent">This is the analog of a &lsquo;<samp><span class="samp">void</span></samp>&rsquo; function in C, because it takes
+arguments but doesn't return anything. The prototype declaration is
+<dfn>K&amp;R</dfn> style: you list all the arguments in parenthesis, seperated with
+commas, and you declare the types of the variables in the subsequent lines.
+
+   <p>Suppose that this subroutine is saved as <samp><span class="file">fhello.f</span></samp>. To call it from
+C you need to know what it looks like from the point of the C compiler. 
+To find out type:
+<pre class="example">     % f2c -P fhello.f
+     % cat fhello.P
+</pre>
+   <p class="noindent">You will find that this subroutine has the following prototype declaration:
+<pre class="example">     extern int fhello_(char *c__, ftnlen c_len);
+</pre>
+   <p class="noindent">It may come as a surprise, and this is a moment of revelation, but although
+in Fortran it appears that the subroutine is taking <em>one</em> argument, in
+C it appears that it takes <strong>two</strong>! And this is what makes
+it difficult to link code in a portable manner between C and Fortran. In
+C, everything is what it appears to be. If a function takes two arguments,
+then this means that down to the machine language level, there is two
+arguments that are being passed around. In Fortran, things are being hidden
+from you and done in a magic fashion. The Fortran programmer thinks that he
+is passing one argument, but the compiler compiles code that actually passes
+two arguments around. In this particular case, the reason for this is that
+the argument you are passing is a string. In Fortran, strings are not
+null-terminated, so the &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; compiler passes the length of the string
+as an extra hidden argument. This is called the <dfn>linkage method</dfn> of the
+compiler. Unfortunately, linkage in Fortran is not standard, and there
+exist compilers that handle strings differently. For example, some compilers
+will prepend the string with a few bytes containing the length and pass
+a pointer to the whole thing. This problem is not limitted to strings. 
+It happens in many other instances. 
+The &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; and &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; compilers follow compatible linkage, and
+we will use this linkage as the <em>ad-hoc standard</em>. A few proprietary
+Fortran compilers like the Dec Alpha &lsquo;<samp><span class="samp">f77</span></samp>&rsquo; and the Irix &lsquo;<samp><span class="samp">f77</span></samp>&rsquo;
+are also &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo;-compatible. The reason for this is because most of
+the compiler developers derived their code from &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo;. So although
+a standard was not really intended, there we have one anyway.
+
+   <p>A few things to note about the above prototype declaration is that the
+symbol &lsquo;<samp><span class="samp">fhello</span></samp>&rsquo; is in lower-case, even though in Fortran we write
+everything uppercase, and it is appended with an underscore. On some platforms,
+the proprietary Fortran compiler deviates from the &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; standard either
+by forcing
+the name to be in upper-case or by omitting the underscore. Fortunately,
+these cases can be detected with Autoconf and can be worked around with
+conditional compilation. However, beyond this, other portability problems,
+such as the strings issue, are too involved to deal with and it is best
+in these cases that you fall back to &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; or &lsquo;<samp><span class="samp">g77</span></samp>&rsquo;. 
+A final thing to note is that although &lsquo;<samp><span class="samp">fhello</span></samp>&rsquo; doesn't return anything,
+it has return type &lsquo;<samp><span class="samp">int</span></samp>&rsquo; and not &lsquo;<samp><span class="samp">void</span></samp>&rsquo;. The reason for this is
+that &lsquo;<samp><span class="samp">int</span></samp>&rsquo; is the default return type for functions that are not
+declared. Therefore, to prevent compilation problems, in case the user forgets
+to declare a Fortran function, &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; uses &lsquo;<samp><span class="samp">int</span></samp>&rsquo; as the return
+type for subroutines.
+
+   <p>In Fortran parlance, a <dfn>subroutine</dfn> is what we'd call a &lsquo;<samp><span class="samp">void</span></samp>&rsquo;
+function. To Fortran programmers in order for something to be a
+<dfn>function</dfn> it has to return something back. This reflects on the syntax. 
+For example, here's a function that adds two numbers and returns the
+result:
+<pre class="example">     c....:++++++++++++++++
+           DOUBLE PRECISION FUNCTION ADD(A,B)
+           DOUBLE PRECISION A,B
+           ADD = A + B
+           RETURN
+           END
+</pre>
+   <p class="noindent">The name of the function is also the name of the return variable. 
+If you run this one through &lsquo;<samp><span class="samp">f2c -P</span></samp>&rsquo; you will find that the C prototype
+is:
+<pre class="example">     extern doublereal add_(doublereal *a, doublereal *b);
+</pre>
+   <p class="noindent">There's plenty of things to note here:
+     <ul>
+<li>The typenames being used are funny. &lsquo;<samp><span class="samp">doublereal</span></samp>&rsquo;? what's that!? 
+These are all defined in a header file called &lsquo;<samp><span class="samp">f2c.h</span></samp>&rsquo; which you are
+supposed to include in your source code before declaring any prototypes. 
+We will show you how this is all done in the next section. The following
+table showes the types that are most likely to interest you. For more info,
+take a look at the &lsquo;<samp><span class="samp">f2c.h</span></samp>&rsquo; file itself:
+     <pre class="example">            integer         -&gt; int
+            real            -&gt; float
+            doublereal      -&gt; double
+            complex         -&gt; struct { real r,i; };
+            doublecomplex   -&gt; struct { doublereal r,i; };
+</pre>
+     <p class="noindent"><li>The arguments are passed by pointer. In Fortran all arguments are passed
+by reference. The &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; compiler implements this by passing the
+arguments by pointer. On the C/C++ level you may want to wrap the fortran
+routine with another routine so that you don't have to directly deal with
+pointers all of the time. 
+<li>The value returned now is not an &lsquo;<samp><span class="samp">int</span></samp>&rsquo; but &lsquo;<samp><span class="samp">doublereal</span></samp>&rsquo;. 
+Of course, the name of the function is lower-case, as always, and
+there is an underscore at the end. 
+</ul>
+
+   <p>A more interesting case is when we deal with complex numbers. Consider
+a function that multiplies two complex numbers:
+<pre class="example">     c....:++++++++++++++++++++++++++++++
+           COMPLEX*16 FUNCTION MULT(A,B)
+           COMPLEX*16 A,B
+           MULT = A*B
+           RETURN
+           END
+</pre>
+   <p class="noindent">As it turns out, the prototype for this function is:
+<pre class="example">     extern Z_f mult_(doublecomplex *ret_val, doublecomplex *a, doublecomplex *b);
+</pre>
+   <p class="noindent">Because complex numbers are not a native type in C, they can not be returned
+efficiently without going through at least one copy. Therefore, for this
+special case the return value is placed as the first argument in the prototype! 
+Actually despite many people's feelings that Fortran must die, it is still
+the best tool to use to write optimized functions that are heavy on complex
+arithmetic.
+
+<!-- ========================================================================== -->
+   </body></html>
+

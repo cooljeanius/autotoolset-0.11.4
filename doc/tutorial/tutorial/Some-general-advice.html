@@ -1,0 +1,186 @@
+<html lang="en">
+<head>
+<title>Some general advice - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="The-building-process.html#The-building-process" title="The building process">
+<link rel="next" href="Standard-organization-with-Automake.html#Standard-organization-with-Automake" title="Standard organization with Automake">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Some-general-advice"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Standard-organization-with-Automake.html#Standard-organization-with-Automake">Standard organization with Automake</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-building-process.html#The-building-process">The building process</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.4 Some general advice</h3>
+
+<p>In software engineering, people start from a precise, well-designed
+specification and proceed to implementation. In research, the specification
+is fluid and immaterial and the goal is to be able to solve a slightly
+different problem every day. To have the flexibility to go from variation
+to variation with the least amount of fuss is the name of the game. By fuss,
+we refer to <dfn>debugging</dfn>,
+<dfn>testing</dfn> and <dfn>validation</dfn>. Once you have a code that you know gives
+the right
+answer to a specific set of problems, you want to be able to move on to a
+different set of similar problems with reinventing, debugging and testing
+as little as possible. These are the two distinct situations that computer
+programmers get to confront in their lives.
+
+   <p>Software engineers can take good care of themselves in both situations. 
+It's part of their training. However, people whose specialty is the scientific
+problem and not software engineering, must confront the hardest of the two
+cases,
+the second one, with very little training in software engineering. 
+As a result they develop code that's clumsy in implementation, clumsy in usage,
+and with only redeeming quality the fact that it gives the right answer. 
+This way, they do get the work of the day done, but they leave behind them
+no legacy to do the work of tomorrow. No general-purpose tools, no
+documentation, no reusable code.
+
+   <p>The key to better software engineering is to focus away from developing
+monolithic applications that do only one job, and focus on developing
+libraries. One way to think of libraries is as a
+<em>program with multiple entry points</em>. Every library you write becomes
+a legacy that you can pass on to other developers. 
+Just like in mathematics you develop
+little theorems and use the little theorems to hide the complexity in
+proving bigger theorems, in software engineering you develop libraries
+to take care of low-level details once and for all so that they are
+out of the way everytime you make a different implementation for
+a variation of the problem.
+
+   <p>On a higher level you still don't create just
+one application. You create many little applications that work together. 
+The centralized all-in-one approach in my experience is far less flexible
+than the decentralized approach in which a set of applications work together
+as a team to accomplish the goal. In fact this is the fundamental principle
+behind the design of the Unix operating system. Of course, it is still
+important to glue together the various components to do the job. This you
+can do either with scripting or with actually building a suite of
+specialized monolithic applications derived from the underlying tools.
+
+   <p>The name of the game is like this:
+Break down the program to parts. And the parts to smaller parts, until you
+get down to simple subproblems that can be easily tested, and from which
+you can construct variations of the original problem. Implement each one
+of these as a library, write test code for each library and make sure that
+the library works. It is very important for your library to have a complete
+<dfn>test suite</dfn>, a collection of programs that are supposed to run silently
+and return normally (<code>exit(0);</code>) if they execute successfully,
+and return abnormally (<code>assert(false); exit(1);</code>) if they fail. 
+The purpose of the test suite is to detect bugs in the library, and to
+convince you, the developer, that the library works. The best time to
+write a test program is <em>as soon as it is possible!</em> Don't be lazy. 
+Don't just keep throwing in code after code after code. The minute there
+is enough new code in there to put together some kind of test program,
+<em>just do it!</em> I can not emphasize that enough. When you write new code
+you have the illusion that you are producing work, only to find out tomorrow
+that you need an entire week to debug it. As a rule, internalize the reality
+that you <em>know</em> you have produced new work everytime you write a working
+test program for the new features, and <em>not a minute before</em>. 
+Another time when you should definetly write a test suite is when you
+find a bug while ordinarily using the library. Then, before you even
+fix the bug, write a test program that detects the bug. Then go fix it. 
+This way, as you add new features to your libraries you have insurance that
+they won't reawaken old bugs.
+
+   <p>Please keep documentation up to date as you go. The best time to write
+documentation
+is right after you get a few new test programs working. You might feel that
+you are too busy to write documentation, but the truth of the matter
+is that you will <em>always</em> be too busy. After long hours debugging
+these seg faults, think of it as a celebration of triumph to fire up the
+editor and document your brand-spanking new cool features.
+
+   <p>Please make sure that
+computational code is completely seperated from I/O code so that someone
+else can reuse your computational code without being forced to also follow
+your I/O model. Then write <em>programs</em> that invoke your collection
+of libraries to solve various problems. By dividing and conquering the
+problem library by library with a test suite for each step along the way,
+you can write good and robust code. Also, if you are developing
+numerical software, please don't expect that other users of your code will be
+getting a high while entering data for your <dfn>input files</dfn>. Instead write
+an interactive utility that will allow users to configure input files in
+a user friendly way. Granted, this is too much work in Fortran. Then again,
+you do know more powerful languages, don't you?
+
+   <p>Examples of useful libraries are
+things like linear algebra libraries, general ODE solvers, interpolation
+algorithms, and so on. 
+As a result you end up with two packages. A package
+of libraries complete with a test suite, and a package of applications that
+invoke the libraries. 
+The package of libraries is well-tested code that can be passed down to
+future developers. It is code that won't have to be rewritten if it's
+treated with respect. The package of applications is something that each
+developer will probably rewrite since different people will probably want
+to solve different problems. The effect of having a package of libraries
+is that C++ is elevated to a <em>Very High Level Language</em> that's closer
+to the problems you are solving. 
+In fact a good rule of thumb is to
+<em>make the libraries sufficiently sophisticated so that each executable that you produce can be expressed in </em><strong>one</strong><em> source file.</em>
+All this may sound like common sense, but you will be surprised at how many
+scientific developers maintain just one does-everything-program that they
+perpetually hack until it becomes impossible to maintain. And then you will
+be even more surprised when you find that some professors don't understand
+why a &ldquo;simple mathematical modification&rdquo; of someone else's code is taking
+you so long.
+
+   <p>Every library must have its own directory and <code>Makefile</code>. So a library
+package will have many subdirectories, each directory being one library. 
+And perhaps if you have too many of them, you might want to group them
+even further down. Then, there's the <dfn>applications</dfn>. If you've done
+everything right, there should be enough stuff in your libraries to enable
+you to have one source file per application. Which means that all the source
+files can probably go down under the same directory.
+
+   <p>Very often you will
+come to a situation where there's something that your libraries to-date
+can't do, so you implement it and stick it along in your source file
+for the application. If you find yourself cut and pasting that implementation
+to other source files, then this means that you have to put this in a library
+somewhere. And if it doesn't belong to any library you've written so far,
+maybe to a new library. When you are in a deadline crunch, there's a
+tendency not to do this since it's easier to cut and paste. The problem
+is that if you don't take action right then, eventually your code will
+degenerate to a hard-to-use mess. Keeping the entropy down is something
+that must be done on a daily basis.
+
+   <p>Finally, a word about the age-old issue of language-choice. The GNU coding
+standards encourage you to program in C and avoid using languages other
+than C, such as C++ or Fortran. The main advantage of C over C++ and
+Fortran is that it produces object files that can be linked by any C
+or C++ compiler. In contrast, C++ object files can only be linked by
+the compiler that produced them. As for Fortran, aside from the fact that
+Fortran 90 and 95 have no free compilers, it is not very trivial to mix
+Fortran 77 with C/C++, so it makes no sense to invite all that trouble
+without a compelling reason. Nevertheless, my suggestion is to code in C++. 
+The main benefit you get with C++ is robustness. Having constructors
+and destructors and references can go a long way towayrds helping you to
+void memory errors, if you know how to make them work for you.
+
+<!-- ========================================================================== -->
+   </body></html>
+

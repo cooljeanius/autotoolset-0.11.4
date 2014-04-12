@@ -1,0 +1,99 @@
+<html lang="en">
+<head>
+<title>Developing applications - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Writing-Good-Programs.html#Writing-Good-Programs" title="Writing Good Programs">
+<link rel="prev" href="Developing-libraries.html#Developing-libraries" title="Developing libraries">
+<link rel="next" href="Free-software-is-good-software.html#Free-software-is-good-software" title="Free software is good software">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Developing-applications"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Free-software-is-good-software.html#Free-software-is-good-software">Free software is good software</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Developing-libraries.html#Developing-libraries">Developing libraries</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Writing-Good-Programs.html#Writing-Good-Programs">Writing Good Programs</a>
+<hr>
+</div>
+
+<h3 class="section">2.4 Developing applications</h3>
+
+<p><dfn>Applications</dfn> are complete executable programs that can be run by the
+end-user. With library-oriented development the actual functionality
+is developed by writing libraries and debugged by developing test-suites
+for each library. With command-line oriented applications, the application
+source code parses the arguments that are passed to it by the user,
+and calls up the right functions in the library to carry out the user's
+requests. With GUI
+<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+applications, the application source code creates the <dfn>widgets</dfn> that
+compose the interface, binds them to <dfn>actions</dfn>, and then enters an
+event loop. Each action is implemented in terms of the functionality
+provided by the appropriate library.
+
+   <p>It should be possible to implement applications by using relatively few
+application-specific source files, since most of the functionality is
+actually done in libraries. In some cases, the application is simple
+enough that it would be an overkill to package its functionality as
+a library. Nevertheless, in such cases please separate the source code
+that handles actual functionality from the source code that handles
+the user interface. Also, please always separate the code that handles
+input/output with the code that does actual computations. 
+If these aspects of your source code are sufficiently separated then you make
+it easier for other people to reuse parts of your code in their applications. 
+You also make it easier of yourself to switch to library-oriented
+development when your application grows and is no longer &ldquo;simple enough&rdquo;.
+
+   <p>Library-oriented development allows you to write good and robust applications. 
+In return it requires discipline. Sometimes you may need to add
+experimental functionality that is not available through your libraries. 
+The right thing to do is to extend the appropriate library. 
+The easy thing to do is to implement it as part of your application-specific
+source code. If the feature is experimental and undergoing many changes,
+it may be best to go with the easy approach at first. Still, when
+the feature matures, please migrate it to the appropriate library, document
+it, and take it out of the application source code. What we mean by
+discipline is doing these migrations, when the time is right, despite
+pressures from &ldquo;real life&rdquo;, such as deadlines, pointy-haired bosses,
+and nuclear terrorism. A rule of thumb for deciding
+when to migrate code to a library is when you find yourself cut-n-pasting
+chunks of code from application to application. If you do not do the right
+thing, your code will become increasingly harder to debug, harder to
+maintain, and less reliable.
+
+   <p>Applications should also be documented, especially the ones that are
+command-line oriented. Application documentation should be thorough in
+explaining to the user all the things that he needs to know to use
+the application effectively and should be distributed separately
+from the application itself. Nevertheless, applications should recognize
+the <code>--help</code> switch and output a synopsis of how
+the application is used. Applications should also recognize the
+<code>--version</code> switch and state their version number. The easiest
+way to make applications understand these two switches is to use the
+GNU Argp library (<em>FIXME: crossreference</em>).
+
+<!--  -->
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> GUI is an abbreviation for <dfn>graphical user interface</dfn></p>
+
+   <hr></div>
+
+   </body></html>
+

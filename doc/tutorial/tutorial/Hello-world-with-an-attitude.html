@@ -1,0 +1,163 @@
+<html lang="en">
+<head>
+<title>Hello world with an attitude - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="prev" href="Organizing-your-project-in-subdirectories.html#Organizing-your-project-in-subdirectories" title="Organizing your project in subdirectories">
+<link rel="next" href="Tracking-version-numbers.html#Tracking-version-numbers" title="Tracking version numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Hello-world-with-an-attitude"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Tracking-version-numbers.html#Tracking-version-numbers">Tracking version numbers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Organizing-your-project-in-subdirectories.html#Organizing-your-project-in-subdirectories">Organizing your project in subdirectories</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">1.8 Hello world with an attitude &ndash; How to do it with acmkdir</h3>
+
+<p>In the package autotoolset, we provide an utility called <samp><span class="file">acmkdir</span></samp> that
+will automatically perform most of the required steps for you.
+
+   <p>With the package installed in your system, run <samp><span class="file">acmkdir</span></samp> with the last
+argument equal to the directory name you want to create. The script will ask you
+some questions as follows:
+
+<pre class="example">     % acmkdir -t traditional hello3
+     Ready to create a new distribution skeleton directory.
+     The current working directory is:
+      --&gt; /home/mroberto/programs/autotoolset
+     If you make a mistake and need to abort, press ctrl-C.
+     
+     Name of distribution: hello
+     Your full name:       Marcelo Roberto Jimenez
+     Your email address:   mroberto@nospan.cetuc.puc-rio.br
+     
+     Do you want to proceed? (y/n) y
+     + Mode is traditional
+     + Making directory hello3
+     + Making src directory
+     + Making doc directory
+     + Making m4 directory
+     + Making config directory
+     + Making default text files
+     + Making INSTALL file link
+     + Running reconf
+     - aclocal.
+     - autoconf.
+     - autoheader.
+     - automake.
+     configure.ac: installing `config/install-sh'
+     configure.ac: installing `config/mkinstalldirs'
+     configure.ac: installing `config/missing'
+     Makefile.am: installing `./INSTALL'
+     Makefile.am: installing `./COPYING'
+     
+     Distribution directory is ready.
+     Please make sure to keep the files AUTHORS, NEWS, README, THANKS up to
+     date before cutting a distribution.
+</pre>
+   <p>Now create the file <samp><span class="file">hello.c</span></samp> in the directory <samp><span class="file">src</span></samp>, using your
+favorite text editor, e.g. <samp><span class="file">emacs</span></samp>. Also edit <samp><span class="file">src/Makefile.am</span></samp> to
+include the lines
+<pre class="example">     bin_PROGRAMS = hello
+     hello_SOURCES = hello.c
+</pre>
+   <p>and run <samp><span class="file">automake -a</span></samp> to create the file <samp><span class="file">config/depmod</span></samp>. 
+Now the project is ready and you can run <samp><span class="file">./configure</span></samp> and <samp><span class="file">make</span></samp>.
+
+<pre class="example">     % cd hello3/src
+     % emacs hello.c
+     % emacs Makefile.am
+     % cd ..
+     % automake -a
+     src/Makefile.am: installing `config/depcomp'
+     % ./configure
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking whether build environment is sane... yes
+     checking for gawk... gawk
+     checking whether make sets $(MAKE)... yes
+     checking for gcc... gcc
+     checking for C compiler default output... a.out
+     checking whether the C compiler works... yes
+     checking whether we are cross compiling... no
+     checking for suffix of executables...
+     checking for suffix of object files... o
+     checking whether we are using the GNU C compiler... yes
+     checking whether gcc accepts -g... yes
+     checking for gcc option to accept ANSI C... none needed
+     checking for style of include used by make... GNU
+     checking dependency style of gcc... gcc3
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking how to run the C preprocessor... gcc -E
+     checking for egrep... grep -E
+     checking for AIX... no
+     checking for strerror in -lcposix... no
+     checking for ANSI C header files... yes
+     checking for sys/types.h... yes
+     checking for sys/stat.h... yes
+     checking for stdlib.h... yes
+     checking for string.h... yes
+     checking for memory.h... yes
+     checking for strings.h... yes
+     checking for inttypes.h... yes
+     checking for stdint.h... yes
+     checking for unistd.h... yes
+     checking minix/config.h usability... no
+     checking minix/config.h presence... no
+     checking for minix/config.h... no
+     checking for ANSI C header files... (cached) yes
+     checking for ranlib... ranlib
+     configure: creating ./config.status
+     config.status: creating Makefile
+     config.status: creating README
+     config.status: creating doc/Makefile
+     config.status: creating m4/Makefile
+     config.status: creating src/Makefile
+     config.status: creating config.h
+     config.status: executing depfiles commands
+     % make
+     make  all-recursive
+     make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
+     Making all in m4
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/m4'
+     make[2]: Nothing to be done for `all'.
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/m4'
+     Making all in src
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/src'
+     source='hello.c' object='hello.o' libtool=no \
+     depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+     depmode=gcc3 /bin/sh ../config/depcomp \
+     gcc -DHAVE_CONFIG_H -I. -I. -I..     -g -O2 -c `test -f 'hello.c' || echo './'`hello.c
+     gcc  -g -O2   -o hello  hello.o
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/src'
+     Making all in doc
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/doc'
+     make[2]: Nothing to be done for `all'.
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/doc'
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
+     make[2]: Nothing to be done for `all-am'.
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
+     make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
+</pre>
+   <!--  -->
+   </body></html>
+

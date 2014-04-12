@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+<title>Portability problems with Fortran - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf" title="Fortran with Autoconf">
+<link rel="prev" href="The-gory-details.html#The-gory-details" title="The gory details">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Portability-problems-with-Fortran"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-gory-details.html#The-gory-details">The gory details</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Fortran-with-Autoconf.html#Fortran-with-Autoconf">Fortran with Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">8.5 Portability problems with Fortran</h3>
+
+<p>Fortran is infested with portability problems. There exist two important
+Fortran standards: one that was written in 1966 and one that was written
+in 1977. The 1977 standard is considered to be <em>the</em> standard Fortran. 
+Most of the Fortran code is written by scientists who have never had any
+formal training in computer programming. As a result, they often write
+code that is dependent on vendor-extensions to the standard, and not
+necessarily easy to port. The standard itself is to blame as well, since
+it is sorely lacking in many aspects. For example, even though standard
+Fortran has both <code>REAL</code> and <code>DOUBLE PRECISION</code> data types
+(corresponding to <code>float</code> and <code>double</code>) the standard only
+supports single precision complex numbers (<code>COMPLEX</code>). Since many
+people will also want double precision complex numbers, many vendors provided
+extensions. Most commonly, the double precision complex number is called
+<code>COMPLEX*16</code> but you might also see it called <code>DOUBLE COMPLEX</code>. 
+Other such vendors extensions include providing a <code>flush</code> operation
+of some sort for file I/O, and other such esoteric things.
+
+   <p>To make things
+worse (or better) now there are two more standards out there: the 1990
+standard and the 1995 standard. A 2000 standard is also at work. 
+Fortran 90 and its successors try to make Fortran more like C and C++, and
+even though <em>there are no free compilers</em> for both variants,
+they are becoming alarmingly popular with the scientific community. 
+In fact, I think that the main reason why these variants of Fortran are
+being developed is to make more bussiness for proprietary compiler
+developers. So far as I know, Fortran 90 does not provide any features
+that C++ can not  support with a class library extension. Moreover
+Fortran 90 does not have the comprehensive foundation that allows C++ to be
+a self-extensible language. This makes it less worthwhile to invest effort
+on Fortran 90, because it means that eventually people will want features that
+can only be implemented by redefining the language and rewriting the
+compilers for it. Instead, in C++, you can add features to the language
+simply by writing C++ code, because it has enough core features to allow
+virtually unlimited self-extensibility.
+
+   <p>If your primary interest is portability and free software, you should stay
+away from Fortran
+90 as well as Fortran 95, until someone writes a free compiler for them. 
+You will be better off developing in <code>C++</code> and only migrating to
+Fortran 77 the parts that are performance critical. This way you get the
+best of both worlds.
+
+   <p>On the flip side, if you limit your Fortran code just to number-crunching,
+then it becomes much easier to write portable code. There are still a few
+things you should take into account however. 
+Some Fortran code has been written in the archaic 1966 style. An example
+of such code is the <code>fftpack</code> package from <code>netlib</code>. The main
+problems with such code are the following:
+     <ul>
+<li><strong>Implicit types</strong>:
+In Fortran 66, programmers were too lazy to define the types of their variables. 
+The idea was that the type was inferred by the first letter of the variable
+name. That's horror for you! The convention then is that all variables with
+initial <code>I,J,...,N</code> are type <code>INTEGER</code>. All others are <code>REAL</code>
+To compile this code with
+modern compilers it is necessary to add the following line to every source
+file:
+     <pre class="example">          IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+</pre>
+     <p class="noindent">This instructs the compiler to do the right thing, which is to implicitly
+assume that all variables starting with <code>A-H</code> and <code>O-Z</code> are
+double precision and all other variables are integers. Alternatively you can
+say
+     <pre class="example">          IMPLICIT REAL (A-H,O-Z)
+</pre>
+     <p class="noindent">but it is very rarely that you will ever want to go with single precision. 
+Occasionally, you may find that the programmer breaks the rules. For example,
+in <code>fftpack</code> the array <code>IFAC</code> is supposed to be a <code>double</code>
+even though implicitly it is suggested to be an <code>int</code>. Such inconstances
+will probably show up in compiler errors. To fix them, declare the type
+of these variables explicitly. If it's an array then you do it like this:
+     <pre class="example">          DOUBLE PRECISION IFAC(*)
+</pre>
+     <p class="noindent">If the variable also appears in a <code>DIMENSION</code> declaration, then you
+should remove it from the declaration since the two can't coexist in
+<em>some</em> compilers. 
+<li><strong>Pseudo-pointers</strong>:
+In archaic Fortran, a dimension declaration of the form:
+     <pre class="example">          DIMENSION C(1)
+</pre>
+     <p class="noindent">means that <code>C</code> has an unknown length, instead of meaning that it has
+length 1. In modern Fortran, this is an unacceptable notation and modern
+compilers do get confused over it. So all such instances must be replaced
+with the correct form which is:
+     <pre class="example">          DIMENSION C(*)
+</pre>
+     <p class="noindent">Such &ldquo;arrays&rdquo; in reality are just pointers. The user can reference the
+array as far as he likes, but of course, if he takes it too far, the
+program will either do the Wrong Thing or crash with a segmentation fault. 
+<li><strong>Constants</strong>:
+A most insidious problem has to do with constants and it is confined, to
+the best of my knowledge, to the GNU Fortran compiler, but it could
+very well be a problem in other compilers to which I have no access to. 
+Constants tend to appear in &lsquo;<samp><span class="samp">DATA</span></samp>&rsquo; statements or variable assignments. 
+The problem is that whenever a constant is in use, the context is never
+a determining factor for the <dfn>type</dfn> of the constant, unlike C which
+does automatic casting. Examples: &lsquo;<samp><span class="samp">1</span></samp>&rsquo; is always type <code>INTEGER</code>,
+&lsquo;<samp><span class="samp">9.435784839284958</span></samp>&rsquo; is always type <code>REAL</code>
+(even if the additional precision specified is lost, and even when used in
+a &lsquo;<samp><span class="samp">DOUBLE PRECISION</span></samp>&rsquo; context such as being assigned to a
+&lsquo;<samp><span class="samp">DOUBLE PRECISION</span></samp>&rsquo; variable!). On the other hand, <code>1E0</code> is
+always <code>REAL</code> and <code>1D0</code> is always &lsquo;<samp><span class="samp">DOUBLE PRECISION</span></samp>&rsquo;. 
+If you want your code to be exclusively double precision, then you should
+scan the entire source for constants, and make sure that they all have the
+<code>D0</code> suffix at the end. Many compilers will tolerate this omission while
+others will not and go ahead and introduce single precision error to your
+computations leading to hard to find bugs. 
+</ul>
+
+   <p>In general the code in <code>http://www.netlib.org/</code> is very reliable and
+portable, but you do need to keep your eyes open for little problems like
+the above.
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

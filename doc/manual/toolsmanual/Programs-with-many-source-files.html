@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>Programs with many source files - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Compiling-simple-programs.html#Compiling-simple-programs" title="Compiling simple programs">
+<link rel="next" href="Building-libraries.html#Building-libraries" title="Building libraries">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Programs-with-many-source-files"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Building-libraries.html#Building-libraries">Building libraries</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Compiling-simple-programs.html#Compiling-simple-programs">Compiling simple programs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.2 Programs with many source files</h3>
+
+<p>Now let's consider the case where you have a much larger program made
+of source files <samp><span class="file">foo1.c</span></samp>, <samp><span class="file">foo2.c</span></samp>, <samp><span class="file">foo3.c</span></samp> and
+header files <samp><span class="file">header1.h</span></samp> and <samp><span class="file">header2.h</span></samp>. 
+One way to compile the program is like this:
+<pre class="example">     % gcc foo1.c foo2.c foo3.c -o foo
+</pre>
+   <p class="noindent">This is fine when you have only a few files to deal with. Eventually,
+when you have more than a few dozen files, it becomes wasteful to
+compile all of the files, all the time, every time you make a change
+in only one of the files. For this reason, the compiler allows
+you to compile every file separately into an intermediate file
+called <dfn>object file</dfn>, and link all the object files together at the end. 
+This can be done with the following commands:
+<pre class="example">     % gcc -c foo1.c
+     % gcc -c foo2.c
+     % gcc -c foo3.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+</pre>
+   <p class="noindent">The first three commands generate the object files <samp><span class="file">foo1.o</span></samp>,
+<samp><span class="file">foo2.o</span></samp>, <samp><span class="file">foo3.o</span></samp> and the last command links them together
+to the final executable file <samp><span class="file">foo</span></samp>. The <samp><span class="file">*.o</span></samp> suffix is reserved
+for use only by object files.
+
+   <p>If you make a change only in
+<samp><span class="file">foo1.c</span></samp>, then you can rebuild <samp><span class="file">foo</span></samp> like this:
+<pre class="example">     % gcc -c foo1.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+</pre>
+   <p class="noindent">The object files <samp><span class="file">foo2.o</span></samp> and <samp><span class="file">foo3.o</span></samp> do not need to be
+rebuilt since only <samp><span class="file">foo1.c</span></samp> changed, so it is not necessary to
+recompile them.
+
+   <p>Object files <samp><span class="file">*.o</span></samp> contain definitions of variables
+and subroutines written out in <dfn>assembly</dfn>
+(machine language &ldquo;pseudocode&rdquo;). Most of
+these definitions will eventually be embedded in the final executable
+program at a specific address. At this stage however these memory addresses
+are not known so they are being refered to symbolically. These
+symbolic references are called <dfn>symbols</dfn>. It is possible to list
+the symbols defined in an object file with the &lsquo;<samp><span class="samp">nm</span></samp>&rsquo; command. 
+For example:
+<pre class="example">     % nm xmalloc.o
+              U error
+              U malloc
+              U realloc
+     00000000 D xalloc_exit_failure
+     00000000 t xalloc_fail
+     00000004 D xalloc_fail_func
+     00000014 R xalloc_msg_memory_exhausted
+     00000030 T xmalloc
+     00000060 T xrealloc
+</pre>
+   <p class="noindent">The first column lists the symbol's address within the object file, when
+the symbol is actually defined in that object file. 
+The second column lists the symbol type. The third column is the symbolic
+name of the symbol. In the final executable, these names become
+irrelevant. 
+The following types commonly occur:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">T</span></samp>&rsquo;<dd>A function definition
+<br><dt>&lsquo;<samp><span class="samp">t</span></samp>&rsquo;<dd>A private function definition. Such functions are defined in C with
+the keyword <code>static</code>. 
+<br><dt>&lsquo;<samp><span class="samp">D</span></samp>&rsquo;<dd>A global variable
+<br><dt>&lsquo;<samp><span class="samp">R</span></samp>&rsquo;<dd>A read-only (<code>const</code>) global variable
+<br><dt>&lsquo;<samp><span class="samp">U</span></samp>&rsquo;<dd>A symbol used but not defined in this object file. 
+</dl>
+   For more details, see the <cite>Binutils manual</cite>.
+
+   <p>The job of the compiler is to translate all the C source files to
+object files containing a corresponding set of symbolic definitions. 
+It is the job of another program, the <dfn>linker</dfn>, to put the object files
+together, resolve and evaluate all the symbolic addresses, and build
+a complete machine language program that can actually be executed. 
+When you ask &lsquo;<samp><span class="samp">gcc</span></samp>&rsquo; to link the object files into an executable, the
+compiler is actually running the linker to do the job.
+
+   <p>During the process of linking, all the machine language instructions that
+refer to a specific memory address need to be modified to use the correct
+addresses within the executable, as oppposed to the addresses within their
+object file. This becomes an issue when you want to your program to load
+and link compiled object files during run-time instead of compile-time. 
+To make such <dfn>dynamic linking</dfn> possible, your symbols need to be
+<dfn>relocatable</dfn>. This means that your symbols definitions must be
+correct no matter where you place them in memory. There should be no
+memory addresses that need to be modified. One way to do this is by
+refering to memory addresses within the object file by giving an offset
+from the refering address. Memory addresses outside the object file must
+be treated as <dfn>interlibrary dependencies</dfn> and you must tell the compiler
+what you expect them to be when you attempt to build relocatable machine code. 
+Unfortunately some flavours of Unix do not handle interlibrary dependencies
+correctly. Fortunately, all of this mess can be dealt with in a uniform
+way, to the extent that this is possible, by using GNU Libtool. 
+See <a href="Using-Libtool.html#Using-Libtool">Using Libtool</a>, for more details.
+
+   <p>On GNU and Unix, all compiled languages compile to object files,
+and it is possible, in principle, to link object files that have originated
+from source files written in different programming languages. For example
+it is possible to link source code written in Fortran together with
+source code written in C or C++. In such cases, you need to know how the
+compiler converts the names with which the program language calls its
+constructs (such as variable, subroutines, etc.) to symbol names. 
+Such conversions, when they actually happen, are called
+<dfn>name-mangling</dfn>. Both C++ and Fortran do name-mangling. C however is
+a very nice language, because it does absolutely no name-mangling. 
+This is why when you want to write code that you want to export to
+many programming languages, it is best to write it in C. 
+See <a href="Using-Fortran-effectively.html#Using-Fortran-effectively">Using Fortran effectively</a>, for more details on how to deal with
+the name-mangling done by Fortran compilers.
+
+<!-- ============================================================ -->
+   </body></html>
+

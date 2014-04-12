@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Enter Makefiles - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Direct-compilation.html#Direct-compilation" title="Direct compilation">
+<link rel="next" href="Problems-with-Makefiles-and-workarounds.html#Problems-with-Makefiles-and-workarounds" title="Problems with Makefiles and workarounds">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Enter-Makefiles"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Problems-with-Makefiles-and-workarounds.html#Problems-with-Makefiles-and-workarounds">Problems with Makefiles and workarounds</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Direct-compilation.html#Direct-compilation">Direct compilation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">4.2 Enter Makefiles</h3>
+
+<p>The &lsquo;<samp><span class="samp">make</span></samp>&rsquo; utility takes its instructions from a file called
+&lsquo;<samp><span class="samp">Makefile</span></samp>&rsquo; in the directory in which it was invoked. 
+The <samp><span class="file">Makefile</span></samp> involves four concepts:
+the <dfn>target</dfn>,
+the <dfn>dependencies</dfn>, the <dfn>rules</dfn>, and the <dfn>source</dfn>. 
+Before we illustrate these concepts with examples we will explain them
+in abstract terms for those who are mathematically minded:
+     <ul>
+<li><dfn>Source</dfn> are the files that <em>you</em> wrote and which are present
+when the distribution is unpacked. A source file has no dependencies, but
+itself it may be a dependency to a target. 
+<li><dfn>Target</dfn> is a file that you wish to generate from the source, or
+an action that you wish to cause (called <dfn>phony</dfn> target since no
+file by the name of the target is generated). 
+For example when you type <samp><span class="file">make install</span></samp> you do not generate a
+file called <samp><span class="file">install</span></samp>. What you generate is the action of moving
+certain files in certain places. Generating the file or taking the action
+is called <dfn>building</dfn> the target. A target may have dependencies and
+it may itself be a dependency to another target. 
+<li>A <dfn>Dependency</dfn> can be either a source file or a target. Either way,
+a dependency is something that only targets <em>have</em>. Source files
+do not have dependencies.
+
+     <p>If the dependency is
+a source file, then we say that, as a dependency to a certain target,
+it is <dfn>up-to-date</dfn> if and only if the target's latest update happened
+after the dependency's latest update. We say that the dependency <dfn>changed</dfn>
+if and only if the target's latest update happened before the dependency's
+latest update.
+
+     <p>If the dependency itself is a target, then we define recursively
+that as a dependency to a certain target, it has changed if and only if at
+least one of its own dependencies has changed. A <dfn>phony</dfn> target is never
+<dfn>up-to-date</dfn>. If a phony target is a dependency to another target, then
+it will always cause that other target to be rebuilt. 
+Okey, take a big breath and think about this a bit. 
+<li><dfn>Rules</dfn> is a set of instructions that detail how to build a target
+if the dependencies of that target have changed. These instructions
+need to be issued if and only if at least one of the dependencies
+has changed, and they must be issued only after the corresponding rules
+for the dependencies that have changed are recursively invoked. 
+You may want to take a big breath here as well. Note that this recursion
+will be terminated only when it hits source files because they don't
+have any dependencies. Then it will wrap itself back up and work from
+bottom to top all the way to building the target at the top of the recursion. 
+</ul>
+
+   <p>The <samp><span class="file">Makefile</span></samp> is essentially a collection of <dfn>logical statements</dfn>
+about these four concepts. The content of each statement in English is:
+<blockquote>
+To build this <dfn>target</dfn>, first make sure that these <dfn>dependencies</dfn>
+are up to date. If not build them first in the order in which they
+are listed. Then execute these <dfn>rules</dfn> to build <em>this</em> target. 
+</blockquote>
+   Given a complete collection of such statements it is possible to infer
+what action needs to be taken to build a specific target, from the
+source files and the current state of the distribution. By action we
+mean passing commands to the shell. One reason why this is useful
+is because if part of the building process does not need to be
+repeated, it will not be repeated. The <samp><span class="file">make</span></samp> program will detect
+that certain dependencies have not changed and skip the action
+required for rebuilding their targets. Another reason why this approach is
+useful is because it is intuitive in human terms. At least, it will
+be intuitive when we illustrate it to you.
+
+   <p>In make-speak each statement has the following form:
+<pre class="example">     target: dependency1 dependency2 ....
+            shell-command-1
+            shell-command-2
+            shell-command-3
+</pre>
+   <p class="noindent">where <code>target</code> is the name of the target and <code>dependency*</code> the
+name of the dependencies, which can be either source files or other targets. 
+The shell commands that follow are the commands
+that need to be passed to the shell to build the target after the dependencies
+have been built. To be compatible with most versions of make, you must
+seperate these statements with a blank line. Also, the <code>shell-command*</code>
+must be indented with the <kbd>tab</kbd> key. Don't forget your <kbd>tab</kbd> keys
+otherwise <code>make</code> will not work.
+
+   <p>When you run <code>make</code> you can pass the target that you want to build
+as an argument. If you omit arguments and call <code>make</code> by itself then
+the first target mentioned in the Makefile is the one that gets built. 
+The makefiles that Automake generates have the phony target <code>all</code>
+be the default target. That target will compile your code but not install it. 
+They also provide a few more phony targets such as <code>install</code>,
+<code>check</code>, <code>dist</code>, <code>distcheck</code>, <code>clean</code>, <code>distclean</code>
+as we have discussed earlier. So Automake is saving you quite a lot of
+work because without it you would have to write a lot of repetitive code
+to provide all these phony targets.
+
+   <p>To illustrate these concepts with an example suppose that you have this
+situation:
+     <ul>
+<li>Four source files: <samp><span class="file">foo1.c</span></samp>, <samp><span class="file">foo2.c</span></samp>, <samp><span class="file">foo3.c</span></samp>,<samp><span class="file">foo4.c</span></samp>
+<li>Three include files: <samp><span class="file">gleep1.h</span></samp>,<samp><span class="file">gleep2.h</span></samp>,<samp><span class="file">gleep3.h</span></samp>
+<li><samp><span class="file">foo1.c</span></samp> includes <samp><span class="file">gleep2.h</span></samp> and <samp><span class="file">gleep3.h</span></samp>
+<li><samp><span class="file">foo2.c</span></samp> includes <samp><span class="file">gleep1.h</span></samp>
+<li><samp><span class="file">foo3.c</span></samp> includes <samp><span class="file">gleep1.h</span></samp> and <samp><span class="file">gleep2.h</span></samp>
+<li><samp><span class="file">foo4.c</span></samp> includes <samp><span class="file">gleep3.h</span></samp>
+</ul>
+   To build an executable <samp><span class="file">foo</span></samp> you need to build object files and then
+link them together. We say that the executable depends on the object files
+and that each object file depends on a corresponding <samp><span class="file">*.c</span></samp> file
+<em>and</em> the <samp><span class="file">*.h</span></samp> files that it includes. 
+Then to get to an executable <samp><span class="file">foo</span></samp> you need to go through the following
+dependencies:
+<pre class="example">     foo: foo1.o foo2.o foo3.o foo4.o
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+</pre>
+   <p class="noindent">The thing on the left-hand-side is the target, the thing on the right-hand-side
+is the dependencies. The logic is that to build the thing on the left, you
+need to build the things on the right first. So, if <samp><span class="file">foo1.c</span></samp> changes,
+<samp><span class="file">foo1.o</span></samp> must be rebuilt. If <samp><span class="file">gleep3.h</span></samp> changes then
+<samp><span class="file">foo1.o</span></samp> and <samp><span class="file">foo4.o</span></samp> must be rebuilt. That's the game.
+
+   <p>The way the <samp><span class="file">Makefile</span></samp> actually looks like is like this:
+<pre class="example">     foo: foo1.o foo2.o foo3.o foo4.o
+             gcc foo1.o foo2.o foo3.o foo4.o -o foo
+     
+     foo1.o: foo1.c gleep2.h gleep3.h
+             gcc -c foo1.c
+     
+     foo2.o: foo2.c gleep1.h
+             gcc -c foo2.c
+     
+     foo3.o: foo3.c gleep1.h gleep2.h
+             gcc -c foo3.c
+     
+     foo4.o: foo4.c gleep3.h
+             gcc -c foo4.c
+</pre>
+   <p class="noindent">It's the same thing as before except that we have supplemented the <dfn>rules</dfn>
+by which the target is built from the dependencies. 
+Things to note about syntax:
+     <ul>
+<li>The rules must be indented with a <dfn>tab</dfn>. To get a tab you must press the
+&lt;TAB&gt; key on your keyboard. 
+<li>Each statement must be separated from the next statement with a blank line. 
+<li>The first target is what gets built when you type simply
+     <pre class="example">          % make
+</pre>
+     <p class="noindent">Therefore, the target for the executable must go at the beginning. 
+</ul>
+   If you omit the tabs or the blank line, then the Makefile will not work. 
+Some versions of &lsquo;<samp><span class="samp">make</span></samp>&rsquo; have relaxed the blank line rule, since it's
+redundant, but to be portable, just put the damn blank line in.
+
+   <p>You may ask, "how does &lsquo;<samp><span class="samp">make</span></samp>&rsquo; know what I changed?". It knows because
+<span class="sc">unix</span> keeps track of the exact date and time in which every file and
+directory was modified. This is called the Unix <dfn>time-stamp</dfn>. What happens
+then is that &lsquo;<samp><span class="samp">make</span></samp>&rsquo; checks
+whether any of the dependencies is newer than the main target. If so, then
+the target must be rebuilt. Cool. Now do the target's dependencies have
+to be rebuilt? Let's look at <em>their</em> dependencies and find out! 
+In this recursive fashion, the logic is untangled and &lsquo;<samp><span class="samp">make</span></samp>&rsquo; does
+the Right Thing.
+
+   <p>The &lsquo;<samp><span class="samp">touch</span></samp>&rsquo; command allows you to <em>fake</em> time-stamps and make
+a file look as if it has been just modified. This way you can force make
+to rebuild everything by saying something like:
+<pre class="example">     % touch *.c *.h
+</pre>
+   <p class="noindent">If you are building more than one executable, then you may want to
+make a phony target <code>all</code> be the first target:
+<pre class="example">     all: foo1 foo2 foo3
+</pre>
+   <p class="noindent">Then calling <code>make</code> will attempt to build <code>all</code> and that will
+cause make to loop over <samp><span class="file">foo1</span></samp>, <samp><span class="file">foo2</span></samp>, <samp><span class="file">foo3</span></samp> and
+get them built. Of course you can also tell make to build these individually
+by typing:
+<pre class="example">     % make foo1
+     % make foo2
+     % make foo3
+</pre>
+   <p class="noindent">Anything that is a target can be an argument. You might even say
+<pre class="example">     % make bar.o
+</pre>
+   <p class="noindent">if all you want is to build a certain object file and then stop.
+
+<!-- ======================================================================== -->
+   </body></html>
+

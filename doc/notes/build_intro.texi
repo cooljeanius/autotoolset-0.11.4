@@ -1,3 +1,11 @@
+\input texinfo
+
+@c %**start of header
+@setfilename build_intro.info
+@set TITLE Intro to the GNU build system
+@settitle @value{TITLE}
+@c %**end of header
+
 When we speak of the @dfn{GNU build system} we refer primarily to the
 following four packages:
 @itemize @bullet
@@ -9,11 +17,11 @@ having modified a few files; it will only rebuild the files that
 have been affected by your changes instead of compiling the entire project
 each time. Make does not understand your program however. You must tell
 @samp{make} how to compile it, and you must also tell @samp{make} how
-changes in one file affect the other files. Unfortunately, these 
+changes in one file affect the other files. Unfortunately, these
 instructions are not portable between GNU and between the various variants
 of Unix. Therefore, the rest of the GNU build system:
 @item
-@strong{Autoconf} produces a @dfn{configuration shell script}, named 
+@strong{Autoconf} produces a @dfn{configuration shell script}, named
 @file{configure}, which probes the installer platform for portability related
 information which is required to customize makefiles, configuration header
 files, and other application specific files. Then it proceeds to generate
@@ -31,8 +39,8 @@ build shared libraries in a portable manner. It does not require either
 Autoconf, or Automake and can be used indepedently. Automake however supports
 libtool and interoperates with it in a seamless manner.
 @end itemize
-The GNU build system makes it possible to distribute your software in 
-source code form. Your users can compile and install your software 
+The GNU build system makes it possible to distribute your software in
+source code form. Your users can compile and install your software
 from source automagically. To make this possible however in a portable
 way, using the GNU build system is essential.
 
@@ -43,19 +51,19 @@ generation of a @file{configure} shell script. The second goal is achieved
 by the automatic generation of Makefiles and other shell scripts that are
 typically used in the building process. This way the developer can concentrate
 on debugging his source code, instead of his overly complex Makefiles.
-And the installer can compile and install the program directly from the 
+And the installer can compile and install the program directly from the
 source code distribution by a simple and automatic procedure.
 
 The GNU build system needs to be installed only when you are developing
-programs that are meant to be distributed. To build a program from 
-distributed source code, you only need a working @code{make}, a compiler, 
+programs that are meant to be distributed. To build a program from
+distributed source code, you only need a working @code{make}, a compiler,
 a shell,
 and sometimes standard Unix utilities like @code{sed}, @code{awk},
 @code{yacc}, @code{lex}. The objective is to make software installation
 as simple and as automatic as possible for the installer. Also, by
 setting up the GNU build system such that it creates programs that don't
-require the build system to be present during their installation, it 
-becomes possible to use the build system to bootstrap itself. 
+require the build system to be present during their installation, it
+becomes possible to use the build system to bootstrap itself.
 
 
 Some tasks that are simplified by the GNU build system include:
@@ -85,7 +93,7 @@ by running @code{make check}.
 @item
 Automatic distribution building. The GNU build tools are meant to be used
 in the development of @dfn{free software}, therefore if you have a working
-build system in place for your programs, you can create a source code 
+build system in place for your programs, you can create a source code
 distribution out of
 it by running @code{make distcheck}.
 @item

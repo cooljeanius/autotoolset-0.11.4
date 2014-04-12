@@ -1,0 +1,89 @@
+<html lang="en">
+<head>
+<title>Doing a VPATH build - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installing-GNU-software.html#Installing-GNU-software" title="Installing GNU software">
+<link rel="prev" href="Configuration-options.html#Configuration-options" title="Configuration options">
+<link rel="next" href="Making-a-binary-distribution.html#Making-a-binary-distribution" title="Making a binary distribution">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Doing-a-VPATH-build"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Making-a-binary-distribution.html#Making-a-binary-distribution">Making a binary distribution</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Configuration-options.html#Configuration-options">Configuration options</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installing-GNU-software.html#Installing-GNU-software">Installing GNU software</a>
+<hr>
+</div>
+
+<h3 class="section">1.4 Doing a VPATH build</h3>
+
+<p>Autoconfiguring source distributions also support vpath builds. In a
+vpath build, the source distribution is stored in a, possibly read-only,
+directory, and the actual building takes place in a different directory
+where all the generated files are being stored. We call the first
+directory, the <dfn>source tree</dfn>, and the second directory the
+<dfn>build tree</dfn>. The build tree may be a subdirectory of the source tree,
+but it is better if it is a completely separate directory.
+
+   <p>If you, the developer, use the standard features of the GNU build system, you
+don't need to do anything special to allow your packages to support vpath
+builds. The only exception to this is when you define your own make rules
+(see <a href="General-Automake-principles.html#General-Automake-principles">General Automake principles</a>). Then you have to follow certain
+conventions to allow vpath to work correctly.
+
+   <p>You, the installer, however do need to do something special. You need
+to install and use GNU make. Most Unix make utilities do not support
+vpath builds, or their support doesn't work. GNU make is extremely portable,
+and if vpath is important to you, there is no excuse for not installing it.
+
+   <p>Suppose that <samp><span class="file">/sources/foo-0.1</span></samp> contains a source distribution,
+and you want to build it in the directory <samp><span class="file">/build/foo-0.1</span></samp>. 
+Assuming that both directories exist, all you have to do is:
+<pre class="example">     % cd /build/foo-0.1
+     % /sources/foo-0.1/configure <var>...options...</var>
+     % make
+     % make check
+     % su
+     # make install
+</pre>
+   <p class="noindent">The configure script and the generated makefiles will take care of the rest.
+
+   <p>vpath builds are prefered by some people for the following reasons:
+     <ol type=1 start=1>
+<li>They prevent the build process form cluttering your source directory
+with all sorts of build files. 
+<li>To remove a build, all you have to do is remove the build directory. 
+<li>You can build the same source multiple times using different options. 
+This is very useful if you would like to write a script that will
+run the test suite for a package while the package is configured in
+many different ways (e.g. different features, different compiler optimization,
+and so on). It is also useful if you would like to do the same with releasing
+binary distributions of the source.
+        </ol>
+Some developers like to use vpath builds all the time. Others use them
+only when necessary. 
+In general, if a source distribution builds with a vpath build, it also
+builds under the ordinary build. The opposite is not true however. 
+This is why the <code>distcheck</code> target checks if your distribution is
+correct by attempting a vpath build.
+
+<!--  -->
+   </body></html>
+

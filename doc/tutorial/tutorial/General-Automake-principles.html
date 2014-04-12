@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+<title>General Automake principles - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Programs-and-Libraries-with-Automake.html#Programs-and-Libraries-with-Automake" title="Programs and Libraries with Automake">
+<link rel="next" href="Simple-Automake-examples.html#Simple-Automake-examples" title="Simple Automake examples">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="General-Automake-principles"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Simple-Automake-examples.html#Simple-Automake-examples">Simple Automake examples</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Programs-and-Libraries-with-Automake.html#Programs-and-Libraries-with-Automake">Programs and Libraries with Automake</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.7 General Automake principles</h3>
+
+<p>In the previous section we described how to use Automake to compile
+programs, libraries and test suites. To exploit the full power of Automake
+however, it is important to understand the fundamental ideas behind it.
+
+   <p>The simplest way to look at a <samp><span class="file">Makefile.am</span></samp> is as a collection of
+assignments which infer a set of Makefile rules, which in turn infer the
+building process. There are three types of such assignments:
+     <ul>
+<li><dfn>Global</dfn> assignments modify the behaviour of the entire Makefile for the
+given subdirectory. Examples of such assignments are &lsquo;<samp><span class="samp">INCLUDES</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">LDADD</span></samp>&rsquo;, &lsquo;<samp><span class="samp">LDFLAGS</span></samp>&rsquo;, &lsquo;<samp><span class="samp">TESTS</span></samp>&rsquo;. These assignments affect the
+behaviour of the Makefile in the given directory indepedent of what gets
+built. In order for an assignment to be <dfn>global</dfn>, the name of the
+variable to which you are assigning must have a special meaning to Automake. 
+If it does not, then the assignment has no effect, but it may be used
+as a variable in other assignments. 
+<li><dfn>Primitive</dfn> assignments declare the primitives that we want to build. 
+Such assignments are &lsquo;<samp><span class="samp">bin_PROGRAMS</span></samp>&rsquo;, &lsquo;<samp><span class="samp">lib_LIBRARIES</span></samp>&rsquo;, and others. 
+The general pattern of these assignments is two words seperated by an
+underscore. The second word is the type of the primitive being built, and
+it affects what Makefile rules are generated for building the primitive. 
+The first word contains information about where to install the primitive
+once its built, so it affects the Makefile rules that handle the
+&lsquo;<samp><span class="samp">install</span></samp>&rsquo; and &lsquo;<samp><span class="samp">uninstall</span></samp>&rsquo; targets. The way this works is that
+for &lsquo;<samp><span class="samp">bin</span></samp>&rsquo; there corresponds a global assignment for &lsquo;<samp><span class="samp">bindir</span></samp>&rsquo;
+containing the installation directory. For example the symbols &lsquo;<samp><span class="samp">bin</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">lib</span></samp>&rsquo;, &lsquo;<samp><span class="samp">include</span></samp>&rsquo; have the following default assignments:
+     <pre class="example">          bindir     = $(prefix)/bin
+          libdir     = $(prefix)/lib
+          includedir = $(prefix)/include
+</pre>
+     <p class="noindent">These are the directories where you install executables, libraries and
+public header files. You can override the defaults by inserting different
+assignments in your <samp><span class="file">Makefile.am</span></samp>, but please don't do that. Instead
+you can define new assignments. For example, if you do
+     <pre class="example">          foodir = $(prefix)/foo
+</pre>
+     <p class="noindent">then that makes writing <samp><span class="file">foo_PROGRAMS</span></samp>, <samp><span class="file">foo_LIBRARIES</span></samp> install
+in the &lsquo;<samp><span class="samp">$(prefix)/foo</span></samp>&rsquo; direcory instead. 
+The symbols &lsquo;<samp><span class="samp">check</span></samp>&rsquo; and &lsquo;<samp><span class="samp">noinst</span></samp>&rsquo; have special meanings and you
+should not ever try to assign to &lsquo;<samp><span class="samp">checkdir</span></samp>&rsquo; and &lsquo;<samp><span class="samp">noinstdir</span></samp>&rsquo;.
+          <ul>
+<li>The &lsquo;<samp><span class="samp">check</span></samp>&rsquo; symbol, suggests that the primitive should only be
+built when the user invokes &lsquo;<samp><span class="samp">make check</span></samp>&rsquo; and it should not be installed. 
+It is only meant to be executed as part of a test suite and then get scrapped. 
+<li>The &lsquo;<samp><span class="samp">noinst</span></samp>&rsquo; symbol, suggests that the primitive should not be
+installed. It will be built however normally, when you invoke &lsquo;<samp><span class="samp">make</span></samp>&rsquo;. 
+You could use this to build convenience libraries which you
+intend to link in statically to executables which you do plan to install. 
+You could also use this to build executables which will generate source
+code that will subsequently be used to build something installable. 
+</ul>
+     <li><dfn>Property</dfn> assignments define the properties for every primitive that
+you declare. A property is also made of two words that are seperated by
+an underscore. The first word names the primitive to which the property
+refers to. The second word names the name of the property itself. For
+example when you define
+     <pre class="example">          bin_PROGRAMS = hello
+</pre>
+     <p class="noindent">this means that you can then say:
+     <pre class="example">          hello_SOURCES = ...
+          hello_LDADD   = ...
+</pre>
+     <p class="noindent">and so on. The &lsquo;<samp><span class="samp">SOURCES</span></samp>&rsquo; and &lsquo;<samp><span class="samp">LDADD</span></samp>&rsquo; are properties of &lsquo;<samp><span class="samp">hello</span></samp>&rsquo;
+which is a &lsquo;<samp><span class="samp">PROGRAMS</span></samp>&rsquo; primitive. 
+</ul>
+
+   <p>In addition to all this, you may include ordinary targets in a
+<samp><span class="file">Makefile.am</span></samp> just as you would in an ordinary <samp><span class="file">Makefile.in</span></samp>. 
+If you do that however, then please check at some point that your
+distribution can properly build with &lsquo;<samp><span class="samp">make distcheck</span></samp>&rsquo;. It is very
+important that when you define your own rules, to build whatever
+you want to build, to follow the following guidelines:
+     <ul>
+<li>Prepend all source files both in the dependencies and the rules with
+<code>$(srcdir)</code>. This variable points to the directory where
+your source code is located during the current &lsquo;<samp><span class="samp">make</span></samp>&rsquo;, which is not
+necessarily the same directory as the one returned by &lsquo;<samp><span class="samp">`pwd`</span></samp>&rsquo;. 
+It is possible to do what is called a <dfn>VPATH build</dfn> where the generated
+files are created in a seperate directory tree from the source code. 
+What &lsquo;<samp><span class="samp">`pwd`</span></samp>&rsquo; would return to you in that case would be the directory in
+which files are <em>written</em>, not the directory from which files are
+<em>read</em>. 
+If you mess this up, then you will know when
+<code>make distcheck</code> fails, which attempts to do a VPATH build. The
+directory in which files are written can be accessed by the dot. 
+For example, &lsquo;<samp><span class="samp">./foo</span></samp>&rsquo;. 
+<li>If you need to get to any files from the top-level directory use
+<code>$(top_srcdir)</code> for files which <em>you</em> wrote (and your compiler
+tools <em>read</em>) and
+<code>$(top_builddir)</code> for files which <em>the compiler</em> wrote. 
+<li>For your rules use only the following commands directly:
+     <pre class="example">          ar cat chmod cmp cp diff echo egrep expr false grep ls
+          mkdir mv pwd rm rmdir sed sleep sort tar test touch true
+</pre>
+     <p class="noindent">Any other programs that you want to use, you must do so through make variables. 
+That includes programs such as these:
+     <pre class="example">          awk bash bison cc flex install latex ld ldconfig lex ln make
+          makeinfo perl ranlib shar texi2dvi yacc
+</pre>
+     <p class="noindent">The make variables you define through Autoconf in your <code>configure.in</code>. 
+For special-purpose tools, use the AC_PATH_PROGS macro. For example:
+     <pre class="example">          AC_PATH_PROGS(BASH, bash sh)
+          AC_PATH_PROGS(PERL, perl perl5.005 perl5.004 perl5.003 perl5.002 perl5.001)
+          AC_PATH_PROGS(SHAR, shar)
+          AC_PATH_PROGS(BISON, bison)
+</pre>
+     <p class="noindent">Some special tools have their own macros:
+     <pre class="example">          AC_PROG_MAKE_SET -&gt; $(MAKE)   -&gt; make
+          AC_PROG_RANLIB   -&gt; $(RANLIB) -&gt; ranlib | (do-nothing)
+          AC_PROG_AWK      -&gt; $(AWK)    -&gt; mawk | gawk | nawk | awk
+          AC_PROG_LEX      -&gt; $(LEX)    -&gt; flex | lex
+          AC_PROG_YACC     -&gt; $(YACC)   -&gt; 'bison -y' | byacc | yacc
+          AC_PROG_LN_S     -&gt; $(LN_S)   -&gt; ln -s
+</pre>
+     <p class="noindent">Before using any of these macros, consult the Autoconf documentation to see
+exactly what it is that they do. 
+</ul>
+
+   </body></html>
+

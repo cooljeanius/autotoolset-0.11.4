@@ -1,0 +1,248 @@
+<html lang="en">
+<head>
+<title>Configuring GNU Emacs - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Basic-Emacs-concepts.html#Basic-Emacs-concepts" title="Basic Emacs concepts">
+<link rel="next" href="Using-vi-emulation.html#Using-vi-emulation" title="Using vi emulation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Configuring-GNU-Emacs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Basic-Emacs-concepts.html#Basic-Emacs-concepts">Basic Emacs concepts</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">2.3 Configuring GNU Emacs</h3>
+
+<p>To use Emacs effectively for software development you need to configure it. 
+Part of the configuration needs to be done in your X-resources file. 
+On a Debian GNU/Linux system, the X-resources can be configured by editing
+<pre class="example">     /etc/X11/Xresources
+</pre>
+   <p class="noindent">In many systems, you can configure X-resources by editing a file called
+<samp><span class="file">.Xresources</span></samp> or <samp><span class="file">.Xdefaults</span></samp> on your home directory, but
+that is system-dependent. The configuration that I use on my system
+is:
+<pre class="example">     ! Emacs defaults
+     emacs*Background: Black
+     emacs*Foreground: White
+     emacs*pointerColor: White
+     emacs*cursorColor: White
+     emacs*bitmapIcon: on
+     emacs*font: fixed
+     emacs*geometry: 80x40
+</pre>
+   <p class="noindent">In general I favor dark backgrounds and &lsquo;<samp><span class="samp">fixed</span></samp>&rsquo; fonts. Dark backgrounds
+make it easier to sit in front of the monitor for a prolonged period of
+time. &lsquo;<samp><span class="samp">fixed</span></samp>&rsquo; fonts looks nice and it's small enough to make efficient
+use of your screenspace. Some people might prefer larger fonts however.
+
+   <p>When Emacs starts up, it looks for a file called <samp><span class="file">.emacs</span></samp> at the user's
+home directory, and evaluates it's contents through the Emacs Lisp
+interpreter. You can customize and modify Emacs' behaviour by
+adding commands, written in Emacs Lisp, to this file. Here's a brief
+outline of the ways in which you can customize Emacs:
+
+     <ol type=1 start=1>
+<li>A common change to the standard configuration is
+assigning <dfn>global variables</dfn> to non-default
+values. Many Emacs features and behaviours can be controlled and
+customized this way. 
+This is done with the &lsquo;<samp><span class="samp">setq</span></samp>&rsquo; command, which accepts the
+following syntax:
+     <pre class="example">          (setq <var>variable</var> <var>value</var>)
+</pre>
+     <p class="noindent">For example:
+     <pre class="example">          (setq viper-mode t)
+</pre>
+     <p class="noindent">You can access on-line documentation for global variables by running:
+     <pre class="example">          M-x describe-variable
+</pre>
+     <p class="noindent"><li>In some cases, Emacs depends on the values of shell
+<dfn>environment variables</dfn>. These can be manipulated with &lsquo;<samp><span class="samp">setenv</span></samp>&rsquo;:
+     <pre class="example">          (setenv "<var>variable</var>" "<var>value</var>")
+</pre>
+     <p class="noindent">For example:
+     <pre class="example">          (setenv "INFOPATH" "/usr/info:/usr/local/info")
+</pre>
+     <p class="noindent">&lsquo;<samp><span class="samp">setenv</span></samp>&rsquo; does not affect the shell that invoked Emacs, but it does
+affect Emacs itself, and shells that are run under Emacs.
+
+     <li>Another way to enhance your Emacs configuration is by modifying the
+global keymap. This can be done with the &lsquo;<samp><span class="samp">global-set-key</span></samp>&rsquo; command,
+which follows the following syntax:
+     <pre class="example">          (global-set-key [<var>key sequence</var>] '<var>function</var>)
+</pre>
+     <p class="noindent">For example, adding:
+     <pre class="example">          (global-set-key [F12 d] 'doctor)
+</pre>
+     <p class="noindent">to <samp><span class="file">.emacs</span></samp> makes the key sequence <kbd>F12 d</kbd> equivalent to
+running &lsquo;<samp><span class="samp">M-x doctor</span></samp>&rsquo;. Emacs has many functions that provide all
+sorts of features. To find out about specific functions, consult
+the <cite>Emacs user manual</cite>. Once you know that a function exists,
+you can also get on-line documentation for it by running:
+     <pre class="example">          M-x describe-function
+</pre>
+     <p class="noindent">You can also write your own functions in Emacs Lisp.
+
+     <li>It is not always good to introduce bindings to the global map. Any bindings
+that are useful only within a certain mode should be added only to the local
+keymap of that mode. Consider for example the following Emacs Lisp function:
+     <pre class="example">          (defun texi-insert-@example ()
+            "Insert an @example @end example block"
+            (interactive)
+            (beginning-of-line)
+            (insert "\n@example\n")
+            (save-excursion
+              (insert "\n")
+              (insert "@end example\n")
+              (insert "\n@noindent\n")))
+</pre>
+     <p class="noindent">We would like to bind this function to the key &lsquo;<samp><span class="samp">F9</span></samp>&rsquo;, however we
+would like this binding to be in effect only when we are within
+&lsquo;<samp><span class="samp">texinfo-mode</span></samp>&rsquo;. To do that, first we must define a hook function
+that establishes the local bindings using &lsquo;<samp><span class="samp">define-key</span></samp>&rsquo;:
+     <pre class="example">          (defun texinfo-elef-hook ()
+            (define-key texinfo-mode-map [F9] 'texi-insert-@example))
+</pre>
+     <p class="noindent">The syntax of &lsquo;<samp><span class="samp">define-key</span></samp>&rsquo; is similar to &lsquo;<samp><span class="samp">global-set-key</span></samp>&rsquo;
+except it takes the name of the local keymap as an additional
+argument. The local keymap of any &lsquo;<samp><var>name</var><span class="samp">-mode</span></samp>&rsquo; is
+&lsquo;<samp><var>name</var><span class="samp">-mode-map</span></samp>&rsquo;. Finally, we must ask &lsquo;<samp><span class="samp">texinfo-mode</span></samp>&rsquo;
+to call the function &lsquo;<samp><span class="samp">texinfo-elef-hook</span></samp>&rsquo;. To do that use the
+&lsquo;<samp><span class="samp">add-hook</span></samp>&rsquo; command:
+     <pre class="example">          (add-hook 'texinfo-mode-hook 'texinfo-elef-hook)
+</pre>
+     <p class="noindent">In some cases, Emacs itself will provide you with a few optional hooks
+that you can attach to your modes.
+
+     <li>You can write your own modes! If you write a program whose use involves
+editing some type of input files, it is very much appreciated by the
+community if you also write an Emacs mode for thet file and distribute
+it with your program.
+        </ol>
+
+   <p>With the exception of simple customizations, most of the more complicated
+ones require that you write new Emacs Lisp functions, distribute them
+with your software and somehow make them visible to the installer's
+Emacs when person installs your software. 
+See <a href="Emacs-Lisp-with-Automake.html#Emacs-Lisp-with-Automake">Emacs Lisp with Automake</a>, for more details on how to include
+Emacs Lisp packages to your software.
+
+   <p>Here are some simple customizations that you might want to add to your
+<samp><span class="file">.emacs</span></samp> file:
+
+     <ul>
+<li>Set your default background and foreground color for all your Emacs frames:
+     <pre class="example">          (set-background-color "black")
+          (set-foreground-color "white")
+</pre>
+     <p class="noindent">You can change the colors to your liking. 
+<li>Tell Emacs your name and your email address. This is particularly useful
+when you work on an off-line home system but you want Emacs to use the email
+address of your internet provider, and your real name. Specifying your real
+name is necessary if you call yourself &ldquo;Skeletor&rdquo; or &ldquo;Dude&rdquo; on your
+home computer.
+     <pre class="example">          (setq user-mail-address "karl@whitehouse.com")
+          (setq user-full-name "President Karl Marx")
+</pre>
+     <p class="noindent">Make sure the name is your real name, and the email address that you
+include can receive email 24 hours per day. 
+<li>Add a few toys to the status bar. These commands tell Emacs to display a
+clock, and the line and column number of your cursor's position at all times.
+     <pre class="example">          (display-time)
+          (line-number-mode 1)
+          (column-number-mode 1)
+</pre>
+     <li>When you use the mouse to cut and paste text with Emacs, mouse button 1
+will select text and mouse button 2 will paste it. Unfortunately,
+when you click mouse button 2, emacs will first move the cursor at the
+location of the mouse, and then insert the text in that location. 
+If you are used to editing with vi under xterms, you will instead prefer
+to position the cursor yourself, and use mouse button 2 to simply cause
+the text to be pasted without changing the position of the cursor. If you
+prefer this behaviour, then add the following line to your <samp><span class="file">.emacs</span></samp>:
+     <pre class="example">          (global-set-key [mouse-2] 'yank)
+</pre>
+     <p>By default, selected text in Emacs buffers is highlighted with blue color. 
+However, you can also select and paste into an Emacs buffer text that
+you select from other applications, like your web browser, or your xterm. 
+<li>Use <dfn>font-lock</dfn>. Font-lock decorates your editted text with colors that
+make it easier to read text with complicated syntax, such as software
+source codes. This is one of the coolest features of Emacs. To use it, add
+the following lines to your <samp><span class="file">.emacs</span></samp>:
+     <pre class="example">          (global-font-lock-mode t)
+          (setq font-lock-maximum-size nil)
+</pre>
+     <p class="noindent"><li>To get rid of the scrollbar at the left of your Emacs window, type
+     <pre class="example">          (setq scroll-bar-mode nil)
+</pre>
+     <p class="noindent">The only reason that the scrollbar is default is to make Emacs more similar
+to what lusers are used to. It is assumed that seasoned hacker, who will
+be glad to see the scrollbar bite it, will figure out how to make it go away. 
+<li>With most versions of Emacs, you should add the following to your <samp><span class="file">.emacs</span></samp>
+to make sure that editing <samp><span class="file">configure.in</span></samp> takes you to <code>m4-mode</code>
+and editing <samp><span class="file">Makefile.am</span></samp> takes you to <code>makefile-mode</code>.
+     <pre class="example">          (setq auto-mode-alist
+            (append '(
+              ("configure.in" . m4-mode)
+              ("\\.m4\\'" . m4-mode)
+              ("\\.am\\'" . makefile-mode))
+             auto-mode-alist))
+</pre>
+     <p class="noindent">You will have to edit such files if you use the GNU build system. 
+See <a href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>, for more details. 
+<li>If you have installed Emacs packages in non-standard directories,
+you need to add them to the &lsquo;<samp><span class="samp">load-path</span></samp>&rsquo; variable. For example,
+here's how to add a couple of directories:
+     <pre class="example">          (setq load-path
+                (append "/usr/share/emacs/site-lisp"
+                        "/usr/local/share/emacs/site-site"
+                        (expand-file-name "~lf/lisp")
+                        load-path))
+</pre>
+     <p class="noindent">Note the use of &lsquo;<samp><span class="samp">expand-file-name</span></samp>&rsquo; for dealing with non-absolute
+directories. If you are a user in an account where you don't have root
+priviledge, you are very likely to need to install your Emacs packages
+in a non-standard directory. 
+<li>See <a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>, if you would like to customize Emacs to run
+a vi editor under the Emacs system. 
+<li>See <a href="Navigating-source-code.html#Navigating-source-code">Navigating source code</a>, for more details on how to customize Emacs to
+make navigating a source code directory tree easier. 
+<li>See <a href="Using-Emacs-as-an-email-client.html#Using-Emacs-as-an-email-client">Using Emacs as an email client</a>, if you would like to set up Emacs to
+process your email. 
+<li>Autotools distributes two Emacs packages. One for handling copyright notices,
+and another one for handling Texinfo documentation. 
+See <a href="Inserting-copyright-notices-with-Emacs.html#Inserting-copyright-notices-with-Emacs">Inserting copyright notices with Emacs</a>, and
+See <a href="GNU-Emacs-support-for-Texinfo.html#GNU-Emacs-support-for-Texinfo">GNU Emacs support for Texinfo</a>, for more details. 
+</ul>
+   Emacs now has a graphical user interface to customization that will
+write <samp><span class="file">.emacs</span></samp> for you automatically. To use it, select:
+<pre class="example">     Help ==&gt; Customize ==&gt; Browse Customization Groups
+</pre>
+   <p class="noindent">from the menu bar. You can also manipulate some common settings from:
+<pre class="example">     Help ==&gt; Options
+</pre>
+   <!-- ============================================================ -->
+   </body></html>
+

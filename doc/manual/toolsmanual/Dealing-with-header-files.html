@@ -1,0 +1,201 @@
+<html lang="en">
+<head>
+<title>Dealing with header files - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Building-libraries.html#Building-libraries" title="Building libraries">
+<link rel="next" href="The-GPL-and-libraries.html#The-GPL-and-libraries" title="The GPL and libraries">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Dealing-with-header-files"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-GPL-and-libraries.html#The-GPL-and-libraries">The GPL and libraries</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Building-libraries.html#Building-libraries">Building libraries</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.4 Dealing with header files</h3>
+
+<p>In general libraries are composed of many &lsquo;<samp><span class="samp">*.c</span></samp>&rsquo; files that compile
+to object files, and a few <dfn>header files</dfn> (&lsquo;<samp><span class="samp">*.h</span></samp>&rsquo;). The header
+files declare the resources that are defined by the library and need to
+be included by any source files that use the library's resources. 
+In general a library comes with two types of header files:
+<dfn>public</dfn> and <dfn>private</dfn>. The public header files
+declare resources that you want to make accessible to other software. 
+The private header files declare resources that are meant to be used only
+for developing the library itself. To make an installed library useful,
+it is also necessary to install the corresponding public header files. 
+The standard directory for installing header files is <samp><span class="file">/usr/include</span></samp>. 
+The GNU compiler also understands <samp><span class="file">/usr/local/include</span></samp> as an
+alternative directory. 
+When the compiler encounters the directive
+<pre class="example">     #include &lt;foo.h&gt;
+</pre>
+   <p class="noindent">it searches these standard directories for <samp><span class="file">foo.h</span></samp>. 
+If you have installed the header files in a non-standard directory,
+you can tell the compiler to search for them in that directory by
+using the &lsquo;<samp><span class="samp">-I</span></samp>&rsquo; flag. For example, to build a program <samp><span class="file">bar</span></samp>
+from a source file <samp><span class="file">bar.c</span></samp> that uses the <code>libfoo</code> library
+installed at <samp><span class="file">/home/username</span></samp> you would need to do the following:
+<pre class="example">     % gcc -c -I/home/lf/include bar.c
+     % gcc -o bar bar.o -L/home/lf/lib -lfoo
+</pre>
+   <p class="noindent">You can also do it in one step:
+<pre class="example">     % gcc -I/home/lf/include -o bar bar.o -L/home/lf/lib -lfoo
+</pre>
+   <p class="noindent">For portability, it is better that the &lsquo;<samp><span class="samp">-I</span></samp>&rsquo; appear before the filenames
+of the source files that we want to compile.
+
+   <p>A good coding standard is to distringuish private from public header files
+in your source code by including private header files like
+<pre class="example">     #include "private.h"
+</pre>
+   <p class="noindent">and public header files like
+<pre class="example">     #include &lt;public.h&gt;
+</pre>
+   <p class="noindent">in your implementation of the library, even when the public header files are
+not yet installed while building the library. This way source code
+can be moved in or out of the library without needing to change the
+header file inclusion semantics from &lsquo;<samp><span class="samp">&lt;..&gt;</span></samp>&rsquo; to &lsquo;<samp><span class="samp">".."</span></samp>&rsquo; back and
+forth. In order for this to work however, you must tell the compiler
+to search for &ldquo;installed&rdquo; header files in the current directory too. 
+To do that you must pass the &lsquo;<samp><span class="samp">-I</span></samp>&rsquo; flag with the current directory
+<samp><span class="file">.</span></samp> as argument (&lsquo;<samp><span class="samp">-I.</span></samp>&rsquo;).
+
+   <p>In many cases a header file needs to include other header files, and it
+is very easy for some header files to be included more than once. 
+When this happens, the compiler will complain about multiple declarations
+of the same symbols and throw an error. To prevent this from happening,
+please surround the contents of your header files with C preprocessor
+conditional like this:
+<pre class="example">     #ifndef __defined_foo_h
+     #define __defined_hoo_h
+     [...contents...]
+     #endif
+</pre>
+   <p class="noindent">The defined macro <code>__defined_foo_h</code> is used as a flag to indicate that
+the contents of this header file have been included. To make sure that
+each one of these macros is unique to only one header file, please
+combine the prefix <code>__defined</code> with the pathname of the header file
+when it gets installed. If your header file is meant to be installed as
+in <samp><span class="file">/usr/local/include/foo.h</span></samp> or <samp><span class="file">/usr/include/foo.h</span></samp> then
+use <code>__defined_foo_h</code>. If your header files is meant to be installed
+in a subdirectory like <samp><span class="file">/usr/include/dir/foo.h</span></samp> then please use
+<code>__defined_dir_foo_h</code> instead.
+
+   <p>In principle, every library can be implemented using only one public header
+file and perhaps only one private header file. There are problems with
+this approach however:
+     <ul>
+<li>This header file grows to be very large and slows down compilation by
+processing many symbols declarations that are not relevant to the specific
+source file that is being compiled. 
+<li>If you change the contents of the header file, it will be difficult to
+determine the minimum set of object files that need to be rebuilt since
+the change could reflect to all of them, in principle. So you will
+end up rebuilding the entire library unnecessarily. 
+</ul>
+   For small libraries, these problems are not very serious. For large
+libraries however, you may need to split the one large header file
+to many smaller files. Sometimes a good approach is to have a matching
+header file for each source file, meaning that if there is a <samp><span class="file">foo.c</span></samp>
+there should be a <samp><span class="file">foo.h</span></samp>. Some other times it is better to distribute
+declarations among header files by splitting the library's provided
+resources to various logical categories and declaring each category on a
+separate header file. It is up to the developer to decide how to do this best.
+
+   <p>Once this decision is made, a few issues still remain:
+     <ul>
+<li>We don't want to burden the users of the library that use the library's
+features extensively with including many header files. It should be
+possible to declare the entire library with only one inclusion. 
+<li>The more header files we use, the more likely it is that their filenames
+conflict with the filenames of header files from other installed libraries. 
+</ul>
+   One way of preventing the filename conflicts is to install the library's
+header files in a subdirectory bellow the standard directory for
+installing header files. Then we install one header file in the standard
+directory itself that includes all the header files in the subdirectory.
+
+   <p>For example, if the Foo library wants to install headers <samp><span class="file">foo1.h</span></samp>,
+<samp><span class="file">foo2.h</span></samp> and <samp><span class="file">foo3.h</span></samp>, it can install them under
+<samp><span class="file">/usr/include/foo</span></samp> and install in <samp><span class="file">/usr/include/</span></samp> only
+a one header file <samp><span class="file">foo.h</span></samp> containing only:
+<pre class="example">     #include &lt;foo/foo1.h&gt;
+     #include &lt;foo/foo2.h&gt;
+     #include &lt;foo/foo3.h&gt;
+</pre>
+   <p class="noindent">Please name this &ldquo;central&rdquo; header and the directory for the
+subsidiary headers consistently after the corresponding library. 
+So the <samp><span class="file">libfoo.a</span></samp> library should install a central header
+named <samp><span class="file">foo.h</span></samp> and all subsidiary headers under the subdirectory
+<samp><span class="file">foo</span></samp>.
+
+   <p>The subsidiary header files should be guarded with preprocessor conditionals,
+but it is not necessary to also guard the central header file that includes
+them. To make the flag macros used in these preprocessor conditionals unique,
+you should include the directory name in the flag macro's name. 
+For example, <samp><span class="file">foo/foo1.h</span></samp> should be guarded with
+<pre class="example">     #ifndef __defined_foo_foo1_h
+     #define __defined_foo_foo1_h
+     [...contents...]
+     #endif
+</pre>
+   <p class="noindent">and similarly with <samp><span class="file">foo/foo2.h</span></samp> and <samp><span class="file">foo/foo3.h</span></samp>.
+
+   <p>This approach creates yet another problem that needs to
+be addressed. If you recall, we suggested that you use the
+<code>include "..."</code> semantics for private header files and the
+<code>include &lt;...&gt;</code> semantics for public header files. 
+This means that when you include the public header file <samp><span class="file">foo1.h</span></samp>
+from one of the source files of the library itself, you should write:
+<pre class="example">     #include &lt;foo/foo1.h&gt;
+</pre>
+   <p class="noindent">Unfortunately, if you place the <samp><span class="file">foo1.h</span></samp> in the same directory
+as the file that attempts to include it, using these semantics,
+it will not work, because there is no subdirectory <samp><span class="file">foo</span></samp> during
+compile time.
+
+   <p>The simplest way to resolve this is by placing all of the source code
+for a given library under a directory and all such header files in
+a subdirectory named <samp><span class="file">foo</span></samp>. The GNU build system in general requires
+that all the object files that build a specific library be under the
+same directory. This means that the C files must be in the same directory. 
+It is okey however to place header files in a subdirectory.
+
+   <p>This will also work if you have many directories, each containing the
+sources for a separate library, and a source file in directory <samp><span class="file">bar</span></samp>,
+for example, tries to include the header file <samp><span class="file">&lt;foo/foo1.h&gt;</span></samp> from
+a directory <samp><span class="file">foo</span></samp> bellow the directory containing the source code
+for the library <code>libfoo</code>. To make it work, just pass &lsquo;<samp><span class="samp">-I</span></samp>&rsquo;
+flags to the compiler for every directory of containing the source code
+of every library in the package. 
+See <a href="Libraries-with-Automake.html#Libraries-with-Automake">Libraries with Automake</a>, for more details. 
+It will also work even if there are already old versions of
+<samp><span class="file">foo/foo1.h</span></samp> installed
+in a standard directory like <samp><span class="file">/usr/include</span></samp>, because the compiler
+will first search under the directories mentioned in the &lsquo;<samp><span class="samp">-I</span></samp>&rsquo; flags
+before trying the standard directories.
+
+<!-- ============================================================ -->
+   </body></html>
+

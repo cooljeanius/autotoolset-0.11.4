@@ -1,0 +1,109 @@
+<html lang="en">
+<head>
+<title>Invoking the gpl utility - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Writing-Good-Programs.html#Writing-Good-Programs" title="Writing Good Programs">
+<link rel="prev" href="Free-software-is-good-software.html#Free-software-is-good-software" title="Free software is good software">
+<link rel="next" href="Inserting-notices-with-Emacs.html#Inserting-notices-with-Emacs" title="Inserting notices with Emacs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Invoking-the-gpl-utility"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Inserting-notices-with-Emacs.html#Inserting-notices-with-Emacs">Inserting notices with Emacs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Free-software-is-good-software.html#Free-software-is-good-software">Free software is good software</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Writing-Good-Programs.html#Writing-Good-Programs">Writing Good Programs</a>
+<hr>
+</div>
+
+<h3 class="section">2.6 Invoking the &lsquo;<samp><span class="samp">gpl</span></samp>&rsquo; utility</h3>
+
+<p>Maintaining these legalese notices can be quite painful after some time. 
+To ease the burden, Autotools distributes a utility called &lsquo;<samp><span class="samp">gpl</span></samp>&rsquo;. 
+This utility will conveniently generate for you all the legal wording you
+will ever want to use. It is important to know that this application is
+not approved in any way by the Free Software Foundation. By this I mean
+that I haven't asked their opinion of it yet.
+
+   <p>To create the file <samp><span class="file">COPYING</span></samp> type:
+<pre class="example">     % gpl -l COPYING
+</pre>
+   <p class="noindent">If you want to include a copy of the GPL in your documentation, you can
+generate a copy in texinfo format like this:
+<pre class="example">     % gpl -lt gpl.texi
+</pre>
+   <p class="noindent">Also, every time you want to create a new file, use the &lsquo;<samp><span class="samp">gpl</span></samp>&rsquo; to
+generate the copyright notice. If you want it covered by the GPL use the
+<dfn>standard notice</dfn>. If you want to invoke the Guile-like permissions, then
+also use the <dfn>library notice</dfn>. If you want to grant unlimited permissions,
+meaning no copyleft, use the <dfn>special notice</dfn>. 
+The &lsquo;<samp><span class="samp">gpl</span></samp>&rsquo; utility takes many different flags to take into account
+the different commenting conventions.
+     <ul>
+<li>For a C file, create the standard notice with
+     <pre class="example">          % gpl -c file.c
+</pre>
+     <p class="noindent">the library notice with
+     <pre class="example">          % gpl -cL file.c
+</pre>
+     <p class="noindent">and the special notice with
+     <pre class="example">          % gpl -cS file.c
+</pre>
+     <p class="noindent"><li>For a C++ file, create the standard notice with
+     <pre class="example">          % gpl -cc file.cc
+</pre>
+     <p class="noindent">the library notice with
+     <pre class="example">          % gpl -ccL file.cc
+</pre>
+     <p class="noindent">and the special notice with
+     <pre class="example">          % gpl -ccS file.cc
+</pre>
+     <p class="noindent"><li>For a shells script (bash, perl) that uses hash marks for commenting,
+create the standard notice with
+     <pre class="example">          % gpl -sh foo.pl
+</pre>
+     <p class="noindent">the library notice with
+     <pre class="example">          % gpl -shL foo.tcl
+</pre>
+     <p class="noindent">and the special notice with
+     <pre class="example">          % gpl -shS foo.pl
+</pre>
+     <p class="noindent">It does not make sense to use the library notice, if no executable is being
+formed from this file. If however, you parse that file into C code that is
+then compiled into object code, then you may consider using the library
+notice on it instead of the special notice. One of the features provided
+by Autotools allows you to embed text, such as Tcl scripts, into the
+executable. In that case, you can use the library notice to license the
+original text. 
+<li>For files that define autoconf macros:
+     <pre class="example">          % gpl -m4 file.m4
+</pre>
+     <p class="noindent">In general, we exempt autoconf macro files from the GNU GPL because the terms
+of autoconf also exclude its output, the &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script, from the
+GPL. 
+<li>For <samp><span class="file">Makefile.am</span></samp>, or files that describe targets:
+     <pre class="example">          % gpl -am Makefile.am
+</pre>
+     <p class="noindent">For these we also exempt them from the GPL because they are so trivial
+that it makes no sense to add copyleft protection. 
+</ul>
+
+<!--  -->
+   </body></html>
+

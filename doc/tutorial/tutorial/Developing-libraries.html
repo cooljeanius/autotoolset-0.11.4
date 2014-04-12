@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+<title>Developing libraries - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Writing-Good-Programs.html#Writing-Good-Programs" title="Writing Good Programs">
+<link rel="prev" href="Choosing-a-good-programming-language.html#Choosing-a-good-programming-language" title="Choosing a good programming language">
+<link rel="next" href="Developing-applications.html#Developing-applications" title="Developing applications">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Developing-libraries"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Developing-applications.html#Developing-applications">Developing applications</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Choosing-a-good-programming-language.html#Choosing-a-good-programming-language">Choosing a good programming language</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Writing-Good-Programs.html#Writing-Good-Programs">Writing Good Programs</a>
+<hr>
+</div>
+
+<h3 class="section">2.3 Developing libraries</h3>
+
+<p>The key to better code is to focus away from developing
+monolithic throw-away hacks that do only one job, and focus on developing
+<dfn>libraries</dfn> (<strong>FIXME: crossreference</strong>). Break down the original
+problem to parts, and the parts to smaller parts, until you get down to simple
+subproblems that can be easily tested, and from which you can construct
+solutions for both the original problem and future variants. Every library
+that you write is a legacy that you can share with other developers, that
+want to solve similar problems. Each library will allow these other developers
+to focus on their problem and not have to reinvent the parts that are common
+with your work from scratch. You should definetely make libraries out of
+subproblems that are likely to be broadly useful. 
+Please be very liberal in what you consider &ldquo;broadly useful&rdquo;. 
+Please program in a defensive way that renders reusable as much code as
+possible, regardless of whether or not you plan to reuse it in the near future. 
+The final application should merely have to assemble all the libraries
+together and make their functionality accessible to the user through a
+good interface.
+
+   <p>It is very important for each of your libraries to have a complete
+<dfn>test suite</dfn>. The purpose of the test suite is to detect bugs
+in the library and to prove to you or convince you, the developer, that the
+library works. A test suite is composed of a collection of test programs
+that link with your libraries and experiment with the features
+provided by the library. These test programs should return with
+<pre class="example">     exit(0);
+</pre>
+   <p class="noindent">if they do not detect anything wrong with the library and with
+<pre class="example">     exit(1);
+</pre>
+   <p class="noindent">if they detect problems. The test programs should not be installed with
+the rest of the package. They are meant to be run after your software
+is compiled and before it is installed. Therefore, they should be written
+so that they can run using the compiled but uninstalled files of the library. 
+Test programs should not output messages by default. They should run
+completely quietly and communicate with the environment in a yes or no
+fashion using the <code>exit</code> code. However, it is useful for test programs
+to output debugging information when they fail during development. Statements
+that output such information should be surrounded by conditional
+directives like this:
+<pre class="example">     #if INSPECT_ERRORS
+      printf("Division by zero: %d / %d\n",a,b);
+     #endif
+</pre>
+   <p class="noindent">This way it becomes easy to switch them on or off upon demand. The prefered
+way to manipulate a macro like this <code>INSPECT_ERRORS</code> is by adding
+a switch to your <samp><span class="file">configure</span></samp> script. You can do this by adding the
+following lines to <samp><span class="file">configure.in</span></samp>:
+<pre class="example">     AC_ARG_WITH(inspect,
+       [  --with-inspect           Inspect test suite errors],
+       [ AC_DEFINE(INSPECT_ERRORS, 1, "Inspect test suite errors")],
+       [ AC_DEFINE(INSPECT_ERRORS, 0, "Inspect test suite errors")])
+</pre>
+   <p class="noindent">After the
+library is debugged, the debug statements should not be removed. If a
+future version of the library regresses and an old test begins to fail
+again, it will be useful to be able to reactivate the same error messages
+that were useful in debugging the test when it was first put together,
+and it may be necessary to add a few new ones.
+
+   <p>The best time to write each test program is <em>as soon as it is possible!</em>. 
+You should not be lazy, and you should not just keep throwing in code after
+code after code. The minute there is enough code in there to put together some
+kind of test program, <em>just do it!</em> When you write new code,
+it is easy to think that you are producing work with every new line of code
+that is written. The reality is that you <em>know</em> you have produced new
+work
+everytime you write working a test program for new features, and
+<em>not a minute before</em>. 
+Another time when you should definetely write a test program is when you
+find a bug while ordinarily using the library. Then, write a test program
+that triggers the bug, fix the bug, and keep the test in your test suite. 
+This way, if a future modification reintroduces the same bug it will be
+detected.
+
+   <p>Please document your library as you go. The best time to update your
+documentation is immediately after you get new test programs checking out new
+futures. You might feel that you are too busy to write documentation, but
+the truth of the matter is that you will <em>always</em> be too busy. 
+In fact, if you are a busy person, you are likely to have many other
+obligations bugging you around for your attention. There may be times that
+you have to stay away from a project for a large amount of time. 
+If you have consistently been maintaining documentation, it will help you
+refocus on your project even after many months of absense.
+
+   </body></html>
+

@@ -1,0 +1,79 @@
+<html lang="en">
+<head>
+<title>Installing GNU Emacs - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Introduction-to-Emacs.html#Introduction-to-Emacs" title="Introduction to Emacs">
+<link rel="next" href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs" title="Configuring GNU Emacs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installing-GNU-Emacs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs">Configuring GNU Emacs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introduction-to-Emacs.html#Introduction-to-Emacs">Introduction to Emacs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">3.2 Installing GNU Emacs</h3>
+
+<p>If Emacs is not installed on your system, you will need to get a source
+code distribution and compile it yourself. Installing Emacs is not
+difficult. If Emacs is already installed on your GNU/Linux system,
+make sure that you do indeed have Emacs and not the Xemacs variant. 
+Also, make sure that you have version 20.3 or newer. Finally, there
+are some variations in how Emacs can be installed. The installer can
+choose whether or not they want to install support for multiple languages
+and reading email over a POP server. It can be very useful to support both. 
+If the preinstalled version does not support either, then uninstall it and
+reinstall Emacs from a source code distribution.
+
+   <p>The emacs source code is distributed in three separate files:
+     <dl>
+<dt><samp><span class="file">emacs-20.3.tar.gz</span></samp><dd>This is the main Emacs distribution. If you do not care about
+international language support, you can install this by itself. 
+<br><dt><samp><span class="file">leim-20.3.tar.gz</span></samp><dd>This supplements the Emacs distribution with support for multiple languages. 
+If you develop internationalized software, it is likely that you will need
+this. 
+<br><dt><samp><span class="file">intlfonts-1.1.tar.gz</span></samp><dd>This file contains the fonts that Emacs uses to support international
+languages. If you want international language support, you will
+definetely need this. 
+</dl>
+   Get a copy of these files, place them under the same directory
+and unpack them with the following commands:
+<pre class="example">     % gunzip emacs-20.3.tar.gz
+     % tar xf emacs-20.3.tar
+     % gunzip leim-20.3.tar.gz
+     % tar xf leim-20.3.tar
+</pre>
+   <p class="noindent">Both tarballs will unpack under the <samp><span class="file">emacs-20.3</span></samp> directory. When
+this is finished, go in and compile the source code:
+<pre class="example">     % cd emasc-20.3
+     % ./configure --with-pop
+     % make
+</pre>
+   <p class="noindent">This will take quite a while. When done, install Emacs with
+<pre class="example">     # make install
+</pre>
+   <p class="noindent">To install <samp><span class="file">intlfonts-1.1.tar.gz</span></samp> unpack it, and follow the instructions
+in the <samp><span class="file">README</span></samp> file.
+
+   </body></html>
+

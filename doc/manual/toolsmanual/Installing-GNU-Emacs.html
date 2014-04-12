@@ -1,0 +1,96 @@
+<html lang="en">
+<head>
+<title>Installing GNU Emacs - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="next" href="Basic-Emacs-concepts.html#Basic-Emacs-concepts" title="Basic Emacs concepts">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installing-GNU-Emacs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Basic-Emacs-concepts.html#Basic-Emacs-concepts">Basic Emacs concepts</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">2.1 Installing GNU Emacs</h3>
+
+<p>If Emacs is not installed on your system, you will need to get a source
+code distribution and compile it yourself. Installing Emacs is not
+difficult. If Emacs is already installed on your GNU/Linux system,
+you might still need to reinstall it: you might not have the most
+recent version, you might have Xemacs instead, you might not have
+support for internationalization, or your Emacs might not have compiled
+support for reading mail over POP (a feature very useful to developers
+that hook up over modem). If any of these is the case, then uninstall
+that version of Emacs, and reinstall Emacs from a source code distribution.
+
+   <p>The entire Emacs source code is distributed in three separate files:
+     <dl>
+<dt><samp><span class="file">emacs-20.3.tar.gz</span></samp><dd>This is the main Emacs distribution. If you do not care about
+international language support, you can install this by itself. 
+<br><dt><samp><span class="file">leim-20.3.tar.gz</span></samp><dd>This supplements the Emacs distribution with support for multiple languages. 
+If you develop internationalized software, it is likely that you will need
+this. 
+<br><dt><samp><span class="file">intlfonts-1.1.tar.gz</span></samp><dd>This file contains the fonts that Emacs uses to support international
+languages. If you want international language support, you will
+definetely need this. 
+</dl>
+   Get a copy of these three files, place them under the same directory
+and unpack them with the following commands:
+<pre class="example">     % gunzip emacs-20.3.tar.gz
+     % tar xf emacs-20.3.tar
+     % gunzip leim-20.3.tar.gz
+     % tar xf leim-20.3.tar
+</pre>
+   <p class="noindent">Both tarballs will unpack under the <samp><span class="file">emacs-20.3</span></samp> directory. 
+When this is finished, configure the source code with the following commands:
+<pre class="example">     % cd emacs-20.3
+     % ./configure --with-pop --with-gssapi
+     % make
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">--with-pop</span></samp>&rsquo; flag is almost always
+a good idea, especially if you are running Emacs from a home computer
+that is connected to the internet over modem. It will let you use Emacs
+to download your email from your internet provider and read it off-line
+(see <a href="Using-Emacs-as-an-email-client.html#Using-Emacs-as-an-email-client">Using Emacs as an email client</a>). Most internet providers use
+GSSAPI-authenticated POP. If you need to support other authentication
+protocols however, you may also want to add one of the following flags:
+     <dl>
+<dt><code>--with-kerberos</code><dd>support Kerberos-authenticated POP
+<br><dt><code>--with-kerberos5</code><dd>support Kerberos version 5 authenticated POP
+<br><dt><code>--with-hesiod</code><dd>support Hesiod to get the POP server host
+</dl>
+   Then compile and install Emacs with:
+<pre class="example">     $ make
+     # make install
+</pre>
+   <p class="noindent">Emacs is a very large program, so this will take a while.
+
+   <p>To install <samp><span class="file">intlfonts-1.1.tar.gz</span></samp> unpack it, and follow
+the instructions in the <samp><span class="file">README</span></samp> file. Alternatively, you may find it
+more straightforward to install it from a Debian package. Packages for
+<samp><span class="file">intlfonts</span></samp> exist as of Debian 2.1.
+
+<!-- ============================================================ -->
+   </body></html>
+

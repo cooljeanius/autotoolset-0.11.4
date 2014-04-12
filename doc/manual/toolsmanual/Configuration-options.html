@@ -1,0 +1,140 @@
+<html lang="en">
+<head>
+<title>Configuration options - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installing-GNU-software.html#Installing-GNU-software" title="Installing GNU software">
+<link rel="prev" href="The-Makefile-standards.html#The-Makefile-standards" title="The Makefile standards">
+<link rel="next" href="Doing-a-VPATH-build.html#Doing-a-VPATH-build" title="Doing a VPATH build">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Configuration-options"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Doing-a-VPATH-build.html#Doing-a-VPATH-build">Doing a VPATH build</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-Makefile-standards.html#The-Makefile-standards">The Makefile standards</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installing-GNU-software.html#Installing-GNU-software">Installing GNU software</a>
+<hr>
+</div>
+
+<h3 class="section">1.3 Configuration options</h3>
+
+<p>The &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script accepts many command-line flags that modify
+its behaviour and the configuration of your source distribution. To obtain
+a list of all the options that are available type
+<pre class="example">     % ./configure --help
+</pre>
+   <p class="noindent">on the shell prompt.
+
+   <p>The most useful parameter that the installer controls during configuration
+is the directory where they want the package to be installed. 
+During installation, the following files go to the following directories:
+<pre class="example">     Executables   ==&gt; /usr/local/bin
+     Libraries     ==&gt; /usr/local/lib
+     Header files  ==&gt; /usr/local/include
+     Man pages     ==&gt; /usr/local/man/man?
+     Info files    ==&gt; /usr/local/info
+</pre>
+   <p class="noindent">The <samp><span class="file">/usr/local</span></samp> directory is called the <dfn>prefix</dfn>. The default
+prefix is always <samp><span class="file">/usr/local</span></samp> but you can set it to anything you like
+when you call &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; by adding a &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; option. 
+For example, suppose that you are not a privilidged user, so you can not
+install anything in <samp><span class="file">/usr/local</span></samp>, but you would still like to install
+the package for your own use. Then you can tell the &lsquo;<samp><span class="samp">configure</span></samp>&rsquo;
+script to install the package in your home directory
+&lsquo;<samp><span class="samp">/home/</span><var>username</var></samp>&rsquo;:
+<pre class="example">     % ./configure --prefix=/home/<var>username</var>
+     % make
+     % make check
+     % make install
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; argument tells &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; where you want to
+install your package, and &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; will take that into account and
+build the proper makefile automatically.
+
+   <p>If you are installing the package on a filesystem that is shared by computers
+that run variations of GNU or Unix, you need to install the files that
+are independent of the operating system in a shared directory, but separate
+the files that are dependent on the operating systems in different
+directories. Header files and documentation can be shared. However,
+libraries and executables must be installed separately. Usually the scheme
+used to handle such situations is:
+<pre class="example">     Executables   ==&gt; /usr/local/<var>system</var>/bin
+     Libraries     ==&gt; /usr/local/<var>system</var>/lib
+     Header files  ==&gt; /usr/local/include
+     Man pages     ==&gt; /usr/local/man/man<var>n</var>
+     Info files    ==&gt; /usr/local/info
+</pre>
+   <p class="noindent">The directory <samp><span class="file">/var/local/</span><var>system</var></samp> is called the
+<dfn>executable prefix</dfn>, and it is usually a subdirectory of the prefix. 
+In general, it can be any directory. If you don't specify the executable
+prefix, it defaults to being equal to the prefix. To change that,
+use the &lsquo;<samp><span class="samp">--exec-prefix</span></samp>&rsquo; flag. 
+For example, to configure for a GNU/Linux system, you would run:
+<pre class="example">     % configure --exec-prefix=/usr/local/linux
+</pre>
+   <p class="noindent">To configure for GNU/Hurd, you would run:
+<pre class="example">     % configure --exec-prefix=/usr/local/hurd
+</pre>
+   <p>In general, there are many directories where a package may want to install
+files. Some of these directories are controlled by the prefix, where
+others are controlled by the executable prefix. 
+See <a href="Installation-standard-directories.html#Installation-standard-directories">Installation standard directories</a>, for a complete discussion of
+what these directories are, and what they are for.
+
+   <p>Some packages allow you to enable or disable certain features while you
+configure the source code. They do that with flags of the form:
+<pre class="example">        --with-<var>package</var>   --enable-<var>feature</var>
+     --without-<var>package</var>  --disable-<var>feature</var>
+</pre>
+   <p class="noindent">The <code>--enable</code> flags usually control whether to enable certain
+optional features of the package. Support for international languages,
+debugging features, and shared libraries are features that are usually
+controlled by these options. 
+The <code>--with</code> flags instead control whether to compile and install
+certain optional components of the package. 
+The specific flags that are available for a particular source distribution
+should be documented in the <samp><span class="file">README</span></samp> file.
+
+   <p>Finally, <code>configure</code> scripts can be passed parameters via environment
+variables. One of the things that <code>configure</code> does is decide what
+compiler to use and what flags to pass to that compiler. You can
+overrule the decisions that <code>configure</code> makes by setting the flags
+<code>CC</code> and <code>CFLAGS</code>. For example, to specify that you want the
+package to compile with full optimization and without any debugging
+symbols (which is a bad idea, yet people want to do it):
+<pre class="example">     % export CFLAGS="-O3"
+     % ./configure
+</pre>
+   <p class="noindent">To tell <code>configure</code> to use the system's native compiler instead of
+<code>gcc</code>, and compile without optimization and with debugging symbols:
+<pre class="example">     % export CC="cc"
+     % export CFLAGS="-g"
+     % ./configure
+</pre>
+   <p class="noindent">This assumes that you are using the <code>bash</code> shell as your default shell. 
+If you use the <code>csh</code> or <code>tcsh</code> shellls, you need to assign
+environment variables with the <code>setenv</code> command instead. For example:
+<pre class="example">     % setenv CFLAGS "-O3"
+     % ./configure
+</pre>
+   <p class="noindent">Similarly, the flags <code>CXX</code>, <code>CXXFLAGS</code> control the C++ compiler.
+
+<!--  -->
+   </body></html>
+

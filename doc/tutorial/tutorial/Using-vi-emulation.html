@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>Using vi emulation - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs" title="Configuring GNU Emacs">
+<link rel="next" href="Using-Emacs-as-an-IDE.html#Using-Emacs-as-an-IDE" title="Using Emacs as an IDE">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Using-vi-emulation"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-Emacs-as-an-IDE.html#Using-Emacs-as-an-IDE">Using Emacs as an IDE</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Configuring-GNU-Emacs.html#Configuring-GNU-Emacs">Configuring GNU Emacs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">3.4 Using vi emulation</h3>
+
+<p>Many people prefer to use the &lsquo;<samp><span class="samp">vi</span></samp>&rsquo; editor. The &lsquo;<samp><span class="samp">vi</span></samp>&rsquo; editor is
+the standard editor on Unix. It is also always available on GNU/Linux. 
+Many system administrators find it necessary to use vi, especially when they
+are in the middle of setting up a system in which Emacs has not been
+installed yet. Besides that, there are many compelling reasons why people
+like vi.
+     <ul>
+<li>Vi requires only two special keys: the &lt;SHIFT&gt; key and the &lt;ESC&gt;
+key. All the other keys that you need are standard on all keyboards. 
+You do not need &lt;CTRL&gt;,&lt;ALT&gt;,the cursor keys or any of the function
+keys. Some terminals that miss the escape key, usually have the control
+key and you can get escape with:
+<kbd>&lt;CTRL&gt;-[</kbd> <!-- } -->
+<li>Vi was designed to deal with terminals that connect to mainframes over
+a very slow line. So it has been optimized to allow you to do the most
+editing possible with the fewest keystrokes. This allows users to edit
+text very efficiently. 
+<li>Vi allows your fingers to stay at the center of the keyboard, with the
+occasional hop to the escape key. It does not require you to stretch your
+fingers in funny control combinations, which makes typing less tiring
+and more comfortable. 
+</ul>
+   Because most rearrangements of finger habits are not as optimal as the
+vi finger habits, most vi users react very unpleasently to other editors. 
+For the benefit of these users, in this section we describe how to
+run a vi editor under the Emacs system. Similarly, users of other editors
+find the vi finger habits strange and unintuitive. For the benefit of
+these users we describe briefly how to use the vi editor, so they can
+try it out if they like.
+
+   <p>The vi emulation package for the Emacs system is called <dfn>Viper</dfn>. 
+To use Viper, add the following lines in your <samp><span class="file">.emacs</span></samp>:
+<samp><span class="file">.emacs</span></samp>:
+<pre class="example">     (setq viper-mode t)
+     (setq viper-inhibit-startup-message 't)
+     (setq viper-expert-level '3)
+     (require 'viper)
+</pre>
+   <p class="noindent">We recommend expert level 3, as the most balanced blend
+of the vi editor with the Emacs system. Most editing modes are aware of
+Viper, and when you begin editing the text you are immediately thrown into
+Viper. Some modes however do not do that. In some modes, like the Dired mode,
+this is very appropriate. In other modes however, especially custom modes
+that you have added to your system, Viper does not know about them, so
+it does not configure them to enter Viper mode by default. To tell a
+mode to enter Viper by default, add a line like the following to
+your <samp><span class="file">.emacs</span></samp> file:
+<pre class="example">     (add-hook 'm4-mode 'viper-mode)
+</pre>
+   <p class="noindent">The modes that you are most likely to use during software development are
+<pre class="example">     c-mode  , c++-mode , texinfo-mode
+     sh-mode , m4-mode  , makefile-mode
+</pre>
+   <p class="noindent">The Emacs distribution has a Viper manual. For more details on setting
+Viper up, you should read that manual.
+
+   <p>The vi editor has these things called <em>editing modes</em>. An editing
+mode defines how the editor responds to your keystrokes. Vi has three
+editing modes: <dfn>insert mode</dfn>, <dfn>replace mode</dfn> and <dfn>command mode</dfn>. 
+If you run Viper, there is also the Emacs mode. Emacs indicates which
+mode you are in by showing one of
+&lsquo;<samp><span class="samp">&lt;I&gt;</span></samp>&rsquo;, &lsquo;<samp><span class="samp">&lt;R&gt;</span></samp>&rsquo;, &lsquo;<samp><span class="samp">&lt;V&gt;</span></samp>&rsquo;, &lsquo;<samp><span class="samp">&lt;E&gt;</span></samp>&rsquo; on the statusbar
+correspondingly for the Insert, Replace, Command and Emacs modes. 
+Emacs also shows you the mode by the color of the cursor. This makes it
+easy for you to keep track of which mode you are in.
+     <ul>
+<li><dfn>Insert mode</dfn>:
+When you are in insert mode, the editor simply <dfn>inserts</dfn> the things that
+you type into the text that is being editted. If there are any characters
+in front of your cursor, these characters are pushed ahead and they are
+not overwritten. Under Viper, when you are in insert mode, the color
+of your cursor is green. The only key that has special meaning, while you
+are in insert mode is &lt;ESC&gt;. If you press the escape key, you are taken
+to <dfn>command mode</dfn>. 
+<li><dfn>Replace mode</dfn>:
+When you are in replace mode, the editor replaces the text under the cursor
+with the text that is being typed. So, you want insert mode when you want
+to write over what's already written. Under Viper, when you are in
+replace mode, the color of your cursor is red. The &lt;ESC&gt; will take you
+to <dfn>command mode.</dfn>
+<li><dfn>Command mode</dfn>:
+When you are in command mode, every letter key that you press is a command
+and has a special meaning. Some of these keys allow you to navigate the
+text. Other keys allow you to enter either insert or replace mode. 
+And other keys do various special things. Under Viper, when you are in
+command mode, the color of your cursor is white. 
+<li><dfn>Emacs mode</dfn>:
+When you are in Emacs mode, then Viper is turned off on the specific
+buffer, and Emacs behaves as the default Emacs editor. 
+You can switch between Emacs mode and Command mode by pressing
+<kbd>&lt;CTRL&gt;-z</kbd>. So to go to Emacs mode, from Insert of Replace mode, you
+need to go through Command mode. When you are dealing with a buffer that
+runs a special editing mode, like Dired (see <a href="Using-Emacs-as-an-IDE.html#Using-Emacs-as-an-IDE">Using Emacs as an IDE</a>),
+Emacs defines a specialized &ldquo;command mode&rdquo; for manipulating that buffer,
+that can be completely different from the canonical Viper command mode. 
+You want to be in that mode to access the intended functionality. Occasionally
+however, you may like to hop to viper's command mode to navigate the buffer,
+do a search or save the buffer's contents. When you hop to one of the
+other three modes, the buffer will suddendly be just text to your editor. 
+</ul>
+   While you are in Command mode, you can prepend keystrokes with a number. 
+Then the subsequent keystroke will be executed as many times as the number. 
+We now list the most important keystrokes that are available to you,
+while you are in Viper's command mode:
+     <ul>
+<li>The following keystrokes allow you to navigate the cursor around your text
+without making any changes on the text itself
+          <dl>
+<dt><kbd>h</kbd><dd>moves one character to the left
+<br><dt><kbd>j</kbd><dd>moves down one line
+<br><dt><kbd>k</kbd><dd>moves up one line
+<br><dt><kbd>l</kbd><dd>moves one character to the left
+<br><dt><kbd>w</kbd><dd>moves forward one word
+<br><dt><kbd>5w</kbd><dd>moves forward five words (get the idea?) 
+<br><dt><kbd>b</kbd><dd>moves back one word
+<br><dt><kbd>0</kbd><dd>moves to the beginning of the current line
+<br><dt><kbd>$</kbd><dd>moves to the end of the current line
+<br><dt><kbd>G</kbd><dd>moves to the last line in the file
+<br><dt><kbd>1G</kbd><dd>moves to the first line in the file
+<br><dt><kbd>:10</kbd><dd>moves to line 10 in the file (get the idea?) 
+<br><dt><kbd>{</kbd><dd>moves up one paragraph
+<br><dt><kbd>}</kbd><dd>moves down one paragraph
+</dl>
+     <li>The following keystrokes allow you to delete text
+          <dl>
+<dt><kbd>x</kbd><dd>Deletes the character under the cursor
+<br><dt><kbd>dd</kbd><dd>Deletes the current line
+<br><dt><kbd>4dd</kbd><dd>Deletes four lines
+<br><dt><kbd>dw</kbd><dd>Deletes the current word
+<br><dt><kbd>8dw</kbd><dd>Deletes the next eight words
+</dl>
+     <li>The following keystrokes allow you to enter Insert mode
+          <dl>
+<dt><kbd>a</kbd><dd>Append text after the cursor position
+<br><dt><kbd>i</kbd><dd>Insert text at the current cursor position
+<br><dt><kbd>o</kbd><dd>Insert text on a new line bellow the current line
+<br><dt><kbd>O</kbd><dd>Insert text on a new line above the current line
+</dl>
+     <li>The following keystrokes allow you to enter Replace mode.
+          <dl>
+<dt><kbd>R</kbd><dd>Replace text at the cursor position and stay in Replace mode. 
+<br><dt><kbd>s</kbd><dd>Replace (substitute) only the character at the cursor position, and
+enter Insert mode for all subsequent characters. 
+</dl>
+     <li>The following commands handle file input/output. All of these commands
+are prepended by the <kbd>:</kbd> character. The <kbd>:</kbd> character is used
+for commands that require many characters to be properly expressed. 
+The full text of these commands is entered in the minibuffer. Under viper,
+the minibuffer itself can run under insert, replace and command mode. 
+By default you get insert mode, but you can switch to command mode
+by pressing &lt;ESC&gt;.
+          <dl>
+<dt><kbd>:w</kbd><dd>Save the file to the disk
+<br><dt><kbd>:w!</kbd><dd>Force the file to be saved to disk even when file permissions do not allow
+it but you have the power to overrule the permissions. 
+<br><dt><kbd>:w&lt;SPACE&gt;</kbd><var>filename</var><dd>Save the file to the disk under a specific filename. 
+When you press &lt;SPACE&gt; Emacs inserts the full pathname of the current
+directory for you, which you can edit if you like. 
+<br><dt><kbd>:w!&lt;SPACE&gt;</kbd><var>filename</var><dd>Force the file to be saved to the disk under a specific filename. 
+<br><dt><kbd>:r&lt;SPACE&gt;</kbd><var>filename</var><dd>Paste a file from the disk at the cursor's current position. 
+<br><dt><kbd>:W</kbd><dd>Save all the files on all the Emacs buffers that correspond to open files. 
+<br><dt><kbd>:q</kbd><dd>Kill the buffer. This does not quite the editor at expert level 3. 
+<br><dt><kbd>:q!</kbd><dd>Kill the buffer even if the contents are not saved. Use with caution! 
+</dl>
+     <li>The following commands handle search and replace
+          <dl>
+<dt><kbd>/</kbd><var>string</var><dd>Search for <var>string</var>. 
+<br><dt><kbd>n</kbd><dd>Go to the next occurance of <var>string</var>. 
+<br><dt><kbd>N</kbd><dd>Go to the previous occurance of <var>string</var>. 
+<br><dt><kbd>:%s/</kbd><var>string1</var><kbd>/</kbd><var>string2</var><kbd>/g</kbd><dd>Replace all occurances of <var>string1</var> with <var>string2</var>. 
+Use this with extreme caution! 
+</dl>
+     <li>The following commands handle <dfn>undo</dfn>
+          <dl>
+<dt><kbd>u</kbd><dd>Undo the previous change. Press again to undo the undo
+<br><dt><kbd>.</kbd><dd>Press this if you want to repeat the undo further. 
+</dl>
+     </ul>
+   These are enough to get you started. Getting used to dealing with the modes
+and learning the commands is a matter of building finger habits. It may take
+you a week or two before you become comfortable with Viper. When Viper
+becomes second nature to you however, you won't want to tolerate what you
+used to use before.
+
+   </body></html>
+

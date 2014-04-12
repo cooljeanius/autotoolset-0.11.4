@@ -1,0 +1,242 @@
+<html lang="en">
+<head>
+<title>Building libraries - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Problems-with-Makefiles-and-workarounds.html#Problems-with-Makefiles-and-workarounds" title="Problems with Makefiles and workarounds">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Building-libraries"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Problems-with-Makefiles-and-workarounds.html#Problems-with-Makefiles-and-workarounds">Problems with Makefiles and workarounds</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">4.4 Building libraries</h3>
+
+<p>There's one last thing that we need to mention before moving on, and that's
+<dfn>libraries</dfn>. As you recall, to put together an executable, we make
+a whole bunch of &lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files and then put them all together. It just
+so happens in many cases that a set of &lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files together forms a
+cohesive unit that can be reused in many applications, and you'd like
+to use them in other programs. To make things simpler, what you do is put
+the &lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files together and make a <dfn>library</dfn>.
+
+   <p>A library is usually composed of many &lsquo;<samp><span class="samp">.c</span></samp>&rsquo; files and hopefully only
+one or at most two &lsquo;<samp><span class="samp">.h</span></samp>&rsquo; files. It's a good practice to minimize the
+use of header files and put all your gunk in one header file, because this
+way the user of your library won't have to be typing an endless stream
+of &lsquo;<samp><span class="samp">#include</span></samp>&rsquo; directives for <em>every</em> &lsquo;<samp><span class="samp">.c</span></samp>&rsquo; file he writes that
+depends on the library. Be considerate. The user might be you! Header files
+fall under two categories: <dfn>public</dfn> and <dfn>private</dfn>. The public
+header files must be installed at <samp><span class="file">/prefix/include</span></samp> whereas the private
+ones are only meant to be used internally. The public header files export
+documented library features to the user. The private header files export
+undocumented library features that are to be used only by the developer of
+the library and only for the purpose of developing the library.
+
+   <p>Suppose that we have a library called &lsquo;<samp><span class="samp">barf</span></samp>&rsquo; that's made of the following
+files:
+<blockquote>
+<samp><span class="file">barf.h</span></samp>, <samp><span class="file">barf1.c</span></samp>, <samp><span class="file">barf2.c</span></samp>, <samp><span class="file">barf3.c</span></samp>
+</blockquote>
+   In real life, the names should be more meaningful than that, but we're being
+general here. To build it, you first make the &lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files:
+<pre class="example">     % gcc -c barf1.c
+     % gcc -c barf2.c
+     % gcc -c barf3.c
+</pre>
+   <p class="noindent">and then you do this magic:
+<pre class="example">     % rm -f libbarf.a
+     % ar cru libbarf.a barf1.o barf2.o barf3.o
+</pre>
+   <p class="noindent">This will create a file <code>libbarf.a</code> from the object files
+<samp><span class="file">barf1.o</span></samp>, <samp><span class="file">barf2.o</span></samp>, <samp><span class="file">barf3.p</span></samp>. 
+On most Unix systems, the library won't work unless it's "blessed" by a
+program called &lsquo;<samp><span class="samp">ranlib</span></samp>&rsquo;:
+<pre class="example">     % ranlib libbarf.a
+</pre>
+   <p class="noindent">On other Unix systems, you might find that &lsquo;<samp><span class="samp">ranlib</span></samp>&rsquo; doesn't even exist
+because it's not needed.
+
+   <p>The reason for this is historical. Originally <code>ar</code>
+was meant to be used merely for packaging files together. The more
+well known program <code>tar</code> is a descendent of <code>ar</code> that was designed
+to handle making such archives on a tape device. Now that tape devices are
+more or less obsolete, <code>tar</code> is playing the role that was originally
+meant for <code>ar</code>. As for <code>ar</code>, way back, some people thought to
+use it to package <code>*.o</code> files. However the linker wanted a symbol table
+to be passed along with the archive for the convenience of the people writing
+the code for the linker. Perhaps also for efficiency. So the <code>ranlib</code>
+program was written to generate that table and add it to the <code>*.a</code> file. 
+Then some Unix vendors thought that if they incorporated <code>ranlib</code>
+to <code>ar</code> then users wouldn't have to worry about forgetting to call
+<code>ranlib</code>. So they provided <code>ranlib</code> but it did nothing. Some
+of the more evil ones dropped it all-together breaking many people's
+makefiles that tried to run <code>ranlib</code>. In the next chapter we will
+show you that Autoconf and Automake will automatically determine for you
+how to deal with <code>ranlib</code> in a portable manner.
+
+   <p>Anyway, once you have a library, you put the header file <samp><span class="file">barf.h</span></samp> under
+<samp><span class="file">/usr/local/include</span></samp> and the <samp><span class="file">libbarf.a</span></samp> file under
+<samp><span class="file">/usr/local/lib</span></samp>. If you are in development phase, you put them
+somewhere else, under a prefix different other than <samp><span class="file">/usr/local</span></samp>.
+
+   <p>Now, how do we use libraries? Well, suppose that a program uses the
+<code>barf</code> function defined in the barf library. Then a typical program
+might look like:
+<pre class="example">     // -* main.c *-
+     #include &lt;stdio.h&gt;
+     #include &lt;barf.h&gt;
+     main()
+     {
+      printf("This is barf!\n");
+      barf();
+      printf("Barf me!\n");
+     }
+</pre>
+   <p class="noindent">If the library was installed in <samp><span class="file">/usr/local</span></samp> then you can compile like
+this:
+<pre class="example">     % gcc -c main.c
+     % gcc main.o -o main -lbarf
+</pre>
+   <p class="noindent">Of course, if you did not install in <samp><span class="file">/prefix</span></samp> instead of
+<samp><span class="file">/usr/local</span></samp> or <samp><span class="file">/usr</span></samp>
+then you are in trouble. Now you have to do it this way:
+<pre class="example">     % gcc -I/prefix/include -c main.c
+     % gcc main.o -o main -L/prefix/lib -lbarf
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">-I</span></samp>&rsquo; flag tells the compiler where to find any extra header files
+(like <samp><span class="file">barf.h</span></samp>) and the &lsquo;<samp><span class="samp">-L</span></samp>&rsquo; flag tells the compiler where to
+find any extra libraries (like <samp><span class="file">libbarf.a</span></samp>). The &lsquo;<samp><span class="samp">-lbarf</span></samp>&rsquo; flag
+tells the compiler to bring in the entire <samp><span class="file">libbarf.a</span></samp> library with all
+its enclosed
+&lsquo;<samp><span class="samp">.o</span></samp>&rsquo; files and link it in with whathaveyou to produce the executable.
+
+   <p>If the library hasn't been installed yet, and is present in the same directory
+as the object file <samp><span class="file">main.o</span></samp> then you can link them by passing its
+filename instead:
+<pre class="example">     % gcc main.o libbarf.a -o main
+</pre>
+   <p class="noindent">Please link libraries with their full names if they haven't yet been
+installed under the prefix directory and reserve using the <code>-l</code>
+flag only for libraries that have already been installed. This is very
+important. When you use Automake it helps it keep the dependencies straight. 
+And when you use shared libraries, it is absolutely essential.
+
+   <p>Also, please pay attention to the order with which you link your libraries. 
+When the linker links a library, it does not embed into the executable code
+the entire library, but only the symbols that are needed from the library. 
+In order for the linker to know what symbols are really needed from any
+given library, it must have already parsed all the other libraries and
+object files that depend on that library! This implies that you
+first link your object files, then you link the higher-level libraries,
+then the lower-level libraries. If you are the author of the libraries,
+you must write your libraries in such a manner, that the dependency graph
+of your libraries is a tree. If two libraries depend on each other
+bidirectionally, then you may have trouble linking them in. This suggests that
+they should be one library instead!
+
+   <p>While we are at the topic, when you compile ordinary programs like the
+hello world program what really goes on behind the scenes is this:
+<pre class="example">     % gcc -c hello.c
+     % gcc -o hello hello.o -lc
+</pre>
+   <p class="noindent">This links in the C system library <samp><span class="file">libc.a</span></samp>. 
+The standard include files
+that you use, such as <samp><span class="file">stdio.h</span></samp>, <samp><span class="file">stdlib.h</span></samp> and whathaveyou
+are all refering to various parts of these libraries. These libraries
+get linked in by default when the &lsquo;<samp><span class="samp">-o</span></samp>&rsquo; flag is present. Note that
+other C compilers may be calling their system libraries something else. 
+For this reason the corresponding flags are assumed and you don't have to
+supply them.
+
+   <p>The catch is that there are many functions that you think of as standard
+that are not included in the <samp><span class="file">libc.a</span></samp> library. For example all the
+math functions that are declared in <samp><span class="file">math.h</span></samp> are defined in
+a library called <samp><span class="file">libm.a</span></samp> which is not linked by default. So
+if the hello world program needed the math library you should be
+doing this instead:
+<pre class="example">     % gcc -c hello.c
+     % gcc -o hello hello.o -lm
+</pre>
+   <p class="noindent">On some old Linux systems it used to be required that you also link
+a <samp><span class="file">libieee.a</span></samp> library:
+<pre class="example">     % gcc -o hello hello.o -lieee -lm
+</pre>
+   <p class="noindent">More problems of this sort occur when you use more esoteric system
+calls like sockets. Some systems require you to link in additional
+system libraries such as <samp><span class="file">libbsd.a</span></samp>, <samp><span class="file">libsocket.a</span></samp>,
+<samp><span class="file">libnsl.a</span></samp>. Also if you are linking Fortran and C code together
+you must also link the Fortran run-time libraries. These libraries
+have non-standard names and depend on the Fortran compiler you use. 
+Finally, a very common problem is encountered when you are writing
+X applications. The X libraries and header files like to be placed in
+non-standard locations so you must provide system-dependent <code>-I</code>
+and <code>-L</code> flags so that the compiler can find them. Also the most
+recent version of X requires you to link in some additional libraries
+on top of <code>libX11.a</code> and some rare systems require you to link
+some additional system libraries to access networking features
+(recall that X is built on top of the sockets interface and it is essentially a
+communications protocol between the computer running the program and
+computer that controls the screen in which the X program is displayed.) 
+Fortunately, Autoconf can help you deal with all of this. We will cover
+these issues in more detail in subsequent chapters.
+
+   <p>Because it is necessary to link system libraries to form an executable,
+under copyright law, the executable is derived work from the system libraries. 
+This means that you must pay attention to the license terms of these libraries. 
+The GNU <samp><span class="file">libc</span></samp> library is under the LGPL license which allows you to
+link and distribute both free and proprietary executables. The <samp><span class="file">stdc++</span></samp>
+library is also under terms that permit the distribution of proprietary
+executables. The <samp><span class="file">libg++</span></samp> library however only permits you to build
+free executables. If you are on a GNU system, including Linux-based GNU
+systems, the legalese is pretty straightforward. If you are on a proprietary
+Unix system, you need to be more careful. The GNU GPL does not allow
+GPLed code to be linked against proprietary library. Because on Unix systems,
+the system libraries are proprietary, their terms may not allow you to
+distribute executables derived from them. In practice, they do however,
+since proprietary Unix systems do want to attract proprietary applications. 
+In the same spirit, the GNU GPL also makes an exception and explicitly
+permits the linking of GPL code with proprietary system libraries, provided
+that said libraries <em>are</em> system libraries. This includes
+proprietary <samp><span class="file">libc.a</span></samp> libraries, the <samp><span class="file">libdxml.a</span></samp> library in
+Digital Unix, proprietary Fortran system libraries like <samp><span class="file">libUfor.a</span></samp>,
+and the X11 libraries.
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

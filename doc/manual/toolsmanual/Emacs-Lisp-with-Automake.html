@@ -1,0 +1,120 @@
+<html lang="en">
+<head>
+<title>Emacs Lisp with Automake - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake.html#Using-Automake" title="Using Automake">
+<link rel="prev" href="Scripts-with-Automake.html#Scripts-with-Automake" title="Scripts with Automake">
+<link rel="next" href="Guile-with-Automake.html#Guile-with-Automake" title="Guile with Automake">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Emacs-Lisp-with-Automake"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Guile-with-Automake.html#Guile-with-Automake">Guile with Automake</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Scripts-with-Automake.html#Scripts-with-Automake">Scripts with Automake</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake.html#Using-Automake">Using Automake</a>
+<hr>
+</div>
+
+<h3 class="section">5.9 Emacs Lisp with Automake</h3>
+
+<p>If your package requires you to edit a certain type of files, you
+might wnat to write an Emacs editing mode for it. Emacs modes are written
+in Emacs LISP, and Emacs LISP source code is written in files that are
+suffixed with &lsquo;<samp><span class="samp">*.el</span></samp>&rsquo;. Automake can byte-compile and install Emacs LISP
+files using Emacs for you.
+
+   <p>To handle Emacs LISP, you need to invoke the
+<pre class="example">     AM_PATH_LISPDIR
+</pre>
+   <p class="noindent">macro in your <samp><span class="file">configure.in</span></samp>. In the directory containing the Emacs
+LISP files, you must add the following line in your <samp><span class="file">Makefile.am</span></samp>:
+<pre class="example">     lisp_LISP = file1.el file2.el ...
+</pre>
+   <p class="noindent">where &lsquo;<samp><span class="samp">$(lispdir)</span></samp>&rsquo; is initialized by &lsquo;<samp><span class="samp">AM_PATH_LISPDIR</span></samp>&rsquo;. 
+The &lsquo;<samp><span class="samp">LISP</span></samp>&rsquo; primitive also accepts the &lsquo;<samp><span class="samp">noinst</span></samp>&rsquo; location.
+
+   <p>Most Emacs LISP files are meant to be simply compiled and installed. 
+Then the user is supposd to add certain invocations in per <samp><span class="file">.emacs</span></samp>
+to use the features that they provide. However, because Emacs LISP is a full
+programming language you might like to write full programs in Emacs LISP,
+just like you would in any other language, and have these programs be
+accessible from the shell. If the installed file is called <samp><span class="file">foo.el</span></samp>
+and it defines a function <code>main</code> as an entry point, then you can
+run it with:
+<pre class="example">     % emacs --batch -l foo -f main
+</pre>
+   <p class="noindent">In that case, it may be useful to install a wrapper shell script containing
+<pre class="example">     #!/bin/sh
+     emacs --batch -l foo -f main
+</pre>
+   <p class="noindent">so that the user has a more natural interface to the program. For more
+details on handling shell scripts See <a href="Scripts-with-Automake.html#Scripts-with-Automake">Scripts with Automake</a>. 
+Note that it's not necessary for the wrapper program to be a shell script. 
+You can have it be a C program, if it should be written in C for some reason.
+
+   <p>Here's a tutorial example of how that's done. Start by creating a
+directory:
+<pre class="example">     % mkdir hello-0.1
+     % cd hello-0.1
+</pre>
+   <p class="noindent">Then create the following files:
+     <dl>
+<dt><samp><span class="file">configure.in</span></samp><dd>
+     <pre class="example">          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AM_PATH_LISPDIR
+          AC_OUTPUT(Makefile)
+</pre>
+     <br><dt><samp><span class="file">hello.el</span></samp><dd>
+     <pre class="example">          (defun main ()
+            "Hello world program"
+            (princ "Hello world\n"))
+</pre>
+     <br><dt><samp><span class="file">hello.sh</span></samp><dd>
+     <pre class="example">          #!/bin/sh
+          emacs --batch -l hello.el -f main
+          exit
+</pre>
+     <br><dt><samp><span class="file">Makefile.am</span></samp><dd>
+     <pre class="example">          lisp_LISP = hello.el
+          EXTRA_DIST = hello.el hello.sh
+          bin_SCRIPTS = hello
+          CLEANFILES = $(bin_SCRIPTS)
+          
+          hello: $(srcdir)/hello.sh
+          &lt;TAB&gt; rm -f hello
+          &lt;TAB&gt; cp $(srcdir)/hello.sh hello
+          &lt;TAB&gt; chmod ugo+x hello
+</pre>
+     </dl>
+   Then run the following commands:
+<pre class="example">     % touch NEWS README AUTHORS ChangeLog
+     % aclocal
+     % autoconf
+     % automake -a
+     % ./configure
+     % make
+     % make distcheck
+     # make install
+</pre>
+   <p class="noindent"><em>FIXME: Discussion</em>
+
+   </body></html>
+

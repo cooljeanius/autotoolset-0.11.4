@@ -1,0 +1,107 @@
+<html lang="en">
+<head>
+<title>Software patents - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Legal-issues-with-Free-Software.html#Legal-issues-with-Free-Software" title="Legal issues with Free Software">
+<link rel="prev" href="Understanding-Copyright.html#Understanding-Copyright" title="Understanding Copyright">
+<link rel="next" href="Export-restrictions-on-encryption-software.html#Export-restrictions-on-encryption-software" title="Export restrictions on encryption software">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Software-patents"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Export-restrictions-on-encryption-software.html#Export-restrictions-on-encryption-software">Export restrictions on encryption software</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Understanding-Copyright.html#Understanding-Copyright">Understanding Copyright</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Legal-issues-with-Free-Software.html#Legal-issues-with-Free-Software">Legal issues with Free Software</a>
+<hr>
+</div>
+
+<h3 class="section">A.2 Software patents</h3>
+
+<p>In addition to copyright law, there is another legal beast: the patent law. 
+Unlike copyright, which you own automatically by the act of creating the work,
+you don't get a patent unless you file an application for it. If approved,
+the work is published but others must pay you royalties in order to use it
+in any way.
+
+   <p>The problem with patents is that they cover algorithms, and
+if an algorithm is patented you can neither write nor use an implementation
+for it, without a license. 
+What makes it worse is that it is very difficult and expensive to
+find out whether the algorithms that you use are patented or will be
+patented in the future. What makes it insane is that the patent office,
+in its infinite stupidity, has patented algorithms that are very trivial
+with nothing innovative about them. For example, the use of
+<dfn>backing store</dfn> in a multiprocesing window system, like X11, is
+covered by patent 4,555,775. In the spring of 1991, the owner of the
+patent, AT&amp;T, threatened to sue every member of the X Consortium including
+MIT. Backing store is the idea that the windowing system save the contents of
+all windows at all times. This way, when a window is covered by another
+window and then exposed again, it is redrawn by the windowing system, and
+not the code responsible for the application. Other insane patents include
+the IBM patent 4,674,040 which covers &ldquo;cut and paste between files&rdquo; in
+a text editor. Recently, a stupid corporation called &ldquo;Wang&rdquo; tried to take
+Netscape to court over a patent that covered &ldquo;bookmarks&rdquo; and lost.
+
+   <p>Even though this situation is ridiculous, software patents are
+a very serious problem because they are taken very seriously by the
+judicial system. Unfortunately they are not taken equally seriously
+by the patent office (also called PTO) itself. The more patents the PTO
+approves, the more income the PTO makes. Therefore, the PTO is very eager
+to let dubious patents through. After all, they figure that if the patent
+is invalid, someone will knock it down in court eventually.
+
+   <p>It is not necessary for someone to have a solid case
+to get you into trouble. The cost of litigation is often sufficient extortion
+to force small bussinesses, non-profit organizations and individual software
+developers to settle, even when there is not solid case. The only defense
+against a patent attac is to prove that there is &ldquo;prior art&rdquo;; in other
+words, you need to show that what is described in the patent had already
+been invented before the date on which the application for that patent was
+filed. Unfortunately, this is costly, not guaranteed to work, and
+the burden of proof rests with the victim of the attack. Another
+defense is to make sure you don't have a lot of money. If you are poor,
+lawyers are less likely to waste money suing you.
+
+   <p>Companies like to use software patents as strategic weapons for applying
+extortion, which is unfortunately sanctioned by the law. They build
+an arsenal of software patents by trying to pass whatever can get
+through the Patent Office. Then years later, when they feel like it,
+they can go through their patent arsenal and find someone to sue and
+extort some cash.
+
+   <p>There have actually been patent attacks aimed directly against the free
+sofwtare community. The GNU system does not include the Unix &lsquo;<samp><span class="samp">compress</span></samp>&rsquo;
+utility because it infringes a patent, and the patent owner has specifically
+targetted the volunteer that wrote a &lsquo;<samp><span class="samp">compress</span></samp>&rsquo; program for the
+GNU project. 
+There may be more patent attacks in the future. 
+On November of 1998 two
+internal memos were leaked from Microsoft about our community. According to
+these memos, Microsoft perceives the free software community as a competitor
+and they seem to consider a patent-based attack among other things. 
+It is important to note however that when an algorithm is patented,
+and, worse, when that patent is asserted by the owner, this is an
+attack on <em>everyone</em> that writes software, not only to the free
+software community. This is why it is not important who is being targetted
+in each specific incident. Patents hurt all of us.
+
+<!-- ============================================================ -->
+   </body></html>
+

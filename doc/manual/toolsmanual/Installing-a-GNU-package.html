@@ -1,0 +1,123 @@
+<html lang="en">
+<head>
+<title>Installing a GNU package - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installing-GNU-software.html#Installing-GNU-software" title="Installing GNU software">
+<link rel="prev" href="Installing-GNU-software.html#Installing-GNU-software" title="Installing GNU software">
+<link rel="next" href="The-Makefile-standards.html#The-Makefile-standards" title="The Makefile standards">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installing-a-GNU-package"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-Makefile-standards.html#The-Makefile-standards">The Makefile standards</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installing-GNU-software.html#Installing-GNU-software">Installing GNU software</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installing-GNU-software.html#Installing-GNU-software">Installing GNU software</a>
+<hr>
+</div>
+
+<h3 class="section">1.1 Installing a GNU package</h3>
+
+<p>Autoconfiguring software is distributed with packaged source code
+distributions. These are big files with filenames of the form:
+<pre class="example">     <var>package</var>-<var>version</var>.tar.gz
+</pre>
+   <p class="noindent">For example, the file <samp><span class="file">autoconf-2.13.tar.gz</span></samp> contains
+version 2.13 of GNU Autoconf. 
+We often call these
+files <dfn>source distributions</dfn>; sometimes we simply call them
+<dfn>packages</dfn>.
+
+   <p>The steps for installing an autoconfiguring source code distribution are
+simple, and if the distribution is not buggy, can be carried out without
+substantial user intervention.
+     <ol type=1 start=1>
+<li>First, you have to unpack the package to a directory:
+     <pre class="example">          % gunzip foo-1.0.tar.gz
+          % tar xf foo-1.0.tar
+</pre>
+     <p>This will create the directory <samp><span class="file">foo-1.0</span></samp> which contains the package's
+source code and documentation. Look for the files <samp><span class="file">README</span></samp> to see
+if there's anything that you should do next. The <samp><span class="file">README</span></samp> file might
+suggest that you need to install other packages before installing this one,
+or it might suggest that you have to do unusual things to install this
+package. If the source distribution conforms to the GNU coding standards,
+you will find many other documentation files like <samp><span class="file">README</span></samp>. 
+See <a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>, for an explanation of what
+these files mean. 
+<li>Configure the source code. Once upon a time that used to mean that you have
+to edit makefiles and header files. In the wonderful world of Autoconf,
+source distributions provide a <samp><span class="file">configure</span></samp> script that will do that
+for you automatically. To run the script type:
+     <pre class="example">          % ./configure
+</pre>
+     <p class="noindent"><li>Now you can compile the source code. Type:
+     <pre class="example">          % cd foo-1.0
+          % make
+</pre>
+     <p class="noindent">and if the program is big, you can make some coffee. After the program
+compiles, you can run its regression test-suite, if it has one,
+by typing
+     <pre class="example">          % make check
+</pre>
+     <p class="noindent"><li>If everything is okey, you can install the compiled distribution with:
+     <pre class="example">          % su
+          # make install
+</pre>
+     </ol>
+
+   <p>The <samp><span class="file">make</span></samp> program launches the shell commands necessary for compiling,
+testing and installing the package from source code. However, <samp><span class="file">make</span></samp>
+has no knowledge of what it is really doing. It takes its orders from
+<dfn>makefiles</dfn>, files called <samp><span class="file">Makefile</span></samp> that have to be present
+in every subdirectory of your source code directory tree. From the installer
+perspective,
+the makefiles define a set of <dfn>targets</dfn> that correspond to things
+that the installer wants to do. The default target is always compiling the
+source code, which is what gets invoked when you simply run <code>make</code>. 
+Other targets, such as &lsquo;<samp><span class="samp">install</span></samp>&rsquo;, &lsquo;<samp><span class="samp">check</span></samp>&rsquo; need to be mentioned
+explicitly. Because <samp><span class="file">make</span></samp> takes its orders from the makefile in
+the current directory, it is important to run it from the correct
+directory. See <a href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>, for the full story behind
+<samp><span class="file">make</span></samp>.
+
+   <p>The <samp><span class="file">configure</span></samp> program is a shell script that probes your system
+through a set of tests to
+determine things that it needs to know, and then uses the results
+to generate <samp><span class="file">Makefile</span></samp> files from templates stored
+in files called <samp><span class="file">Makefile.in</span></samp>. In the early days of the GNU project,
+developers used to write <samp><span class="file">configure</span></samp> scripts by hand. Now, no-one
+ever does that any more. Now, <samp><span class="file">configure</span></samp> scripts are automatically
+generated by GNU Autoconf from an input file <samp><span class="file">configure.in</span></samp>. 
+GNU Autoconf is part of the GNU build system and we first introduce
+in in <a href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>.
+
+   <p>As it turns out, you don't have to write the <samp><span class="file">Makefile.in</span></samp> templates
+by hand either. Instead you can use another program, GNU Automake, to
+generate <samp><span class="file">Makefile.in</span></samp> templates from higher-level descriptions
+stored in files called <samp><span class="file">Makefile.am</span></samp>. In these files you describe
+what is being created by your source code, and Automake computes the
+makefile targets for compiling, installing and uninstalling it. Automake
+also computes targets for compiling and running test suites, and targets
+for recursively calling <code>make</code> in subdirectories. The details about
+Automake are first introduced in <a href="Using-Automake.html#Using-Automake">Using Automake</a>.
+
+<!--  -->
+   </body></html>
+

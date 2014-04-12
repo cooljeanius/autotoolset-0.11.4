@@ -1,0 +1,147 @@
+<html lang="en">
+<head>
+<title>Installing a GNU package - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="prev" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="next" href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system" title="Installing the GNU build system">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installing-a-GNU-package"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system">Installing the GNU build system</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">1.1 Installing a GNU package</h3>
+
+<p>When you download an autoconfiguring package , it usually has a filename like:
+<samp><span class="file">foo-1.0.tar.gz</span></samp> where the number is a <dfn>version number</dfn>. 
+To install it, first you have to unpack the
+package to a directory someplace:
+<pre class="example">     % gunzip foo-1.0.tar.gz
+     % tar xf foo-1.0.tar
+</pre>
+   <p>Then you enter the directory and look for files like <samp><span class="file">README</span></samp> or
+<samp><span class="file">INSTALL</span></samp> that explain what you need to do. Almost always this amounts
+to typing the following commands:
+<pre class="example">     % cd foo-1.0
+     % ./configure
+     % make
+     % make check
+     % su
+     # make install
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; command invokes a shell script that is distributed
+with the package that configures the package for you automatically. 
+First it probes your system through a set of tests that allow it to
+determine things it needs to know, and then it uses this knowledge to
+generate automatically a <samp><span class="file">Makefile</span></samp> from a template stored in a file
+called <samp><span class="file">Makefile.in</span></samp>. When you invoke &lsquo;<samp><span class="samp">make</span></samp>&rsquo; with no argument,
+it executes the default target of the generated &lsquo;<samp><span class="samp">Makefile</span></samp>&rsquo;. 
+That
+target will compile your source code, but will not install it. 
+If your software comes with self-tests then you can compile and run them by
+typing &lsquo;<samp><span class="samp">make check</span></samp>&rsquo;. 
+To install
+your software, you need to explicitly invoke &lsquo;<samp><span class="samp">make</span></samp>&rsquo; again with
+the target &lsquo;<samp><span class="samp">install</span></samp>&rsquo;. In order for &lsquo;<samp><span class="samp">make</span></samp>&rsquo; to work, you must
+make the directory where the <samp><span class="file">Makefile</span></samp> is located the current
+directory.
+
+   <p>During installation, the following files
+go to the following places:
+<pre class="example">     Executables   -&gt; /usr/local/bin
+     Libraries     -&gt; /usr/local/lib
+     Header files  -&gt; /usr/local/include
+     Man pages     -&gt; /usr/local/man/man?
+     Info files    -&gt; /usr/local/info
+</pre>
+   <p class="noindent">where &lsquo;<samp><span class="samp">foo</span></samp>&rsquo; is the name of the package. 
+The <samp><span class="file">/usr/local</span></samp> directory is called the <dfn>prefix</dfn>. The default
+prefix is always <samp><span class="file">/usr/local</span></samp> but you can set it to anything you like
+when you call &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; by adding a &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; option. 
+For example, suppose that you are not a privilidged user, so you can not
+install anything in <samp><span class="file">/usr/local</span></samp>, but you would still like to install
+the package for your own use. Then you can tell the &lsquo;<samp><span class="samp">configure</span></samp>&rsquo;
+script to install the package in your home directory &lsquo;<samp><span class="samp">/home/username</span></samp>&rsquo;:
+<pre class="example">     % ./configure --prefix=/home/username
+     % make
+     % make check
+     % make install
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; argument tells &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; where you want to
+install your package, and &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; will take that into account and
+build the proper makefile automatically.
+
+   <p>The &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script is compiled by &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; from the contents
+of a file called <samp><span class="file">configure.ac</span></samp>. These files are very easy to maintain,
+and in this tutorial we will teach you how they work. The <samp><span class="file">Makefile.in</span></samp>
+file is also compiled by &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; from a very high-level specification
+stored in a file called &lsquo;<samp><span class="samp">Makefile.am</span></samp>&rsquo;. The developer then only needs
+to maintain &lsquo;<samp><span class="samp">configure.ac</span></samp>&rsquo; and &lsquo;<samp><span class="samp">Makefile.am</span></samp>&rsquo;. As it turns out,
+these are so much easier to work with than Makefiles and so much more
+powerful, that you will find
+that you will not want to go back to Makefiles ever again once you get
+the hang of it.
+
+   <p>In some packages, the &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script supports many more options
+than just &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo;. To find out about these options you should
+consult the file <samp><span class="file">INSTALL</span></samp> and <samp><span class="file">README</span></samp> that are traditionally
+distributed with the package, and also look at &lsquo;<samp><span class="samp">configure</span></samp>&rsquo;'s self
+documenting facility:
+<pre class="example">     % configure --help
+</pre>
+   <p class="noindent">Configure scripts can also report the version of Autoconf that generated
+them:
+<pre class="example">     % configure --version
+</pre>
+   <p class="noindent">The makefiles generated by &lsquo;<samp><span class="samp">automake</span></samp>&rsquo; support a few more targets for
+undoing the installation process to various levels. More specifically:
+     <ul>
+<li>If <code>configure</code> or <code>make</code> did it, <code>make distclean</code> undoes it. 
+<li>If <code>make</code> did it, <code>make clean</code> undoes it. 
+<li>If <code>make install</code> did it, <code>make uninstall</code> undoes it. 
+</ul>
+
+   <p>Also, in the spirit of free redistributable code, there are targets for
+cutting a source code distribution. If you type
+<pre class="example">     % make dist
+</pre>
+   <p class="noindent">it will rebuild the <samp><span class="file">foo-1.0.tar.gz</span></samp> file that you started with. 
+If you modified the source, the modifications will be included in the
+distribution (and you should probably change the version number). 
+Before putting a distribution up on FTP, you can test its integrity
+with:
+<pre class="example">     % make distcheck
+</pre>
+   <p class="noindent">This makes the distribution, then unpacks it in a temporary subdirectory
+and tries to configure it, build it, run the test-suite, and check if the
+installation script works. If everything is okey then you're told that
+your distribution is ready.
+
+   <p>Once you go through this tutorial, you'll have the know-how you need to
+develop autoconfiguring programs with such powerful Makefiles.
+
+<!--  -->
+   </body></html>
+

@@ -1,0 +1,149 @@
+<html lang="en">
+<head>
+<title>Hello world with acmkdir - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="prev" href="Handling-version-numbers.html#Handling-version-numbers" title="Handling version numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Hello-world-with-acmkdir"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Handling-version-numbers.html#Handling-version-numbers">Handling version numbers</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">4.10 Hello world with acmkdir</h3>
+
+<p>Whenever you start out a new programming project, there is quite a bit
+of overhead setup that you need to do in order to use the GNU build system. 
+You need to install the documentation files described in
+<a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>, and set up the directory structure
+described in <a href="Organizing-your-project-in-subdirectories.html#Organizing-your-project-in-subdirectories">Organizing your project in subdirectories</a>. In the quest
+for never-ending automation, you can do these tasks automatically with
+the &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; utility.
+
+   <p>Start by typing the following command on the shell:
+<pre class="example">     % ackdir hello
+</pre>
+   <p class="noindent">&lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; will ask you to enter the name of your program, your name
+and your email address. When you are done, &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; will ask you
+if you really want to go for it. Say &lsquo;<samp><span class="samp">y</span></samp>&rsquo;. Then, &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; will
+do the following routine work for you:
+     <ul>
+<li>Create the <samp><span class="file">hello-0.1</span></samp> directory and the <samp><span class="file">doc</span></samp>, <samp><span class="file">m4</span></samp>
+and <samp><span class="file">src</span></samp> subdirectories. 
+<li>Generate the following <samp><span class="file">configure.in</span></samp>:
+     <pre class="example">          AC_INIT
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE(test,0.1)
+          AC_PROG_CC
+          AC_PROG_CXX
+          AC_PROG_RANLIB
+          AC_OUTPUT(Makefile doc/Makefile m4/Makefile src/Makefile)
+</pre>
+     <p class="noindent">By default, both the C and C++ compilers are initialized, but you can take
+out &lsquo;<samp><span class="samp">AC_PROG_CXX</span></samp>&rsquo; if you don't plan to use C++. You can edit and
+customize this file to your needs. More specifically, you will need to
+update the version number in &lsquo;<samp><span class="samp">AM_INIT_AUTOMAKE</span></samp>&rsquo;
+everytime you cut a new distribution (see <a href="Handling-version-numbers.html#Handling-version-numbers">Handling version numbers</a>). 
+You should also make sure to list all the subdirectories that have
+a <samp><span class="file">Makefile.am</span></samp> in &lsquo;<samp><span class="samp">AC_OUTPUT</span></samp>&rsquo;. 
+<li>Place boilerplate <samp><span class="file">Makefile.am</span></samp> files on the toplevel directory as well
+as the <samp><span class="file">doc</span></samp>, <samp><span class="file">m4</span></samp> and <samp><span class="file">src</span></samp> subdirectories. The toplevel
+<samp><span class="file">Makefile.am</span></samp> contains:
+     <pre class="example">          EXTRA_DIST = reconf configure
+          SUBDIRS = m4 doc src
+</pre>
+     <p class="noindent">The ones in the <code>src</code> and <code>doc</code> subdirectories are empty. The
+one in <samp><span class="file">m4</span></samp> contains a template <samp><span class="file">Makefile.am</span></samp> which you should
+edit if you want to add new Autoconf macros. 
+(<em>FIXME: Crossreference</em>)
+<li>Create the files <samp><span class="file">COPYING</span></samp>, <samp><span class="file">INSTALL</span></samp>, <samp><span class="file">AUTHORS</span></samp>, <samp><span class="file">NEWS</span></samp>,
+<samp><span class="file">README</span></samp>, <samp><span class="file">THANKS</span></samp> and <samp><span class="file">ChangeLog</span></samp> and generate their
+default contents which you should edit further as you develop your
+package. (see <a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>)
+<li>Create a <samp><span class="file">reconf</span></samp> script for reconfiguring your package every time
+you make a change in <samp><span class="file">configure.in</span></samp>. Running <samp><span class="file">reconf</span></samp> is
+equivalent to running the following commands on the shell from the
+top-level directory:
+     <pre class="example">          % rm -f config.cache
+          % rm -f acconfig.h
+          % aclocal -I m4
+          % autoconf
+          % acconfig
+          % autoheader
+          % automake -a
+</pre>
+     <p class="noindent">Before &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; exits, it will call the &lsquo;<samp><span class="samp">reconf</span></samp>&rsquo; script for
+you once to set things up. 
+</ul>
+   At this point, you can run
+<pre class="example">     % ./configure
+     % make
+</pre>
+   <p class="noindent">but nothing interesting will happen because the package is still empty.
+
+   <p>To add a simple hello world program, all you need to do is create the
+following two files:
+     <dl>
+<dt><samp><span class="file">src/Makefile.am</span></samp><dd>
+     <pre class="example">          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">src/hello.c</span></samp><dd>
+     <pre class="example">          #if HAVE_CONFIG_H
+          # include &lt;config.h&gt;
+          #endif
+          #include &lt;stdio.h&gt;
+          
+          int
+          main ()
+          {
+            printf ("Hello world\n");
+          }
+</pre>
+     </dl>
+   and type the following commands from the toplevel directory:
+<pre class="example">     % ./reconf
+     % ./configure
+     % make
+     % make distcheck
+</pre>
+   <p class="noindent">to compile the hello world program and build a distribution. It's that
+simple!
+
+   <p>In general, to develop simple programs with the GNU build system you
+setup the project directory tree with &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo;, you write your
+source code, you put together the necessary <samp><span class="file">Makefile.am</span></samp> and
+update <samp><span class="file">configure.in</span></samp> and you are set to go. In fact, at this
+point you practically know all you need to know to develop source code
+distributions that compile and install simple C programs. All you
+need to do is write the source code and list the source files in
+&lsquo;<samp><span class="samp">*_SOURCES</span></samp>&rsquo;.
+
+   <p>In the following chapters we will explain in more detail how to
+use the GNU build system to develop software that conforms to the
+GNU coding standards.
+
+<!-- ============================================================ -->
+<!-- ============================================================ -->
+   </body></html>
+

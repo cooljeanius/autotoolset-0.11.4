@@ -1,0 +1,208 @@
+<html lang="en">
+<head>
+<title>Preface - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="index.html#Top" title="Top">
+<link rel="next" href="Acknowledgements.html#Acknowledgements" title="Acknowledgements">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Preface"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Acknowledgements.html#Acknowledgements">Acknowledgements</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="index.html#Top">Top</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="unnumbered">Preface</h2>
+
+<p>The purpose of this document is to introduce you to the GNU build system,
+and show you how to use it to write good code. 
+It also discusses peripheral
+topics such as how to use GNU Emacs as a source code navigator, how
+to write good software, and the philosophical concerns behind the free
+software movement. The intended reader should
+be a software developer who knows his programming languages, and
+wants to learn how to package his programs in a way that follows the
+GNU coding standards.
+
+   <p>This manual introduces you to the GNU build system and showes you how
+to develop high-quality
+
+   <p>This manual shows you how to develop high-quality software on GNU using
+the GNU build system that conforms to the GNU coding standards. 
+These techniques are also useful for software development on GNU/Linux
+and most variants of the Unix system. In fact, one of the reasons
+for the elaborate GNU build system was to make software portable between
+GNU and other similar operating systems. 
+We also discuss peripheral topics such as how to use GNU
+Emacs as an IDE (integrated development environment), and the various
+practical, legal and philosophical concerns behind software development.
+
+   <p>When we speak of the <dfn>GNU build system</dfn> we refer primarily to the
+following four packages:
+     <ul>
+<li><strong>Autoconf</strong> produces a <dfn>configuration shell script</dfn>, named
+<samp><span class="file">configure</span></samp>, which probes the installer platform for portability related
+information which is required to customize makefiles, configuration header
+files, and other application specific files. Then it proceeds to generate
+customized versions of these files from generic templates. This way, the
+user will not need to customize these files manually. 
+<li><strong>Automake</strong> produces makefile templates, <samp><span class="file">Makefile.in</span></samp> to be used
+by Autoconf, from a very high level specification stored in a file called
+<samp><span class="file">Makefile.am</span></samp>. Automake produces makefiles that conform to the GNU
+makefile standards, taking away the extraordinary effort required to produce
+them by hand. Automake requires Autoconf in order to be used properly. 
+<li><strong>Libtool</strong> makes it possible to compile position indepedent code and
+build shared libraries in a portable manner. It does not require either
+Autoconf, or Automake and can be used indepedently. Automake however supports
+libtool and interoperates with it in a seamless manner. 
+<li><strong>Autotools</strong>
+<em>FIXME: Add content</em>
+</ul>
+
+   <p>The GNU build system has two goals. The first is to simplify the development
+of portable programs. The second is to simplify the building of programs that
+are distributed as source code. The first goal is achieved by the automatic
+generation of a <samp><span class="file">configure</span></samp> shell script. The second goal is achieved
+by the automatic generation of Makefiles and other shell scripts that are
+typically used in the building process. This way the developer can concentrate
+on debugging his source code, instead of his overly complex Makefiles. 
+And the installer can compile and install the program directly from the
+source code distribution by a simple and automatic procedure.
+
+   <p>The GNU build system needs to be installed only when you are developing
+programs that are meant to be distributed. To build a program from
+distributed source code, you only need a working <code>make</code>, a compiler,
+a shell,
+and sometimes standard Unix utilities like <code>sed</code>, <code>awk</code>,
+<code>yacc</code>, <code>lex</code>. The objective is to make software installation
+as simple and as automatic as possible for the installer. Also, by
+setting up the GNU build system such that it creates programs that don't
+require the build system to be present during their installation, it
+becomes possible to use the build system to bootstrap itself.
+
+   <p>Some tasks that are simplified by the GNU build system include:
+     <ul>
+<li>Building multidirectory software packages. It is much more difficult to use
+raw <code>make</code> recursively. Having simplified this step, the developer
+is encouraged to organize his source code in a deep directory tree rather than
+lump everything under the same directory. Developers that use raw <code>make</code>
+often can't justify the inconvenience of recursive make and prefer to
+disorganize their source code. With the GNU tools this is no longer necessary. 
+<li>Automatic configuration. You will never have to tell your users that they
+need to edit your Makefile. You yourself will not have to edit your Makefiles
+as you move new versions of your code back and forth between different
+machines. 
+<li>Automatic makefile generation. Writing makefiles involves a lot of repetition,
+and in large projects it will get on your nerves. The GNU build system
+instead requires you to write <samp><span class="file">Makefile.am</span></samp> files that are much more terse
+and easy to maintain. 
+<li>Support for test suites. You can very easily write test suite code, and
+by adding one extra line in your <samp><span class="file">Makefile.am</span></samp> make a <code>check</code>
+target available such that you can compile and run the entire test suite
+by running <code>make check</code>. 
+<li>Automatic distribution building. The GNU build tools are meant to be used
+in the development of <dfn>free software</dfn>, therefore if you have a working
+build system in place for your programs, you can create a source code
+distribution out of
+it by running <code>make distcheck</code>. 
+<li>Shared libraries. Building shared libraries becomes as easy as building
+static libraries. 
+</ul>
+
+   <p>The Autotools package complements the GNU build system by providing the
+following additional features:
+     <ul>
+<li>Automatic generation of legal notices that are needed in order to
+apply the GNU GPL license. 
+<li>Automatic generation of directory trees for new software packages, such that
+they conform to the GNITS standard (more or less). 
+<li>Some rudimentary portability framework for C++ programs. There is a lot
+of room for improvement here, in the future. Also a framework for
+embedding text into your executable and handling include files accross
+multiple directories. 
+<li>Support for writing portable software that uses both Fortran and C++. 
+<li>Additional support for writing software documentation in Texinfo, but also in
+LaTeX. 
+</ul>
+   Autotools is still under development and there may still be bugs. At the
+moment Autotools doesn't do shared libraries, but that will change in the
+future.
+
+   <p>This effort began by my attempt to write a tutorial for Autoconf. It involved
+into <em>&ldquo;Learning Autoconf and Automake&rdquo;</em>. Along the way I developed
+Autotools to deal with things that annoyed me or to cover needs from my
+own work. Ultimately I want this document to be both a unified introduction of
+the GNU build system as well as documentation for the Autotools package.
+
+   <p>I believe that knowing these tools and having this know-how is very important,
+and should not be missed from engineering or science students who will one
+day go out and do software development for academic or industrial research. 
+Many students are incredibly
+undertrained in software engineering and write a lot of bad code. 
+This is very very sad because of all people, it is them that have the
+greatest need to write portable, robust and reliable code. I found from
+my own experience that moving away from Fortran and C, and towards C++
+is the first step in writing better code. The second step is to use
+the sophisticated GNU build system and use it properly, as described
+in this document. 
+Ultimately, I am hoping that this document will help
+people get over the learning curve of the second step, so they can be
+productive and ready to study the reference manuals that are distributed
+with all these tools.
+
+   <p>This manual of course is still under construction. When I am done constructing
+it some paragraph somewhere will be inserted with the traditional run-down of
+summaries about each chapter. I write this manual in a highly non-linear
+way, so while it is under construction you will find that some parts
+are better-developed than others. If you wish to contribute sections of
+the manual that I haven't written or haven't yet developed fully, please
+contact me.
+
+   <p>Chapters 1,2,3,4 are okey. Chapter 5 is okey to, but needs a little more
+work. I removed the other chapters to minimize confusion, but the sources
+for them are still being distributed as part of the Autotools package
+for those that found them useful. The other chapters need a lot of rewriting
+and they would do more harm than good at this point to the unsuspecting reader. 
+Please contact me if you have any suggestions
+for improving this manual.
+
+   <p>Remarks by Marcelo: I am currentrly updating this manual to the last release
+of the autoconf/automake tools.
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

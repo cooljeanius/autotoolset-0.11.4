@@ -1,0 +1,149 @@
+<html lang="en">
+<head>
+<title>The X Windows Trap - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Philosophical-issues.html#Philosophical-issues" title="Philosophical issues">
+<link rel="prev" href="Copyleft_003b-Pragmatic-Idealism.html#Copyleft_003b-Pragmatic-Idealism" title="Copyleft; Pragmatic Idealism">
+<link rel="next" href="Categories-of-software.html#Categories-of-software" title="Categories of software">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="The-X-Windows-Trap"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Categories-of-software.html#Categories-of-software">Categories of software</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Copyleft_003b-Pragmatic-Idealism.html#Copyleft_003b-Pragmatic-Idealism">Copyleft; Pragmatic Idealism</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Philosophical-issues.html#Philosophical-issues">Philosophical issues</a>
+<hr>
+</div>
+
+<h3 class="section">B.4 The X Windows Trap</h3>
+
+<p>To copyleft or not to copyleft?  That is one of the major
+controversies in the free software community.  The idea of copyleft is
+that we should fight fire with fire&ndash;that we should use copyright to
+make sure our code stays free.  The GNU GPL is one example of
+a copyleft license.
+
+   <p>Some free software developers prefer non-copyleft distribution. 
+Non-copyleft licenses such as the XFree86 and BSD licenses are based
+on the idea of never saying no to anyone&ndash;not even to someone who
+seeks to use your work as the basis for restricting other people. 
+Non-copyleft licensing does nothing wrong, but it misses the
+opportunity to actively protect our freedom to change and redistribute
+software.  For that, we need copyleft.
+
+   <p>For many years, the X Consortium was the chief opponent of copyleft. 
+It exerted both moral suasion and pressure to discourage free software
+developers from copylefting their programs.  It used moral suasion by
+suggesting that it is not nice to say no.  It used pressure through
+its rule that copylefted software could not be in the X Distribution.
+
+   <p>Why did the X Consortium adopt this policy?  It had to do with their
+definition of success.  The X Consortium defined success as
+popularity&ndash;specifically, getting computer companies to use X Windows. 
+This definition put the computer companies in the driver's seat. 
+Whatever they wanted, the X Consortium had to help them get it.
+
+   <p>Computer companies normally distribute proprietary software.  They
+wanted free software developers to donate their work for such use.  If
+they had asked for this directly, people would have laughed.  But the
+X Consortium, fronting for them, could present this request as an
+unselfish one.  "Join us in donating our work to proprietary software
+developers," they said, suggesting that this is a noble form of
+self-sacrifice.  "Join us in achieving popularity", they said,
+suggesting that it was not even a sacrifice.
+
+   <p>But self-sacrifice is not the issue: tossing away the defenses of
+copyleft, which protect the freedom of everyone in the community, is
+sacrificing more than yourself.  Those who granted the X Consortium's
+request entrusted the community's future to the good will of the X
+Consortium.
+
+   <p>This trust was misplaced.  In its last year, the X Consortium made a
+plan to restrict the forthcoming X11R6.4 release so that it will not
+be free software.  They decided to start saying no, not only to
+proprietary software developers, but to our community as well.
+
+   <p>There is an irony here.  If you said yes when the X Consortium asked
+you not to use copyleft, you put the X Consortium in a position to
+license and restrict its version of your program, along with its own
+code.
+
+   <p>Te X Consortium did not carry out this plan.  Instead it closed down
+and transferred X development to the Open Group, whose staff are now
+carrying out a similar plan.  To give them credit, when I asked them
+to release X11R6.4 under the GNU GPL in parallel with their planned
+restrictive license, they were willing to consider the idea.  (They
+were firmly against staying with the old X11 distribution terms.) 
+Before they said yes or no to this proposal, it had already failed for
+another reason: the XFree86 group follows the X Consortium's old
+policy, and will not accept copylefted software.
+
+   <p>Even if the X Consortium and the Open Group had never planned to
+restrict X, someone else could have done it.  Non-copylefted software
+is vulnerable from all directions; it lets anyone make a non-free
+version dominant, if he will invest sufficient resources to add some
+important feature using proprietary code.  Users who choose software
+based on technical characteristics, rather than on freedom, could
+easily be lured to the non-free version for short term convenience.
+
+   <p>The X Consortium and Open Group can no longer exert moral suasion by
+saying that it is wrong to say no.  This will make it easier to decide
+to copyleft your X-related software.
+
+   <p>When you work on the core of X, on programs such as the X server,
+Xlib, and Xt, there is a practical reason not to use copyleft.  The
+XFree86 group does an important job for the community in maintaining
+these programs, and the benefit of copylefting our changes would be
+less than the harm done by a fork in development.  So it is better to
+work with the XFree86 group and not copyleft our changes on these
+programs.  Likewise for utilities such as xset and xrdb, which are
+close to the core of X, and which do not need major improvements.  At
+least we know that the XFree86 group has a firm commitment to
+developing these programs as free software.
+
+   <p>The issue is different for programs outside the core of X:
+applications, window managers, and additional libraries and widgets. 
+There is no reason not to copyleft them, and we should copyleft them.
+
+   <p>In case anyone feels the pressure exerted by the criteria for
+inclusion in X Distributions, the GNU project will undertake to
+publicize copylefted packages that work with X.  If you would like to
+copyleft something, and you worry that its omission from X
+Distributions will impede its popularity, please ask us to help.
+
+   <p>At the same time, it is better if we do not feel too much need for
+popularity.  When a businessman tempts you with "more popularity", he
+may try to convince you that his use of your program is crucial to its
+success.  Don't believe it!  If your program is good, it will find
+many users anyway; you don't need to feel desperate for any particular
+users, and you will be stronger if you do not.  You can get an
+indescribable sense of joy and freedom by responding, "Take it or
+leave it&ndash;that's no skin off my back."  Often the businessman will
+turn around and accept the program with copyleft, once you call the
+bluff.
+
+   <p>Friends, free software developers, don't repeat a mistake.  If we do
+not copyleft our software, we put its future at the mercy of anyone
+equipped with more resources than scruples.  With copyleft, we can
+defend freedom, not just for ourselves, but for our whole community.
+
+<!--  -->
+   </body></html>
+

@@ -1,0 +1,217 @@
+<html lang="en">
+<head>
+<title>Freeing your software - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Legal-issues-with-Free-Software.html#Legal-issues-with-Free-Software" title="Legal issues with Free Software">
+<link rel="prev" href="Other-legal-concerns.html#Other-legal-concerns" title="Other legal concerns">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Freeing-your-software"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Other-legal-concerns.html#Other-legal-concerns">Other legal concerns</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Legal-issues-with-Free-Software.html#Legal-issues-with-Free-Software">Legal issues with Free Software</a>
+<hr>
+</div>
+
+<h3 class="section">A.3 Freeing your software</h3>
+
+<p>Both copyright and patent laws are being used mainly to destroy our
+<dfn>freedom</dfn> to cooperate with our fellow hackers. 
+By freedom we refer to three things: the freedom to
+use software, the freedom to modify it and improve it, and the freedom
+to redistribute it with the modifications and improvements so that the
+whole community benefits. Combined with the possible default assignment of
+your rights to an employer or university, the laws can actually interfere
+even with your ability to write computer programs for a hobby and cooperate
+with other hackers on that basis!
+
+   <p>To defend our freedoms from those
+who would like to take them from us, the free software community uses the
+General Public License, also known as the GPL. In broads strokes, the GPL
+does the following:
+     <ul>
+<li>Grants you unrestricted permission to run the software and maintain as
+many copies as you like. You can also make personal custom modifications
+and use them freely. The GNU GPL does not restrict what you do in the
+privacy of your own computer in any way. On the contrary it waives all
+the restrictions that the copyright law applies to private use. 
+It only kicks in when you
+distribute the software you have received to other people. 
+<li>Grants permission to redistribute the software or modified versions (derived
+work) provided that you do so <strong>only</strong> under the terms of the GNU public
+license. This means that if you make any changes, they must also be
+free. This protects the freedom of the package by forbidding someone
+to make a free version proprietary. This measure is called
+<dfn>copyleft</dfn> because it subverts the copyright law to do the opposite of
+what copyright is normally used for (i.e. to prevent a user to make a
+proprietary package free). The GNU GPL does not oblidge you to distribute
+your modifications. It only requires that you distribute them freely,
+<em>if</em> you choose to distribute them at all. The decision of whether
+or not to distribute your derived work is entirely up to you. 
+The freedom to choose <em>not</em> to distribute your modifications is
+as important as the freedom to distribute them. The GPL grants you both
+freedoms. 
+<li>Disclaims all warranty to protect the authors from lawsuits, including
+various implied warranties such as the warranty for <dfn>merchantability</dfn>
+and <dfn>fitness for a particular purpose</dfn>. 
+<li>Protects the software's freedom from patents as much as this is possible. 
+The scenario that we want to avoid is someone receiving the source code,
+and then filing a patent application for the algorithms it uses, effectively
+making the software proprietary. If you do that, the GPL will forbid you from
+redistributing the software as well as derived work. So you will not want
+to do it. The patent law itself will prevent someone else, who distributes
+a competing product, to patent the algorithm if your implementation predates
+his. 
+</ul>
+
+   <p>The purpose of the GPL is to use the copyright law to encourage a world in
+which software is not copyrighted. If copyright didn't cover software, then
+we would all be free to use, modify and redistribute software,
+<em>and</em> we would not be able to restrict others from enjoying these
+freedoms because there would be no law giving anyone such power. 
+One way to grant the freedoms to the users of your software is
+to revoke your copyright on the software completely. This is called putting
+your work in the <dfn>public domain</dfn>. The problem with this is that it
+only grants the freedoms. It does not create the reality in which no-one
+can take these freedoms away from derived works. In fact the copyright law
+covers by default derived works regardless of whether the original was
+public domain or copyrighted. By distributing your work under the GPL,
+you grant the same freedoms, and at the same time you protect these freedoms
+from hoarders.
+
+   <p>The GNU GPL is a legal instrument that has been
+designed to create a
+safe haven in which software can be written free from copyright law
+encumberence. It allows developers to freely share their work with
+a friendly community that is also willing to share theirs, and at the
+same time protect them from being exploited by publishers of proprietary
+software. Many developers would not contribute to our community without
+this protection.
+
+   <p>To apply the GPL to your programs you need to do the following things:
+     <ul>
+<li>Attach a copy of the GNU public license to the toplevel directory of your
+source code in a file called <samp><span class="file">COPYING</span></samp>. 
+<li>Include a legal notice to <em>every</em> file that you want covered by the GPL,
+saying that it is covered by the GPL. It is important that all files that
+constitute source code must include this notice, including <samp><span class="file">Makefile.am</span></samp>,
+<samp><span class="file">configure.in</span></samp> files and shell scripts. 
+The legal notice should look like this:
+     <pre class="example">          // Copyright (C) (years) (Your Name) &lt;your@email.address&gt;
+          //
+          // This program is free software; you can redistribute it and/or
+          // modify it under the terms of the GNU General Public License
+          // as published by the Free Software Foundation; either
+          // version 2 of the License, or (at your option) any later
+          // version.
+          //
+          // This program is distributed in the hope that it will be useful,
+          // but WITHOUT ANY WARRANTY; without even the implied warranty of
+          // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+          // GNU General Public License for more details.
+          //
+          // You should have received a copy of the GNU General Public License
+          // along with this program; if not, write to the Free Software
+          // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+</pre>
+     <p class="noindent">If you have assigned your copyright to an organization, like the Free
+Software Foundation, then you should probably fashion your copyright
+notice like this:
+     <pre class="example">          // Copyright (C) (years) Free Software Foundation
+          // (your name) &lt;your@email.address&gt; (initial year)
+          // etc...
+</pre>
+     <p class="noindent">This legal notice works like a subroutine. By invoking it, you invoke the
+full text of the GNU General Public License which is too lengthy to include
+in every source file. Where you see &lsquo;<samp><span class="samp">(years)</span></samp>&rsquo; you need to list all the
+years in which you finished preparing a version that was actually released,
+and which was an ancestor to the current version. This list is
+<em>not</em> the list of years in which versions were released. It is a list
+of years in which versions, later released, were completed. If you finish
+a version on Dec 31, 1997 and release it on Jan 1, 1998, you need to
+include 1997, but you do not need to include 1998. This rule is complicated,
+but it is dictated by international copyright law. 
+<li>Use the <samp><span class="file">AUTHORS</span></samp> file to keep records of who wrote what. These
+records will be important if you decide at some point to register your
+copyright. They are also important if you plan to assign your work to the
+FSF, because they will want to register the copyright. 
+We discuss this in more detail later. 
+<li>If you modify someone else's GPL covered file make sure to comply with
+section 2 of the GPL. To do that place notices stating that you changed
+the file and the date of the change. Also your program should advertise the
+fact that it is free software, that there is no warranty and that it can
+be redistributed under the condition of the GPL. A standard way of doing
+this is to make your program output this notice when it is passed the
+<code>--version</code> command-line flag. For details please read the GPL. 
+</ul>
+
+   <p>If you are unfamiliar with all this legalese you may find it surprising;
+you might even find it stupid. This is a very natural reaction. Until 1980,
+software copyright was not taken seriously in the US. In fact copyrights
+then had to be registered in order to be valid, and it was very natural
+for people to just copy software around, even though they knew it was
+illegal. It took significant amounts of
+lobbying and
+propaganda by proprietary publishers to cultivate the current litigious
+paranoia over copyrights and &ldquo;convince&rdquo; the public that helping out their
+neighbour by giving them an unauthorized copy is not only illegal, but
+it also &ldquo;morally wrong&rdquo;. Even though
+copyright laws are international, through treaties,
+there are many countries in the world, where this brainwashing hasn't yet
+taken place, and where people still make unauthorized copies of software for
+their friends with no second thoughts. Such people are being described
+with smear words like &ldquo;pirates&rdquo; by publishers and their lawyers, but
+it is not true that these people do what they do because of a malicious
+intent. These people do what they do, because it is natural for them to
+be nice and help their friends.
+
+   <p>One problem with this attitude is that many of us don't want to disobey
+the law, because copyright is an indiscriminate weapon that cuts both ways. 
+We prefer therefore to beat the hoarders at their own game. This means
+that we can not use, modify or distribute programs that are not
+distributed with a copyright notice and appropriate permissions, because
+the default status of such programs is that
+<em>no permissions are granted whatsoever</em>. 
+If you write a program that you want to share with other people,
+then please apply the terms of the GPL to the copies that you distribute,
+so that your friends can use, modify and share the program with their
+friends, without breaking any laws and to protect your contribution
+to our community from the hoarders. Please do not violate copyright law. 
+Instead, say no to proprietary software and use free software on the
+free GNU/Linux operating system.
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

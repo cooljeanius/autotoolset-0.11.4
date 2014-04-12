@@ -1,0 +1,111 @@
+<html lang="en">
+<head>
+<title>Handling version numbers - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="prev" href="Applying-the-GPL.html#Applying-the-GPL" title="Applying the GPL">
+<link rel="next" href="Hello-world-with-acmkdir.html#Hello-world-with-acmkdir" title="Hello world with acmkdir">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Handling-version-numbers"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hello-world-with-acmkdir.html#Hello-world-with-acmkdir">Hello world with acmkdir</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Applying-the-GPL.html#Applying-the-GPL">Applying the GPL</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">4.9 Handling version numbers</h3>
+
+<p>The number &lsquo;<samp><span class="samp">0.1</span></samp>&rsquo; in the filename <samp><span class="file">hello-0.1.tar.gz</span></samp> is called
+the <dfn>version number</dfn> of the source code distribution. The purpose
+of version numbers is to label the various releases of a source code
+distribution so that it's development can be tracked. If you use the
+GNU build system, then the name of the package and the version number
+are specified in the line that invokes the &lsquo;<samp><span class="samp">AM_INIT_AUTOMAKE</span></samp>&rsquo; macro. 
+In the hello world example
+(see <a href="Hello-world-example-with-Autoconf-and-Automake.html#Hello-world-example-with-Autoconf-and-Automake">Hello world example with Autoconf and Automake</a>)
+we used the following line to set the version number equal to 0.1:
+<pre class="example">     AM_INIT_AUTOMAKE(hello,0.1)
+</pre>
+   <p class="noindent">Whenever you publish a new version of your program, you must increase the
+version number. We also recommend that you note on <samp><span class="file">ChangeLog</span></samp>
+the release of the new version. This way, when someone inspects your
+<samp><span class="file">ChangeLog</span></samp>, person will be able to determine what changes happened
+between any two specific versions.
+
+   <p>To release the current version of your source code, run
+<pre class="example">     % make distcheck
+</pre>
+   <p class="noindent">to build the distribution and apply the test suite to validate it. 
+Once you get this to work, change your version number in <samp><span class="file">configure.in</span></samp>,
+record an entry in <samp><span class="file">ChangeLog</span></samp> saying that you are cutting the new
+version, and update the <samp><span class="file">NEWS</span></samp> file. Without making any other changes,
+do
+<pre class="example">     % make dist
+</pre>
+   <p class="noindent">to rebuild the distribution without having to wait for the test suite
+to run all over again.
+
+   <p>Most packages declare their version with two integers: a <dfn>major number</dfn>
+and a <dfn>minor number</dfn> that are separated by a dot in the middle. In
+our example above, the major number is 0 and the minor number is 1. The
+minor number should be increased when you release a version that contains
+new features and improvements over the old version that you want your
+users to upgrade to. The major number should be increased when the incremental
+improvements bring your porgram into a new level of maturity and stability. 
+A major number of 0 indicates that your software is still experimental
+and not ready for prime time. When you release version 1.0, you are telling
+people that your software has developed to the point that you recommend it
+for general use. Releasing version 2.0 means that your software has
+significantly <em>matured</em> from user feedback.
+
+   <p>Before releasing a new major version, it is a good idea to publish a
+<dfn>prerelease</dfn> to your beta-testers. In general, the prerelease
+for version 1.0 is labeled 0.90 regardless of what the previous minor number
+was. 
+<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+When releasing a 0.90 version, development should freeze, and you
+should only be fixing bugs. If the prerelease turns out to be stable, it
+becomes the stable version. If not, you may need to release further bug-fixing
+prereleases: 0.91, 0.92, etc.
+
+   <p>Many maintainers like to publish working versions of their code, so that
+contributors can donate code against the most recent version of the
+source code. These unofficial versions should only be used by people who
+are interested in contributing to the project, and not by end users. 
+It is useful to use a third integer for writing the version numbers for
+these &ldquo;unofficial&rdquo; releases. Please use only two integers for official
+releases so that it is easy to distinguish them from unofficial releases. 
+A possible succession of version numbers might look like this:
+<pre class="example">     0.1, 0.1.1, 0.1.2, ... , 0.2, ..., 0.3, ..., 0.90, ..., 1.0
+</pre>
+   <p class="noindent">It is always a good idea to maintain an archive of at least all the official
+releases that you ever publish.
+
+<!-- ============================================================ -->
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> In the event that the minor number has already grown larger than 90, I guess you can call your prerelease 0.900</p>
+
+   <hr></div>
+
+   </body></html>
+

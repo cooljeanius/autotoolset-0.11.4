@@ -1,0 +1,230 @@
+<html lang="en">
+<head>
+<title>Handling Embedded text - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="Invoking-acmkdir.html#Invoking-acmkdir" title="Invoking acmkdir">
+<link rel="next" href="Handling-very-deep-packages.html#Handling-very-deep-packages" title="Handling very deep packages">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Handling-Embedded-text"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Handling-very-deep-packages.html#Handling-very-deep-packages">Handling very deep packages</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Invoking-acmkdir.html#Invoking-acmkdir">Invoking acmkdir</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.7 Handling Embedded text</h3>
+
+<p>In some cases, we want to embed text to the executable file of an application. 
+This may be on-line help pages, or it may be a script of some sort that we
+intend to execute by an interpreter library that we are linking with, like
+Guile or Tcl. Whatever the reason, if we want to compile the application as
+a stand-alone executable, it is necessary to embed the text in the source
+code. Autotools provides with the build tools necessary to do this painlessly.
+
+   <p>As a tutorial example, we will write a simple program that prints the contents
+of the GNU General Public License. First create the directory tree for
+the program:
+<pre class="example">     % acmkdir copyleft
+</pre>
+   <p class="noindent">Enter the directory and create a copy of the <code>txtc</code> compiler:
+<pre class="example">     % cd copyleft-0.1
+     % mktxtc
+</pre>
+   <p class="noindent">Then edit the file <samp><span class="file">configure.in</span></samp> and add a call to the
+<code>LF_PROG_TXTC</code> macro. This macro depends on
+<pre class="example">     AC_PROG_CC
+     AC_PROG_AWK
+</pre>
+   <p class="noindent">so make sure that these are invoked also. Finally add <samp><span class="file">txtc.sh</span></samp> to
+your <code>AC_OUTPUT</code>. 
+The end-result should look like this:
+<pre class="example">     AC_INIT(reconf)
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(copyleft,0.1)
+     LF_HOST_TYPE
+     LF_CONFIGURE_CC
+     LF_CONFIGURE_CXX
+     LF_SET_OPTIMIZATION
+     LF_SET_WARNINGS
+     AC_PROG_RANLIB
+     AC_PROG_AWK
+     LF_PROG_TXTC
+     AC_OUTPUT(Makefile txtc.sh doc/Makefile m4/Makefile src/Makefile)
+</pre>
+   <p class="noindent">Then, enter the <samp><span class="file">src</span></samp> directory and create the following files:
+<pre class="example">     % cd src
+     % gpl -l gpl.txt
+     % gpl -cc gpl.h
+     % gpl -cc copyleft.cc
+</pre>
+   <p class="noindent">The <samp><span class="file">gpl.txt</span></samp> file is the text that we want to print. You can substitute
+it with any text you want. This file will be compiled into <samp><span class="file">gpl.o</span></samp>
+during the build process. The <samp><span class="file">gpl.h</span></samp> file is a header file that gives
+access to the symbols defined by <samp><span class="file">gpl.o</span></samp>. The file <samp><span class="file">copyleft.cc</span></samp>
+is where the <code>main</code> will be written.
+
+   <p>Next, add content to these files as follows:
+     <dl>
+<dt><strong>gpl.h</strong><dd>
+     <pre class="example">          extern int gpl_txt_length;
+          extern char *gpl_txt[];
+</pre>
+     <p class="noindent"><br><dt><strong>copyleft.cc</strong><dd>
+     <pre class="example">          #ifdef HAVE_CONFIG_H
+          #include &lt;config.h&gt;
+          #endif
+          
+          #include &lt;iostream.h&gt;
+          #include "gpl.h"
+          
+          main()
+          {
+           loop(i,1,gpl_txt_length)
+           { cout &lt;&lt; gpl_txt[i] &lt;&lt; endl; }
+          }
+</pre>
+     <p class="noindent"><br><dt><strong>Makefile.am</strong><dd>
+     <pre class="example">          SUFFIXES = .txt
+          .txt.o:
+                 $(TXTC) $&lt;
+          
+          bin_PROGRAMS = copyleft
+          foo_SOURCES = copyleft.cc gpl.h gpl.txt
+</pre>
+     <p class="noindent"></dl>
+   and now you're set to build. Go back to the toplevel directory and go for it:
+<pre class="example">     $ cd ..
+     $ reconf
+     $ configure
+     $ make
+     $ src/copyleft | less
+</pre>
+   <p class="noindent">To verify that this works properly, do the following:
+<pre class="example">     $ cd src
+     $ copyleft &gt; copyleft.out
+     $ diff gpl.txt copyleft.out
+</pre>
+   <p class="noindent">The two files should be identical. 
+Finally, convince yourself that you can make a distribution:
+<pre class="example">     $ make distcheck
+</pre>
+   <p class="noindent">and there you are.
+
+   <p>Note that in general the text file, as encoded by the text compiler, will
+not be always identical to the original. There is one and only one modification
+being made: If any line has any blank spaces at the end, they are trimmed off. 
+This feature was introduced to deal with a bug in the Tcl interpreter, and
+it is in general a good idea since it conserves a few bytes, it never hurts,
+and additional whitespace at the end of a line shouldn't really be there.
+
+   <p>This magic is put together from many different directions. It begins with
+the <code>LF_PROG_TXTC</code> macro:
+     <dl>
+<dt><strong>LF_PROG_TXTC</strong><dd>This macro will define the variable <code>TXTC</code> to point to a Text-to-C
+compiler. To create a copy of the compiler at the toplevel directory of your
+source code, use the <code>mktxtc</code> command:
+     <pre class="example">          % mktxtc
+</pre>
+     <p class="noindent">The compiler is implemented as a shell script, and it depends on <code>sed</code>,
+<code>awk</code> and the C compiler, so you should call the following two macros
+before invoking <code>AC_PROG_TXTC</code>:
+     <pre class="example">          AC_PROG_CC
+          AC_PROG_AWK
+</pre>
+     <p class="noindent">The compiler is intended to be used as follows:
+     <pre class="example">          $(TXTC) text1.txt text2.txt text3.txt ...
+</pre>
+     <p class="noindent">such that given the files <samp><span class="file">text1.txt</span></samp>, <samp><span class="file">text2.txt</span></samp>, etc. 
+object files <samp><span class="file">text1.o</span></samp>, <samp><span class="file">text2.o</span></samp>, etc, are
+generated that contains the text from these files. 
+</dl>
+   From the Automake point of view, you need to add the following two lines
+to Automake:
+<pre class="example">     SUFFIXES = .txt
+     .txt.o:
+             $(TXTC) $&lt;
+</pre>
+   <p class="noindent">assuming that your text files will end in the <code>.txt</code> suffix. The first
+line informs Automake that there exist source files using non-standard
+suffixes. Then we describe, in terms of an abstract Makefile rule, how to
+build an object file from these non-standard suffixes. Recall the use of
+the symbol <code>$&lt;</code>. Also note that it is not necessary
+to use <code>$(srcdir)</code> on <code>$&lt;</code> for VPATH builds. 
+If you embed more than one type of files, then you may want to use more
+than one suffixes. For example, you may have <samp><span class="file">.hlp</span></samp> files containing
+online help and <samp><span class="file">.scm</span></samp> files containing Guile code. Then you
+want to write a rule for each suffix as follows:
+<pre class="example">     SUFFIXES = .hlp .scm
+     .hlp.o:
+             $(TXTC) $&lt;
+     .scm.o:
+             $(TXTC) $&lt;
+</pre>
+   <p class="noindent">It is important to put these lines before mentioning any <code>SOURCES</code>
+assignments. Automake is smart enough to parse these abstract makefile
+rules and recognize that files ending in these suffixes are valid source
+code that can be built to object code. This allows you to simply list
+<samp><span class="file">gpl.txt</span></samp> with the other source files in the <code>SOURCES</code> assignment:
+<pre class="example">     copyleft_SOURCES = copyleft.cc gpl.h gpl.txt
+</pre>
+   <p class="noindent">In order for this to work however, Automake must be able to see your
+abstract rules first.
+
+   <p>When you &ldquo;compile&rdquo; a text file <samp><span class="file">foo.txt</span></samp> this makes an object file
+that defines the following two symbols:
+<pre class="example">     int foo_txt_length;
+     char *foo_txt[];
+</pre>
+   <p class="noindent">Note that the dot characters are converted into underscores. To make these
+symbols accessible, you need to define an appropriate header file with
+the following general form:
+<pre class="example">     extern int foo_txt_length;
+     extern char *foo_txt[];
+</pre>
+   <p class="noindent">When you include this header file into your other C or C++ files then:
+     <ul>
+<li>You can obtain the filename containing the original text from
+     <pre class="example">          foo_txt[0];
+</pre>
+     <p class="noindent">and use it to print diagnostic messages. 
+<li>You can obtain the text itself line by line:
+     <pre class="example">          char *foo_txt[1];   -&gt; first line
+          char *foo_txt[2];   -&gt; second line
+          ...
+</pre>
+     <p class="noindent"><li>The last line is set to NULL and <code>foo_txt_length</code> is defined such that
+     <pre class="example">          char *foo_txt[foo_txt_length+1] == NULL
+</pre>
+     <p class="noindent">The last line of the text is:
+     <pre class="example">          char *foo_txt[foo_txt_length];
+</pre>
+     <p class="noindent">You can use a <code>for</code> loop (or the <code>loop</code> macro defined by
+LF_CPP_PORTABILITY)
+together with <code>foo_txt_length</code> to loop over the entire text, or you can
+exploit the fact that the last line points to <code>NULL</code> and do a
+<code>while</code> loop. 
+</ul>
+   and that's all there is to it.
+
+   </body></html>
+

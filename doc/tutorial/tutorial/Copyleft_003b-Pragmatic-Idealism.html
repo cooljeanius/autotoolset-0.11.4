@@ -1,0 +1,164 @@
+<html lang="en">
+<head>
+<title>Copyleft; Pragmatic Idealism - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Philosophical-issues.html#Philosophical-issues" title="Philosophical issues">
+<link rel="prev" href="Why-free-software-needs-free-documentation.html#Why-free-software-needs-free-documentation" title="Why free software needs free documentation">
+<link rel="next" href="The-X-Windows-Trap.html#The-X-Windows-Trap" title="The X Windows Trap">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Copyleft%3b-Pragmatic-Idealism"></a>
+<a name="Copyleft_003b-Pragmatic-Idealism"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-X-Windows-Trap.html#The-X-Windows-Trap">The X Windows Trap</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Why-free-software-needs-free-documentation.html#Why-free-software-needs-free-documentation">Why free software needs free documentation</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Philosophical-issues.html#Philosophical-issues">Philosophical issues</a>
+<hr>
+</div>
+
+<h3 class="section">B.3 Copyleft; Pragmatic Idealism</h3>
+
+<p>Every decision a person makes stems from the person's values and
+goals.  People can have many different goals and values; fame, profit,
+love, survival, fun, and freedom, are just some of the goals that a
+good person might have.  When the goal is to help others as well as
+oneself, we call that idealism.
+
+   <p>My work on free software is motivated by an idealistic goal: spreading
+freedom and cooperation.  I want to encourage free software to spread,
+replacing proprietary software which forbids cooperation, and thus
+make our society better.
+
+   <p>That's the basic reason why the GNU General Public License is written
+the way it is&ndash;as a copyleft.  All code added to a GPL-covered program
+must be free software, even if it is put in a separate file.  I make
+my code available for use in free software, and not for use in
+proprietary software, in order to encourage other people who write
+software to make it free as well.  I figure that since proprietary
+software developers use copyright to stop us from sharing, we
+cooperators can use copyright to give other cooperators an advantage
+of their own: they can use our code.
+
+   <p>Not everyone who uses the GNU GPL has this goal.  Many years ago, a
+friend of mine was asked to rerelease a copylefted program under
+non-copyleft terms, and he responded more or less like this:
+<pre class="display">     Sometimes I work on free software, and sometimes I work on
+     proprietary software&ndash;but when I work on proprietary software, I
+     expect to get <em>paid</em>.
+</pre>
+   <p>He was willing to share his work with a community that shares
+software, but saw no reason to give a handout to a business.  His goal
+was different from mine, but he decided that the GNU GPL was useful
+for his goal too.
+
+   <p>If you want to accomplish something in the world, idealism is not
+enough&ndash;you need to choose a method which works to achieve the goal. 
+In other words, you need to be &ldquo;pragmatic.&rdquo; Is the GPL pragmatic? 
+Let's look at its results.
+
+   <p>Consider GNU C++.  Why do we have a free C++ compiler?  Only because
+the GNU GPL said it had to be free.  GNU C++ was developed by an
+industry consortium, MCC, starting from the GNU C compiler.  MCC
+normally makes its work as proprietary as can be.  But they made the
+C++ front end free software, because the GNU GPL said that was the
+only way they could release it.  The C++ front end included many new
+files, but since they were meant to be linked with GCC, the GPL
+did applied to them.  The benefit to our community is evident.
+
+   <p>Consider GNU Objective C.  NeXT initially wanted to make this front
+end proprietary; they proposed to release it as .o files, and let
+users link them with the rest of GCC, thinking this might be a way
+around the GPL's requirements.  But our lawyer said that this would
+not evade the requirements, that it was not allowed.  And so they made
+the Objective C front end free software.
+
+   <p>Those examples happened years ago, but the GNU GPL continues
+to bring us more free software.
+
+   <p>Many GNU libraries are covered by the GNU Library General Public
+License, but not all.  One GNU library which is covered by the
+ordinary GNU GPL is Readline, which implements command-line editing. 
+A month ago, I found out about a non-free program which was designed
+to use Readline, and told the developer this was not allowed.  He
+could have taken command-line editing out of the program, but what he
+actually did was rerelease it under the GPL.  Now it is free software.
+
+   <p>The programmers who write improvements to GCC (or Emacs, or Bash, or
+Linux, or any GPL-covered program) are often employed by companies or
+universities.  When the programmer wants to return his improvements to
+the community, and see his code in the next release, the boss may say,
+&ldquo;Hold on there&ndash;your code belongs to us!  We don't want to share it;
+we have decided to turn your improved version into a proprietary
+software product.&rdquo;
+
+   <p>Here the GNU GPL comes to the rescue.  The programmer shows the boss
+that this proprietary software product would be copyright
+infringement, and the boss realizes that he has only two choices:
+release the new code as free software, or not at all.  Almost always
+he lets the programmer do as he intended all along, and the code goes
+into the next release.
+
+   <p>The GNU GPL is not Mr. Nice Guy.  It says &ldquo;no&rdquo; to some of the things
+that people sometimes want to do.  There are users who say that this
+is a bad thing&ndash;that the GPL &ldquo;excludes&rdquo; some proprietary software
+developers who &ldquo;need to be brought into the free software community&rdquo;.
+
+   <p>But we are not excluding them from our community; they are choosing
+not to enter.  Their decision to make software proprietary is a
+decision to stay out of our community.  Being in our community means
+joining in cooperation with us; we cannot &ldquo;bring them into our
+community&rdquo; if they don't want to join.
+
+   <p>What we <em>can</em> do is offer them an inducement to join.  The GNU GPL is
+designed to make an inducement from our existing software: &ldquo;If you
+will make your software free, you can use this code.&rdquo;  Of course, it
+won't win 'em all, but it wins some of the time.
+
+   <p>Proprietary software development does not contribute to our community,
+but its developers often want handouts from us.  Free software users
+can offer free software developers strokes for the ego&ndash;recognition
+and gratitude&ndash;but it can be very tempting when a business tells you,
+&ldquo;Just let us put your package in our proprietary program, and your
+program will be used by many thousands of people!&rdquo;  The temptation can
+be powerful, but in the long run we are all better off if we resist
+it.
+
+   <p>The temptation and pressure are harder to recognize when they come
+indirectly, through free software organizations that have adopted a
+policy of catering to proprietary software.  The X Consortium (and its
+successor, the Open Group) offers an example: funded by companies that
+made proprietary software, they have strived for a decade to persuade
+programmers not to use copyleft.  Now that the Open Group has made
+X11R6.4 non-free software, those of us who resisted that pressure are
+glad that we did.
+
+   <p>Pragmatically speaking, thinking about greater long-term goals will
+strengthen your will to resist this pressure.  If you focus your mind
+on the freedom and community that you can build by staying firm, you
+will find the strength to do it.  &ldquo;Stand for something, or you will
+fall for nothing.&rdquo;
+
+   <p>And if cynics ridicule freedom, ridicule community...if &ldquo;hard nosed
+realists&rdquo; say that profit is the only ideal...just ignore them, and
+use copyleft all the same.
+
+<!--  -->
+   </body></html>
+

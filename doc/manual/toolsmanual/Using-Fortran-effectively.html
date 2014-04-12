@@ -1,0 +1,80 @@
+<html lang="en">
+<head>
+<title>Using Fortran effectively - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="Using-C-effectively.html#Using-C-effectively" title="Using C effectively">
+<link rel="next" href="Internationalization.html#Internationalization" title="Internationalization">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Using-Fortran-effectively"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Internationalization.html#Internationalization">Internationalization</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-C-effectively.html#Using-C-effectively">Using C effectively</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="chapter">8 Using Fortran effectively</h2>
+
+<p>This chapter is devoted to Fortran. We will show you how to build programs
+that combine Fortran and C or C++ code in a portable manner. The main reason
+for wanting to do this is because there is a lot of free software written
+in Fortran. If you browse &lsquo;<samp><span class="samp">http://www.netlib.org/</span></samp>&rsquo; you will find a
+repository of lots of old, archaic, but very reliable free sources. 
+These programs encapsulate a lot of experience in numerical analysis research
+over the last couple of decades, which is crucial to getting work done. 
+All of these sources
+have been written in Fortran. As a developer today, if you know other
+programming languages, it is unlikely that you
+will want to write original code in Fortran. You may need, however, to use
+legacy Fortran code, or the code of a neighbour who still writes in Fortran.
+
+   <p>The most portable way to mix Fortran with your C/C++ programs is to translate
+the Fortran code to C with the &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; compiler and compile everything with
+a C/C++ compiler. The &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; compiler is available at
+&lsquo;<samp><span class="samp">http://www.netlib.org/</span></samp>&rsquo; and you will find it installed on a typical
+Debian GNU/Linux system. Another alternative is to use
+the GNU Fortran compiler &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; with &lsquo;<samp><span class="samp">g++</span></samp>&rsquo; and &lsquo;<samp><span class="samp">gcc</span></samp>&rsquo;. This
+compiler is portable among many platforms, so if you want to use a native
+Fortran compiler without sacrificing portability, this is one way to do it. 
+Another way is to use your OS's native Fortran compiler, which is usually
+called &lsquo;<samp><span class="samp">f77</span></samp>&rsquo;, <strong>if</strong> it is compatible with &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; and &lsquo;<samp><span class="samp">f77</span></samp>&rsquo;. 
+Because performance is also very important in numerical codes, a good
+strategy is to prefer to use the native compiler if it is compatible,
+and support &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; and &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; as backups.
+
+<ul class="menu">
+<li><a accesskey="1" href="Fortran-compilers-and-linkage.html#Fortran-compilers-and-linkage">Fortran compilers and linkage</a>
+<li><a accesskey="2" href="Walkthrough-a-simple-example.html#Walkthrough-a-simple-example">Walkthrough a simple example</a>
+<li><a accesskey="3" href="Portability-problems-with-Fortran.html#Portability-problems-with-Fortran">Portability problems with Fortran</a>
+<li><a accesskey="4" href="Other-Fortran-dialects.html#Other-Fortran-dialects">Other Fortran dialects</a>
+<li><a accesskey="5" href="Popular-free-software-in-Fortran.html#Popular-free-software-in-Fortran">Popular free software in Fortran</a>
+</ul>
+
+   <p><strong>Warning:</strong> Optimization on the GNU &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; compiler is still
+buggy in many versions. In general, don't compile with optimization greater
+than &lsquo;<samp><span class="samp">-O</span></samp>&rsquo; if you are using &lsquo;<samp><span class="samp">g77</span></samp>&rsquo;. On a Debian GNU/Linux system
+you might find that it is actually more efficient to compile your Fortran
+source code with &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo; and &lsquo;<samp><span class="samp">-O3</span></samp>&rsquo; optimization, which is
+reliable, than using &lsquo;<samp><span class="samp">g77</span></samp>&rsquo; with &lsquo;<samp><span class="samp">-O</span></samp>&rsquo; optimization.
+
+<!-- ============================================================ -->
+   </body></html>
+

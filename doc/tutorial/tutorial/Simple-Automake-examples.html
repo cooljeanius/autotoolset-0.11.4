@@ -1,0 +1,117 @@
+<html lang="en">
+<head>
+<title>Simple Automake examples - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="General-Automake-principles.html#General-Automake-principles" title="General Automake principles">
+<link rel="next" href="Built-sources.html#Built-sources" title="Built sources">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Simple-Automake-examples"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Built-sources.html#Built-sources">Built sources</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="General-Automake-principles.html#General-Automake-principles">General Automake principles</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.8 Simple Automake examples</h3>
+
+<p>A real life example of a <samp><span class="file">Makefile.am</span></samp> for libraries is the one I use
+to build the Blas-1 library. It looks like this:
+
+<p class="noindent">&bull; <samp><span class="file">blas1/Makefile.am</span></samp>
+<pre class="example">     SUFFIXES = .f
+     .f.o:
+            $(F77) $(FFLAGS) -c $&lt;
+     
+     lib_LIBRARIES = libblas1.a
+     libblas1_a_SOURCES = f2c.h caxpy.f ccopy.f cdotc.f cdotu.f crotg.f cscal.f \
+      csrot.f csscal.f cswap.f dasum.f daxpy.f dcabs1.f dcopy.f ddot.f dnrm2.f \
+      drot.f drotg.f drotm.f drotmg.f dscal.f dswap.f dzasum.f dznrm2.f icamax.f \
+      idamax.f isamax.f izamax.f sasum.f saxpy.f scasum.f scnrm2.f scopy.f \
+      sdot.f snrm2.f srot.f srotg.f srotm.f srotmg.f sscal.f sswap.f zaxpy.f \
+      zcopy.f zdotc.f zdotu.f zdrot.f zdscal.f zrotg.f zscal.f zswap.f
+</pre>
+   <p class="noindent">Because the Blas library is written in Fortran, I need to declare the
+Fortran suffix at the beginning of the <samp><span class="file">Makefile.am</span></samp> with the
+&lsquo;<samp><span class="samp">SUFFIXES</span></samp>&rsquo; assignment and then insert an implicit rule for building
+object files from fortran files. The variables &lsquo;<samp><span class="samp">F77</span></samp>&rsquo; and &lsquo;<samp><span class="samp">FFLAGS</span></samp>&rsquo;
+are defined by Autoconf, by using the Fortran support provided by Autotools. 
+For C or C++ files there is no need to include implicit rules. 
+We discuss Fortran support at a later chapter.
+
+   <p>Another important thing to note is the use of the symbol &lsquo;<samp><span class="samp">$&lt;</span></samp>&rsquo;. We
+introduced these symbols in Chapter 2, where we mentioned that &lsquo;<samp><span class="samp">$&lt;</span></samp>&rsquo;
+is the dependencies that changed causing the target to need to be rebuilt. 
+If you've been paying attention you may be wondering why we didn't say
+&lsquo;<samp><span class="samp">$(srcdir)/$&lt;</span></samp>&rsquo; instead. The reason is because for VPATH builds,
+&lsquo;<samp><span class="samp">make</span></samp>&rsquo; is sufficiently intelligent to substitute &lsquo;<samp><span class="samp">$&lt;</span></samp>&rsquo; with the
+Right Thing.
+
+   <p>Now consider the <samp><span class="file">Makefile.am</span></samp> for building a library for solving
+linear systems of equations in a nearby directory:
+
+<p class="noindent">&bull; <samp><span class="file">lin/Makefile.am</span></samp>
+<pre class="example">     SUFFIXES = .f
+     .f.o:
+            $(F77) $(FFLAGS) -c $&lt;
+     INCLUDES = -I../blas1 -I../mathutil
+     
+     lib_LIBRARIES = liblin.a
+     include_HEADERS = lin.h
+     liblin_a_SOURCES = dgeco.f dgefa.f dgesl.f f2c.h f77-fcn.h lin.h lin.cc
+     
+     check_PROGRAMS = test1 test2 test3
+     TESTS = $(check_PROGRAMS)
+     LDADD = liblin.a ../blas1/libblas1.a ../mathutil/libmathutil.a $(FLIBS) -lm
+     
+     test1_SOURCES = test1.cc f2c-main.cc
+     test2_SOURCES = test2.cc f2c-main.cc
+     test3_SOURCES = test3.cc f2c-main.cc
+</pre>
+   <p class="noindent">In this case, we have a library that contains mixed Fortran and C++ code. 
+We also have an example of a test suite, which in this case contains three
+test programs. What's new here is that in order to link the test suite
+properly we need to link in libraries that have been built already in
+other directories but haven't been installed yet. Because every test
+program requires to be linked against the same libraries, we set these
+libraries globally with an &lsquo;<samp><span class="samp">LDADD</span></samp>&rsquo; assignment for all executables. 
+Because the libraries have not been installed yet we specify them with their
+full path. This will allow Automake to track dependencies correctly; if
+<samp><span class="file">libblas1.a</span></samp> is modified, it will cause the test suite to be rebuilt. 
+Also the variable &lsquo;<samp><span class="samp">INCLUDES</span></samp>&rsquo; is globally assigned to make the
+header files of the other two libraries accessible to the source code in
+this directory. 
+The variable &lsquo;<samp><span class="samp">$(FLIBS)</span></samp>&rsquo; is assigned by Autoconf to link the run-time
+Fortran libraries, and then we link the installed <samp><span class="file">libm.a</span></samp> library. 
+Because that library is installed, it must be linked with the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flag. 
+Another peculiarity in this example is the file <samp><span class="file">f2c-main.cc</span></samp> which
+is shared by all three executables. As we will explain later, when you link
+executables that are derived from mixed Fortran and C or C++ code, then you
+need to link with the executable this kludge file.
+
+   <p>The test-suite files for numerical code will usually invoke the library
+to perform a computation for which an exact result is known and then
+verify that the result is true. For non-numerical code, the library will
+need to be tested in different ways depending on what it does.
+
+   </body></html>
+

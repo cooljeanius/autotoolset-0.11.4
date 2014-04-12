@@ -1,0 +1,169 @@
+<html lang="en">
+<head>
+<title>Installation standard directories - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake.html#Using-Automake" title="Using Automake">
+<link rel="prev" href="General-Automake-principles.html#General-Automake-principles" title="General Automake principles">
+<link rel="next" href="Libraries-with-Automake.html#Libraries-with-Automake" title="Libraries with Automake">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installation-standard-directories"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Libraries-with-Automake.html#Libraries-with-Automake">Libraries with Automake</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="General-Automake-principles.html#General-Automake-principles">General Automake principles</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake.html#Using-Automake">Using Automake</a>
+<hr>
+</div>
+
+<h3 class="section">5.3 Installation standard directories</h3>
+
+<p>Previously, we mentioned that the symbols &lsquo;<samp><span class="samp">bin</span></samp>&rsquo;, &lsquo;<samp><span class="samp">lib</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">include</span></samp>&rsquo; refer to installation locations that are defined respectively
+by the variables &lsquo;<samp><span class="samp">bindir</span></samp>&rsquo;, &lsquo;<samp><span class="samp">libdir</span></samp>&rsquo; and &lsquo;<samp><span class="samp">includedir</span></samp>&rsquo;. 
+For completeness, we will now list the installation locations available by
+default by Automake and describe their purpose.
+
+   <p>All installation locations are placed under one of the following directories:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">prefix</span></samp>&rsquo;<dd>The default value of &lsquo;<samp><span class="samp">$(prefix)</span></samp>&rsquo; is <samp><span class="file">/usr/local</span></samp> and it is used
+to construct installation locations for machine-indepedent files. The actual
+value is specified at configure-time with the &lsquo;<samp><span class="samp">--prefix</span></samp>&rsquo; argument. 
+For example:
+     <pre class="example">          configure --prefix=/home/lf
+</pre>
+     <p class="noindent"><br><dt>&lsquo;<samp><span class="samp">exec_prefix</span></samp>&rsquo;<dd>The default value of &lsquo;<samp><span class="samp">$(exec_prefix)</span></samp>&rsquo; is &lsquo;<samp><span class="samp">$(prefix)</span></samp>&rsquo; and it
+used to construct installation location for machine-dependent files. 
+The actual value is specified at configure-time with the &lsquo;<samp><span class="samp">--exec-prefix</span></samp>&rsquo;
+argument. For example:
+     <pre class="example">          configure --prefix=/home/lf --exec-prefix=/home/lf/gnulinux
+</pre>
+     <p class="noindent">The purpose of using a seperate location for machine-dependent files
+is because then it makes it possible to install the software
+on a networked file server and make that available to
+machines with different architectures. To do that there must be seperate
+copies of all the machine-dependent files for each architecture in use. 
+</dl>
+
+   <p>The GNU coding standards describe in detail the standard directories
+in which you should install your files. All of these standard locations
+are supported by Automake. So, for example, you can write things like
+<pre class="example">     sbin_PROGRAMS = <var>prog</var> ...
+     sharedstate_DATA = <var>foo</var> ...
+     ....
+</pre>
+   <p class="noindent">without having to define the variables &lsquo;<samp><span class="samp">sbindir</span></samp>&rsquo;, &lsquo;<samp><span class="samp">sharedstatedir</span></samp>&rsquo;
+and so on.
+
+     <ol type=1 start=1>
+<li>Program-related files are installed in one of the following locations:
+          <dl>
+<dt><code>bindir = $(exec_prefix)/bin</code><dd>The directory for installing executable programs that users can run. 
+The default value for this directory is <samp><span class="file">/usr/local/bin</span></samp>. 
+<br><dt><code>sbindir = $(exec_prefix)/sbin</code><dd>The directory for installing executable programs that can be run
+from the shell, but are only generally useful to system administrators. 
+The default value for this directory is <samp><span class="file">/usr/local/sbin</span></samp>. 
+<br><dt><code>libexecdir = $(exec_prefix)/libexec</code><dd>The directory for installing executable programs to be run by other
+programs rather than by users. The default value for this directory
+is <samp><span class="file">/usr/local/libexec</span></samp>. 
+<br><dt><code>libdir = $(exec_prefix)/lib</code><dd>The directory for installing libraries to be linked by other programs. 
+The default value for this directory is <samp><span class="file">/usr/local/lib</span></samp>. 
+Please don't use this directory to install data files. 
+<br><dt><code>includedir = $(prefix)/include</code><dd>The directory for installing public header files that declare the
+symbols of installed libraries. 
+</dl>
+     <li>Data files should be installed in one of the following directories:
+          <dl>
+<dt><code>datadir = $(prefix)/share</code><dd>The directory for installing read-only architecture independent data files. 
+The default value for this directory is <samp><span class="file">/usr/local/share</span></samp>. 
+Usually, most data files that you would like to install will have to
+go under this directory. These files are part of the program implementation
+and should not be modified. 
+<br><dt><code>sysconfdir = $(prefix)/etc</code><dd>The directory for installing read-only data files that pertain to a
+single machine's configuration. Even though applications should only
+read, and not modify, these files, the user may have to modify these
+files to configure the application. Examples of files that belong
+in this directory are mailer and network configuration files, password
+files and so on. Do not install files that are modified in the normal
+course of their use (programs whose purpose is to change the configuration
+of the system excluded). Those probably belond in
+&lsquo;<samp><span class="samp">localstatedir</span></samp>&rsquo;. 
+<br><dt><code>sharedstatedir = $(prefix)/com</code><dd>The directory for installing architecture-independent data files which
+the programs modify while they run. The default value for this
+directory is <samp><span class="file">/usr/local/com</span></samp>. 
+<br><dt><code>localstatedir = $(prefix)/var</code><dd>The directory for installing data files which the programs modify while
+they run, and that pertain to one specific machine. Users should never
+have to modify the files in this directory to configure the package's
+operation. The default value for this directory is
+<samp><span class="file">/usr/local/var</span></samp>. System logs and mail spools are examples of
+data files that belong in this directory. 
+</dl>
+     <li>Then there are some directories for developing various eccentric
+types of files:
+          <dl>
+<dt><code>lispdir = $(datadir)/emacs/site-lisp</code><dd>The directory for installing Emacs Lisp files. The default value
+of this directory is
+          <pre class="example">               <samp><span class="file">/usr/local/share/emacs/site-lisp</span></samp>.
+</pre>
+          <p class="noindent">This directory is not automatically defined by Automake. To define it,
+you must invoke
+          <pre class="example">               AM_PATH_LISPDIR
+</pre>
+          <p class="noindent">from Autoconf. See <a href="Emacs-Lisp-with-Automake.html#Emacs-Lisp-with-Automake">Emacs Lisp with Automake</a>. 
+<br><dt><code>m4dir = $(datadir)/aclocal</code><dd>The directory for installing Autoconf macros. This directory is not
+automatically defined by Automake so you will have to add a line
+in <samp><span class="file">Makefile.am</span></samp>:
+          <pre class="example">               m4dir = $(datadir)/aclocal
+</pre>
+          <p class="noindent">to define it yourself. See <a href="Writing-Autoconf-macros.html#Writing-Autoconf-macros">Writing Autoconf macros</a>. 
+</dl>
+     <li>Documentation should be installed in the following directories:
+          <dl>
+<dt><code>infodir = $(prefix)/info</code><dd>The directory for installing the Info files for this package. 
+The default value for this directory is <samp><span class="file">/usr/local/info</span></samp>. 
+See <a href="Introduction-to-Texinfo.html#Introduction-to-Texinfo">Introduction to Texinfo</a>. 
+<br><dt><code>mandir = $(prefix)/man</code><dd>The top-level directory for installing the man pages (if any) for this
+package. The default value for this directory is <samp><span class="file">/usr/local/man</span></samp>. 
+See <a href="Writing-man-pages.html#Writing-man-pages">Writing man pages</a>. 
+<br><dt><code>man1dir = $(prefix)/man1</code><dd>The top-level directory for installing section 1 man pages. 
+<br><dt><code>man2dir = $(prefix)/man2</code><dd>The top-level directory for installing section 2 man pages. 
+</dl>
+     </ol>
+Automake also defines the following subdirectories for your convenience:
+<pre class="example">     pkglibdir     = $(libdir)/@PACKAGE@
+     pkgincludedir = $(includedir)/@PACKAGE@
+     pkgdatadir    = $(datadir)/@PACKAGE@
+</pre>
+   <p class="noindent">These subdirectories are useful for segregating the files of your
+package from other packages. Of these three, you are most likely to
+want to use <code>pkgincludedir</code> to segragate public header files,
+as we discussed in <a href="Dealing-with-header-files.html#Dealing-with-header-files">Dealing with header files</a>. For similar
+reasons you might like to segregate your data files. 
+The only reason for using <code>pkglibdir</code> is to
+install dynamic libraries that are meant to be loaded only at run-time
+while an application is running. 
+You should not use a subdirectory for libraries that are linked to
+programs, even dynamically, while the programs are being compiled, because
+that will make it more difficult to compile your programs. However,
+things like plug-ins, widget themes and so on should have their own
+directory.
+
+<!-- ============================================================ -->
+   </body></html>
+

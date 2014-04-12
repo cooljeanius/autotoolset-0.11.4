@@ -1,0 +1,72 @@
+<html lang="en">
+<head>
+<title>Other Fortran dialects - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Fortran-effectively.html#Using-Fortran-effectively" title="Using Fortran effectively">
+<link rel="prev" href="Portability-problems-with-Fortran.html#Portability-problems-with-Fortran" title="Portability problems with Fortran">
+<link rel="next" href="Popular-free-software-in-Fortran.html#Popular-free-software-in-Fortran" title="Popular free software in Fortran">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Other-Fortran-dialects"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Popular-free-software-in-Fortran.html#Popular-free-software-in-Fortran">Popular free software in Fortran</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Portability-problems-with-Fortran.html#Portability-problems-with-Fortran">Portability problems with Fortran</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Fortran-effectively.html#Using-Fortran-effectively">Using Fortran effectively</a>
+<hr>
+</div>
+
+<h3 class="section">8.4 Other Fortran dialects</h3>
+
+<p>There are many variants of Fortran like Fortran 90, and HPF. 
+Fortran 90 attempts, quite miserably, to make Fortran 77 more like
+C++. HPF allows engineers to write numerical code that runs on parallel
+computers. These variants should be avoided for two reasons:
+     <ol type=1 start=1>
+<li>There are no free compilers for Fortran 90 or HPF. 
+If you happen to use a proprietary
+operating system, you might as well make use of proprietary compilers
+if they generate highly optimized code and that is important to you. 
+Nevertheless, in order for your software to be free in a useful way, it
+should be possible to compile it with free tools on a free operating system. 
+A common objection is that since there are no parallel computers running
+a free operating ysstem, the point is moot so one might as well use
+HPF or Fortran 90, if doing so is convenient. 
+This objection
+is based on a premise that is now out of date. Nowadays, it is possible to
+build parallel computers using commodity hardware, a modified
+version of the Linux kernel, called Beowulf, and the GNU system. 
+Parallelized software
+can also be free. Therefore both Fortran 90 and HPF should be avoided,
+whenever that is possible until we have a free compiler for them. 
+<li>Another problem with these variants is that they are ad hoc languages
+that have been invented to enable Fortran to do things that it can not
+do by design. Eventually, when engineers will like to do things that Fortran
+90 can't do either, it will be necessary to extend Fortran again, rewrite the
+compilers and produce yet another variant. What engineers really need is
+a <em>real</em> solid programming language, and a collection of well-designed
+scientific libraries written in that language.
+        </ol>
+Please don't contribute to the spread of these dialects. Instead contribute
+infrastructure to better languages, like C and C++, to support the features
+that compell you to use Fortran 90 or HPF.
+
+<!-- ============================================================ -->
+   </body></html>
+

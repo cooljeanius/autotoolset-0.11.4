@@ -1,0 +1,173 @@
+<html lang="en">
+<head>
+<title>Preface - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="prev" href="index.html#Top" title="Top">
+<link rel="next" href="Copying.html#Copying" title="Copying">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Preface"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Copying.html#Copying">Copying</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="index.html#Top">Top</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="index.html#Top">Top</a>
+<hr>
+</div>
+
+<h2 class="unnumbered">Preface</h2>
+
+<p>The GNU project was founded in 1984 by Richard Stallman in response to the
+increasing obstacles to cooperation imposed on the computing community
+by the owners of proprietary software. The goal of the GNU project is
+to remove these obstacles by developing a complete software system,
+named GNU <a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a> and
+distributing it as free software. GNU is not about software that costs
+$0. It is about software that gives to all its users the freedom to
+use, modify and redistribute it. These freedoms are essential to
+building a community based on cooperation and the open sharing of ideas.
+
+   <p>Today, millions of people use GNU/Linux, a combination of the GNU system
+and the popular Linux kernel that was developed since 1991 by Linus Torvalds
+and a group of volunteers. 
+The GNU project's kernel, the Hurd, is also in service but it is not yet
+sufficiently developed for widespread use. Technically, Unix and GNU
+have many similarities, and it is very easy to port software from Unix
+to GNU or use GNU software on Unix systems.
+
+   <p>Because GNU is a community effort, it provides very powerful development
+tools that enable every user to contribute to the community by writing
+free software. The GNU development tools include the <dfn>GNU compilers</dfn>,
+the <dfn>GNU build system</dfn> and <dfn>Emacs</dfn>. 
+Proprietary systems often do not bundle such tools with their distributions
+because their developers regard the users as a market that buys software
+licenses and treats the computer as an appliance. 
+<a rel="footnote" href="#fn-2" name="fnd-2"><sup>2</sup></a>
+
+   <p>This manual will introduce you to the development tools that are used
+in the GNU system. These tools can also be used to develop software with
+GNU/Linux and Unix. 
+This manual will not teach you how to use C, or any other programming
+language. It is assumed that you are already familiar with C. This manual
+will also not cover every detail about the tools that we discuss. 
+Each tool has its own reference manual, and you should also read these
+manuals, sooner or later, if you want to learn more. This manual aims to
+be a practical introduction to the GNU development tools that will show
+you how to use them together to accomplish specific common tasks. 
+The intended audience is a programmer that has learned programming in C,
+and would now like to learn everything else that person needs to know to
+develop software that conforms to the GNU coding standards. So,
+we will tell you what to need to know, and then you can read the specific
+reference manuals to learn everything that you can possibly learn.
+
+<!-- ============================================================ -->
+<h3 class="heading">Note on terminology</h3>
+
+<p>There is a growing concern among womyn that there are important gender
+issues with the English language. As a result, it became common to use terms
+such as &ldquo;chairperson&rdquo; instead of &ldquo;chairman&rdquo;. 
+In this manual we will use the words <dfn>person</dfn>,
+<dfn>per</dfn>, <dfn>pers</dfn> and <dfn>perself</dfn>. These words are used just
+like the words she, her, hers, herself. For example, we will say:
+&ldquo;person wrote a manual to feel good about perself, and to encourage per
+potential significant other's heart to become pers&rdquo;. These terms were
+introduced, and
+perhaps invented, by Marge Piercy, and have been first used in software
+documentation and email correspondance by Richard Stallman. 
+By using these terms, we hope to make this manual less threatening to
+womyn and to encourage our womyn readers to join the free software community.
+
+<!-- ============================================================ -->
+<h3 class="heading">Roadmap to manual</h3>
+
+<p>This manual was written as a tutorial and not a reference manual,
+so in general, it works to read the chapters in the order in which they
+are presented. If you came fresh from your CS courses with a good knowledge
+of C, but have learned nothing about the GNU development tools, reading
+all the chapters in order is probably what you should do. 
+However, if you are already familiar with some of the
+topics that we discuss, you might want to skip a few chapters to get to
+the material that is new to you.
+
+   <p>For example, many readers are already
+familiar with Emacs and Makefiles, and they just want to get
+started with learning about Autoconf and Automake. In that case,
+you can skip to <a href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>, and start reading from there. 
+If you are a vi user and are not interested in learning Emacs, please
+reconsider (see <a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>). You will find some of the other
+development tools, especially the Texinfo documentation system, much easier
+to use with Emacs than without it.
+
+   <p>Here's a brief outline of the chapters in this manual, and what is covered
+by each chapter.
+     <ul>
+<li><a href="Installing-GNU-software.html#Installing-GNU-software">Installing GNU software</a>, explains how to install free software
+that is distributed in autoconfiguring source distributions. The rest of
+the manual will tell you what you need to know to make your software
+autoconfiguring as well. 
+<li><a href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>, shows you how to install and configure Emacs,
+and how to use it to develop and maintain your software. 
+<li><a href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>, introduces the compiler and the &lsquo;<samp><span class="samp">make</span></samp>&rsquo;
+utility and explains how to write Makefiles. 
+<li><a href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>, explains how to develop
+simple programs with Automake and Autoconf. 
+<li><a href="Using-Automake.html#Using-Automake">Using Automake</a>, explains in a lot more detail how to write sophisticated
+<samp><span class="file">Makefile.am</span></samp> files. 
+<li><a href="Using-Libtool.html#Using-Libtool">Using Libtool</a>, explains how to use Libtool to write portable source
+distributions that compile shared libraries both on GNU and Unix. 
+<li><a href="Using-C-effectively.html#Using-C-effectively">Using C effectively</a>, explains how to make the best use of the GNU
+build system to develop C programs. 
+<li><a href="Using-Fortran-effectively.html#Using-Fortran-effectively">Using Fortran effectively</a>, explains how to write programs that use
+both Fortran and C. 
+<li><a href="Internationalization.html#Internationalization">Internationalization</a>, explains how to write programs whose user
+interface can be translated to foreign languages. 
+<li><a href="Maintaining-Documentation.html#Maintaining-Documentation">Maintaining Documentation</a>, explains how to document your software
+using Texinfo, LaTeX and man pages. 
+<li><a href="Portable-shell-programming.html#Portable-shell-programming">Portable shell programming</a>, explains how to write portable shell
+scripts. This is essential to writing your own Autoconf macros. 
+<li><a href="Writing-Autoconf-macros.html#Writing-Autoconf-macros">Writing Autoconf macros</a>, explains how to write your own Autoconf macros. 
+<li><a href="Legal-issues-with-Free-Software.html#Legal-issues-with-Free-Software">Legal issues with Free Software</a>, discusses legal issues such as
+software copyrights, patents and governmental stupidity. 
+Understanding these issues is essential in keeping your free software free
+and protecting it from hoarders. If you are publishing free software to our
+community it is very important to understand the law, even if in your country
+copyrights and patents are not strictly enforced. 
+<li><a href="Philosophical-issues.html#Philosophical-issues">Philosophical issues</a>, is a collection of articles by Richard Stallman
+that discuss the free software philosophy. Our philosophy is very important,
+because it is what will motivate us to keep free software free, and
+defend our freedom now that the free software movement has been noticed
+by the mainstream media. 
+<li><a href="Licensing-Free-Software.html#Licensing-Free-Software">Licensing Free Software</a>, is another collection of articles that
+contain advice about licensing free software. Most of these articles,
+except for one, have also been written by Richard Stallman. 
+</ul>
+
+<!-- ============================================================ -->
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> The acronym GNU means, &ldquo;GNU's Not Unix&rdquo;</p>
+
+   <p class="footnote"><small>[<a name="fn-2" href="#fnd-2">2</a>]</small> One very popular operating system
+actually bundles advertising icons on the standard configuration
+of their desktop system. This is sick.</p>
+
+   <hr></div>
+
+   </body></html>
+

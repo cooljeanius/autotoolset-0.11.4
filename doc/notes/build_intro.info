@@ -1,0 +1,96 @@
+This is build_intro.info, produced by makeinfo version 4.13 from
+build_intro.texi.
+
+When we speak of the "GNU build system" we refer primarily to the
+following four packages:
+   * *Make* will compile a software project automatically by following
+     a set of instructions that are specified in a "makefile". Make is
+     particularly intelligent when you need to rebuild your project
+     after having modified a few files; it will only rebuild the files
+     that have been affected by your changes instead of compiling the
+     entire project each time. Make does not understand your program
+     however. You must tell `make' how to compile it, and you must also
+     tell `make' how changes in one file affect the other files.
+     Unfortunately, these instructions are not portable between GNU and
+     between the various variants of Unix. Therefore, the rest of the
+     GNU build system:
+
+   * *Autoconf* produces a "configuration shell script", named
+     `configure', which probes the installer platform for portability
+     related information which is required to customize makefiles,
+     configuration header files, and other application specific files.
+     Then it proceeds to generate customized versions of these files
+     from generic templates. This way, the user will not need to
+     customize these files manually.
+
+   * *Automake* produces makefile templates, `Makefile.in' to be used
+     by Autoconf, from a very high level specification stored in a file
+     called `Makefile.am'. Automake produces makefiles that conform to
+     the GNU makefile standards, taking away the extraordinary effort
+     required to produce them by hand. Automake requires Autoconf in
+     order to be used properly.
+
+   * *Libtool* makes it possible to compile position indepedent code and
+     build shared libraries in a portable manner. It does not require
+     either Autoconf, or Automake and can be used indepedently.
+     Automake however supports libtool and interoperates with it in a
+     seamless manner.
+   The GNU build system makes it possible to distribute your software in
+source code form. Your users can compile and install your software from
+source automagically. To make this possible however in a portable way,
+using the GNU build system is essential.
+
+   The GNU build system has two goals. The first is to simplify the
+development of portable programs. The second is to simplify the
+building of programs that are distributed as source code. The first
+goal is achieved by the automatic generation of a `configure' shell
+script. The second goal is achieved by the automatic generation of
+Makefiles and other shell scripts that are typically used in the
+building process. This way the developer can concentrate on debugging
+his source code, instead of his overly complex Makefiles.  And the
+installer can compile and install the program directly from the source
+code distribution by a simple and automatic procedure.
+
+   The GNU build system needs to be installed only when you are
+developing programs that are meant to be distributed. To build a
+program from distributed source code, you only need a working `make', a
+compiler, a shell, and sometimes standard Unix utilities like `sed',
+`awk', `yacc', `lex'. The objective is to make software installation as
+simple and as automatic as possible for the installer. Also, by setting
+up the GNU build system such that it creates programs that don't
+require the build system to be present during their installation, it
+becomes possible to use the build system to bootstrap itself.
+
+   Some tasks that are simplified by the GNU build system include:
+   * Building multidirectory software packages. It is much more
+     difficult to use raw `make' recursively. Having simplified this
+     step, the developer is encouraged to organize his source code in a
+     deep directory tree rather than lump everything under the same
+     directory. Developers that use raw `make' often can't justify the
+     inconvenience of recursive make and prefer to disorganize their
+     source code. With the GNU tools this is no longer necessary.
+
+   * Automatic configuration. You will never have to tell your users
+     that they need to edit your Makefile. You yourself will not have
+     to edit your Makefiles as you move new versions of your code back
+     and forth between different machines.
+
+   * Automatic makefile generation. Writing makefiles involves a lot of
+     repetition, and in large projects it will get on your nerves. The
+     GNU build system instead requires you to write `Makefile.am' files
+     that are much more terse and easy to maintain.
+
+   * Support for test suites. You can very easily write test suite
+     code, and by adding one extra line in your `Makefile.am' make a
+     `check' target available such that you can compile and run the
+     entire test suite by running `make check'.
+
+   * Automatic distribution building. The GNU build tools are meant to
+     be used in the development of "free software", therefore if you
+     have a working build system in place for your programs, you can
+     create a source code distribution out of it by running `make
+     distcheck'.
+
+   * Shared libraries. Building shared libraries becomes as easy as
+     building static libraries.
+

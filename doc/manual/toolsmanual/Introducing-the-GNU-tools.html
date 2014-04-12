@@ -1,0 +1,104 @@
+<html lang="en">
+<head>
+<title>Introducing the GNU tools - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="prev" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="next" href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system" title="Installing the GNU build system">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Introducing-the-GNU-tools"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Installing-the-GNU-build-system.html#Installing-the-GNU-build-system">Installing the GNU build system</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">4.1 Introducing the GNU tools</h3>
+
+<p>When we speak of the <dfn>GNU build system</dfn> we refer primarily to the
+following four packages:
+     <ol type=1 start=1>
+<li><strong>Autoconf</strong> produces a <dfn>configuration shell script</dfn>, named
+<samp><span class="file">configure</span></samp>, which probes the installer platform for portability related
+information which is required to customize makefiles, configuration header
+files, and other application specific files. Then it proceeds to generate
+customized versions of these files from generic templates. This way, the
+user will not need to customize these files manually. 
+<li><strong>Automake</strong> produces makefile templates, <samp><span class="file">Makefile.in</span></samp> to be used
+by Autoconf, from a very high level specification stored in a file called
+<samp><span class="file">Makefile.am</span></samp>. Automake produces makefiles that conform to the GNU
+makefile standards, taking away the extraordinary effort required to produce
+them by hand. Automake requires Autoconf in order to be used properly. 
+<li><strong>Libtool</strong> makes it possible to compile position indepedent code and
+build shared libraries in a portable manner. It does not require either
+Autoconf, or Automake and can be used indepedently. Automake however supports
+libtool and interoperates with it in a seamless manner. 
+<li><strong>Autotools</strong> helps you develop portable source code that conforms
+to the GNU coding standards by generating various boilerplate
+files from which you can plunge into developing your software.
+        </ol>
+Some tasks that are simplified by the GNU build system include:
+     <ol type=1 start=1>
+<li>Building multidirectory software packages. It is much more difficult to use
+raw <code>make</code> recursively. Having simplified this step, the developer
+is encouraged to organize per source code in a deep directory tree rather than
+lump everything under the same directory. Developers that use raw <code>make</code>
+often can't justify the inconvenience of recursive make and prefer to
+disorganize their source code. With the GNU tools this is no longer necessary. 
+<li>Automatic configuration. You will never have to tell your users that they
+need to edit your Makefile. You yourself will not have to edit your Makefiles
+as you move new versions of your code back and forth between different
+machines. 
+<li>Automatic makefile generation. Writing makefiles involves a lot of repetition,
+and in large projects very error-prone. Also, certain portions of a good
+makefile, such as the &lsquo;<samp><span class="samp">install</span></samp>&rsquo; and &lsquo;<samp><span class="samp">uninstall</span></samp>&rsquo; targets are
+very critical because they are run by the superuser. They must be written
+without any bugs! The GNU build system automates makefile writing. You
+are only required to write <samp><span class="file">Makefile.am</span></samp> files that are much more
+terse and easy to maintain. 
+<li>Support for test suites. You can very easily write test suite code, and
+by adding one extra line in your <samp><span class="file">Makefile.am</span></samp> make a <code>check</code>
+target available such that you can compile and run the entire test suite
+by running <code>make check</code>. 
+<li>Automatic distribution building. The GNU build tools are meant to be used
+in the development of <dfn>free software</dfn>, therefore if you have a working
+build system in place for your programs, you can create a source code
+distribution out of
+it by running <code>make distcheck</code>. 
+<li>Shared libraries. Building shared libraries becomes as easy as building
+static libraries.
+        </ol>
+
+   <p>The GNU build system needs to be installed only when you are developing
+programs that are meant to be distributed. To build a program from
+distributed source code, the installer only needs a working <code>make</code>
+utility, a compiler, a shell,
+and sometimes standard Unix utilities like <code>sed</code>, <code>awk</code>,
+<code>yacc</code>, <code>lex</code>. The objective is to make software installation
+as simple and as automatic as possible for the installer. Also, by
+setting up the GNU build system such that it creates programs that don't
+require the build system to be present during their installation, it
+becomes possible to use the build system to bootstrap itself.
+
+<!-- ============================================================ -->
+   </body></html>
+

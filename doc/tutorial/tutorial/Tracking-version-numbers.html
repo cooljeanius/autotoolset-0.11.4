@@ -1,0 +1,118 @@
+<html lang="en">
+<head>
+<title>Tracking version numbers - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="prev" href="Hello-world-with-an-attitude.html#Hello-world-with-an-attitude" title="Hello world with an attitude">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Tracking-version-numbers"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hello-world-with-an-attitude.html#Hello-world-with-an-attitude">Hello world with an attitude</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">1.9 Tracking version numbers</h3>
+
+<p>Common sense requires that you
+identify the various releases of your software package with a
+<em>version number</em>. If you use the GNU build system, then you indicate
+the name of the package and the version number in <samp><span class="file">configure.ac</span></samp>
+in the line that invokes the &lsquo;<samp><span class="samp">AC_INIT</span></samp>&rsquo; macro. In the
+hello world example (see <a href="Hello-world-example.html#Hello-world-example">Hello world example</a>) we used the following
+line to set the version number equal to 1.0:
+
+<pre class="example">     AC_INIT([Hello Program],[1.0],
+             [Author Of The Program &lt;aotp@zxcv.com&gt;],
+             [hello])
+</pre>
+   <p class="noindent">You must increase your version number every time you publically release a new
+version of your program. Just before the release, it is a very good idea to
+update your <samp><span class="file">ChangeLog</span></samp> and note the release of a new version. This way,
+when someone inspects your <samp><span class="file">ChangeLog</span></samp>, person will be able to determine
+what changes happened between two specific versions. 
+We suggest that
+when you are about to make a release, that you use
+
+<pre class="example">     % make distcheck
+</pre>
+   <p class="noindent">to build a distribution and apply the test suite to validate it. Once you
+get this to work, change your version number in <samp><span class="file">configure.ac</span></samp>, record
+an entry in <samp><span class="file">ChangeLog</span></samp> saying that you are cutting the new version,
+and without making any other changes do
+
+<pre class="example">     % make dist
+</pre>
+   <p class="noindent">to rebuild the distribution without having to wait for the test suite to
+run all over again.
+
+   <p>Most packages declare their version with two integers: a
+<dfn>major number</dfn> and a <dfn>minor number</dfn> that are separated by a dot
+in the middle. In our example above, the major number is 0 and the minor
+number is 1. The minor number should be updated when you release a version
+that contains new features and improvements over the old version. 
+The major number should be updated when the incremental improvements bring
+your program into a new level of maturity and stability. Some of your
+users may not want to follow every release that comes out, but they would
+like to upgrade when there's a significant amount of features to warrant
+such an upgrade. You should increase the major number when, in your judgement,
+you believe that it is time for these users to upgrade along with everyone
+else.
+
+   <p>When beginning a new project, you should start counting your major number
+from 0, and your minor number from 1. Please exercise good judgement on
+when to increment your major number to 1. In general versions 0.x mean that
+the software is still under development and may not be stable. When you release
+version 1.0, you are telling people that your software has developed to the
+point that you recommend it for general use. In some cases, releasing
+version 2.0 means that your software has significantly <em>matured</em> from
+user feedback.
+
+   <p>Sometimes, it is useful to use a third integer for writing
+version numbers for &ldquo;unofficial&rdquo; releases. 
+This third integer is usually used with
+bleeding-edge <dfn>prereleases</dfn> of the software that contain the most recent
+bug fixes and features but are not as well tested and reviewed as the most
+recent official release. Possible version successions can look like:
+
+<pre class="example">     1.0, 1.1, 1.2, 1.2.1, 1.2.2, 1.2.3, 1.3, ...
+</pre>
+   <p class="noindent">Please use only two integers for official releases
+so that it is easy to distinguish them from prereleases.
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

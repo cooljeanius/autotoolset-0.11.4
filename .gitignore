@@ -28,3 +28,8 @@ src/txtc/mktxtc
 *(Autosaved)*
 *.cache
 *~
+autotoolset-*.*.*/*
+*.shar.gz
+*.tar.gz
+*.tar.bz2
+lex.yy.c

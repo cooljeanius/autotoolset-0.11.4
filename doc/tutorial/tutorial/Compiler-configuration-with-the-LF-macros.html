@@ -1,0 +1,129 @@
+<html lang="en">
+<head>
+<title>Compiler configuration with the LF macros - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="Introduction-to-Autotools.html#Introduction-to-Autotools" title="Introduction to Autotools">
+<link rel="next" href="The-features-of-LF_005fCPP_005fPORTABILITY.html#The-features-of-LF_005fCPP_005fPORTABILITY" title="The features of LF_CPP_PORTABILITY">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Compiler-configuration-with-the-LF-macros"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-features-of-LF_005fCPP_005fPORTABILITY.html#The-features-of-LF_005fCPP_005fPORTABILITY">The features of LF_CPP_PORTABILITY</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introduction-to-Autotools.html#Introduction-to-Autotools">Introduction to Autotools</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.2 Compiler configuration with the <code>LF</code> macros</h3>
+
+<p class="noindent">In last chapter we explained that a minimal <samp><span class="file">configure.in</span></samp> file looks
+like this:
+<pre class="example">     AC_INIT
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(package,version)
+     AC_PROG_CXX
+     AC_PROG_RANLIB
+     AC_OUTPUT(Makefile ... )
+</pre>
+   <p class="noindent">If you are not building libraries, you can omit <code>AC_PROG_RANLIB</code>.
+
+   <p>Alternatively you can use the following macros that are distributed with
+Autotools, and made accessible through the &lsquo;<samp><span class="samp">aclocal</span></samp>&rsquo; utility. All of
+them are prefixed with &lsquo;<samp><span class="samp">LF</span></samp>&rsquo; to distinguish them from the standard
+macros:
+
+     <dl>
+<dt><strong>LF_CONFIGURE_CC</strong><dd>This macro is equivalent to the following invokation:
+     <pre class="example">          AC_PROG_CC
+          AC_PROG_CPP
+          AC_AIX
+          AC_ISC_POSIX
+          AC_MINIX
+          AC_HEADER_STDC
+</pre>
+     <p class="noindent">which is a traditional Autoconf idiom for setting up the C compiler. 
+<br><dt><strong>LF_CONFIGURE_CXX</strong><dd>This macro calls
+     <pre class="example">          AC_PROG_CXX
+          AC_PROG_CXXCPP
+</pre>
+     <p class="noindent">and then invokes the portability macro:
+     <pre class="example">          LF_CPP_PORTABILITY
+</pre>
+     <p class="noindent">This is the recommended way for configuring your C++ compiler. 
+<br><dt><strong>LF_HOST_TYPE</strong><dd>This is here mainly because it is required by &lsquo;<samp><span class="samp">LF_CONFIGURE_FORTRAN</span></samp>&rsquo;. 
+This macro determines your operating system and defines the C preprocessor
+macro &lsquo;<samp><span class="samp">YOUR_OS</span></samp>&rsquo; with the answer. You can use this in your program for
+spiffiness purposes such as when the program identifies itself at the
+user's request, or during initialization. 
+<br><dt><strong>LF_CPP_PORTABILITY</strong><dd>This macro allows you to make your &lsquo;<samp><span class="samp">C++</span></samp>&rsquo; code more portable and
+a little nicer.
+          <ul>
+<li>It detects whether your compiler supports &lsquo;<samp><span class="samp">bool</span></samp>&rsquo;. 
+<li>It checks whether your compiler deals with for loops correctly. 
+<li>At the users option, it introduces nice and powerful assertions. 
+<li>It defines syntactic sugar, that I am personally addicted to
+</ul>
+     If you must call this macro, do so <em>after</em> calling
+&lsquo;<samp><span class="samp">LF_CONFIGURE_CXX</span></samp>&rsquo;. We describe the features in more detail in the next
+section. To take advantage of these features, all you have to do is
+     <pre class="example">          #include &lt;config.h&gt;
+</pre>
+     <p class="noindent">In the past it used to be necessary to have to include a file called
+<samp><span class="file">cpp.h</span></samp>. I've sent this file straight to hell. 
+<br><dt><strong>LF_SET_WARNINGS</strong><dd>This macro enables you to activate warnings at configure time. If called, then
+the user can request warnings by passing the &lsquo;<samp><span class="samp">--with-warnings</span></samp>&rsquo; flag
+to the compiler like this:
+     <pre class="example">          $ configure ... --with-warnings ...
+</pre>
+     <p class="noindent">Warnings can help you find out many bugs, as well as help you improve your
+coding habits. On the other hand, in many cases, many of these warnings are
+false alarms, which is why the default behaviour of the compiler is to not
+show them to you. You are probably interested in warnings if you are
+the developer, or a paranoid end-user. 
+</dl>
+   The minimal recommended <samp><span class="file">configure.in</span></samp> file for a pure C++ project is:
+<pre class="example">     AC_INIT
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(package,version)
+     LF_CONFIGURE_CXX
+     AC_PROG_RANLIB
+     AC_OUTPUT(Makefile .... )
+     
+</pre>
+   <p class="noindent">A full-blown <samp><span class="file">configure.in</span></samp> file for projects that mix Fortran and
+C++ (and may need the C compiler also if using &lsquo;<samp><span class="samp">f2c</span></samp>&rsquo;) invokes all
+of the above macros:
+<pre class="example">     AC_INIT
+     AM_INIT_AUTOMAKE(package,version)
+     LF_CANONICAL_HOST
+     LF_CONFIGURE_CC
+     LF_CONFIGURE_CXX
+     LF_CONFIGURE_FORTRAN
+     LF_SET_WARNINGS
+     AC_PROG_RANLIB
+     AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+     AC_OUTPUT(Makefile ...)
+     
+</pre>
+   <p class="noindent"><!-- ========================================================================== -->
+
+   </body></html>
+

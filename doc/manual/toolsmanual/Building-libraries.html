@@ -1,0 +1,137 @@
+<html lang="en">
+<head>
+<title>Building libraries - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Programs-with-many-source-files.html#Programs-with-many-source-files" title="Programs with many source files">
+<link rel="next" href="Dealing-with-header-files.html#Dealing-with-header-files" title="Dealing with header files">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Building-libraries"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Dealing-with-header-files.html#Dealing-with-header-files">Dealing with header files</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Programs-with-many-source-files.html#Programs-with-many-source-files">Programs with many source files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.3 Building libraries</h3>
+
+<p>In many cases a collection of object files form a logical unit that is used
+by more than one executable. On both GNU and Unix systems, it is possible
+to collect such object files and form a <dfn>library</dfn>. On the GNU system,
+to create a library, you use the <samp><span class="file">ar</span></samp> command:
+<pre class="example">     ar cru libfoo.a foo1.o foo2.o foo3.o
+</pre>
+   <p class="noindent">This will create a file <samp><span class="file">libfoo.a</span></samp> from the object files
+<samp><span class="file">foo1.o</span></samp>, <samp><span class="file">foo2.o</span></samp> and <samp><span class="file">foo3.o</span></samp>. The suffix
+<samp><span class="file">*.a</span></samp> is reserved for object file libraries. 
+Before using the library, it needs to be &ldquo;blessed&rdquo; by a program
+called &lsquo;<samp><span class="samp">ranlib</span></samp>&rsquo;:
+<pre class="example">     % ranlib libfoo.a
+</pre>
+   <p class="noindent">The GNU system, and most Unix systems require that you run <samp><span class="file">ranlib</span></samp>,
+but there have been some Unix systems where doing so is not necessary. 
+In fact there are Unix systems, like some versions of SGI's Irix, that don't
+even have the &lsquo;<samp><span class="samp">ranlib</span></samp>&rsquo; command!
+
+   <p>The reason for this is historical. Originally <code>ar</code>
+was meant to be used merely for packaging files together. The more
+well known program <code>tar</code> is a descendent of <code>ar</code> that was designed
+to handle making such archives on a tape device. Now that tape devices are
+more or less obsolete, <code>tar</code> is playing the role that was originally
+meant for <code>ar</code>. As for <code>ar</code>, way back, some people thought to
+use it to package <code>*.o</code> files. However the linker wanted a symbol table
+to be passed along with the archive. So the <code>ranlib</code>
+program was written to generate that table and add it to the <code>*.a</code> file. 
+Then some Unix vendors thought that if they incorporated <code>ranlib</code>
+to <code>ar</code> then users wouldn't have to worry about forgetting to call
+<code>ranlib</code>. So they provided <code>ranlib</code> but it did nothing. Some
+of the more evil ones dropped it all-together breaking many people's scripts.
+
+   <p>Once you have a library, you can link it with other object files just
+as if it were an object file itself. For example
+<pre class="example">     % gcc bar.o libfoo.a -o foo
+</pre>
+   <p class="noindent">using <samp><span class="file">libfoo.a</span></samp> as defined above, is equivalent to writing
+<pre class="example">     % gcc bar.o foo1.o foo2.o foo3.o -o foo
+</pre>
+   <p class="noindent">Libraries are particularly useful when they are <dfn>installed</dfn>. 
+To install a library you need to move the file <samp><span class="file">libfoo.a</span></samp> to
+a standard directory. The actual location of that directory depends
+on your compiler. The GNU compiler looks for installed libraries in
+<samp><span class="file">/usr/lib</span></samp> and <samp><span class="file">/usr/local/lib</span></samp>. Because many Unix systems
+also use the GNU compiler, it is safe to say that both of these
+directories are standard in these systems too. However there are
+some Unix compilers that don't look at <samp><span class="file">/usr/local/lib</span></samp> by default. 
+Once a library is installed, it can be used in any project from any
+current directory to compile an executable that uses the subroutines that
+that library provides. You can direct the compiler to link an installed
+library with a set of executable files to form an executable by using
+the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flag like this:
+<pre class="example">     % gcc -o foo bar.o -lfoo
+</pre>
+   <p class="noindent">Note that if the filename of the library is <samp><span class="file">libfoo.a</span></samp>, the
+corresponding argument to the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flag must be only the substring
+<samp><span class="file">foo</span></samp>, hence &lsquo;<samp><span class="samp">-lfoo</span></samp>&rsquo;. Libraries must be named with names
+that have the form <samp><span class="file">lib*.a</span></samp>. If you have installed the <samp><span class="file">libfoo.a</span></samp>
+library in a non-standard directory, you can tell the linker to look
+for the library in that directory as well by using the &lsquo;<samp><span class="samp">-L</span></samp>&rsquo; flag. 
+For example, if the library was installed in <samp><span class="file">/home/lf/lib</span></samp> then
+we would have to invoke the linking like this:
+<pre class="example">     gcc -o bar bar.o -L/home/lf/lib -lfoo
+</pre>
+   <p class="noindent">The &lsquo;<samp><span class="samp">-L</span></samp>&rsquo; flag must appear before the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flag.
+
+   <p>Some people
+like to pass &lsquo;<samp><span class="samp">-L.</span></samp>&rsquo; to the compiler so they can link uninstalled
+libraries in the current working directory using the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flag
+instead of typing in their full filenames. The idea is that they think
+&ldquo;it looks better&rdquo; that way. Actually this is considered bad style. 
+You should use the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flag to link only libraries that have already
+been installed and use the full pathnames to link in uninstalled libraries. 
+The reason why this is important is because, even though it makes no
+difference when dealing with ordinary libraries, it makes a lot of
+difference when you are working with <dfn>shared</dfn> libraries. 
+(<em>FIXME: Crossreference</em>). 
+It makes a difference whether or not you are linking
+to an uninstalled or installed <em>shared</em> library, and in that case
+the &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; semantics mean that you are linking an installed shared
+library. Please stick to this rule, even if you are not
+using shared libraries, to make it possible to switch to using shared
+libraries without too much hassle.
+
+   <p>Also, if you are linking in more than one library,
+please pay attention to the order with which you link your libraries. 
+When the linker links a library, it does not embed into the executable code
+the entire library, but only the symbols that are needed from the library. 
+In order for the linker to know what symbols are really needed from any
+given library, it must have already parsed all the other libraries and
+object files that depend on that library! This implies that you
+first link your object files, then you link the higher-level libraries,
+then the lower-level libraries. If you are the author of the libraries,
+you must write your libraries in such a manner, that the dependency graph
+of your libraries is a tree. If two libraries depend on each other
+bidirectionally, then you may have trouble linking them in. This suggests that
+they should be one library instead!
+
+<!-- ============================================================ -->
+   </body></html>
+

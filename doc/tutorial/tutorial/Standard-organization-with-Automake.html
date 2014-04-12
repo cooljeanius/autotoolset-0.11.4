@@ -1,0 +1,183 @@
+<html lang="en">
+<head>
+<title>Standard organization with Automake - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Some-general-advice.html#Some-general-advice" title="Some general advice">
+<link rel="next" href="Programs-and-Libraries-with-Automake.html#Programs-and-Libraries-with-Automake" title="Programs and Libraries with Automake">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Standard-organization-with-Automake"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Programs-and-Libraries-with-Automake.html#Programs-and-Libraries-with-Automake">Programs and Libraries with Automake</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Some-general-advice.html#Some-general-advice">Some general advice</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.5 Standard organization with Automake</h3>
+
+<p>Now we get into the gory details of software organization. I'll tell you one
+way to do it. This is advice, not divine will. It's simply a way that works
+well in general, and a way that works well with <code>autoconf</code> and
+<code>automake</code> in particular.
+
+   <p>The first principle is to maintain the package of libraries seperate from
+the package of applications. This is not an iron-clad rule. In software
+engineering, where you have a crystal clear specification, it makes no
+sense to keep these two seperate. I found from experience that it makes
+a lot more sense in research. 
+Either of these two packages must have a toplevel directory under which
+live all of its guts. Now what do the guts look like?
+
+   <p>First of all you have the traditional set of information files that
+we described in Chapter 1:
+<pre class="example">     README, AUTHORS, NEWS, ChangeLog, INSTALL, COPYING
+</pre>
+   <p class="noindent">You also have the following subdirectories:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">m4</span></samp>&rsquo;<dd>Here, you install any new &lsquo;<samp><span class="samp">m4</span></samp>&rsquo; files that your package may want
+to install. These files define new &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; commands that you
+may want to make available to other developers who want to use your
+libraries. 
+<br><dt>&lsquo;<samp><span class="samp">doc</span></samp>&rsquo;<dd>Here you put the documentation for your code. You have the creative freedom
+to present the documentation in any way you desire. However, the prefered
+way to document software is to use Texinfo. Texinfo has the advantage that
+you can produce both on-line help as well as a nice printed book from the
+same source. We will say something about Texinfo later. 
+<br><dt>&lsquo;<samp><span class="samp">src</span></samp>&rsquo;<dd>Here's the source code. You could put it at the toplevel directory as
+many developers do, but I find it more convenient to keep it away in
+a subdirectory. Automake makes it trivially easy to do recursive
+&lsquo;<samp><span class="samp">make</span></samp>&rsquo;, so there is no reason not to take advantage of it to keep
+your files more organized. 
+<br><dt>&lsquo;<samp><span class="samp">include</span></samp>&rsquo;<dd>This is an optional directory for distributions that use many libraries. 
+You can have the <code>configure</code> script link all public header files
+in all the subdirectories under <code>src</code> to this directory. This way
+it will only be necessary to pass one <code>-I</code> flag to test suites that
+want to access the include files of other libraries in the distribution. 
+We will discuss this later. 
+<br><dt>&lsquo;<samp><span class="samp">lib</span></samp>&rsquo;<dd>This is an optional directory where you put portability-related
+source code. This is mainly replacement implementations for system calls
+that may not exist on some systems. You can also put tools here that you
+commonly use accross many different packages, tools that are too simple
+to just make libraries out of every each one of them. It is suggested
+that you maintain these tools in a central place. 
+We will discuss this much later. 
+</dl>
+   Together with these subdirectories you need to put a <samp><span class="file">Makefile.am</span></samp>
+and a <samp><span class="file">configure.in</span></samp> file. I also suggest that you put a shell script,
+which you can call <samp><span class="file">reconf</span></samp>, that contains the following:
+<pre class="example">     #!/bin/sh
+     rm -f config.cache
+     rm -f acconfig.h
+     touch acconfig.h
+     aclocal -I m4
+     autoconf
+     autoheader
+     acconfig
+     automake -a
+     exit
+</pre>
+   <p class="noindent">This will generate <samp><span class="file">configure</span></samp> and <samp><span class="file">Makefile.in</span></samp> and needs to
+be called whenever you change a <samp><span class="file">Makefile.am</span></samp> or a <samp><span class="file">configure.in</span></samp>
+as well as when you change something under the <samp><span class="file">m4</span></samp> directory. 
+It will also call <code>acconfig</code> which automatically generates
+<code>acconfig.h</code> and calle &lsquo;<samp><span class="samp">autoheader</span></samp>&rsquo; to make <code>config.h.in</code>. 
+The <samp><span class="file">acconfig</span></samp> utility is part of &lsquo;<samp><span class="samp">autotools</span></samp>&rsquo;, and if you are
+maintaining <samp><span class="file">acconfig.h</span></samp> by hand, then you want to use this script
+instead:
+<pre class="example">     #!/bin/sh
+     rm -f config.cache
+     aclocal -I m4
+     autoconf
+     autoheader
+     automake -a
+     exit
+</pre>
+   <p class="noindent">At the toplevel directory, you need to put a <samp><span class="file">Makefile.am</span></samp> that will
+tell the computer that all the source code is under the <samp><span class="file">src</span></samp>
+directory. The way to do it is to put the following lines in
+<samp><span class="file">Makefile.am</span></samp>:
+<pre class="example">     EXTRA_DIST = reconf
+     SUBDIRS = m4 doc src
+</pre>
+   <p class="noindent">
+     <ul>
+<li>The first line tells <code>automake</code> that the <samp><span class="file">reconf</span></samp> script
+is part of the distribution and must be included when you do <code>make dist</code>. 
+<li>The second line tells <code>automake</code> that the rest of the distribution is
+in the subdirectories <samp><span class="file">m4</span></samp>, <samp><span class="file">doc</span></samp> and <samp><span class="file">src</span></samp>. It instructs
+<samp><span class="file">make</span></samp> to recursively call itself in these subdirectories. It is important
+to include the <samp><span class="file">doc</span></samp> and <samp><span class="file">m4</span></samp> subdirectories here and enhance them
+with <samp><span class="file">Makefile.am</span></samp> so that <code>make dist</code> includes them into the
+distribution. 
+</ul>
+
+   <p>If you are also using a <samp><span class="file">lib</span></samp> subdirectory, then it should be built
+before <samp><span class="file">src</span></samp>:
+<pre class="example">     EXTRA_DIST = reconf
+     SUBDIRS = m4 doc lib src
+</pre>
+   <p class="noindent">The <samp><span class="file">lib</span></samp> subdirectory should build a static library that is linked
+by your executables in <samp><span class="file">src</span></samp>. There should be no need to install that
+library.
+
+   <p>At the toplevel directory you also need to put the <samp><span class="file">configure.in</span></samp>
+file. That should look like this:
+<pre class="example">     AC_INIT
+     AM_INIT_AUTOMAKE(packagename,versionnumber)
+     [...put your tests here...]
+     AC_OUTPUT(Makefile                   \
+               doc/Makefile               \
+               m4/Makefile                \
+               src/Makefile               \
+               src/dir1/Makefile          \
+               src/dir2/Makefile          \
+               src/dir3/Makefile          \
+               src/dir1/foo1/Makefile     \
+               ............               \
+              )
+     
+</pre>
+   <p class="noindent">You will not need another <samp><span class="file">configure.in</span></samp> file. However,
+<strong>every directory level on your tree must have a </strong><samp><span class="file">Makefile.am</span></samp>. 
+When you call
+<code>automake</code> on the top-level directory, it looks at &lsquo;<samp><span class="samp">AC_OUTPUT</span></samp>&rsquo; at
+your
+<samp><span class="file">configure.in</span></samp> to decide what other directories have a <samp><span class="file">Makefile.am</span></samp>
+that needs parsing. As you can see from above, a <samp><span class="file">Makefile.am</span></samp> file
+is needed even under the <samp><span class="file">doc</span></samp> and <samp><span class="file">m4</span></samp> directories. How to set
+that up is up to you. If you aren't building anything, but just have files
+and directories hanging around, you must declare these files and directories
+in the <samp><span class="file">Makefile.am</span></samp> like this:
+<pre class="example">     SUBDIRS = dir1 dir2 dir3
+     EXTRA_DIST = file1 file2 file3
+</pre>
+   <p class="noindent">Doing that will cause <code>make dist</code> to include these files and directories
+to the package distribution.
+
+   <p>This tedious setup work needs to be done everytime that you create a new
+package. If you create enough packages to get sick of it, then you
+want to look into the &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; utility that is distributed by
+Autotools. We will describe it at the next chapter.
+
+<!-- ========================================================================== -->
+   </body></html>
+

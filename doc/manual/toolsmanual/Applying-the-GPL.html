@@ -1,0 +1,132 @@
+<html lang="en">
+<head>
+<title>Applying the GPL - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="prev" href="Organizing-your-project-in-subdirectories.html#Organizing-your-project-in-subdirectories" title="Organizing your project in subdirectories">
+<link rel="next" href="Handling-version-numbers.html#Handling-version-numbers" title="Handling version numbers">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Applying-the-GPL"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Handling-version-numbers.html#Handling-version-numbers">Handling version numbers</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Organizing-your-project-in-subdirectories.html#Organizing-your-project-in-subdirectories">Organizing your project in subdirectories</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">4.8 Applying the GPL</h3>
+
+<p>The General Public License (GPL) is the legal implementation of the idea that
+the program, to which it is applied, belongs to the public. It means that
+the public is free to use it, free to modify it and redistribute it. 
+And it also means that no-one can steal it from the public and use it
+to create a derived work that is not free. This is different from
+<dfn>public domain</dfn>, where anyone can take a work, make a few changes,
+slap a copyright notice on it, and forbid the public to use the resulting
+work without a proprietary license. The idea, that a work is owned by the
+public in this sense, is often called <dfn>copyleft</dfn>.
+
+   <p>Unfortunately our legal system does not recognize this idea properly. 
+Every work must have an <dfn>owner</dfn>, and that person or entity is the
+only one that can enforce per copyright. As a result, when a work is
+distributed under the GPL, with the spirit that it belongs to the public,
+only the nominal &ldquo;owner&rdquo; has the right to sue hoarders that use
+the work to create proprietary products. Unfortunately, the law does not
+extend that right to the public. Despite this shortcoming, the GPL
+has proven to be a very effective way to distribute free software. 
+Almost all of the components of the GNU system are distributed under the
+GPL.
+
+   <p>To apply the GPL to your programs you need to do the following things:
+     <ol type=1 start=1>
+<li>Attach a copy of the GNU general public license to the toplevel directory of
+your
+source code in a file called <samp><span class="file">COPYING</span></samp>. 
+<li>Include a legal notice to <em>every</em> file that you want covered by the GPL,
+saying that it is covered by the GPL. It is important that all files that
+constitute source code must include this notice, including <samp><span class="file">Makefile.am</span></samp>,
+<samp><span class="file">configure.in</span></samp> files and shell scripts. 
+The legal notice should look like this:
+     <pre class="example">          Copyright (C) (years) (Your Name) &lt;your@email.address&gt;
+          
+          This program is free software; you can redistribute it and/or
+          modify it under the terms of the GNU General Public License
+          as published by the Free Software Foundation; either
+          version 2 of the License, or (at your option) any later
+          version.
+          
+          This program is distributed in the hope that it will be useful,
+          but WITHOUT ANY WARRANTY; without even the implied warranty of
+          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+          GNU General Public License for more details.
+          
+          You should have received a copy of the GNU General Public License
+          along with this program; if not, write to the Free Software
+          Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+</pre>
+     <p class="noindent">If you have assigned your copyright to an organization, like the Free
+Software Foundation, then you should probably fashion your copyright
+notice like this:
+     <pre class="example">          Copyright (C) (years) Free Software Foundation
+          (your name) &lt;your@email.address&gt; (initial year)
+          etc...
+</pre>
+     <p class="noindent">This legal notice works like a subroutine. By invoking it, you invoke the
+full text of the GNU General Public License which is too lengthy to include
+in every source file. Where you see &lsquo;<samp><span class="samp">(years)</span></samp>&rsquo; you need to list all the
+years in which you finished preparing a version that was actually released,
+and which was an ancestor to the current version. This list is
+<em>not</em> the list of years in which versions were released. It is a list
+of years in which versions, later released, were completed. If you finish
+a version on Dec 31, 1997 and release it on Jan 1, 1998, you need to
+include 1997, but you do not need to include 1998. This rule is complicated,
+but it is dictated by international copyright law.
+
+     <p>Some developers don't like inserting a proper legal notice to every file
+in their source code, because they don't want to do the typing. 
+However, it is not sufficient to just say something like
+&ldquo;this file is GPLed&rdquo;. You have to make
+an unambiguous and exact statement, and you have to include the entire
+boilerplate text to do that. Fortunately, you can save typing by
+having Emacs insert copyright notices for you. 
+See <a href="Inserting-copyright-notices-with-Emacs.html#Inserting-copyright-notices-with-Emacs">Inserting copyright notices with Emacs</a>, for more details. 
+<li>Use the <samp><span class="file">AUTHORS</span></samp> file to keep records of who wrote what. 
+See <a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>, for details. 
+<li>If you modify someone else's GPL covered file make sure to comply with
+section 2 of the GPL. To do that place notices stating that you changed
+the file and the date of the change. Also your program should advertise the
+fact that it is free software, that there is no warranty and that it can
+be redistributed under the condition of the GPL. A standard way of doing
+this is to make your program output this notice when it is passed the
+<code>--version</code> command-line flag. 
+<li>Finally, help others to use and improve your program by writing documentation. 
+A free software project is not truly complete without documentation. 
+To make it possible for your users to update the documentation to reflect
+the changes that they make, it is necessary to make the documentation free
+too. However, the issues for writings are different from the issues for
+software. See <a href="Why-free-software-needs-free-documentation.html#Why-free-software-needs-free-documentation">Why free software needs free documentation</a>, for a
+discussion of these issues. See <a href="Maintaining-Documentation.html#Maintaining-Documentation">Maintaining Documentation</a>, for the
+technical details on how to write documentation for your programs.
+        </ol>
+
+<!-- ============================================================ -->
+   </body></html>
+

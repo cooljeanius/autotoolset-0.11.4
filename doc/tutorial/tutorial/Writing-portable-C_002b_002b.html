@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+<title>Writing portable C++ - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="The-features-of-LF_005fCPP_005fPORTABILITY.html#The-features-of-LF_005fCPP_005fPORTABILITY" title="The features of LF_CPP_PORTABILITY">
+<link rel="next" href="Hello-world-revisited-again.html#Hello-world-revisited-again" title="Hello world revisited again">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Writing-portable-C++"></a>
+<a name="Writing-portable-C_002b_002b"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hello-world-revisited-again.html#Hello-world-revisited-again">Hello world revisited again</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-features-of-LF_005fCPP_005fPORTABILITY.html#The-features-of-LF_005fCPP_005fPORTABILITY">The features of LF_CPP_PORTABILITY</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.4 Writing portable C++</h3>
+
+<p>The C++ language has been standardized very recently. As a result, not all
+compilers fully support all the features that the ANSI C++ standard requires,
+including the <code>g++</code> compiler itself. Some of the problems commonly
+encountered, such as incorrect scoping in for-loops and lack of the
+<code>bool</code> data type can be easily worked around. In this section we
+give some tips for avoiding more portability problems. I welcome people on
+the net reading this to email me their tips, to be included in this
+tutorial.
+     <ul>
+<li>The following code, as much as it may seem reasonable is not correct:
+     <pre class="example">          int n = 10;
+          double **foo;
+          foo = new (double *)[i];
+</pre>
+     <p class="noindent">The <code>g++</code> compiler will parse this and do the right thing, but other
+compilers are more picky. The correct way to do it is:
+     <pre class="example">          int n = 10;
+          double **foo;
+          foo = new double * [i];
+</pre>
+     <p class="noindent"><li>Do not use exceptions, RTTI and STL. Yes, they can make your code more spiffy,
+but almost certainly you can live without them, and save yourself serious
+portability pains. 
+<li>Do not use templates, unless it is absolutely necessary. If you believe it
+is possible to implement an idea without templates, then do it without
+templates. If you do need to use templates, try to limit the amount of
+features you invoke to the absolute minimum. In particular:
+          <ul>
+<li>A class can have a template function as a member function. Unfortunately this
+is not supported by <code>g++</code>. 
+<li>Some people discovered that by using templates with types that are templates
+of types that are templates of types that are templates .... recursively,
+they can force the C++ compiler to do computation at compile time and generate
+C++ code that is highly optimized. Problems in linear algebra, FFTs and such
+have been implemented in this manner, and the performance of the corresponding
+C++ code beat out Fortran implementations. This is a great idea of the future,
+but at the moment many compilers, including g++ can't properly cope with
+such code. For now don't make templates of templates of things. Only make
+templates of things. 
+</ul>
+     </ul>
+
+   <p>FIXME: <em>I need to add some stuff here.</em>
+
+<!-- =========================================================================== -->
+   </body></html>
+

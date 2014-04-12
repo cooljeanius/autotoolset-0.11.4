@@ -1,0 +1,92 @@
+<html lang="en">
+<head>
+<title>Installing the GNU build system - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="The-GNU-build-system.html#The-GNU-build-system" title="The GNU build system">
+<link rel="prev" href="Introducing-the-GNU-tools.html#Introducing-the-GNU-tools" title="Introducing the GNU tools">
+<link rel="next" href="Hello-world-example-with-Autoconf-and-Automake.html#Hello-world-example-with-Autoconf-and-Automake" title="Hello world example with Autoconf and Automake">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Installing-the-GNU-build-system"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hello-world-example-with-Autoconf-and-Automake.html#Hello-world-example-with-Autoconf-and-Automake">Hello world example with Autoconf and Automake</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Introducing-the-GNU-tools.html#Introducing-the-GNU-tools">Introducing the GNU tools</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="The-GNU-build-system.html#The-GNU-build-system">The GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">4.2 Installing the GNU build system</h3>
+
+<p>If you are on a Unix system, don't be surprised if the GNU development
+tools are not installed. Some Unix sysadmins have never heard about them. 
+If you do have them installed check to see whether you have the most
+recent versions. To do that, type:
+<pre class="example">     % autoconf --version
+     % automake --version
+     % libtool --version
+</pre>
+   <p class="noindent">This manual is current with Autoconf 2.13, Automake
+1.4 and Libtool 1.3.
+
+   <p>If you don't have any of the above packages, you need to get a copy and
+install them on your computer. The distribution filenames for the GNU build
+tools, are:
+<pre class="example">     autoconf-2.13.tar.gz
+     automake-1.4.tar.gz
+     libtool-1.3.tar.gz
+     autotools-0.11.tar.gz
+</pre>
+   <p class="noindent">Before installing these packages however, you will need to install the
+following needed packages from the FSF:
+<pre class="example">     make-*.tar.gz
+     m4-*.tar.gz
+     texinfo-3.12b.tar.gz
+     tar-*.shar.gz
+</pre>
+   <p class="noindent">The asterisks in the version numbers mean that the version for these
+programs is not critically important.
+
+   <p>You will need the GNU versions of <code>make</code>, <code>m4</code> and
+<code>tar</code> even if your system already has native versions of these utilities. 
+To check whether you do have the GNU versions see whether they accept the
+<code>--version</code> flag. If you have proprietory versions of <code>make</code> or
+<code>m4</code>, rename them and then install the GNU ones. 
+You will also need to install <em>Perl</em>, the <em>GNU C compiler</em>,
+and the <em>TeX</em> typesetting system. These programs are always installed
+on a typical Debian GNU/Linux system.
+
+   <p>It is important to note that the end user will only need a decent shell
+and a working <code>make</code> to build a source code distribution. The developer
+however needs to gather all of these tools in order to create the distribution.
+
+   <p>The installation process, for all of these tools that you obtain as
+<samp><span class="file">*.tar.gz</span></samp> distributions is rather straightforward:
+<pre class="example">     % ./configure
+     % make
+     % make check
+     % make install
+</pre>
+   <p class="noindent">Most of these tools include documentation which you can build with
+<pre class="example">     % make dvi
+</pre>
+   <p class="noindent"><!-- ============================================================ -->
+
+   </body></html>
+

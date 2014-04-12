@@ -902,7 +902,7 @@ uninstall-am: uninstall-dist_docDATA
 
 
 configure.scan:
-	autoscan
+	autoscan || touch configure.scan
 
 distclean-local:
 	rm -f @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz

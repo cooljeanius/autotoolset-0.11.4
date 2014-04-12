@@ -1,0 +1,121 @@
+<html lang="en">
+<head>
+<title>Direct compilation - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="next" href="Enter-Makefiles.html#Enter-Makefiles" title="Enter Makefiles">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Direct-compilation"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Enter-Makefiles.html#Enter-Makefiles">Enter Makefiles</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">4.1 Direct compilation</h3>
+
+<p>We begin at the beginning. If you recall, we showed to you that the hello
+world program can be compiled very simply with the following command:
+<pre class="example">     % gcc hello.c -o hello
+</pre>
+   <p class="noindent">See <a href="Hello-world-example.html#Hello-world-example">Hello world example</a>. 
+Even in this simple case you have quite a few options:
+     <ul>
+<li>The &lsquo;<samp><span class="samp">-g</span></samp>&rsquo; flag causes the compiler to output debugging information
+to the executable. This way, you can step your program through a debugger
+if it crashes. 
+<li>The &lsquo;<samp><span class="samp">-O</span></samp>&rsquo;, &lsquo;<samp><span class="samp">-O2</span></samp>&rsquo;, &lsquo;<samp><span class="samp">-O3</span></samp>&rsquo; flags activate <dfn>optimization</dfn>. 
+Some compilers can go as far as &lsquo;<samp><span class="samp">-O6</span></samp>&rsquo;. These numbers are called
+<dfn>optimization levels</dfn>. When you compile your program with optimization
+enabled, the compiler applies certain algorithms to the machine code output
+to make it go faster. The cost is that your program compiles much more slowly
+and that although you can step it through a debugger if you used the &lsquo;<samp><span class="samp">-g</span></samp>&rsquo;
+flag, things will be a little strange. During development the programmer
+usually uses no optimization, and only activates it when he is about to
+run the program for a production run. A good advice: always test your code
+with optimization activated as well. 
+If optimization breaks your code, then this is telling you that you have
+a memory bug. Good luck finding it. 
+<li>The &lsquo;<samp><span class="samp">-Wall</span></samp>&rsquo; flag tells the compiler to issue warnings when it sees
+bad programming style. Some of these warning catch actual bugs, but
+occasionally some of the warnings complain about something correct that you
+did on purpose. For this reason you control whether you want to see these
+warnings or not with this flag. 
+</ul>
+   Here are some variations of the above example:
+<pre class="example">     % gcc -g -O3 hello.c hello
+     % gcc -g -Wall hello.c -o hello
+     % gcc -g -Wall -O3 hello.c -o hello
+</pre>
+   <p class="noindent">Compilers have many more flags like that, and some of these flags are
+compiler dependent.
+
+   <p>Now let's consider the case where you have a much larger program. 
+made of source files <samp><span class="file">foo1.c</span></samp>, <samp><span class="file">foo2.c</span></samp>,
+<samp><span class="file">foo3.c</span></samp> and header files <samp><span class="file">header1.h</span></samp> and <samp><span class="file">header2.h</span></samp>. 
+One way to compile the program is like this:
+<pre class="example">     % gcc foo1.c foo2.c foo3.c -o foo
+</pre>
+   <p class="noindent">This is fine when you have only a few files to deal with. Eventually when
+you have more than a hundred files, this is very slow and inefficient, because
+everytime you change one of the &lsquo;<samp><span class="samp">foo</span></samp>&rsquo; files, <strong>all</strong> of them have
+to be recompiled. In large projects this can very well take a quite a few
+minutes, and in very large projects hours. The solution is
+to compile each part seperately and put them all together at the end, like
+this:
+<pre class="example">     % gcc -c foo1.c
+     % gcc -c foo2.c
+     % gcc -c foo3.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+</pre>
+   <p class="noindent">The first three lines compile the three parts seperately and generate output
+in the files <samp><span class="file">foo1.o</span></samp>, <samp><span class="file">foo2.o</span></samp>, <samp><span class="file">foo3.o</span></samp>. The fourth line
+puts it all back together. This way if you make a change only in <samp><span class="file">foo1.o</span></samp>
+you just do:
+<pre class="example">     % gcc -c foo1.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+</pre>
+   <p class="noindent">This feature of the compiler offers a way out, but it's hardly a solution.
+
+     <ul>
+<li>Writing out these commands everytime becomes annoying very soon. 
+<li>When it is a <strong>header</strong> file that you modified, you need to figure out
+<em>which source files included it and rebuild all of them</em> for your
+change to take effect. If you forget to rebuild just one of the source files,
+this bug fix you just made may not work, and you will be all confused. 
+<li> Once you are done compiling you have all these <samp><span class="file">.o</span></samp> files sitting around
+and you may want to have a safe way of getting rid of them. Typing
+     <pre class="example">          rm -f *.o
+</pre>
+     <p class="noindent">is dangerous because you may misspell &lsquo;<samp><span class="samp">o</span></samp>&rsquo; for &lsquo;<samp><span class="samp">c</span></samp>&rsquo; or you may
+do this:
+     <pre class="example">          rm -f * .o
+</pre>
+     <p class="noindent">and become depressed. 
+</ul>
+
+   <p>The &lsquo;<samp><span class="samp">make</span></samp>&rsquo; utility was written to address these problems.
+
+<!-- ======================================================================== -->
+   </body></html>
+

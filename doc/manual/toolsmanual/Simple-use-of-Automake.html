@@ -1,0 +1,184 @@
+<html lang="en">
+<head>
+<title>Simple use of Automake - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake.html#Using-Automake" title="Using Automake">
+<link rel="prev" href="Using-Automake.html#Using-Automake" title="Using Automake">
+<link rel="next" href="General-Automake-principles.html#General-Automake-principles" title="General Automake principles">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Simple-use-of-Automake"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="General-Automake-principles.html#General-Automake-principles">General Automake principles</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-Automake.html#Using-Automake">Using Automake</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake.html#Using-Automake">Using Automake</a>
+<hr>
+</div>
+
+<h3 class="section">5.1 Simple use of Automake</h3>
+
+<p>When you develop an extensive software package, you should write all
+the source code under the <samp><span class="file">src</span></samp> directory
+(see <a href="Organizing-your-project-in-subdirectories.html#Organizing-your-project-in-subdirectories">Organizing your project in subdirectories</a>). 
+Every library should be placed in a separate subdirectory under <samp><span class="file">src</span></samp>
+named after the library, as we explained in
+<a href="Dealing-with-header-files.html#Dealing-with-header-files">Dealing with header files</a>. It is okey for applications to share
+a directory, especially if they need to share source code. Sometimes,
+it may be more practical if each applications has its own directory. 
+Every one of these directories needs a <samp><span class="file">Makefile.am</span></samp> file and
+all of these directories must be mentioned at the end of <samp><span class="file">configure.in</span></samp>
+in the &lsquo;<samp><span class="samp">AC_OUTPUT</span></samp>&rsquo; invocation.
+
+   <p>A typical <samp><span class="file">Makefile.am</span></samp> is a list of assigments of the form:
+<pre class="example">     <var>variable</var> = <var>value</var>
+</pre>
+   <p class="noindent"><samp><span class="file">Makefile.am</span></samp> can also contain target definitions, using the same
+syntax as with ordinary makefiles and abstract rules.
+
+   <p>Most <samp><span class="file">Makefile.am</span></samp> files begin with assigning values to the following
+variables:
+     <dl>
+<dt><code>INCLUDES = -I/</code><var>dir1</var><code> -I/</code><var>dir2</var><code> ...</code><dd><!--  -->
+Insert the <code>-I</code> flags
+that you want to pass to your compiler when it builds object files. Automake
+will automatically insert for you flags that point to the current source
+directory, its parent directory and the top-level source code directory. 
+Please use &lsquo;<samp><span class="samp">$(top_srcdir)</span></samp>&rsquo; to build a path to a directory within
+your source code distribution. For example, to make the contents of
+<samp><span class="file">src/foo/bar</span></samp> available use:
+     <pre class="example">          INCLUDES = -I$(top_srcdir)/src/foo/bar
+</pre>
+     <p class="noindent">If you want to refer to directories outside your source code distribution's
+hierarchy, please use absolute pathnames. 
+<br><dt><code>LDFLAGS = -L/</code><var>dir1</var><code> -L/</code><var>dir2</var><code> ...</code><dd><!--  -->
+Insert the <code>-L</code> flags that
+you want to pass to your compiler when it builds executables. 
+Please don't use this flag to make directories within the source code
+distribution accessible. Please refer to uninstalled libraries that interest
+you with absolute pathnames instead. 
+<br><dt><code>LDADD = </code><var>foo.o</var><code> ... $(top_builddir)/dir1/libfoo.a ... -l</code><var>foo</var><code> ...</code><dd><!--  -->
+List a set of object files, uninstalled libraries and installed libraries
+that you want to link in with all of your executables. 
+Please refer to uninstalled libraries with absolute pathnames. 
+Because uninstalled libraries are built files, you should start your path
+with &lsquo;<samp><span class="samp">$(top_builddir)</span></samp>&rsquo;. For example, to refer to the library
+<samp><span class="file">libfoo.a</span></samp> under <samp><span class="file">src/foo</span></samp> write:
+     <pre class="example">          $(top_builddir)/src/foo/libfoo.a
+</pre>
+     <p class="noindent">The difference between &lsquo;<samp><span class="samp">$(top_srcdir)</span></samp>&rsquo; and &lsquo;<samp><span class="samp">$(top_builddir)</span></samp>&rsquo; is
+explained in <em>FIXME: Where?</em>. 
+</dl>
+   Next we list the targets that we want to build in this directory level:
+     <dl>
+<dt><code>EXTRA_DIST = </code><var>file1</var> <var>file2</var><code> ...</code><dd>List any files that you want to include into your source code distribution. 
+See <a href="Scripts-with-Automake.html#Scripts-with-Automake">Scripts with Automake</a>, for an example that uses this assignment. 
+<br><dt><code>SUBDIRS = </code><var>dir1</var> <var>dir2</var><code> ...</code><dd>List all the subdirectories that we want to build before building this
+directory. &lsquo;<samp><span class="samp">make</span></samp>&rsquo; will recursively invoke itself in each subdirectory
+before doing anything on the current directory. 
+For example, this is particularly useful when writing the <samp><span class="file">Makefile.am</span></samp>
+for the <samp><span class="file">src</span></samp> directory itself. In that file you should list all the
+subdirectories that you have created under <samp><span class="file">src</span></samp>. 
+If you mention the current directory &lsquo;<samp><span class="samp">.</span></samp>&rsquo; in &lsquo;<samp><span class="samp">SUBDIRS</span></samp>&rsquo; then
+the current directory will be built first, and the subdirectories will be
+build afterwords. 
+<br><dt><code>bin_PROGRAMS = </code><var>prog1</var> <var>prog2</var><code> ....</code><dd>Lists the executable files that will
+be compiled with &lsquo;<samp><span class="samp">make</span></samp>&rsquo; and installed with &lsquo;<samp><span class="samp">make install</span></samp>&rsquo;
+under <samp><span class="file">/prefix/bin</span></samp>, where <samp><span class="file">prefix</span></samp> is usually <samp><span class="file">/usr/local</span></samp>. 
+<br><dt><code>lib_LIBRARIES = </code><var>libfoo1.a</var> <var>libfoo2.a</var><code> ...</code><dd>Lists all the library files that will be compiled with <code>make</code>
+and installed with <code>make install</code> under <samp><span class="file">/prefix/lib</span></samp>. 
+<br><dt><code>check_PROGRAMS = </code><var>prog1</var> <var>prog2</var><code> ...</code><dd>Lists the executable files that are <strong>not</strong> compiled with a simple
+&lsquo;<samp><span class="samp">make</span></samp>&rsquo; but only when you type &lsquo;<samp><span class="samp">make check</span></samp>&rsquo;. These programs
+are usually test programs that you use to verify pieces of your code. 
+Mentioning a program in &lsquo;<samp><span class="samp">check_PROGRAMS</span></samp>&rsquo; will not cause the program
+to be automatically executed during &lsquo;<samp><span class="samp">make check</span></samp>&rsquo;. 
+<br><dt><code>TESTS = </code><var>prog1</var> <var>prog2</var><code> ....</code><dd>Lists executable files that should be executed when you run <code>make check</code>. 
+In order for these files to be compiled in the first place, you must
+also mention them in &lsquo;<samp><span class="samp">check_PROGRAMS</span></samp>&rsquo;. 
+It is common to set
+     <pre class="example">          TESTS = $(check_PROGRAMS)
+</pre>
+     <p class="noindent">This way by commenting the line in and out, you can modify the behaviour
+of <code>make check</code>. While debugging your test suite, you will want to
+comment out this line so that <code>make check</code> doesn't run the entire
+test suite all the time. However, in the end product, you will want to
+comment it back in. 
+For more about using test suites for debugging see
+<a href="Libraries-with-Automake.html#Libraries-with-Automake">Libraries with Automake</a>. 
+<br><dt><code>include_HEADERS = </code><var>foo1.h</var> <var>foo2.h</var><code> ....</code><dd>List all the public header files in this directory that you want to
+install to <samp><span class="file">/prefix/include</span></samp>. 
+</dl>
+   For every program and library we must state information that will allow
+Automake and Make to infer the building process.
+
+     <ul>
+<li><strong>For each Program</strong>: You need to declare the set of files that are
+sources of the program, the set of libraries that must be linked with the
+program and (optionally) a set of dependencies that need to be built before
+the program is built. To do this, you need to write in the
+<samp><span class="file">Makefile.am</span></samp> the following assignments:
+          <dl>
+<dt><code>prog_SOURCES = </code><var>foo1</var><code>.c </code><var>foo2</var><code>.c ... </code><var>header1</var><code>.h </code><var>header2</var><code>.h ....</code><dd>List all the files that compose the source code of the program, including
+header files. The presense of a header file here does not cause the filke
+to be installed at <samp><span class="file">/prefix/include</span></samp> but it does cause it to be
+added to the distribution when you do <code>make dist</code>. To cause public
+files to be installed you must mention them in &lsquo;<samp><span class="samp">include_HEADERS</span></samp>&rsquo;. 
+Automake will generate abstract rules for building C, C++ and Fortran
+files. For any other programming languages, you must provide your
+own abstract rules. 
+(<em>FIXME: Crossreference</em>)
+<br><dt><code>prog_LDADD = $(top_builddir)/</code><var>dir1</var><code>/</code><var>libfoo.a</var><code> -l</code><var>bar1</var><code> -l</code><var>bar2</var><code> ...</code><dd>List the libraries that need to be linked with your source code. Installed
+libraries should be mentioned using &lsquo;<samp><span class="samp">-l</span></samp>&rsquo; flags. Uninstalled libraries
+must be mentioned using absolute pathnames, just like with the global
+LDADD mentioned earlier. 
+<br><dt><code>prog_LDFLAGS = -L/</code><var>dir1</var><code> -L/</code><var>dir2</var><code> -L/</code><var>dir3</var><code> ...</code><dd>Add the &lsquo;<samp><span class="samp">-L</span></samp>&rsquo; flags that are needed to find the installed libraries that
+you want to link in &lsquo;<samp><span class="samp">prog_LDADD</span></samp>&rsquo;. 
+<br><dt><code>prog_DEPENDENCIES = </code><var>dep1</var> <var>dep2</var> <var>dep3</var><code> ...</code><dd>List any targets that you want to build before building this program. 
+</dl>
+     In each one of these assignments substitute <var>prog</var> with the name
+of the program that you are building as it appeared in &lsquo;<samp><span class="samp">bin_PROGRAMS</span></samp>&rsquo;
+or &lsquo;<samp><span class="samp">check_PROGRAMS</span></samp>&rsquo;.
+
+     <p>This is all you need to do. There is no need to write an extended Makefile
+with all the targets, dependencies and rules for building the program. 
+All of these are computed for you by Automake. Also, the targets
+&lsquo;<samp><span class="samp">dist</span></samp>&rsquo;, &lsquo;<samp><span class="samp">distcheck</span></samp>&rsquo;, &lsquo;<samp><span class="samp">install</span></samp>&rsquo;, &lsquo;<samp><span class="samp">uninstall</span></samp>&rsquo;,
+&lsquo;<samp><span class="samp">clean</span></samp>&rsquo;, &lsquo;<samp><span class="samp">distclean</span></samp>&rsquo; are setup to handle the program.
+
+     <li><strong>For each library:</strong>
+You need to make the following four assignments:
+          <dl>
+<dt><code>libfoo_a_SOURCES = </code><var>foo1</var><code>.c </code><var>foo2</var><code>.c </code><var>foo</var><code>.h ...</code><dd>List all the source files that compose the library, including the
+<strong>private</strong> header files. You can list the public header files as
+well, if you like, and perhaps you should for documentation, but you don't
+have to. Public header files are required to be listed only in
+&lsquo;<samp><span class="samp">include_HEADERS</span></samp>&rsquo; so that Automake knows that it must get them
+installed in <samp><span class="file">/prefix/include</span></samp>. 
+<br><dt><code>libfoo_a_LIBADD = </code><var>obj1</var><code>.o </code><var>obj2</var><code>.o </code><var>obj3</var><code>.o ...</code><dd>List any other object files that you want to include in the library. 
+This feature is rarely used in cases where an object file is obtained
+through an explicitly stated makefile rule. 
+</dl>
+     Note that if the name of the library is <samp><span class="file">libfoo.a</span></samp> the prefix
+that appears in the above variables that are related with the library
+is &lsquo;<samp><span class="samp">libfoo_a_</span></samp>&rsquo;
+</ul>
+
+<!-- ============================================================ -->
+   </body></html>
+

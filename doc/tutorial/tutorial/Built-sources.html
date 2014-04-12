@@ -1,0 +1,82 @@
+<html lang="en">
+<head>
+<title>Built sources - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Simple-Automake-examples.html#Simple-Automake-examples" title="Simple Automake examples">
+<link rel="next" href="Installation-directories_002e.html#Installation-directories_002e" title="Installation directories.">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Built-sources"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Installation-directories_002e.html#Installation-directories_002e">Installation directories.</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Simple-Automake-examples.html#Simple-Automake-examples">Simple Automake examples</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.9 Built sources</h3>
+
+<p>In some complicated packages, you want to generate part of their source
+code by executing a program at compile time. For example, in one of
+the packages that I wrote for an assignment, I had to generate a file
+<samp><span class="file">incidence.out</span></samp> that contained a lot of hairy matrix definitions that
+were too ugly to just compute and write by hand. That file was then
+included by <samp><span class="file">fem.cc</span></samp> which was part of a library that I wrote to
+solve simple finite element problems, with a preprocessor statement:
+<pre class="example">     #include "incidence.out"
+</pre>
+   <p class="noindent">All source code files that are to be generated during compile time should
+be listed in the global definition of &lsquo;<samp><span class="samp">BUILT_SOURCES</span></samp>&rsquo;. This will
+make sure that these files get compiled before anything else. In our
+example, the file <samp><span class="file">incidence.out</span></samp> is computed by running a program
+called <samp><span class="file">incidence</span></samp> which of course also needs to be compiled before
+it is run. So the <samp><span class="file">Makefile.am</span></samp> that we used looked like this:
+<pre class="example">     noinst_PROGRAMS = incidence
+     lib_LIBRARIES = libpmf.a
+     
+     incidence_SOURCES = incidence.cc mathutil.h
+     incidence_LDADD = -lm
+     
+     incidence.out: incidence
+           ./incidence &gt; incidence.out
+     
+     BUILT_SOURCES = incidence.out
+     libpmf_a_SOURCES = laplace.cc laplace.h fem.cc fem.h mathutil.h
+     
+     check_PROGRAMS = test1 test2
+     TESTS = $(check_PROGRAMS)
+     
+     test1_SOURCES = test1.cc
+     test1_LDADD = libpmf.a -lm
+     
+     test2_SOURCES = test2.cc
+     test2_LDADD = libpmf.a -lm
+</pre>
+   <p class="noindent">Note that because the executable <samp><span class="file">incidence</span></samp> has been created at
+compile time, the correct path is <samp><span class="file">./incidence</span></samp>. Always keep in mind,
+that the correct path to source files, such as <samp><span class="file">incidence.cc</span></samp> is
+<samp><span class="file">$(srcdir)/incidence.cc</span></samp>. Because the <samp><span class="file">incidence</span></samp> program is used
+temporarily only for the purposes of building the <samp><span class="file">libpmf.a</span></samp> library,
+there is no reason to install it. So, we use the &lsquo;<samp><span class="samp">noinst</span></samp>&rsquo; prefix to
+instruct Automake not to install it.
+
+   </body></html>
+

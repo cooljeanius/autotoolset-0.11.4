@@ -1,4 +1,4 @@
-TODO:
+TODO (old):
 * have the other documents also installed
 * develop macros and tools for dealing with documentation MY way.
 * Eliminate the LF_CONFIGURE_* macros. Write macros for testing Fortran.
@@ -10,6 +10,9 @@ TODO:
 * See what happens with the f77 incompatibilities that Dennis mentioned.
 * Wrap calls to f2c with a shell script and fix up mkfortran.sh a bit
 * Automake will soon support 'include'. Must make adjustments in tutorial
+
+Major changes in version 0.11.4
+* forked
 
 Major changes in version 0.11.0
 * Mainly packaging bugfixes

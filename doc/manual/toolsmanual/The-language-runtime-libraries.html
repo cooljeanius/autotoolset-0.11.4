@@ -1,0 +1,148 @@
+<html lang="en">
+<head>
+<title>The language runtime libraries - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="The-GPL-and-libraries.html#The-GPL-and-libraries" title="The GPL and libraries">
+<link rel="next" href="Basic-Makefile-concepts.html#Basic-Makefile-concepts" title="Basic Makefile concepts">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="The-language-runtime-libraries"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Basic-Makefile-concepts.html#Basic-Makefile-concepts">Basic Makefile concepts</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="The-GPL-and-libraries.html#The-GPL-and-libraries">The GPL and libraries</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.6 The language runtime libraries.</h3>
+
+<p>When you compile ordinary programs, like the hello world program the
+compiler will automatically link to your program a library called
+<samp><span class="file">libc.a</span></samp>. So when you type
+<pre class="example">     % gcc -c hello.c
+     % gcc -o hello hello.o
+</pre>
+   <p class="noindent">what is actually going on behind the scenes is:
+<pre class="example">     % gcc -c hello.c
+     % gcc -o hello hello.c -lc
+</pre>
+   <p class="noindent">To see why this is necessary, try &lsquo;<samp><span class="samp">nm</span></samp>&rsquo; on <samp><span class="file">hello.o</span></samp>:
+<pre class="example">     % nm hello.o
+     00000000 t gcc2_compiled.
+     00000000 T main
+              U printf
+</pre>
+   <p class="noindent">The file <samp><span class="file">hello.o</span></samp> defines the symbol &lsquo;<samp><span class="samp">main</span></samp>&rsquo;, but it marks the
+symbol &lsquo;<samp><span class="samp">printf</span></samp>&rsquo; as undefined. The reason for this is that
+&lsquo;<samp><span class="samp">printf</span></samp>&rsquo; is not a built-in keyword of the C programming language,
+but a function call that is defined by the <samp><span class="file">libc.a</span></samp> library. Most of the
+facilities of the C programming language are defined by this library. 
+The include files <samp><span class="file">stdio.h</span></samp>, <samp><span class="file">stdlib.h</span></samp>, and so on are only
+header files that declare parts of the C library. You can read
+all about the C library in the <cite>Libc manual</cite>.
+
+   <p>The catch is that there are many functions that you may consider standard
+features of C that are not included in the <samp><span class="file">libc.a</span></samp> library itself. 
+For example, all the math functions that are declared in <samp><span class="file">math.h</span></samp>
+are defined in a library called <samp><span class="file">libm.a</span></samp> which is <em>not</em> linked
+by default. So if your program is using math functions and including
+<samp><span class="file">math.h</span></samp>, then you need to explicitly link the math library by
+passing the &lsquo;<samp><span class="samp">-lm</span></samp>&rsquo; flag. The reason for this particular separation is
+that mathematicians are very picky about the way their math is being
+computed and they may want to use their own implementation of the math
+functions instead of the standard implementation. If the math functions
+were lumped into <samp><span class="file">libc.a</span></samp> it wouldn't be possible to do that.
+
+   <p>For example, consider the following program that prompts for a number
+and prints its square root:
+     <dl>
+<dt><samp><span class="file">dude.c</span></samp><dd>
+     <pre class="example">          #include &lt;stdio.h&gt;
+          #include &lt;math.h&gt;
+          
+          int
+          main ()
+          {
+            double a;
+            printf ("a = ");
+            scanf ("%f", &amp;a);
+            printf ("sqrt(a) = %f", sqrt(a));
+          }
+</pre>
+     </dl>
+   To compile this program you will need to do:
+<pre class="example">     % gcc -o dude dude.c -lm
+</pre>
+   <p class="noindent">otherwise you will get an error message from the linker about <code>sqrt</code>
+being an unresolved symbol.
+
+   <p>On GNU, the <samp><span class="file">libc.a</span></samp> library is very comprehensive. On many Unix systems
+however, when you use system-level features you may need to link additional
+system libraries such as
+<samp><span class="file">libbsd.a</span></samp>, <samp><span class="file">libsocket.a</span></samp>, <samp><span class="file">libnsl.a</span></samp>, etc. 
+If you are linking C++ code, the C++ compiler will link
+both <samp><span class="file">libc.a</span></samp> and the C++ standard library <samp><span class="file">libstdc++.a</span></samp>. 
+If you are also using GNU C++ features however, you will explicitly need to
+link <samp><span class="file">libg++.a</span></samp> yourself. 
+Also if you are linking Fortran and C code together
+you must also link the Fortran run-time libraries. These libraries
+have non-standard names and depend on the Fortran compiler that you use. 
+(see <a href="Using-Fortran-effectively.html#Using-Fortran-effectively">Using Fortran effectively</a>)
+Finally, a very common problem is encountered when you are writing
+X applications. The X libraries and header files like to be placed in
+non-standard locations so you must provide system-dependent <code>-I</code>
+and <code>-L</code> flags so that the compiler can find them. Also the most
+recent version of X requires you to link in some additional libraries
+on top of <code>libX11.a</code> and some rare systems require you to link
+some additional system libraries to access networking features
+(recall that X is built on top of the sockets interface and it is essentially a
+communications protocol between the computer running the program and
+computer that controls the screen in which the X program is displayed.) 
+<em>FIXME: Crossreferences, if we explain all this in more details</em>.
+
+   <p>Because it is necessary to link system libraries to form an executable,
+under copyright law, the executable is derived work from the system libraries. 
+This means that you must pay attention to the license terms of these libraries. 
+The GNU <samp><span class="file">libc</span></samp> library is under the LGPL license which allows you to
+link and distribute both free and proprietary executables. The <samp><span class="file">stdc++</span></samp>
+library is also under terms that permit the distribution of proprietary
+executables. The <samp><span class="file">libg++</span></samp> library however only permits you to build
+free executables. If you are on a GNU system, including Linux-based GNU
+systems, the legalese is pretty straightforward. If you are on a proprietary
+Unix system, you need to be more careful. The GNU GPL does not allow
+GPLed code to be linked against proprietary library. Because on Unix systems,
+the system libraries are proprietary, their terms also may not allow you to
+distribute executables derived from them. In practice, they do however,
+since proprietary Unix systems do want to attract proprietary applications. 
+In the same spirit, the GNU GPL also makes an exception and explicitly
+permits the linking of GPL code with proprietary system libraries, provided
+that these libraries are a major component of the operating system
+(i.e. they are part of the compiler, or the kernel, and so on),
+<strong>unless</strong> the copy of the library itself accompanies the executable!
+
+   <p>This includes
+proprietary <samp><span class="file">libc.a</span></samp> libraries, the <samp><span class="file">libdxml.a</span></samp> library in
+Digital Unix, proprietary Fortran system libraries like <samp><span class="file">libUfor.a</span></samp>,
+and the X11 libraries.
+
+<!-- ============================================================ -->
+   </body></html>
+

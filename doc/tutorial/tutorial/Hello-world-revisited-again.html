@@ -1,0 +1,158 @@
+<html lang="en">
+<head>
+<title>Hello world revisited again - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Autotools.html#Using-Autotools" title="Using Autotools">
+<link rel="prev" href="Writing-portable-C_002b_002b.html#Writing-portable-C_002b_002b" title="Writing portable C++">
+<link rel="next" href="Invoking-acmkdir.html#Invoking-acmkdir" title="Invoking acmkdir">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Hello-world-revisited-again"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Invoking-acmkdir.html#Invoking-acmkdir">Invoking acmkdir</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Writing-portable-C_002b_002b.html#Writing-portable-C_002b_002b">Writing portable C++</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Autotools.html#Using-Autotools">Using Autotools</a>
+<hr>
+</div>
+
+<h3 class="section">6.5 Hello world revisited again</h3>
+
+<p>Putting all of this together, we will now show you how to create a super
+Hello World package, using the <code>LF</code> macros and the utilities that
+are distributed with the &lsquo;<samp><span class="samp">autotools</span></samp>&rsquo; distribution.
+
+   <p>The first step is to build a directory tree for the new project. Instead of
+doing it by hand, use the &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; utility. Type:
+<pre class="example">     % acmkdir hello
+</pre>
+   <p class="noindent">&lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; prompts you with the current directory pathname. Make
+sure that this is indeed the directory where you want to install the
+directory tree for the new package. You will be prompted for some information
+about the newly created package. 
+When you are done, &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; will ask you if you really want to go
+for it. Say &lsquo;<samp><span class="samp">y</span></samp>&rsquo;. Then &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; will do the following:
+     <ul>
+<li>Create the <samp><span class="file">hello-0.1</span></samp> directory and the <samp><span class="file">doc</span></samp>, <samp><span class="file">m4</span></samp>
+and <samp><span class="file">src</span></samp> subdirectories. 
+<li>Generate the following <samp><span class="file">configure.in</span></samp>:
+     <pre class="example">          AC_INIT
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE(test,0.1)
+          LF_HOST_TYPE
+          LF_CONFIGURE_CXX
+          LF_SET_WARNINGS
+          AC_PROG_RANLIB
+          AC_OUTPUT(Makefile doc/Makefile m4/Makefile src/Makefile)
+</pre>
+     <p class="noindent">You can edit this and customize it to your needs. More specifically, you
+will need to update the version number here everytime to you cut a new
+distribution. 
+<li>Place boilerplate <samp><span class="file">Makefile.am</span></samp> files on the toplevel directory as well
+as the <samp><span class="file">doc</span></samp>, <samp><span class="file">m4</span></samp> and <samp><span class="file">src</span></samp> subdirectories. The toplevel
+<samp><span class="file">Makefile.am</span></samp> contains:
+     <pre class="example">          EXTRA_DIST = reconf configure
+          SUBDIRS = m4 doc src
+</pre>
+     <p class="noindent">The ones in the <code>src</code> and <code>doc</code> subdirectories are empty. The
+one in <samp><span class="file">m4</span></samp> contains a template <samp><span class="file">Makefile.am</span></samp> which you should
+edit if you want to add new macros. 
+<li>Install the GPL in <samp><span class="file">COPYING</span></samp> and a standard <samp><span class="file">INSTALL</span></samp> file which
+you can customize. 
+<li>Create the files <samp><span class="file">AUTHORS</span></samp>, <samp><span class="file">NEWS</span></samp>, <samp><span class="file">README</span></samp>, <samp><span class="file">THANKS</span></samp> and
+<samp><span class="file">ChangeLog</span></samp> and place some default content in them which you should
+edit further. 
+<li>Create a <samp><span class="file">reconf</span></samp> script for reconfiguring your package every time
+you modify the contents of the <samp><span class="file">m4</span></samp> subdirectory and need to rebuild
+<samp><span class="file">configure</span></samp> and the makefiles:
+     <pre class="example">          #!/bin/sh
+          rm -f config.cache
+          rm -f acconfig.h
+          aclocal -I m4
+          autoconf
+          acconfig
+          autoheader
+          automake -a
+          exit
+</pre>
+     <p class="noindent">The makes sure that all the utilities are invoked, and in the right order. 
+Before &lsquo;<samp><span class="samp">acmkdir</span></samp>&rsquo; exits, it will call the &lsquo;<samp><span class="samp">reconf</span></samp>&rsquo; script for
+you once to set things up. 
+</ul>
+   It must be obvious that having to do these tasks manually for every package
+you write can get to be tiring. With <samp><span class="file">acmkdir</span></samp> you can slap together
+all this grunt-work in a matter of seconds.
+
+   <p>Now enter the directory <samp><span class="file">hello-0.1/src</span></samp> and start coding:
+<pre class="example">     % cd hello-0.1/src
+     % gpl -cc hello.cc
+     % vi hello.cc
+     % vi Makefile.am
+</pre>
+   <p class="noindent">This time we will use the following modified hello world program:
+<pre class="example">     #ifdef HAVE_CONFIG_H
+     #include &lt;config.h&gt;
+     #endif
+     
+     #include &lt;iostream.h&gt;
+     
+     main()
+     {
+      cout &lt;&lt; "Welcome to " &lt;&lt; PACKAGE &lt;&lt; " version " &lt;&lt; VERSION;
+      cout &lt;&lt; " for " &lt;&lt; YOUR_OS &lt;&lt; endl;
+      cout &lt;&lt; "Hello World!" &lt;&lt; endl;
+     }
+</pre>
+   <p class="noindent">and for <samp><span class="file">Makefile.am</span></samp> the same old thing:
+<pre class="example">     bin_PROGRAMS = hello
+     hello_SOURCES = hello.cc
+</pre>
+   <p class="noindent">Now back to the toplevel directory:
+<pre class="example">     % cd ..
+     % reconf
+     % configure
+     % make
+     % src/hello
+     Welcome to test version 0.1 for i486-pc-linux-gnulibc1
+     Hello World!
+</pre>
+   <p class="noindent">Note that by using the special macros <code>PACKAGE</code>, <code>VERSION</code>,
+<code>YOUR_OS</code> the program can identify itself, its version number and the
+operating system for which it was compiled. The <code>PACKAGE</code> and
+<code>VERSION</code> are defined by <code>AM_INIT_AUTOMAKE</code> and
+<code>YOUR_OS</code> by <code>LF_HOST_TYPE</code>.
+
+   <p>Now you can experiment with the various options that configure offers. 
+You can do:
+<pre class="example">     % make distclean
+</pre>
+   <p class="noindent">and reconfigure the package with one of the following variations in options:
+<pre class="example">     % configure --disable-assert
+     % configure --with-warnings
+</pre>
+   <p class="noindent">or a combination of the above. You can also build a distribution of your
+hello world and feel cool about yourself:
+<pre class="example">     % make distcheck
+</pre>
+   <p class="noindent">The important thing is that you can write extensive programs like this
+and stay focused on writing code instead of maintaining stupid header file,
+scripts, makefiles and all that.
+
+   </body></html>
+

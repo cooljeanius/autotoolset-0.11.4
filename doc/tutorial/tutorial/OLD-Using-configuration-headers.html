@@ -1,0 +1,222 @@
+<html lang="en">
+<head>
+<title>OLD Using configuration headers - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf" title="Using Automake and Autoconf">
+<link rel="prev" href="Hello-World-revisited.html#Hello-World-revisited" title="Hello World revisited">
+<link rel="next" href="The-building-process.html#The-building-process" title="The building process">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="OLD-Using-configuration-headers"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-building-process.html#The-building-process">The building process</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Hello-World-revisited.html#Hello-World-revisited">Hello World revisited</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-Automake-and-Autoconf.html#Using-Automake-and-Autoconf">Using Automake and Autoconf</a>
+<hr>
+</div>
+
+<h3 class="section">5.2 OLD Using configuration headers</h3>
+
+<p>As you may have noticed, the &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; script in the previous example
+defines two preprocessor macros that you can use in your code:
+<code>PACKAGE</code> and <code>VERSION</code>. As you become a power-user of
+&lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; you will get define even more such macros. If you inspect
+the output of &lsquo;<samp><span class="samp">make</span></samp>&rsquo; during compilation, you will see that these macros
+get defined by passing &lsquo;<samp><span class="samp">-D</span></samp>&rsquo; flags to the compiler, one for each macro. 
+When there is too many of these flags getting passed around, this can cause
+two problems: it can make the &lsquo;<samp><span class="samp">make</span></samp>&rsquo; output hard to
+read, and more importantly it can hit the buffer limits of various braindead
+implementations of &lsquo;<samp><span class="samp">make</span></samp>&rsquo;. To work around this problem, an alternative
+approach is to define all these macros in a special header file and include
+it in all the sources.
+
+   <p>A hello world program using this technique looks like this
+     <dl>
+<dt><samp><span class="file">configure.in</span></samp><dd>
+     <pre class="example">          AC_INIT
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PROG_CXX
+          AC_PROG_INSTALL
+          AC_OUTPUT(Makefile)
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">Makefile.am</span></samp><dd>
+     <pre class="example">          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+</pre>
+     <p class="noindent"><br><dt><samp><span class="file">hello.c</span></samp><dd>
+     <pre class="example">          #ifdef HAVE_CONFIG_H
+          #include &lt;config.h&gt;
+          #endif
+          
+          #include &lt;stdio.h&gt;
+          main()
+          {
+           printf("Howdy, pardner!\n");
+          }
+</pre>
+     <p class="noindent"></dl>
+   Note that we call a new macro in <samp><span class="file">configure.in</span></samp>:
+<code>AM_CONFIG_HEADER</code>. Also we include the configuration file conditionally
+with the following three lines:
+<pre class="example">     #ifdef HAVE_CONFIG_H
+     #include &lt;config.h&gt;
+     #endif
+</pre>
+   <p class="noindent">It is important to make sure that the <samp><span class="file">config.h</span></samp> file is the first thing
+that gets included. Now do the usual routine:
+<pre class="example">     % aclocal
+     % autoconf
+     % touch NEWS README AUTHORS ChangeLog
+     % automake -a
+</pre>
+   <p class="noindent">Automake will give you an error message saying that it needs a file called
+&lsquo;<samp><span class="samp">config.h.in</span></samp>&rsquo;. You can generate such a file with the &lsquo;<samp><span class="samp">autoheader</span></samp>&rsquo;
+program. So run:
+<pre class="example">     % autoheader
+     Symbol `PACKAGE' is not covered by acconfig.h
+     Symbol `VERSION' is not covered by acconfig.h
+</pre>
+   <p class="noindent">Again, you get error messages. The problem is that <code>autoheader</code> is
+bundled with the <code>autoconf</code> distribution, not the <code>automake</code>
+distribution, and consequently doesn't know how to deal with the
+<code>PACKAGE</code> and <code>VERSION</code> macros. Of course, if &lsquo;<samp><span class="samp">configure</span></samp>&rsquo;
+defines a macro, there's nothing to know. On the other hand, when a macro
+<em>is not defined</em> then there are at least two possible defaults:
+<pre class="example">     #undef PACKAGE
+     #define PACKAGE 0
+</pre>
+   <p class="noindent">The <code>autoheader</code> program here complains that it doesn't know the defaults
+for the <code>PACKAGE</code> and <code>VERSION</code> macros. To provide the defaults,
+create a new file <samp><span class="file">acconfig.h</span></samp>:
+     <dl>
+<dt><samp><span class="file">acconfig.h</span></samp><dd>
+     <pre class="example">          #undef PACKAGE
+          #undef VERSION
+</pre>
+     <p class="noindent"></dl>
+   and run &lsquo;<samp><span class="samp">autoheader</span></samp>&rsquo; again:
+<pre class="example">     % autoheader
+</pre>
+   <p class="noindent">At this point you must run <code>autoconf</code> again, so that it takes into account
+the presense of <code>acconfig.h</code>:
+<pre class="example">     % aclocal
+     % autoconf
+</pre>
+   <p class="noindent">Now you can go ahead and build the program:
+<pre class="example">     % configure
+     % make
+     Computing dependencies for hello.cc...
+     echo &gt; .deps/.P
+     gcc -DHAVE_CONFIG_H -I. -I. -I.   -g -O2 -c hello.cc
+     gcc -g -O2  -o hello  hello.o
+</pre>
+   <p class="noindent">Note that now instead of multiple <code>-D</code> flags, there is only one
+such flag passed: <code>-DHAVE_CONFIG_H</code>. Also, appropriate <code>-I</code>
+flags are passed to make sure that <samp><span class="file">hello.cc</span></samp> can find and include
+<samp><span class="file">config.h</span></samp>. 
+To test the distribution, type:
+<pre class="example">     % make distcheck
+     ......
+     ========================
+     hello-0.1.tar.gz is ready for distribution
+     ========================
+</pre>
+   <p class="noindent">and it should all work out.
+
+   <p>The <samp><span class="file">config.h</span></samp> files go a long way back in history. In the past, there
+used to be packages where you would have to manually edit <samp><span class="file">config.h</span></samp>
+files and adjust the macros you wanted defined by hand. This made these
+packages very difficult to install because they required intimate knowledge
+of your operating system. For example, it was not unusual to see a comment
+saying <em>&ldquo;if your system has a broken vfork, then define this macro&rdquo;</em>. 
+How the hell are you supposed to know if your systems <code>vfork</code> is
+broken?? With auto-configuring packages all of these details are taken
+care of automatically, shifting the burden from the user to the developer
+where it belongs.
+
+   <p>Normally in the <samp><span class="file">acconfig.h</span></samp> file you put statements like
+<pre class="example">     #undef MACRO
+     #define MACRO default
+</pre>
+   <p class="noindent">These values are copied over to <samp><span class="file">config.h.in</span></samp> and are supplemented with
+additional defaults for C preprocessor macros that get defined by
+native <code>autoconf</code> macros like
+<code>AC_CHECK_HEADERS</code>, <code>AC_CHECK_FUNCS</code>, <code>AC_CHECK_SIZEOF</code>,
+<code>AC_CHECK_LIB</code>.
+
+   <p>If the file <samp><span class="file">acconfig.h</span></samp> contains the string <code>@TOP@</code> then all
+the lines before the string will be included verbatim to <samp><span class="file">config.h</span></samp>
+<em>before</em> the custom definitions. Also, if the file <samp><span class="file">acconfig.h</span></samp>
+contains the string <code>@BOTTOM@</code> then all the lines after the string will
+be included verbatim to <samp><span class="file">config.h</span></samp> <em>after</em> the custom definitions. 
+This allows you to include further preprocessor directives that are related
+to configuration. Some of these directives may be using the custom definitions
+to conditionally issue further preprocessor directives. Due to a bug in
+some versions of <code>autoheader</code> if the strings <code>@TOP@</code> and
+<code>@BOTTOM@</code> do appear in your <code>acconfig.h</code> file, then you must
+make sure that there is at least one line appearing before
+<code>@TOP@</code> and one line after <code>@BOTTOM@</code>, even if it has to be
+a comment. Otherwise, <code>autoheader</code> may not work correctly.
+
+   <p>With &lsquo;<samp><span class="samp">autotools</span></samp>&rsquo; we distribute a utility called <samp><span class="file">acconfig</span></samp> which
+will build <samp><span class="file">acconfig.h</span></samp> automatically. By default it will always
+make sure that
+<pre class="example">     #undef PACKAGE
+     #undef VERSION
+</pre>
+   <p class="noindent">are there. Additionally, if you install macros that are <samp><span class="file">acconfig</span></samp> friendly
+then &lsquo;<samp><span class="samp">acconfig</span></samp>&rsquo; will also install entries for these macros. 
+The <code>acconfig</code> program may be revised in the future and perhaps
+it might be eliminated. There is an unofficial patch to Autoconf that
+will automate the maintance of <samp><span class="file">acconfig.h</span></samp>, eliminating the need
+for a seperate program. I am not yet certain if that patch will be
+part of the official next version of Autoconf, but I very much expect it
+to. Until then, if you are interested, see:
+<code>http://www.clark.net/pub/dickey/autoconf/autoconf.html</code>
+This situation creates a bit of a dilemma about whether I should
+document and encourage <code>acconfig</code> in this tutorial or not. 
+I believe that the Autoconf patch is a superior solution. However since
+I am not the one maintaining Autoconf, my hands are tied. For now
+let's say that if you confine yourself to using only the macros provided
+by <code>autoconf</code>, <code>automake</code>, and <code>autotools</code> then
+<samp><span class="file">acconfig.h</span></samp> will be completely taken care for you by <samp><span class="file">acconfig</span></samp>. 
+In the future, I hope that <code>acconfig.h</code> will be generated
+by <code>configure</code> and be the sole responsibility of Autoconf.
+
+   <p>You may be wondering whether it is worth using <samp><span class="file">config.h</span></samp> files in the
+programs you develop if there aren't all that many macros being defined. 
+My personal recommendation is <em>yes</em>. Use <samp><span class="file">config.h</span></samp> files because
+perhaps in the future your <samp><span class="file">configure</span></samp> might need to define even more
+macros. So get started on the right foot from the beginning. Also, it is
+nice to just have a <code>config.h</code> file lying around because you can have
+all your configuration specific C preprocessor directives in one place. 
+In fact, if you are one of these people writing peculiar system software
+where you get to <code>#include</code> 20 header files on every single source file
+you write, you can just have them on all thrown into <code>config.h</code> once
+and for all. 
+In the next chapter we will tell you about the <code>LF</code> macros that get
+distributed with <code>autotools</code> and this tutorial. These macros do require
+you to use the <samp><span class="file">config.h</span></samp> file. The bottom line is: <samp><span class="file">config.h</span></samp>
+is your friend; trust the <code>config.h</code>.
+
+<!-- ========================================================================= -->
+   </body></html>
+

@@ -1,0 +1,108 @@
+<html lang="en">
+<head>
+<title>The GPL and libraries - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles" title="Compiling with Makefiles">
+<link rel="prev" href="Dealing-with-header-files.html#Dealing-with-header-files" title="Dealing with header files">
+<link rel="next" href="The-language-runtime-libraries.html#The-language-runtime-libraries" title="The language runtime libraries">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="The-GPL-and-libraries"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="The-language-runtime-libraries.html#The-language-runtime-libraries">The language runtime libraries</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Dealing-with-header-files.html#Dealing-with-header-files">Dealing with header files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Compiling-with-Makefiles.html#Compiling-with-Makefiles">Compiling with Makefiles</a>
+<hr>
+</div>
+
+<h3 class="section">3.5 The GPL and libraries</h3>
+
+<p>A very common point of contention is whether or not using a software library
+in your program, makes your program derived work from that library. 
+For example, suppose that your program uses the <code>readline ()</code> function
+which is defined in the library <samp><span class="file">libreadline.a</span></samp>. To do this, your
+program needs to link with this library. Whether or not this makes the
+program derived work makes a big difference. The readline library is
+free software published under the GNU General Public License, which requires
+that any derived work must also be free software and published under the
+same terms. So, if your program is derived work, you have to free it;
+if not, then you are not required to by the law.
+
+   <p>When you link the library with your object files to create an executable,
+you are copying code from the library and combining it with code from your
+object files to create a new work. As a result, the executable is derived
+work. It doesn't matter if you create the executable by hand by running
+an assembler and putting it together manually, or if you automate the
+process by letting the compiler do it for you. Legally, you are doing the
+same thing.
+
+   <p>Some people feel that linking to the library dynamically avoids
+making the executable derived work of the library. A dynamically linked
+executable does not embed a copy of the library. Instead, it contains
+code for loading the library from the disk during run-time. 
+However, the executable is still derived work. 
+The law makes no distinction between static linking and
+dynamic linking. So, when you compile an executable and you link it
+dynamically to a GPLed library, the executable must be distributed as
+free software with the library. This also means that you can not link
+dynamically both to a GPLed library and a proprietary library because
+the licenses of the two libraries conflict. The best way to resolve
+such conflicts is by replacing the proprietary library with a free one,
+or by convincing the owners of the proprietary library to license it
+as free software.
+
+   <p>The law is actually pretty slimy about what is derived work. In the
+entertainment industry, if you write an original story that takes
+placed in the established universe of a Hollywood serial, like Star Trek,
+in which you use characters from that serial, like Captain Kirk, your story
+is actually derived work, according to the law, and Paramount can claim
+rights to it. Similarly, a dynamically linked executable does not
+contain a copy of the library itself, but it does contain code that refers
+to the library, and it is not self-contained without the library.
+
+   <p>Note that there is no conflict when a GPLed utility is invoked by a
+proprietary program or vice versa via a <code>system ()</code> call. 
+There is a very specific reason why this is allowed: When you were
+given a copy of the invoked program, you were given permission to run it. 
+As a technical matter, on Unix systems and the GNU system,
+<dfn>using</dfn> a program means forking some process that is already running to
+create a new process and loading up the program to take over the new process,
+until it exits. This is exactly what the <code>system ()</code> call does, so
+permission to use a program implies that you have permission to
+call it from any other program via <code>system ()</code>. This way, you can
+run GNU programs under a proprietary <code>sh</code> shell on Unix, and you
+can invoke proprietary programs from a GNU program. However, a free program
+that <em>depends</em> on a proprietary program for its operation can not
+be included in a free operating system, because the proprietary program
+would also have to be distributed with the system.
+
+   <p>Because any program that uses a library becomes derived work of that library,
+the GNU project occasionally uses another license, the <dfn>Lesser GPL</dfn>,
+(often called LGPL) to copyleft libraries. The LGPL protects the freedom
+of the library, just like the GPL does,  but allows proprietary executables
+to link and use LGPLed libraries. However, this permission should only be
+given when it benefits the free software community, and not to be nice
+to proprietary software developers. There's no moral reason why you should
+let them use your code if they don't let you use theirs. 
+See <a href="The-LGPL-vs-the-GPL.html#The-LGPL-vs-the-GPL">The LGPL vs the GPL</a>, for a detailed discussion of this issue.
+
+<!-- ============================================================ -->
+   </body></html>
+

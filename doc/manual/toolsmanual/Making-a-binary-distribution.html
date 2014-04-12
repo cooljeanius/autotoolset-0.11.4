@@ -1,0 +1,64 @@
+<html lang="en">
+<head>
+<title>Making a binary distribution - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Installing-GNU-software.html#Installing-GNU-software" title="Installing GNU software">
+<link rel="prev" href="Doing-a-VPATH-build.html#Doing-a-VPATH-build" title="Doing a VPATH build">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Making-a-binary-distribution"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Doing-a-VPATH-build.html#Doing-a-VPATH-build">Doing a VPATH build</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Installing-GNU-software.html#Installing-GNU-software">Installing GNU software</a>
+<hr>
+</div>
+
+<h3 class="section">1.5 Making a binary distribution</h3>
+
+<p>After compiling a source distribution, instead of installing it, you can
+make a snapshot of the files that it would install and package that
+snapshot in a tarball. It is often convenient to the installers to
+install from such snapshots rather than compile from source, especially
+when the source is extremely large, or when the amount of packages that
+they need to install is large.
+
+   <p>To create a binary distribution run the following commands as root:
+<pre class="example">     # make install DESTDIR=/tmp/dist
+     # tar -C /tmp/dist -cvf <var>package</var>-<var>version</var>.tar
+     # gzip -9 <var>package</var>-<var>version</var>.tar
+</pre>
+   <p class="noindent">The variable <code>DESTDIR</code> specifies a directory, alternative to root,
+for installing the compiled package. The directory tree under that directory
+is the exact same tree that would have normally been installed. 
+Why not just specify a different prefix? Because very often, the prefix
+that you use to install the software affects the contents of the files
+that actually get installed.
+
+<!-- More discussion needed for making deb and rpm files -->
+   <p>Please note that under the terms of the GNU General Public License,
+if you distribute your software as a binary distribution, you also
+need to provide the corresponding source distribution. The simplest way
+to comply with this requirement is to distribute both distributions
+together.
+
+<!-- ============================================================ -->
+<!-- ============================================================ -->
+   </body></html>
+

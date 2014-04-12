@@ -1,0 +1,76 @@
+<html lang="en">
+<head>
+<title>Inserting copyright notices with Emacs - Developing software with GNU</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Developing software with GNU">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Handling-patches.html#Handling-patches" title="Handling patches">
+<link rel="next" href="Hacker-sanity-with-Emacs.html#Hacker-sanity-with-Emacs" title="Hacker sanity with Emacs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Inserting-copyright-notices-with-Emacs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hacker-sanity-with-Emacs.html#Hacker-sanity-with-Emacs">Hacker sanity with Emacs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Handling-patches.html#Handling-patches">Handling patches</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">2.8 Inserting copyright notices with Emacs</h3>
+
+<p>When you develop free software, you must place copyright notices at
+every file that invokes the General Public License. If you don't place
+any notice whatsoever, then the legal meaning is that you refuse
+to give any permissions whatsoever, and the software consequently is not
+free. For more details see <a href="Applying-the-GPL.html#Applying-the-GPL">Applying the GPL</a>. 
+Many hackers, who don't take the law seriously, complain that adding the
+copyright notices takes too much typing. Some of these people live in
+countries where copyright is not really enforced. Others simply ignore it.
+
+   <p>There is an Emacs package, called &lsquo;<samp><span class="samp">gpl</span></samp>&rsquo;, which is currently distributed
+with Autotools, that makes it possible to insert and maintain copyright
+notices with minimal work. To use this package,
+in your <samp><span class="file">.emacs</span></samp> you must declare your identity
+by adding the following commands:
+<pre class="example">     (setq user-mail-address "me@here.com")
+     (setq user-full-name "My Name")
+</pre>
+   <p class="noindent">Then you must require the packages to be loaded:
+<pre class="example">     (require 'gpl)
+     (require 'gpl-copying)
+</pre>
+   <p class="noindent">This package introduces the following commands:
+     <dl>
+<dt><code>gpl</code><dd>Insert the standard GPL copyright notice using appropriate commenting. 
+<br><dt><code>gpl-fsf</code><dd>Toggle FSF mode. Causes the <code>gpl</code> command to insert a GPL
+notice for software that is assigned to the Free Software Foundation. 
+The <code>gpl</code> command autodetects what type of file you are editing,
+from the filename, and uses the appropriate commenting. 
+<br><dt><code>gpl-personal</code><dd>Toggle personal mode. Causes the <code>gpl</code> command to insert a
+GPL notice for software in which you keep the copyright. 
+</dl>
+   If you are routinely assigning your software to an organization other
+than the Free Software Foundation, then insert:
+<pre class="example">     (setq gpl-organization "<var>name</var>")
+</pre>
+   <p class="noindent">after the &lsquo;<samp><span class="samp">require</span></samp>&rsquo; statements in your <samp><span class="file">.emacs</span></samp>.
+
+<!-- =============================================================== -->
+   </body></html>
+

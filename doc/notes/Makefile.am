@@ -7,3 +7,5 @@ EXTRA_DIST = \
 	legal.texi
 
 noinst_TEXINFOS = build_intro.texi old_emacs.texi legal.texi
+
+info_TEXINFOS = build_intro.texi

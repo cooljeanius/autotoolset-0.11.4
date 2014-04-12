@@ -17,7 +17,12 @@ tutorial_TEXINFOS = \
 	legal.texi \
 	philosophy.texi
 
-html-local:
-	texi2html tutorial.texi
+html-local: tutorial.texi
+	texi2html tutorial.texi || makeinfo --html tutorial.texi
 
 CLEANFILES = tutorial.html tutorial_foot.html tutorial_toc.html
+
+MAINTAINERCLEANFILES = tutorial/*.html
+
+maintainer-clean-local:
+	rm -rf tutorial || rmdir tutorial

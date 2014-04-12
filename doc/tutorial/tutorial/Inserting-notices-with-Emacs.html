@@ -1,0 +1,114 @@
+<html lang="en">
+<head>
+<title>Inserting notices with Emacs - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Writing-Good-Programs.html#Writing-Good-Programs" title="Writing Good Programs">
+<link rel="prev" href="Invoking-the-gpl-utility.html#Invoking-the-gpl-utility" title="Invoking the gpl utility">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Inserting-notices-with-Emacs"></a>
+<p>
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Invoking-the-gpl-utility.html#Invoking-the-gpl-utility">Invoking the gpl utility</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Writing-Good-Programs.html#Writing-Good-Programs">Writing Good Programs</a>
+<hr>
+</div>
+
+<h3 class="section">2.7 Inserting notices with Emacs</h3>
+
+<p>If you are using <em>GNU Emacs</em>, then you can insert these copyright notices
+on-demand while you're editing your source code. Autotools bundles two
+Emacs packages: <code>gpl</code> and <code>gpl-copying</code> which provide you with
+equivalents of the &lsquo;<samp><span class="samp">gpl</span></samp>&rsquo; command that can be run under Emacs. These
+packages will be byte-compiled and installed automatically for you while
+installing Autotools.
+
+   <p>To use these packages, in your <samp><span class="file">.emacs</span></samp> you must declare your identity
+by adding the following commands:
+<pre class="example">     (setq user-mail-address "me@here.com")
+     (setq user-full-name "My Name")
+</pre>
+   <p class="noindent">Then you must require the packages to be loaded:
+<pre class="example">     (require 'gpl)
+     (require 'gpl-copying)
+</pre>
+   <p class="noindent">These packages introduce a set of Emacs commands all of which are prefixed
+as <code>gpl-</code>. To invoke any of these commands press <code>M-x</code>, type
+the name of the command and press enter.
+
+   <p>The following commands will generate notices for your source code:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">gpl-c</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using C commenting. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-cL</span></samp>&rsquo;<dd>lnsert the standard GPL copyright notice using C commenting,
+followed by a Guile-like library exception. This notice is used by
+the Guile library. You may want to use it for libraries that you write
+that implement some type of a standard that you wish to encourage. 
+You will be prompted for the name of your package. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-cc</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using C++ commenting. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-ccL</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using C++ commenting,
+followed by a Guile-like library exception. You will be prompted for the
+name of your package
+<br><dt>&lsquo;<samp><span class="samp">gpl-sh</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using shell commenting
+(i.e. has marks). 
+<br><dt>&lsquo;<samp><span class="samp">gpl-shL</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using shell commenting,
+followed by a Guile-like library exception. This can be useful for
+source files, like Tcl files, which are executable code that gets linked
+in to form an executable, and which use hash marks for commenting. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-shS</span></samp>&rsquo;<dd>Insert the standard GPL notice using shell commenting, followed by the
+special Autoconf exception. This is useful for small shell scripts that
+are distributed as part of a build system. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-m4</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using m4 commenting (i.e. dnl)
+and the special Autoconf exception. This is the prefered notice for new
+Autoconf macros. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-el</span></samp>&rsquo;<dd>Insert the standard GPL copyright notice using Elisp commenting. This
+is useful for writing Emacs extension files in Elisp. 
+</dl>
+   The following commands will generate notices for your source code:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">gpl-insert-copying-texinfo</span></samp>&rsquo;<dd>Insert a set of paragraphs very similar to the ones appearing
+at the Copying section of this manual. It is a good idea to include
+this notice in an <code>unnumbered</code> chapter titled &ldquo;Copying&rdquo; in the
+Texinfo documentation of your source code. You will be prompted for the
+title of your package. That title will substitute the word <em>Autotools</em>
+as it appears in the corresponding section in this manual. 
+<br><dt>&lsquo;<samp><span class="samp">gpl-insert-license-texinfo</span></samp>&rsquo;<dd>Insert the full text of the GNU General Public License in Texinfo format. 
+If your documentation is very extensive, it may be a good idea to include
+this notice either at the very beginning of your manual, or at the end. 
+You should include the full license, if you plan to distribute the manual
+separately from the package as a printed book. 
+</dl>
+
+<!-- Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu> -->
+<!-- Permission is granted to make and distribute verbatim copies of -->
+<!-- this manual provided the copyright notice and this permission notice -->
+<!-- are preserved on all copies. -->
+<!-- Permission is granted to process this file through TeX and print the -->
+<!-- results, provided the printed document carries copying permission -->
+<!-- notice identical to this one except for the removal of this paragraph -->
+<!-- (this paragraph not being relevant to the printed manual). -->
+<!-- Permission is granted to copy and distribute modified versions of this -->
+<!-- manual under the conditions for verbatim copying, provided that the -->
+<!-- entire resulting derived work is distributed under the terms of a -->
+<!-- permission notice identical to this one. -->
+<!-- Permission is granted to copy and distribute translations of this manual -->
+<!-- into another language, under the above conditions for modified versions, -->
+<!-- except that this permission notice may be stated in a translation -->
+<!-- approved by the Free Software Foundation -->
+   </body></html>
+

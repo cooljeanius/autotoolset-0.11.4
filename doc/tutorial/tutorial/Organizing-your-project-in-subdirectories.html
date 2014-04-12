@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+<title>Organizing your project in subdirectories - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system" title="Introduction to the GNU build system">
+<link rel="prev" href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files" title="Maintaining the documentation files">
+<link rel="next" href="Hello-world-with-an-attitude.html#Hello-world-with-an-attitude" title="Hello world with an attitude">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Organizing-your-project-in-subdirectories"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Hello-world-with-an-attitude.html#Hello-world-with-an-attitude">Hello world with an attitude</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Introduction-to-the-GNU-build-system.html#Introduction-to-the-GNU-build-system">Introduction to the GNU build system</a>
+<hr>
+</div>
+
+<h3 class="section">1.7 Organizing your project in subdirectories</h3>
+
+<p>If your program is very small, you can place all your files in the
+top-level directory, like we did in the Hello World example
+(see <a href="Hello-world-example.html#Hello-world-example">Hello world example</a>). Such packages are called <dfn>shallow</dfn>.
+
+   <p>In general, it is prefered to organize your package as a <dfn>deep package</dfn>. 
+In a deep package, the documentation files
+<pre class="example">     README, INSTALL, AUTHORS, THANKS, ChangeLog, COPYING
+</pre>
+   <p class="noindent">as well as the build cruft are placed at the top-level directory, and
+the rest of the files are placed in subdirectories. It is standard
+practice to use the following subdirectories:
+     <dl>
+<dt>&lsquo;<samp><span class="samp">src</span></samp>&rsquo;<dd>The actual source code that gets compiled. Every library
+should have it's own subdirectory. Executables should get their own
+directory as well. If each executable corresponds only to one or two files
+then it is sensible to put them all under the same directory. If your
+executables need more source files, or they can be seperated in distinct
+classes of functionalities you may like to regroup them under multiple
+directories. Feel free to use your judgement on how to do this best. 
+It is easiest to place the library test suites on the same directory with
+the library source code. If that does not sit well with you however, you
+should put the test suite for each library in subdirectories <em>under</em> that
+library's directory. It is a massively bad idea to put the test suites
+for different libraries under the same directory. 
+<br><dt>&lsquo;<samp><span class="samp">lib</span></samp>&rsquo;<dd>An optional directory where you put portability-related source code. 
+This is mainly replacement implementation for system calls that
+are unavailable on some systems. You can also put tools here that you commonly
+use accross many different packages, tools that are tool simple to just
+make libraries out of every one of them. Common files encountered here
+are files that replace system calls to the GNU C library that are not
+available in proprietary C libraries. 
+<br><dt>&lsquo;<samp><span class="samp">doc</span></samp>&rsquo;<dd>A directory containing the documentation for your package. 
+You have the creative freedom to present the documentation in any way that is
+effective. However
+the prefered way to document software is by using Texinfo. Texinfo has the
+advantage that you can produce both on-line help as well as nice printed
+books from the same source. Documentation is discussed in more detail
+in See <a href="Maintaining-Documentation.html#Maintaining-Documentation">Maintaining Documentation</a>. 
+<br><dt>&lsquo;<samp><span class="samp">m4</span></samp>&rsquo;<dd>A directory containing &lsquo;<samp><span class="samp">m4</span></samp>&rsquo; files that you package may need to
+<em>install</em>. 
+These files define new &lsquo;<samp><span class="samp">autoconf</span></samp>&rsquo; macros that you
+should make available to other developers who want to use your libraries. 
+This is discussed in more detail in <strong>FIXME: crossreference</strong>. 
+<br><dt>&lsquo;<samp><span class="samp">intl</span></samp>&rsquo;<dd>A directory containing boilerplate portability source code that allows
+your program to speak in many human languages. The contents of this
+directory are automatically maintained by &lsquo;<samp><span class="samp">gettext</span></samp>&rsquo;. 
+(<strong>FIXME: crossreference</strong>)
+<br><dt>&lsquo;<samp><span class="samp">po</span></samp>&rsquo;<dd>A directory containing message catalogs for your software package. 
+This is where the maintainer places the translations of his software
+in multiple human languages. 
+(<strong>FIXME: crossreference</strong>)
+</dl>
+   Automake makes it very easy to maintain multidirectory source code
+packages, so you shouldn't shy away from taking advantage of it. 
+Multidirectory packages are more convenient for most projects.
+
+<!--  -->
+   </body></html>
+

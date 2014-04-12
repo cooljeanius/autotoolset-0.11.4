@@ -1,0 +1,161 @@
+<html lang="en">
+<head>
+<title>Configuring GNU Emacs - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Installing-GNU-Emacs.html#Installing-GNU-Emacs" title="Installing GNU Emacs">
+<link rel="next" href="Using-vi-emulation.html#Using-vi-emulation" title="Using vi emulation">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Configuring-GNU-Emacs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Installing-GNU-Emacs.html#Installing-GNU-Emacs">Installing GNU Emacs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">3.3 Configuring GNU Emacs</h3>
+
+<p>To use Emacs effectively for software development you need to configure it. 
+Part of the configuration needs to be done in your X-resources file. 
+On a Debian GNU/Linux system, the X-resources can be configured by editing
+<pre class="example">     /etc/X11/Xresources
+</pre>
+   <p class="noindent">In many systems, you can configure X-resources by editing a file called
+<samp><span class="file">.Xresources</span></samp> or <samp><span class="file">.Xdefaults</span></samp> on your home directory, but
+that is system-dependent. The configuration that I use on my system
+is:
+<pre class="example">     ! Emacs defaults
+     emacs*Background: Black
+     emacs*Foreground: White
+     emacs*pointerColor: White
+     emacs*cursorColor: White
+     emacs*bitmapIcon: on
+     emacs*font: fixed
+     emacs*geometry: 80x40
+</pre>
+   <p class="noindent">In general I favor dark backgrounds and &lsquo;<samp><span class="samp">fixed</span></samp>&rsquo; fonts. Dark backgrounds
+make it easier to sit in front of the monitor for a prolonged period of
+time. &lsquo;<samp><span class="samp">fixed</span></samp>&rsquo; fonts looks nice and it's small enough to make efficient
+use of your screenspace. Some people might prefer larger fonts however.
+
+   <p>The bulk of Emacs configuration is done by editing or creating an
+<samp><span class="file">.emacs</span></samp> file
+in your home directory. If you feel comfortable editing this file with the
+unconfigured Emacs editor, go for it. Alternatively, you can use the vanilla
+vi editor. (see <a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>). Here are some things that you
+might want to add to your <samp><span class="file">.emacs</span></samp> file:
+     <ul>
+<li>You can override your X-default background and foreground color in your
+<samp><span class="file">.emacs</span></samp> file. For the sake of redundancy, if nothing else,
+add the following lines to your <samp><span class="file">.emacs</span></samp>:
+     <pre class="example">          (set-background-color "black")
+          (set-foreground-color "white")
+</pre>
+     <p class="noindent">You can change the colors to your liking. 
+<li>In many circumstances, Emacs needs to know your name and email address. 
+For example, when you update a <samp><span class="file">ChangeLog</span></samp>, Emacs needs to know
+these two pieces of information to create a time-stamp. This information
+is also needed when you use Emacs to browse the newsgroups or send email. 
+Usually, Emacs can guess this information from your password file and
+if it can deduce your hostname and domain-name it can put together an
+email address. Home systems, that connect to the internet over modem,
+may not have a valid email address, and since we have root on these
+systems, we like to call ourselves things like &ldquo;Skeletor&rdquo; or &ldquo;Dude&rdquo;,
+when people finger us, but not on our <samp><span class="file">ChangeLog</span></samp> files or in our
+emails to our boss. To give Emacs your official name and email address,
+add the following two lines in your <samp><span class="file">.emacs</span></samp> file:
+     <pre class="example">          (setq user-mail-address "dude@whitehouse.com")
+          (setq user-full-name "Karl Marx")
+</pre>
+     <p class="noindent">Make sure the name is your real name, and the email address that you
+include can receive email 24 hours per day. 
+<li>You can tell Emacs to display a little clock on each frame by adding
+the following line in your <samp><span class="file">.emacs</span></samp>:
+     <pre class="example">          (display-time)
+</pre>
+     <p class="noindent">You can also tell Emacs to show you the line and column number of your
+cursor's position at all times by adding the following lines in your
+<samp><span class="file">.emacs</span></samp>
+     <pre class="example">          (line-number-mode 1)
+          (column-number-mode 1)
+</pre>
+     <p class="noindent">All of these features can be very convenient. 
+<li>To cut and paste text from frame to frame, you can use the mouse. 
+Mouse button 1 will select text and mouse button 2 will paste the text. 
+Unfortunately, when you click mouse button 2, emacs will first move the
+cursor at the location of the mouse, and insert the text in that location. 
+If you are used to editing with vi under xterms, you won't like this behaviour. 
+Instead, you will prefer to position the cursor yourself, and you will
+want mouse button 2 to simply cause the text to be pasted without
+changing the position of the cursor. If you prefer this behaviour,
+add the following line to your <samp><span class="file">.emacs</span></samp>:
+     <pre class="example">          (global-set-key [mouse-2] 'yank)
+</pre>
+     <p>By default, selected text in Emacs buffers is highlighted with blue color. 
+However, you can also select and paste into an Emacs buffer text that
+you select from other applications, like your web browser, or your xterm. 
+<li>You may like to use <dfn>font-lock</dfn>. 
+Emacs understands to a great extent the syntax of your text, especially when
+your text is source code, and it can mark differents parts of your text
+with different colors depending on what the text means syntactically. 
+For example, with C source code, comments are marked red, stuff in quotes
+are marked brown and certain keywords are marked green, blue, etc. 
+To activate font-lock, add the following lines to your <samp><span class="file">.emacs</span></samp>:
+     <pre class="example">          (global-font-lock-mode t)
+          (setq font-lock-maximum-size nil)
+</pre>
+     <p class="noindent">At first, fontlock might appear disconcerting to you. It only takes about
+a day to get used to it, and then you won't be able to do without it. 
+Not only does font-lock make your text look prettier. It can also help you
+catch common mistakes like run-away C comments, stray quote marks and so on. 
+<li>If you have installed Emacs packages in non-standard directories,
+you need to add them to the &lsquo;<samp><span class="samp">load-path</span></samp>&rsquo; variable. For example,
+here's how to add a couple of directories:
+     <pre class="example">          (setq load-path
+                (append "/usr/share/emacs/site-lisp"
+                        "/usr/local/share/emacs/site-site"
+                        (expand-file-name "~lf/lisp")
+                        load-path))
+</pre>
+     <p class="noindent">Note the use of &lsquo;<samp><span class="samp">expand-file-name</span></samp>&rsquo; for dealing with non-absolute
+directories. If you are a user in an account where you don't have root
+priviledge, you are very likely to need to install your Emacs packages
+in a non-standard directory. 
+<li><em>FIXME: Explain how to get rid of the scrollbar</em>
+<li>If you are a vi user, and you would like to run a vi editor under the
+Emacs system, then read
+<a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a> for more details. 
+<li>To use Emacs effectively, we recommend that you configure Dired and
+bind certain function keys so that you can go in and out of Dired
+effectively. Read <a href="Using-Emacs-as-an-IDE.html#Using-Emacs-as-an-IDE">Using Emacs as an IDE</a> for more configuration
+details. 
+<li>Autotools distributes two Emacs packages. One for handling copyright notices
+and another one for handling Texinfo documentation. 
+To set these packages up read
+<a href="Inserting-copyright-notices-with-Emacs.html#Inserting-copyright-notices-with-Emacs">Inserting copyright notices with Emacs</a> and
+<a href="GNU-Emacs-support-for-Texinfo.html#GNU-Emacs-support-for-Texinfo">GNU Emacs support for Texinfo</a>
+<li>If you would like to use Emacs to read your email,
+See <a href="Using-Emacs-as-an-email-client.html#Using-Emacs-as-an-email-client">Using Emacs as an email client</a> for more configuration information. 
+</ul>
+
+   </body></html>
+

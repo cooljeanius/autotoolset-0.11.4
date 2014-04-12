@@ -1,0 +1,161 @@
+<html lang="en">
+<head>
+<title>Introduction to Emacs - Learning the GNU development tools</title>
+<meta http-equiv="Content-Type" content="text/html">
+<meta name="description" content="Learning the GNU development tools">
+<meta name="generator" content="makeinfo 4.13">
+<link title="Top" rel="start" href="index.html#Top">
+<link rel="up" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="prev" href="Using-GNU-Emacs.html#Using-GNU-Emacs" title="Using GNU Emacs">
+<link rel="next" href="Installing-GNU-Emacs.html#Installing-GNU-Emacs" title="Installing GNU Emacs">
+<link href="http://www.gnu.org/software/texinfo/" rel="generator-home" title="Texinfo Homepage">
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+  pre.display { font-family:inherit }
+  pre.format  { font-family:inherit }
+  pre.smalldisplay { font-family:inherit; font-size:smaller }
+  pre.smallformat  { font-family:inherit; font-size:smaller }
+  pre.smallexample { font-size:smaller }
+  pre.smalllisp    { font-size:smaller }
+  span.sc    { font-variant:small-caps }
+  span.roman { font-family:serif; font-weight:normal; } 
+  span.sansserif { font-family:sans-serif; font-weight:normal; } 
+--></style>
+</head>
+<body>
+<div class="node">
+<a name="Introduction-to-Emacs"></a>
+<p>
+Next:&nbsp;<a rel="next" accesskey="n" href="Installing-GNU-Emacs.html#Installing-GNU-Emacs">Installing GNU Emacs</a>,
+Previous:&nbsp;<a rel="previous" accesskey="p" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>,
+Up:&nbsp;<a rel="up" accesskey="u" href="Using-GNU-Emacs.html#Using-GNU-Emacs">Using GNU Emacs</a>
+<hr>
+</div>
+
+<h3 class="section">3.1 Introduction to Emacs</h3>
+
+<p>Emacs is an environment for running Lisp programs that manipulate text
+interactively. Because Emacs is completely programmable, it can be used to
+implement not only editors, but a full
+<dfn>integrated development environment</dfn> for software development. Emacs can
+also browse info documentation, run email clients, a newsgroup reader,
+a sophisticated xterm, and an understanding psychotherapist.
+
+   <p>Under the X window system, Emacs controls multiple x-windows
+called <dfn>frames</dfn>. Each frame has a menubar and the main editing area. 
+The editing area is divided into <dfn>windows</dfn> with horizontal bars. 
+You can grab these bars and move them around with the first mouse button. 
+<a rel="footnote" href="#fn-1" name="fnd-1"><sup>1</sup></a>
+Each window is bound to a <dfn>buffer</dfn>. A buffer is an Emacs data structure
+that contains text. Most editing commands operate on buffers, modifying
+their contents. When a buffer is bound to a window, then you can see its
+contents as they are being changed. It is possible for a buffer to be bound
+to two windows, on different frames or on the same frame. Then whenever
+a change is made to the buffer, it is reflected on both windows. It is
+not necessary for a buffer to be bound to a window, in order to operate on
+it. In a typical Emacs session you may be manipulating more buffers than
+the windows that you have on your screen.
+
+   <p>A buffer can be <dfn>visiting</dfn> files. In that case, the contents of the
+buffer reflect the contents of a file that is being editted. But buffers
+can be associated with anything you like, so long as you program
+it up. For example, under the Dired directory editor, a buffer is bound
+to a directory, showing you the contents of the directory. When you
+press &lt;Enter&gt; while the cursor is over a file name, Emacs creates
+a new buffer, visits the file, and rebinds the window with that buffer. 
+From the user's perspective, by pressing &lt;Enter&gt; he &ldquo;opened&rdquo; the
+file for editing. If the file has already been &ldquo;opened&rdquo; then Emacs
+simply rebinds the existing buffer for that file.
+
+   <p>Emacs uses a variant of LISP, called Emacs LISP, as its programming language. 
+Everytime you press a key, click the mouse, or select an entry from the
+menubar, an Emacs LISP function is evaluated. The <dfn>mode</dfn> of the
+buffer determines, among many other things, what function to evaluate. 
+This way, every buffer can be associated with functionality that defines
+what you do in that buffer. For example you can program your buffer to edit
+text, to edit source code, to read news, and so on. You can also run
+LISP functions directly on the current buffer by typing <code>M-x</code> and
+the name of the function that you want to run. 
+<a rel="footnote" href="#fn-2" name="fnd-2"><sup>2</sup></a>
+
+   <p>What is known as the &ldquo;Emacs editor&rdquo; is the default implementation of
+an editor under the Emacs system. If you prefer the vi editor, then you
+can instead run a vi clone, Viper (see <a href="Using-vi-emulation.html#Using-vi-emulation">Using vi emulation</a>). 
+The main reason why you should use Emacs, is not the particular editor,
+but the way Emacs integrates editing with all the other functions that
+you like to do as a software developer. For example:
+     <ul>
+<li>You can edit multiple files under one program. From the user
+perspective, you can edit two different parts of a file under two different
+x-windows. And when you revisit a file, the cursor is placed where it was
+the last time you were editing the file. 
+<li>You can quickly browse a directory and navigate from file to file. 
+You can also do simple operations on files, without needing to go to
+a shell. 
+<li>You can transparently edit files over FTP. This is extremely valuable
+if you are editing source code on a remote computer and you are connected
+through a modem link. 
+<li>You can have a running shell for typing unix commands, and access the same
+shell from any Emacs frame. 
+You can use that shell to run &lsquo;<samp><span class="samp">reconf</span></samp>&rsquo;, &lsquo;<samp><span class="samp">configure</span></samp>&rsquo; and
+&lsquo;<samp><span class="samp">make</span></samp>&rsquo;. You can also save the contents of your session to a file. 
+<li>Color is used to highlight syntactic information about the text. 
+This makes browsing more pleasing to the eye, and it can also help you
+catch syntactic mistakes. Emacs understands the syntax of most types
+of files you are likely to edit and will color them up for you accordingly. 
+<li>When you edit source code under Emacs, it will automatically be formatted
+for you to conform to the GNU coding standards. At your request,
+appropriate copyright notices can be inserted. 
+(see <a href="Inserting-notices-with-Emacs.html#Inserting-notices-with-Emacs">Inserting notices with Emacs</a>)
+<li>When you make changes to a file, Emacs can automatically warp you to the
+appropriate <samp><span class="file">ChangeLog</span></samp> file to record your changes. It will
+handle formatting details for you allowing you to focus on content. 
+(see <a href="Maintaining-the-documentation-files.html#Maintaining-the-documentation-files">Maintaining the documentation files</a>)
+<li>Emacs is invaluably helpful for writing Texinfo documentation. In fact,
+it is excruciatingly painful to maintain Texinfo documentation without
+using Emacs. 
+(see <a href="GNU-Emacs-support-for-Texinfo.html#GNU-Emacs-support-for-Texinfo">GNU Emacs support for Texinfo</a>)
+<li>You can run the <samp><span class="file">gdb</span></samp> debugger under Emacs and use it to step
+through your code. As you do that, Emacs will show you on a separate buffer
+the code that is currently being stepped through. 
+<li>You can read email and newsgroups. If you are connected over a modem,
+all your editing is done locally, so you do not get bogged down by the
+speed of your connection. 
+You can apply patches that you get through email or news
+to your source code directly, without needing to save the message to a file. 
+<li>Emacs currently supports almost every international language, even
+languages that do not use the Roman alphabet, like Greek, Chinese, Hebrew,
+Tibetan,etc. 
+</ul>
+
+   <p>All of these features make Emacs a very powerful, albeit unusual,
+integrated development environment. 
+Many users of proprietary operating
+systems, like Lose95
+<a rel="footnote" href="#fn-3" name="fnd-3"><sup>3</sup></a>,
+complain that GNU (and Unix) does not have an integrated development
+environment. As a matter of fact it does. All of the above features make Emacs
+a very powerful IDE.
+
+   <p>Emacs has its own very extensive documentation
+(see <a href="Further-reading-on-Emacs.html#Further-reading-on-Emacs">Further reading on Emacs</a>). In this manual we will only go over
+the fundamentals for using Emacs effectively
+as an integrated development environment.
+
+   <div class="footnote">
+<hr>
+<h4>Footnotes</h4><p class="footnote"><small>[<a name="fn-1" href="#fnd-1">1</a>]</small> Note that in Emacs parlance a <dfn>window</dfn> is not an X window. 
+A frame is an X window. A <dfn>window</dfn> is a region within the frame.</p>
+
+   <p class="footnote"><small>[<a name="fn-2" href="#fnd-2">2</a>]</small> M-x means <kbd>&lt;ALT&gt;-x</kbd>. If you do not have an &lt;ALT&gt; key,
+then use <kbd>&lt;ESC&gt; x</kbd> instead.</p>
+
+   <p class="footnote"><small>[<a name="fn-3" href="#fnd-3">3</a>]</small> Many individuals refer to <dfn>Microsoft Windows 95</dfn> as Win95. 
+In hacker terminology, a <dfn>win</dfn> is something that is good. We do not
+believe that Microsoft Windows 95 is a good operating system, therefore
+we call it Lose95</p>
+
+   <hr></div>
+
+   </body></html>
+
