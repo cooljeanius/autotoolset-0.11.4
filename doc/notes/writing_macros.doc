@@ -1,0 +1,299 @@
+@chapter Writing Autoconf macros
+
+@section Introduction to Autoconf
+
+In order to use @samp{automake} you need to use @samp{autoconf}. 
+The @code{configure} script is a standard shell script. The same is
+almost true for @code{configure.in} which is actually a 
+@emph{shell script, passed through a preprocessor}. Autoconf is that
+preprocessor, which relegates most of the preprocessing to @code{GNU m4}.
+Autoconf expands @dfn{m4 macros} like
+  AC_INIT
+  AM_INIT_AUTOMAKE(...)
+  ...
+to actual shell commands. The syntax of the m4 preprocessor macros is quite 
+simple:
+  MACRO(arg1 , arg2 , arg3)
+Arguments, which are optional, are listed inside parenthesis and seperated
+with commas. There must be no whitespace between the opening parenthesis
+and the macro name, otherwise it will be assumed that you are passing no
+arguments and the subsequent parenthesis will be included verbatim.
+If one of the arguments has to include commas itself, then
+you quote it with brackets:
+  MACRO(arg1 , [foo , bar, foo] , arg3)
+It is possible for a macro to span multiple lines. The carriage returns
+then are preserved as part of the argument text. For example:
+  MACRO(arg1 , [ foo
+                 bar
+                 foo ],
+        arg3)
+If a macro takes no arguments then drop the parenthesis all-together.
+Most of the macros you've used so far (e.g. @code{AC_PROG_CC}) are such
+macros. If you do put parenthesis like this
+  MACRO()
+then it will be assumed that you are passing one empty string as argument.
+To define a macro, use the @code{AC_DEFUN} macro like this:
+  AC_DEFUN(LF_PROG_PERL, [ 
+    AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+  ])
+The first argument is the name of the macro you want to define. The second
+argument is the text that you wish this macro to substitute for. Note that
+GNU m4 can handle recursion. The text we substitute is another macro
+which in turn will be substituted until all the macros are resolved.
+
+Macros are weakly typed. We say nothing about whether or not they take
+arguments. Instead, if there are any arguments, then the symbols
+@code{$1}, @code{$2}, ... will be substituted with their values.
+You can treat these as ordinary shell variables. If the arguments are
+missing then these variables will be empty.
+
+In some cases, you may wish to use the characters @code{[} and @code{]}
+with their ordinary meaning. For example, you may be quoting a C program.
+Then you need to disable the meaning of the characters @code{[,]} and
+re-enable it when you are done. To do this:
+  changequote()dnl
+  ...insert [ ] stuff here...
+  changequote([,])dnl
+The first line disables it, the last line enables it. The @code{changequote}
+directive is a builtin of the preprocessor. Sometimes you may want
+to use @code{[,]} with both their quoting meaning and their ordinary
+meaning. Then you can define other characters (or character sequences) to 
+handle the quoting meaning, such as @code{<<<} and @code{>>>}. To do that:
+  changequote(<<<,>>>)dnl
+  ......
+  changequote([,])dnl
+
+Autoconf provides a plethora of low-level macros from which you can
+construct higher-level macros like the ones that you have been using.
+These are all explained quite thoroughly in the Autoconf documentation,
+but we will mention some of the fundamentals here as well. Before doing that
+however, we must emphasize that the scripting you use in your macro definitions
+must be @emph{standard shell script} so that the resulting @code{configure} 
+script can run on all flavours of Unix. In the next section we will explain 
+the guidelines to standard shell scripts.
+
+Before getting into any of this however, let's say something about the
+@emph{purpose} of configure scripts. The purpose of a configure script
+is to export information to the C preprocessor and to construct 
+system-dependent files from generic templates. Primarily, these files are
+the Makefiles, but they can also be special things like @file{config.h}
+and @file{version.sh}, @file{version.pl} that we mentioned in the 
+previous section.
+
+
+The
+@file{configure} script causes C preprocessor macros to be defined either
+by passing @code{-D} flags to the compiler or through a header file
+@code{config.h} which it generates.
+This way it can flag to the source code information that can
+be used for conditional compilation.
+On the lowest level, all macros that want to export information to the 
+C preprocessor call one of the following Autoconf macros:
+  AC_DEFINE
+  AC_DEFINE_UNQUOTED
+For example,
+  AC_DEFINE(USE_ASSERT)
+has the effect of 
+  #define USE_ASSERT
+Other examples:
+  AC_DEFINE(USE_ASSERT, 1)      ->  #define USE_ASSERT 1
+  AC_DEFINE(FOO, "foo")         ->  #define FOO "foo"
+If you wish to substitute a shell variable then use the 
+@code{AC_DEFINE_UNQUOTED} macro instead:
+  foo="hello"
+  AC_DEFINE_UNQUOTED(FOO, $foo)   -> #define FOO hello
+  AC_DEFINE_UNQUOTED(FOO, "$foo") -> #define FOO "hello"
+
+To cause @code{configure} to construct a file @file{foo} from a template,
+then the template must be called @code{foo.in} and the pathname of @file{foo}
+must appear in @code{AC_OUTPUT} relative to the configure script. You have 
+seen many examples of how that
+works to make Makefiles already.
+If a file does appear in @code{AC_OUTPUT} then the template is parsed
+and certain occurences of the form @code{@@FOO@@} are substituted by a
+value which is determined by the configure script. For example, in the
+case of @file{version.sh.in} containing
+  VERSION=@VERSION@
+we saw that a file @file{version.sh} was created in which @code{@@VERSION@@}
+was substituted with the correct version number.
+The following lines, in @file{configure.in} will cause
+@code{@@FOO@@} to be substituted with @code{BAR}:
+  FOO="BAR"
+  AC_SUBST(FOO)
+All macros that define such substitutions at the low-level need to assign
+a shell variable to the value and call @code{AC_SUBST} to declare the
+substitution. The shell variable must have the same name as the text that
+appears between the @code{@@} in the @code{@@FOO@@} construct that represents
+that substitution.
+
+Theoretically you can build any files you like from any templates. This
+feature however was specifically intended to build @file{Makefile} files
+from @file{Makefile.in}. We didn't say anything about the 
+@code{@@FOO@@} notation until now because @file{Makefile.in} is automatically
+generated by Automake. From the point of view of writing a @file{Makefile.am}
+all substitutions appear as Makefile variables. The reason for this is
+that Automake scans @code{configure.in} and whenever it sees
+  AC_SUBST(FOO)
+it makes sure that the following line appears in @file{Makefile.in}:
+  FOO = @FOO@
+This way all substitutions become makefile variables, and 
+@emph{you can think of @code{AC_SUBST} as exporting a shell variable to @file{Makefile.am} as a makefile variable.}
+
+This scheme works for single-line substitutions. Occasionally, you may
+want to force multi-line substitutions. For example, we may want 
+  @special_target@
+to substitute to a special Makefile abstract rule that we want inserted
+in @file{Makefile.am}, that is multi-line text. The Fortran support and the 
+local installation
+feature that we will discuss very later both use this feature. 
+To do this, you must
+@itemize @bullet
+@item
+Create a file containing the text
+@item
+Assign a shell variable to the pathname of the file relative to the 
+configure script:
+  special_target="target.am"
+@item
+Check it in:
+  AC_SUBST_FILE(special_target)
+@item
+Make sure that the file is around until the configure script terminates.
+@end itemize
+The first step is where the magic is. How do you create the file?
+One spiffy way is to define a special macro that will generate the file
+while configure is running. You can do this with the @file{mkm4}
+utility that is distributed with @code{autotools}. 
+To use it:
+  % mkm4 file.m4 MACRONAME file1.am file2.am file3.am ...
+where @file{file.m4} is the file containing the macro definition,
+@code{MACRONAME} is the name to your macro, and @file{file1.am},
+@file{file2.am}, etc. are the files that you want it to generate.
+The way it works is that it calls:
+  % shar -VQx file1.am file2.am ... > file.m4
+to generate standard shell script code that generates the files, and
+then surrounds it with @code{changequote} and the @code{AC_DEFUN} stuff.
+
+The information that Autoconf exports, customizes both your source code 
+as well as your makefiles to the platform on which you are building.
+This way you can make it possible for your program to compile automatically
+on multiple platforms.
+
+@c =========================================================================
+
+@section Anatomy of an Autoconf macro
+
+A typical macro definition looks like this:
+  AC_DEFUN(LF_FUBAR,[
+    dnl Print a message indicating what it is we're checking
+    AC_MSG_CHECKING([whether fubar exists])
+  
+    dnl Check for it  
+    if test -f fubar
+    then
+      lf_fubar_exists=yes
+    else
+      lf_fubar_exists=no
+    fi
+   
+    dnl Print the result
+    AC_MSG_RESULT($lf_fubar_exists)
+])
+
+Admittedly this is a stupid example that just checks whether a file
+@file{fubar} exists and prints an appropriate message. When run this
+macro will probably print something like:
+  Checking whether fubar exists.. no
+A few fundamental things to note here:
+@itemize @bullet
+@item
+To define a new macro we need to call @code{AC_DEFUN} with two arguments.
+The name of the macro, and the content of the macro itself. The second
+argument is surrounded with brackets since it spans multiple lines. 
+@item 
+We use the macro AC_MSG_CHECKING to tell the user what it is we're checking
+for. We use the macro AC_MSG_RESULT to display the result which is usually
+a one-word statement like ``yes'', ``no'' or something like thaht.
+@item
+The test itself is done with portable shell syntax.
+@item
+The name of the macro begins with my initials @code{LF}. Use different
+initials for your macros to minimize possible name-conflicts.
+I do the same with my variables whose names are prefixed by the macro
+which primarily uses them.
+@end itemize
+
+For completeness, the following macros can be used inside a macro to 
+output information to the user:
+
+@deffn Macro AC_MSG_CHECKING
+Call this passing one argument with text explaining what this macro is
+checking for. The text is displayed immediately.
+@end deffn
+
+@deffn Macro AC_MSG_RESULT
+Call this passing one argument with text stating the result. For every
+call to this macro there must be one previews matching call to
+AC_MSG_CHECKING. Usually you want to use a one word statement like yes or no.
+@end deffn
+
+@deffn Macro AC_MSG_WARN
+Notify the user of a possible problem. Pass one argument with text explaining
+the problem in about one line. A call to this macro will not terminate the
+execution of the script. You should call this macro when the test can not
+determine what it wants to determine and it is uncertain whether the program
+will be able to compile under these circumstances.
+@end deffn
+
+@deffn Macro AC_MSG_ERROR
+If a fatal error happens, notify the user and terminate execution of
+@code{configure.in}. As argument we pass the text of the notification.
+A fatal error is a type of error where we @emph{know} that it is impossible
+for the program to compile.
+@end deffn
+
+Now consider a more complicated example:
+  AC_DEFUN(LF_CHECK_CC_FLAG,[
+    echo 'void f(){}' > conftest.c
+    for i in $1
+    do
+      AC_MSG_CHECKING([whether $CC accepts $i])
+      if test -z "`${CC} $i -c conftest.c 2>&1`"
+      then
+        CFLAGS="${CFLAGS} $i"
+        AC_MSG_RESULT(yes)
+      else
+        AC_MSG_RESULT(no)
+      fi
+    done
+    rm -f conftest.c conftest.o
+  ])
+This macro will check whether the C compiler, whose name is supposed to
+be stored in @code{CC} will accept certain flags. For example, a typical
+call might look like:
+  LF_CHECK_CC_FLAG(-g -O2 -fstrength-reduce)
+The @code{CC} variable is used by standard to store the name of the C
+compiler in use. The @code{CFLAGS} variable is used by standard to store
+command-line flags to pass to the compiler in general. A call to
+  AC_PROG_CC
+will initialize @code{CC} and it will also call:
+  AC_SUBST(CC)
+  AC_SUBST(CFLAGS)
+and friends, so in this case you won't have to call them yourself.
+The way the macro works is that it creates a file @file{conftest.c} with
+minimal content, and it tries to compile it. If the compiler spawns an
+error message, then this means that it will not accept the flag. 
+Otherwise it means that the flag will at least be tolerated.
+
+To test whether an attempt to compile @file{conftest.c} generates errors
+we use the @code{-z} test that is true if and only if the argument passed
+is empty. We use backquotes to substitute the standard output of a
+call to the compiler and we use @code{2>&1} because backquotes only
+substitute the standard output, and it is more than likely that the actual
+error will be sent through standard error.
+
+Note use of the variable @code{$1}. Note the cleanup at the end.
+What other variables are in use?
+How to write --enable and --with macros. 
+Now more specific things.
+

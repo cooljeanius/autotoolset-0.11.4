@@ -1,0 +1,4 @@
+#!  /bin/sh
+VERSION=0.11.4
+PREFIX=/usr/local
+rpmbuild --sign -ta autotoolset-0.11.4.tar.bz2

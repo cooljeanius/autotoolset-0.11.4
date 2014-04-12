@@ -1,0 +1,258 @@
+#!/bin/sh
+
+# 
+# The following are defined by the user at the configure.in
+# (temporary stubs for testing)
+#
+
+@CONFIGDATABASE@
+
+#
+# The following should actually be defined by Autoconf:
+# (temporary stubs for testing)
+#
+
+# The package name. The config script must be called ${PACKAGE}-config
+PACKAGE=@PACKAGE@ 
+SCRIPTNAME="${PACKAGE}-config" 
+
+# The version number
+VERSION=@VERSION@
+
+#
+# Install directory configuration
+#
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+bindir=@bindir@
+sbindir=@sbindir@
+libexecdir=@libexecdir@
+datadir=@datadir@
+sysconfdir=@sysconfdir@
+sharedstatedir=@sharedstatedir@
+localstatedir=@localstatedir@
+libdir=@libdir@
+infodir=@infodir@
+mandir=@mandir@
+includedir=@includedir@
+
+pkgdatadir=${datadir}/@PACKAGE@
+pkglibdir=${libdir}/@PACKAGE@
+pkgincludedir=${includedir}/@PACKAGE@
+
+#
+# Check whether luser invoked this script without
+# passing any arguments.
+#
+
+if test $# -eq 0
+then
+  ${SCRIPTNAME} --usage
+  exit 1
+fi
+
+#
+# Handle requests for help
+#
+
+if test "x${1}" = "x--help"
+then
+  cat <<EOF
+Usage: ${SCRIPTNAME} [OPTION] ... [LIBRARY] ...
+
+Generic options
+  --version	output gnome version information
+  --help	display this help and exit
+
+Compilation support options
+  --cflags	print pre-processor and compiler flags
+  --libs	print library linking information
+  --libs-only-L	only print the -L/-R part of --libs
+  --libs-only-l only print the -l part of --libs
+
+Install directories ${PACKAGE} was configured to
+  --prefix  --exec-prefix  --bindir  --sbindir  --libexecdir  --datadir
+  --sysconfdir  --sharedstatedir  --localstatedir  --libdir  --infodir
+  --mandir  --includedir
+
+Known values for LIBRARY are:
+EOF
+  ${SCRIPTNAME} --help-known-libs
+  exit
+fi
+
+#
+# Handle request for known libraries
+#
+
+if test "x${1}" = "x--help-known-libs"
+then
+  for library in ${LIBRARIES}
+  do
+    echo "${library}:`eval \"eval echo '$'${library}_DESCRIPTION\"`" | 
+      awk -F: '{ printf("  %-11s  %s\n",$1,$2) }'
+  done
+  echo ""
+  exit
+fi
+
+# 
+# A more brief response
+#
+
+if test "x${1}" = "x--usage"
+then
+  cat <<EOF
+Usage: ${SCRIPTNAME} [OPTION] ... [LIBRARY] ...
+
+For more usage details please type:
+% ${SCRIPTNAME} --help
+
+Always look at the bright side of life.
+EOF
+  exit
+fi
+
+#
+# Respond to --version
+#
+
+if test "x${1}" = "x--version"
+then
+  echo ${VERSION}
+  exit 0
+fi
+
+#
+# Check whether luser invoked this script without
+# passing any arguments.
+#
+
+# State of the script: What should we print?
+cflags=false
+libs_L=false
+libs_l=false
+
+# Parse the command-line arguments and set the state
+while test $# -gt 0
+do
+  # Check for option argument
+  case "$1" in
+  -*=*) optarg=`echo "$1" | sed 's/[-_a-zA-Z0-9]*=//'` ;;
+    *) optarg= ;;
+  esac
+
+  # Check for specific options
+  case "$1" in
+    --exec-prefix)
+	echo $exec_prefix
+	exit 0
+	;;
+    --prefix)
+	echo $prefix
+	exit 0
+	;;
+    --*dir)
+	dirname=\$`echo $1 | sed -e 's,^--,,'`
+	dirname=`eval echo $dirname`
+	test -z "$dirname" && exit 1
+	echo $dirname
+	exit 0
+	;;
+    --cflags)
+       	cflags=true
+       	;;
+    --libs)
+       	libs_L=true
+	libs_l=true
+       	;;
+    --libs-only-L)
+	libs_L=true
+	;;
+    --libs-only-l)
+	libs_l=true
+	;;
+    --*)
+        ${SCRIPTNAME} --usage
+	;;
+    *)
+        lib_wanted="${1}"
+        lib_exists=false
+        for i in ${LIBRARIES}
+        do
+          if test "x${1}" = "x${i}"
+          then
+            lib_exists=true
+          fi
+        done
+        if test "x$lib_exists" = "xfalse"
+        then
+          echo "This config script does not recognize ${lib_wanted}"
+          echo "Here is a list of libraries that are recognized:"
+          ${SCRIPTNAME} --help-known-libs
+          exit
+        fi
+        cnf_libdir="\$${lib_wanted}_LIBDIR"
+        cnf_libs="\$${lib_wanted}_LIBS"
+        cnf_flags="\$${lib_wanted}_INCLUDEDIR"
+        the_libs="$the_libs `eval echo $cnf_libdir` `eval echo $cnf_libs`"
+        the_flags="$the_flags `eval echo $cnf_flags`"
+        ;;
+  esac
+  shift
+done 
+
+if test "x$cflags" = "xtrue" ; then
+  all_flags="$the_flags"
+fi
+
+if test "x$libs_L" = "xtrue" || test "x$libs_l" = "xtrue"
+then
+  all_flags="$all_flags $the_libs"
+fi
+
+if test -z "$all_flags" || test "x$all_flags" = "x "
+then
+  exit 1
+fi
+
+# Straight out any possible duplicates, but be careful to
+# get `-lfoo -lbar -lbaz' for `-lfoo -lbaz -lbar -lbaz'
+other_flags=
+lib_L_flags=
+rev_libs=
+for i in $all_flags; do
+    case "$i" in
+    # a library, save it for later, in reverse order
+    -l*) rev_libs="$i $rev_libs" ;;
+    -L*|-R*)
+	if test "x$libs_L" = "xtrue"; then
+	    case " $lib_L_flags " in
+	    *\ $i\ *) ;;			# already there
+	    *) lib_L_flags="$lib_L_flags $i" ;;	# add it to output
+	    esac 
+	fi;;
+    *)
+	case " $other_flags " in
+	*\ $i\ *) ;;				# already there
+	*) other_flags="$other_flags $i" ;;	# add it to output
+        esac ;;
+    esac
+done
+
+ord_libs=
+if test "x$libs_l" = "xtrue" 
+then
+  for i in $rev_libs; do
+    case " $ord_libs " in
+        *\ $i\ *) ;;			# already there
+	*) ord_libs="$i $ord_libs" ;;	# add it to output in reverse order
+    esac
+  done
+fi
+
+echo $other_flags $lib_L_flags $ord_libs
+
+exit 0

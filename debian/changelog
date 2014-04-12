@@ -1,0 +1,9 @@
+autotools (0.10-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Thierry MICHEL <thierry@nekhem.com>  Sun,  4 Feb 2001 21:51:55 +0000
+
+Local variables:
+mode: debian-changelog
+End:

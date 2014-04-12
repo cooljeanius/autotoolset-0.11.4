@@ -1,0 +1,1109 @@
+This is tutorial.info, produced by makeinfo version 4.3 from
+tutorial.texi.
+
+INFO-DIR-SECTION Miscellaneous
+START-INFO-DIR-ENTRY
+* Autotoolset Tutorial: (tutorial).        Autotools tutorial.
+END-INFO-DIR-ENTRY
+
+
+File: tutorial.info,  Node: Introduction to Emacs,  Next: Installing GNU Emacs,  Prev: Using GNU Emacs,  Up: Using GNU Emacs
+
+Introduction to Emacs
+=====================
+
+   Emacs is an environment for running Lisp programs that manipulate
+text interactively. Because Emacs is completely programmable, it can be
+used to implement not only editors, but a full "integrated development
+environment" for software development. Emacs can also browse info
+documentation, run email clients, a newsgroup reader, a sophisticated
+xterm, and an understanding psychotherapist.
+
+   Under the X window system, Emacs controls multiple x-windows called
+"frames". Each frame has a menubar and the main editing area.  The
+editing area is divided into "windows" with horizontal bars.  You can
+grab these bars and move them around with the first mouse button.  (1)
+Each window is bound to a "buffer". A buffer is an Emacs data structure
+that contains text. Most editing commands operate on buffers, modifying
+their contents. When a buffer is bound to a window, then you can see its
+contents as they are being changed. It is possible for a buffer to be
+bound to two windows, on different frames or on the same frame. Then
+whenever a change is made to the buffer, it is reflected on both
+windows. It is not necessary for a buffer to be bound to a window, in
+order to operate on it. In a typical Emacs session you may be
+manipulating more buffers than the windows that you have on your screen.
+
+   A buffer can be "visiting" files. In that case, the contents of the
+buffer reflect the contents of a file that is being editted. But buffers
+can be associated with anything you like, so long as you program it up.
+For example, under the Dired directory editor, a buffer is bound to a
+directory, showing you the contents of the directory. When you press
+<Enter> while the cursor is over a file name, Emacs creates a new
+buffer, visits the file, and rebinds the window with that buffer.  From
+the user's perspective, by pressing <Enter> he "opened" the file for
+editing. If the file has already been "opened" then Emacs simply
+rebinds the existing buffer for that file.
+
+   Emacs uses a variant of LISP, called Emacs LISP, as its programming
+language.  Everytime you press a key, click the mouse, or select an
+entry from the menubar, an Emacs LISP function is evaluated. The "mode"
+of the buffer determines, among many other things, what function to
+evaluate.  This way, every buffer can be associated with functionality
+that defines what you do in that buffer. For example you can program
+your buffer to edit text, to edit source code, to read news, and so on.
+You can also run LISP functions directly on the current buffer by
+typing `M-x' and the name of the function that you want to run.  (2)
+
+   What is known as the "Emacs editor" is the default implementation of
+an editor under the Emacs system. If you prefer the vi editor, then you
+can instead run a vi clone, Viper (*note Using vi emulation::).  The
+main reason why you should use Emacs, is not the particular editor, but
+the way Emacs integrates editing with all the other functions that you
+like to do as a software developer. For example:
+   * You can edit multiple files under one program. From the user
+     perspective, you can edit two different parts of a file under two
+     different x-windows. And when you revisit a file, the cursor is
+     placed where it was the last time you were editing the file.
+
+   * You can quickly browse a directory and navigate from file to file.
+     You can also do simple operations on files, without needing to go
+     to a shell.
+
+   * You can transparently edit files over FTP. This is extremely
+     valuable if you are editing source code on a remote computer and
+     you are connected through a modem link.
+
+   * You can have a running shell for typing unix commands, and access
+     the same shell from any Emacs frame.  You can use that shell to
+     run `reconf', `configure' and `make'. You can also save the
+     contents of your session to a file.
+
+   * Color is used to highlight syntactic information about the text.
+     This makes browsing more pleasing to the eye, and it can also help
+     you catch syntactic mistakes. Emacs understands the syntax of most
+     types of files you are likely to edit and will color them up for
+     you accordingly.
+
+   * When you edit source code under Emacs, it will automatically be
+     formatted for you to conform to the GNU coding standards. At your
+     request, appropriate copyright notices can be inserted.  (*note
+     Inserting notices with Emacs::)
+
+   * When you make changes to a file, Emacs can automatically warp you
+     to the appropriate `ChangeLog' file to record your changes. It will
+     handle formatting details for you allowing you to focus on content.
+     (*note Maintaining the documentation files::)
+
+   * Emacs is invaluably helpful for writing Texinfo documentation. In
+     fact, it is excruciatingly painful to maintain Texinfo
+     documentation without using Emacs.  (*note GNU Emacs support for
+     Texinfo::)
+
+   * You can run the `gdb' debugger under Emacs and use it to step
+     through your code. As you do that, Emacs will show you on a
+     separate buffer the code that is currently being stepped through.
+
+   * You can read email and newsgroups. If you are connected over a
+     modem, all your editing is done locally, so you do not get bogged
+     down by the speed of your connection.  You can apply patches that
+     you get through email or news to your source code directly,
+     without needing to save the message to a file.
+
+   * Emacs currently supports almost every international language, even
+     languages that do not use the Roman alphabet, like Greek, Chinese,
+     Hebrew, Tibetan,etc.
+
+   All of these features make Emacs a very powerful, albeit unusual,
+integrated development environment.  Many users of proprietary operating
+systems, like Lose95 (3), complain that GNU (and Unix) does not have an
+integrated development environment. As a matter of fact it does. All of
+the above features make Emacs a very powerful IDE.
+
+   Emacs has its own very extensive documentation (*note Further
+reading on Emacs::). In this manual we will only go over the
+fundamentals for using Emacs effectively as an integrated development
+environment.
+
+   ---------- Footnotes ----------
+
+   (1) Note that in Emacs parlance a "window" is not an X window.  A
+frame is an X window. A "window" is a region within the frame.
+
+   (2) M-x means `<ALT>-x'. If you do not have an <ALT> key, then use
+`<ESC> x' instead.
+
+   (3) Many individuals refer to "Microsoft Windows 95" as Win95.  In
+hacker terminology, a "win" is something that is good. We do not
+believe that Microsoft Windows 95 is a good operating system, therefore
+we call it Lose95
+
+
+File: tutorial.info,  Node: Installing GNU Emacs,  Next: Configuring GNU Emacs,  Prev: Introduction to Emacs,  Up: Using GNU Emacs
+
+Installing GNU Emacs
+====================
+
+   If Emacs is not installed on your system, you will need to get a
+source code distribution and compile it yourself. Installing Emacs is
+not difficult. If Emacs is already installed on your GNU/Linux system,
+make sure that you do indeed have Emacs and not the Xemacs variant.
+Also, make sure that you have version 20.3 or newer. Finally, there are
+some variations in how Emacs can be installed. The installer can choose
+whether or not they want to install support for multiple languages and
+reading email over a POP server. It can be very useful to support both.
+If the preinstalled version does not support either, then uninstall it
+and reinstall Emacs from a source code distribution.
+
+   The emacs source code is distributed in three separate files:
+`emacs-20.3.tar.gz'
+     This is the main Emacs distribution. If you do not care about
+     international language support, you can install this by itself.
+
+`leim-20.3.tar.gz'
+     This supplements the Emacs distribution with support for multiple
+     languages.  If you develop internationalized software, it is
+     likely that you will need this.
+
+`intlfonts-1.1.tar.gz'
+     This file contains the fonts that Emacs uses to support
+     international languages. If you want international language
+     support, you will definetely need this.  Get a copy of these
+files, place them under the same directory and unpack them with the
+following commands:
+     % gunzip emacs-20.3.tar.gz
+     % tar xf emacs-20.3.tar
+     % gunzip leim-20.3.tar.gz
+     % tar xf leim-20.3.tar
+
+Both tarballs will unpack under the `emacs-20.3' directory. When this
+is finished, go in and compile the source code:
+     % cd emasc-20.3
+     % ./configure --with-pop
+     % make
+
+This will take quite a while. When done, install Emacs with
+     # make install
+
+To install `intlfonts-1.1.tar.gz' unpack it, and follow the instructions
+in the `README' file.
+
+
+File: tutorial.info,  Node: Configuring GNU Emacs,  Next: Using vi emulation,  Prev: Installing GNU Emacs,  Up: Using GNU Emacs
+
+Configuring GNU Emacs
+=====================
+
+   To use Emacs effectively for software development you need to
+configure it.  Part of the configuration needs to be done in your
+X-resources file.  On a Debian GNU/Linux system, the X-resources can be
+configured by editing
+     /etc/X11/Xresources
+
+In many systems, you can configure X-resources by editing a file called
+`.Xresources' or `.Xdefaults' on your home directory, but that is
+system-dependent. The configuration that I use on my system is:
+     ! Emacs defaults
+     emacs*Background: Black
+     emacs*Foreground: White
+     emacs*pointerColor: White
+     emacs*cursorColor: White
+     emacs*bitmapIcon: on
+     emacs*font: fixed
+     emacs*geometry: 80x40
+
+In general I favor dark backgrounds and `fixed' fonts. Dark backgrounds
+make it easier to sit in front of the monitor for a prolonged period of
+time. `fixed' fonts looks nice and it's small enough to make efficient
+use of your screenspace. Some people might prefer larger fonts however.
+
+   The bulk of Emacs configuration is done by editing or creating an
+`.emacs' file in your home directory. If you feel comfortable editing
+this file with the unconfigured Emacs editor, go for it. Alternatively,
+you can use the vanilla vi editor. (*note Using vi emulation::). Here
+are some things that you might want to add to your `.emacs' file:
+   * You can override your X-default background and foreground color in
+     your `.emacs' file. For the sake of redundancy, if nothing else,
+     add the following lines to your `.emacs':
+          (set-background-color "black")
+          (set-foreground-color "white")
+
+     You can change the colors to your liking.
+
+   * In many circumstances, Emacs needs to know your name and email
+     address.  For example, when you update a `ChangeLog', Emacs needs
+     to know these two pieces of information to create a time-stamp.
+     This information is also needed when you use Emacs to browse the
+     newsgroups or send email.  Usually, Emacs can guess this
+     information from your password file and if it can deduce your
+     hostname and domain-name it can put together an email address.
+     Home systems, that connect to the internet over modem, may not
+     have a valid email address, and since we have root on these
+     systems, we like to call ourselves things like "Skeletor" or
+     "Dude", when people finger us, but not on our `ChangeLog' files or
+     in our emails to our boss. To give Emacs your official name and
+     email address, add the following two lines in your `.emacs' file:
+          (setq user-mail-address "dude@whitehouse.com")
+          (setq user-full-name "Karl Marx")
+
+     Make sure the name is your real name, and the email address that
+     you include can receive email 24 hours per day.
+
+   * You can tell Emacs to display a little clock on each frame by
+     adding the following line in your `.emacs':
+          (display-time)
+
+     You can also tell Emacs to show you the line and column number of
+     your cursor's position at all times by adding the following lines
+     in your `.emacs'
+          (line-number-mode 1)
+          (column-number-mode 1)
+
+     All of these features can be very convenient.
+
+   * To cut and paste text from frame to frame, you can use the mouse.
+     Mouse button 1 will select text and mouse button 2 will paste the
+     text.  Unfortunately, when you click mouse button 2, emacs will
+     first move the cursor at the location of the mouse, and insert the
+     text in that location.  If you are used to editing with vi under
+     xterms, you won't like this behaviour.  Instead, you will prefer
+     to position the cursor yourself, and you will want mouse button 2
+     to simply cause the text to be pasted without changing the
+     position of the cursor. If you prefer this behaviour, add the
+     following line to your `.emacs':
+          (global-set-key [mouse-2] 'yank)
+     By default, selected text in Emacs buffers is highlighted with
+     blue color.  However, you can also select and paste into an Emacs
+     buffer text that you select from other applications, like your web
+     browser, or your xterm.
+
+   * You may like to use "font-lock".  Emacs understands to a great
+     extent the syntax of your text, especially when your text is
+     source code, and it can mark differents parts of your text with
+     different colors depending on what the text means syntactically.
+     For example, with C source code, comments are marked red, stuff in
+     quotes are marked brown and certain keywords are marked green,
+     blue, etc.  To activate font-lock, add the following lines to your
+     `.emacs':
+          (global-font-lock-mode t)
+          (setq font-lock-maximum-size nil)
+
+     At first, fontlock might appear disconcerting to you. It only
+     takes about a day to get used to it, and then you won't be able to
+     do without it.  Not only does font-lock make your text look
+     prettier. It can also help you catch common mistakes like run-away
+     C comments, stray quote marks and so on.
+
+   * If you have installed Emacs packages in non-standard directories,
+     you need to add them to the `load-path' variable. For example,
+     here's how to add a couple of directories:
+          (setq load-path
+                (append "/usr/share/emacs/site-lisp"
+                        "/usr/local/share/emacs/site-site"
+                        (expand-file-name "~lf/lisp")
+                        load-path))
+
+     Note the use of `expand-file-name' for dealing with non-absolute
+     directories. If you are a user in an account where you don't have
+     root priviledge, you are very likely to need to install your Emacs
+     packages in a non-standard directory.
+
+   * _FIXME: Explain how to get rid of the scrollbar_
+
+   * If you are a vi user, and you would like to run a vi editor under
+     the Emacs system, then read *Note Using vi emulation:: for more
+     details.
+
+   * To use Emacs effectively, we recommend that you configure Dired and
+     bind certain function keys so that you can go in and out of Dired
+     effectively. Read *Note Using Emacs as an IDE:: for more
+     configuration details.
+
+   * Autotools distributes two Emacs packages. One for handling
+     copyright notices and another one for handling Texinfo
+     documentation.  To set these packages up read *Note Inserting
+     copyright notices with Emacs:: and *Note GNU Emacs support for
+     Texinfo::
+
+   * If you would like to use Emacs to read your email, *Note Using
+     Emacs as an email client:: for more configuration information.
+
+
+File: tutorial.info,  Node: Using vi emulation,  Next: Using Emacs as an IDE,  Prev: Configuring GNU Emacs,  Up: Using GNU Emacs
+
+Using vi emulation
+==================
+
+   Many people prefer to use the `vi' editor. The `vi' editor is the
+standard editor on Unix. It is also always available on GNU/Linux.
+Many system administrators find it necessary to use vi, especially when
+they are in the middle of setting up a system in which Emacs has not
+been installed yet. Besides that, there are many compelling reasons why
+people like vi.
+   * Vi requires only two special keys: the <SHIFT> key and the <ESC>
+     key. All the other keys that you need are standard on all
+     keyboards.  You do not need <CTRL>,<ALT>,the cursor keys or any of
+     the function keys. Some terminals that miss the escape key,
+     usually have the control key and you can get escape with:
+     `<CTRL>-['
+
+   * Vi was designed to deal with terminals that connect to mainframes
+     over a very slow line. So it has been optimized to allow you to do
+     the most editing possible with the fewest keystrokes. This allows
+     users to edit text very efficiently.
+
+   * Vi allows your fingers to stay at the center of the keyboard, with
+     the occasional hop to the escape key. It does not require you to
+     stretch your fingers in funny control combinations, which makes
+     typing less tiring and more comfortable.
+   Because most rearrangements of finger habits are not as optimal as
+the vi finger habits, most vi users react very unpleasently to other
+editors.  For the benefit of these users, in this section we describe
+how to run a vi editor under the Emacs system. Similarly, users of
+other editors find the vi finger habits strange and unintuitive. For
+the benefit of these users we describe briefly how to use the vi
+editor, so they can try it out if they like.
+
+   The vi emulation package for the Emacs system is called "Viper".  To
+use Viper, add the following lines in your `.emacs': `.emacs':
+     (setq viper-mode t)
+     (setq viper-inhibit-startup-message 't)
+     (setq viper-expert-level '3)
+     (require 'viper)
+
+We recommend expert level 3, as the most balanced blend of the vi
+editor with the Emacs system. Most editing modes are aware of Viper,
+and when you begin editing the text you are immediately thrown into
+Viper. Some modes however do not do that. In some modes, like the Dired
+mode, this is very appropriate. In other modes however, especially
+custom modes that you have added to your system, Viper does not know
+about them, so it does not configure them to enter Viper mode by
+default. To tell a mode to enter Viper by default, add a line like the
+following to your `.emacs' file:
+     (add-hook 'm4-mode 'viper-mode)
+
+The modes that you are most likely to use during software development
+are
+     c-mode  , c++-mode , texinfo-mode
+     sh-mode , m4-mode  , makefile-mode
+
+The Emacs distribution has a Viper manual. For more details on setting
+Viper up, you should read that manual.
+
+   The vi editor has these things called _editing modes_. An editing
+mode defines how the editor responds to your keystrokes. Vi has three
+editing modes: "insert mode", "replace mode" and "command mode".  If
+you run Viper, there is also the Emacs mode. Emacs indicates which mode
+you are in by showing one of `<I>', `<R>', `<V>', `<E>' on the statusbar
+correspondingly for the Insert, Replace, Command and Emacs modes.
+Emacs also shows you the mode by the color of the cursor. This makes it
+easy for you to keep track of which mode you are in.
+   * "Insert mode": When you are in insert mode, the editor simply
+     "inserts" the things that you type into the text that is being
+     editted. If there are any characters in front of your cursor,
+     these characters are pushed ahead and they are not overwritten.
+     Under Viper, when you are in insert mode, the color of your cursor
+     is green. The only key that has special meaning, while you are in
+     insert mode is <ESC>. If you press the escape key, you are taken
+     to "command mode".
+
+   * "Replace mode": When you are in replace mode, the editor replaces
+     the text under the cursor with the text that is being typed. So,
+     you want insert mode when you want to write over what's already
+     written. Under Viper, when you are in replace mode, the color of
+     your cursor is red. The <ESC> will take you to "command mode."
+
+   * "Command mode": When you are in command mode, every letter key
+     that you press is a command and has a special meaning. Some of
+     these keys allow you to navigate the text. Other keys allow you to
+     enter either insert or replace mode.  And other keys do various
+     special things. Under Viper, when you are in command mode, the
+     color of your cursor is white.
+
+   * "Emacs mode": When you are in Emacs mode, then Viper is turned off
+     on the specific buffer, and Emacs behaves as the default Emacs
+     editor.  You can switch between Emacs mode and Command mode by
+     pressing `<CTRL>-z'. So to go to Emacs mode, from Insert of
+     Replace mode, you need to go through Command mode. When you are
+     dealing with a buffer that runs a special editing mode, like Dired
+     (*note Using Emacs as an IDE::), Emacs defines a specialized
+     "command mode" for manipulating that buffer, that can be
+     completely different from the canonical Viper command mode.  You
+     want to be in that mode to access the intended functionality.
+     Occasionally however, you may like to hop to viper's command mode
+     to navigate the buffer, do a search or save the buffer's contents.
+     When you hop to one of the other three modes, the buffer will
+     suddendly be just text to your editor.
+   While you are in Command mode, you can prepend keystrokes with a
+number.  Then the subsequent keystroke will be executed as many times
+as the number.  We now list the most important keystrokes that are
+available to you, while you are in Viper's command mode:
+   * The following keystrokes allow you to navigate the cursor around
+     your text without making any changes on the text itself
+    `h'
+          moves one character to the left
+
+    `j'
+          moves down one line
+
+    `k'
+          moves up one line
+
+    `l'
+          moves one character to the left
+
+    `w'
+          moves forward one word
+
+    `5w'
+          moves forward five words (get the idea?)
+
+    `b'
+          moves back one word
+
+    `0'
+          moves to the beginning of the current line
+
+    `$'
+          moves to the end of the current line
+
+    `G'
+          moves to the last line in the file
+
+    `1G'
+          moves to the first line in the file
+
+    `:10'
+          moves to line 10 in the file (get the idea?)
+
+    `{'
+          moves up one paragraph
+
+    `}'
+          moves down one paragraph
+
+   * The following keystrokes allow you to delete text
+    `x'
+          Deletes the character under the cursor
+
+    `dd'
+          Deletes the current line
+
+    `4dd'
+          Deletes four lines
+
+    `dw'
+          Deletes the current word
+
+    `8dw'
+          Deletes the next eight words
+
+   * The following keystrokes allow you to enter Insert mode
+    `a'
+          Append text after the cursor position
+
+    `i'
+          Insert text at the current cursor position
+
+    `o'
+          Insert text on a new line bellow the current line
+
+    `O'
+          Insert text on a new line above the current line
+
+   * The following keystrokes allow you to enter Replace mode.
+    `R'
+          Replace text at the cursor position and stay in Replace mode.
+
+    `s'
+          Replace (substitute) only the character at the cursor
+          position, and enter Insert mode for all subsequent characters.
+
+   * The following commands handle file input/output. All of these
+     commands are prepended by the `:' character. The `:' character is
+     used for commands that require many characters to be properly
+     expressed.  The full text of these commands is entered in the
+     minibuffer. Under viper, the minibuffer itself can run under
+     insert, replace and command mode.  By default you get insert mode,
+     but you can switch to command mode by pressing <ESC>.
+    `:w'
+          Save the file to the disk
+
+    `:w!'
+          Force the file to be saved to disk even when file permissions
+          do not allow it but you have the power to overrule the
+          permissions.
+
+    `:w<SPACE>FILENAME'
+          Save the file to the disk under a specific filename.  When
+          you press <SPACE> Emacs inserts the full pathname of the
+          current directory for you, which you can edit if you like.
+
+    `:w!<SPACE>FILENAME'
+          Force the file to be saved to the disk under a specific
+          filename.
+
+    `:r<SPACE>FILENAME'
+          Paste a file from the disk at the cursor's current position.
+
+    `:W'
+          Save all the files on all the Emacs buffers that correspond
+          to open files.
+
+    `:q'
+          Kill the buffer. This does not quite the editor at expert
+          level 3.
+
+    `:q!'
+          Kill the buffer even if the contents are not saved. Use with
+          caution!
+
+   * The following commands handle search and replace
+    `/STRING'
+          Search for STRING.
+
+    `n'
+          Go to the next occurance of STRING.
+
+    `N'
+          Go to the previous occurance of STRING.
+
+    `:%s/STRING1/STRING2/g'
+          Replace all occurances of STRING1 with STRING2.  Use this
+          with extreme caution!
+
+   * The following commands handle "undo"
+    `u'
+          Undo the previous change. Press again to undo the undo
+
+    `.'
+          Press this if you want to repeat the undo further.
+   These are enough to get you started. Getting used to dealing with
+the modes and learning the commands is a matter of building finger
+habits. It may take you a week or two before you become comfortable
+with Viper. When Viper becomes second nature to you however, you won't
+want to tolerate what you used to use before.
+
+
+File: tutorial.info,  Node: Using Emacs as an IDE,  Next: Inserting copyright notices with Emacs,  Prev: Using vi emulation,  Up: Using GNU Emacs
+
+Using Emacs as an IDE
+=====================
+
+   To use the extended Dired, which we recommend, add the following line
+to your `.emacs':
+     (add-hook 'dired-load-hook
+        (function (lambda() (load "dired-x"))))
+
+
+File: tutorial.info,  Node: Inserting copyright notices with Emacs,  Next: Using Emacs as an email client,  Prev: Using Emacs as an IDE,  Up: Using GNU Emacs
+
+Inserting copyright notices with Emacs
+======================================
+
+
+File: tutorial.info,  Node: Using Emacs as an email client,  Next: Handling patches,  Prev: Inserting copyright notices with Emacs,  Up: Using GNU Emacs
+
+Using Emacs as an email client
+==============================
+
+
+File: tutorial.info,  Node: Handling patches,  Next: Further reading on Emacs,  Prev: Using Emacs as an email client,  Up: Using GNU Emacs
+
+Handling patches
+================
+
+
+File: tutorial.info,  Node: Further reading on Emacs,  Prev: Handling patches,  Up: Using GNU Emacs
+
+Further reading on Emacs
+========================
+
+
+File: tutorial.info,  Node: Compiling with Makefiles,  Next: Using Automake and Autoconf,  Prev: Using GNU Emacs,  Up: Top
+
+Compiling with Makefiles
+************************
+
+* Menu:
+
+* Direct compilation::
+* Enter Makefiles::
+* Problems with Makefiles and workarounds::
+* Building libraries::
+
+
+File: tutorial.info,  Node: Direct compilation,  Next: Enter Makefiles,  Prev: Compiling with Makefiles,  Up: Compiling with Makefiles
+
+Direct compilation
+==================
+
+   We begin at the beginning. If you recall, we showed to you that the
+hello world program can be compiled very simply with the following
+command:
+     % gcc hello.c -o hello
+
+*Note Hello world example::.  Even in this simple case you have quite a
+few options:
+   * The `-g' flag causes the compiler to output debugging information
+     to the executable. This way, you can step your program through a
+     debugger if it crashes.
+
+   * The `-O', `-O2', `-O3' flags activate "optimization".  Some
+     compilers can go as far as `-O6'. These numbers are called
+     "optimization levels". When you compile your program with
+     optimization enabled, the compiler applies certain algorithms to
+     the machine code output to make it go faster. The cost is that
+     your program compiles much more slowly and that although you can
+     step it through a debugger if you used the `-g' flag, things will
+     be a little strange. During development the programmer usually
+     uses no optimization, and only activates it when he is about to
+     run the program for a production run. A good advice: always test
+     your code with optimization activated as well.  If optimization
+     breaks your code, then this is telling you that you have a memory
+     bug. Good luck finding it.
+
+   * The `-Wall' flag tells the compiler to issue warnings when it sees
+     bad programming style. Some of these warning catch actual bugs, but
+     occasionally some of the warnings complain about something correct
+     that you did on purpose. For this reason you control whether you
+     want to see these warnings or not with this flag.
+   Here are some variations of the above example:
+     % gcc -g -O3 hello.c hello
+     % gcc -g -Wall hello.c -o hello
+     % gcc -g -Wall -O3 hello.c -o hello
+
+Compilers have many more flags like that, and some of these flags are
+compiler dependent.
+
+   Now let's consider the case where you have a much larger program.
+made of source files `foo1.c', `foo2.c', `foo3.c' and header files
+`header1.h' and `header2.h'.  One way to compile the program is like
+this:
+     % gcc foo1.c foo2.c foo3.c -o foo
+
+This is fine when you have only a few files to deal with. Eventually
+when you have more than a hundred files, this is very slow and
+inefficient, because everytime you change one of the `foo' files, *all*
+of them have to be recompiled. In large projects this can very well
+take a quite a few minutes, and in very large projects hours. The
+solution is to compile each part seperately and put them all together
+at the end, like this:
+     % gcc -c foo1.c
+     % gcc -c foo2.c
+     % gcc -c foo3.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+
+The first three lines compile the three parts seperately and generate
+output in the files `foo1.o', `foo2.o', `foo3.o'. The fourth line puts
+it all back together. This way if you make a change only in `foo1.o'
+you just do:
+     % gcc -c foo1.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+
+This feature of the compiler offers a way out, but it's hardly a
+solution.
+
+   * Writing out these commands everytime becomes annoying very soon.
+
+   * When it is a *header* file that you modified, you need to figure
+     out _which source files included it and rebuild all of them_ for
+     your change to take effect. If you forget to rebuild just one of
+     the source files, this bug fix you just made may not work, and you
+     will be all confused.
+
+   *  Once you are done compiling you have all these `.o' files sitting
+     around and you may want to have a safe way of getting rid of them.
+     Typing
+          rm -f *.o
+
+     is dangerous because you may misspell `o' for `c' or you may do
+     this:
+          rm -f * .o
+
+     and become depressed.
+
+   The `make' utility was written to address these problems.
+
+
+File: tutorial.info,  Node: Enter Makefiles,  Next: Problems with Makefiles and workarounds,  Prev: Direct compilation,  Up: Compiling with Makefiles
+
+Enter Makefiles
+===============
+
+   The `make' utility takes its instructions from a file called
+`Makefile' in the directory in which it was invoked.  The `Makefile'
+involves four concepts: the "target", the "dependencies", the "rules",
+and the "source".  Before we illustrate these concepts with examples we
+will explain them in abstract terms for those who are mathematically
+minded:
+   * "Source" are the files that _you_ wrote and which are present when
+     the distribution is unpacked. A source file has no dependencies,
+     but itself it may be a dependency to a target.
+
+   * "Target" is a file that you wish to generate from the source, or
+     an action that you wish to cause (called "phony" target since no
+     file by the name of the target is generated).  For example when
+     you type `make install' you do not generate a file called
+     `install'. What you generate is the action of moving certain files
+     in certain places. Generating the file or taking the action is
+     called "building" the target. A target may have dependencies and
+     it may itself be a dependency to another target.
+
+   * A "Dependency" can be either a source file or a target. Either way,
+     a dependency is something that only targets _have_. Source files
+     do not have dependencies.
+
+     If the dependency is a source file, then we say that, as a
+     dependency to a certain target, it is "up-to-date" if and only if
+     the target's latest update happened after the dependency's latest
+     update. We say that the dependency "changed" if and only if the
+     target's latest update happened before the dependency's latest
+     update.
+
+     If the dependency itself is a target, then we define recursively
+     that as a dependency to a certain target, it has changed if and
+     only if at least one of its own dependencies has changed. A
+     "phony" target is never "up-to-date". If a phony target is a
+     dependency to another target, then it will always cause that other
+     target to be rebuilt.  Okey, take a big breath and think about
+     this a bit.
+
+   * "Rules" is a set of instructions that detail how to build a target
+     if the dependencies of that target have changed. These instructions
+     need to be issued if and only if at least one of the dependencies
+     has changed, and they must be issued only after the corresponding
+     rules for the dependencies that have changed are recursively
+     invoked.  You may want to take a big breath here as well. Note
+     that this recursion will be terminated only when it hits source
+     files because they don't have any dependencies. Then it will wrap
+     itself back up and work from bottom to top all the way to building
+     the target at the top of the recursion.
+
+   The `Makefile' is essentially a collection of "logical statements"
+about these four concepts. The content of each statement in English is:
+
+     To build this "target", first make sure that these "dependencies"
+     are up to date. If not build them first in the order in which they
+     are listed. Then execute these "rules" to build _this_ target.
+
+Given a complete collection of such statements it is possible to infer
+what action needs to be taken to build a specific target, from the
+source files and the current state of the distribution. By action we
+mean passing commands to the shell. One reason why this is useful is
+because if part of the building process does not need to be repeated,
+it will not be repeated. The `make' program will detect that certain
+dependencies have not changed and skip the action required for
+rebuilding their targets. Another reason why this approach is useful is
+because it is intuitive in human terms. At least, it will be intuitive
+when we illustrate it to you.
+
+   In make-speak each statement has the following form:
+     target: dependency1 dependency2 ....
+            shell-command-1
+            shell-command-2
+            shell-command-3
+
+where `target' is the name of the target and `dependency*' the name of
+the dependencies, which can be either source files or other targets.
+The shell commands that follow are the commands that need to be passed
+to the shell to build the target after the dependencies have been
+built. To be compatible with most versions of make, you must seperate
+these statements with a blank line. Also, the `shell-command*' must be
+indented with the `tab' key. Don't forget your `tab' keys otherwise
+`make' will not work.
+
+   When you run `make' you can pass the target that you want to build
+as an argument. If you omit arguments and call `make' by itself then
+the first target mentioned in the Makefile is the one that gets built.
+The makefiles that Automake generates have the phony target `all' be
+the default target. That target will compile your code but not install
+it.  They also provide a few more phony targets such as `install',
+`check', `dist', `distcheck', `clean', `distclean' as we have discussed
+earlier. So Automake is saving you quite a lot of work because without
+it you would have to write a lot of repetitive code to provide all
+these phony targets.
+
+   To illustrate these concepts with an example suppose that you have
+this situation:
+   * Four source files: `foo1.c', `foo2.c', `foo3.c',`foo4.c'
+
+   * Three include files: `gleep1.h',`gleep2.h',`gleep3.h'
+
+   * `foo1.c' includes `gleep2.h' and `gleep3.h'
+
+   * `foo2.c' includes `gleep1.h'
+
+   * `foo3.c' includes `gleep1.h' and `gleep2.h'
+
+   * `foo4.c' includes `gleep3.h'
+   To build an executable `foo' you need to build object files and then
+link them together. We say that the executable depends on the object
+files and that each object file depends on a corresponding `*.c' file
+_and_ the `*.h' files that it includes.  Then to get to an executable
+`foo' you need to go through the following dependencies:
+     foo: foo1.o foo2.o foo3.o foo4.o
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+
+The thing on the left-hand-side is the target, the thing on the
+right-hand-side is the dependencies. The logic is that to build the
+thing on the left, you need to build the things on the right first. So,
+if `foo1.c' changes, `foo1.o' must be rebuilt. If `gleep3.h' changes
+then `foo1.o' and `foo4.o' must be rebuilt. That's the game.
+
+   The way the `Makefile' actually looks like is like this:
+     foo: foo1.o foo2.o foo3.o foo4.o
+             gcc foo1.o foo2.o foo3.o foo4.o -o foo
+     
+     foo1.o: foo1.c gleep2.h gleep3.h
+             gcc -c foo1.c
+     
+     foo2.o: foo2.c gleep1.h
+             gcc -c foo2.c
+     
+     foo3.o: foo3.c gleep1.h gleep2.h
+             gcc -c foo3.c
+     
+     foo4.o: foo4.c gleep3.h
+             gcc -c foo4.c
+
+It's the same thing as before except that we have supplemented the
+"rules" by which the target is built from the dependencies.  Things to
+note about syntax:
+   * The rules must be indented with a "tab". To get a tab you must
+     press the <TAB> key on your keyboard.
+
+   * Each statement must be separated from the next statement with a
+     blank line.
+
+   * The first target is what gets built when you type simply
+          % make
+
+     Therefore, the target for the executable must go at the beginning.
+
+If you omit the tabs or the blank line, then the Makefile will not work.
+Some versions of `make' have relaxed the blank line rule, since it's
+redundant, but to be portable, just put the damn blank line in.
+
+   You may ask, "how does `make' know what I changed?". It knows because
+UNIX keeps track of the exact date and time in which every file and
+directory was modified. This is called the Unix "time-stamp". What
+happens then is that `make' checks whether any of the dependencies is
+newer than the main target. If so, then the target must be rebuilt.
+Cool. Now do the target's dependencies have to be rebuilt? Let's look
+at _their_ dependencies and find out!  In this recursive fashion, the
+logic is untangled and `make' does the Right Thing.
+
+   The `touch' command allows you to _fake_ time-stamps and make a file
+look as if it has been just modified. This way you can force make to
+rebuild everything by saying something like:
+     % touch *.c *.h
+
+If you are building more than one executable, then you may want to make
+a phony target `all' be the first target:
+     all: foo1 foo2 foo3
+
+Then calling `make' will attempt to build `all' and that will cause
+make to loop over `foo1', `foo2', `foo3' and get them built. Of course
+you can also tell make to build these individually by typing:
+     % make foo1
+     % make foo2
+     % make foo3
+
+Anything that is a target can be an argument. You might even say
+     % make bar.o
+
+if all you want is to build a certain object file and then stop.
+
+
+File: tutorial.info,  Node: Problems with Makefiles and workarounds,  Next: Building libraries,  Prev: Enter Makefiles,  Up: Compiling with Makefiles
+
+Problems with Makefiles and workarounds
+=======================================
+
+   The main problem with maintaining Makefiles, in fact what we _mean_
+when we complain about maintaining Makefiles, is keeping track of the
+dependencies.  The `make' utility will do its job if you tell it what
+the dependencies are, but it won't figure them out for you. There's a
+good reason for this of course, and herein lies the wisdom of Unix. To
+figure out the dependencies, you _need to know something about the
+syntax of the files that you are working with!_. And "syntax" is the
+turf of the "compiler", and not `make'.  The GNU compiler honors this
+responsibility and if you type:
+     % gcc -MM foo1.c
+     % gcc -MM foo2.c
+     % gcc -MM foo3.c
+     % gcc -MM foo4.c
+
+it will compute the dependencies and put them out in standard output.
+Even so, it is clear that something _else_ is needed to take advantage
+of this feature, if available, to generate a correct `Makefile'
+automatically. This is the main problem for which the only work-around
+is to use _another_ tool that generates Makefiles.
+
+   The other big problem comes about with situations in which a
+software project spans many subdirectories. Each subdirectory needs to
+have a Makefile, and every Makefile must have a way to make sure that
+`make' gets called recursively to handle the subdirectories. This can
+be done, but it is quite cumbersome and annoying. Some programmers may
+choose to do without the advantages of a well-organized directory tree
+for this reason.
+
+   There are a few other little problems, but they have for most part
+solutions within the realm of the `make' utility. One such problem is
+that if you move to a system where the compiler is called `cc' instead
+of `gcc' you need to edit the Makefile everywhere. Here's a solution:
+     CC = gcc
+     
+     #CFLAGS = -Wall -g -O3
+     CFLAGS = -Wall -g
+     
+     foo: foo1.o foo2.o foo3.o foo4.o
+             $(CC) $(CFLAGS) foo1.o foo2.o foo3.o foo4.o -o foo
+     
+     foo1.o: foo1.c gleep2.h gleep3.h
+             $(CC) $(CFLAGS) -c foo1.c
+     
+     foo2.o: foo2.c gleep1.h
+             $(CC) $(CFLAGS) -c foo2.c
+     
+     foo3.o: foo3.c gleep1.h gleep2.h
+             $(CC) $(CFLAGS) -c foo3.c
+     
+     foo4.o: foo4.c gleep3.h
+             $(CC) $(CFLAGS) -c foo4.c
+
+Now the user just has to modify the first line where he defines the
+"macro-variable" `CC', and whatever he puts there gets substituted in
+the rules bellow. The other macro variable, `CFLAGS' can be used to
+turn optimization on and off. Putting a `#' mark in the beginning of a
+line, makes the line a comment, and the line is ignored.
+
+   Another problem is that there is a lot of redundancy in this
+makefile.  _Every object file is built from the source file the same
+way._ Clearly there should be a way to take advantage of that right?
+Here it is:
+     CC = gcc
+     CFLAGS = -Wall -g
+     
+     .SUFFIXES: .c .o
+     
+     .c.o:
+             $(CC) $(CFLAGS) -c $<
+     
+     .o:
+             $(CC) $(CFLAGS) $< -o $@
+     
+     foo: foo1.o foo2.o foo3.o foo4.o
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+
+Now this is more abstract, and has some cool punctuation. The `SUFFIXES'
+thing tells `make' that files that are possible targets, fall under
+three categories: files that end in `.c', files that end in `.o' and
+files that end in nothing.  Now let's look at the next line:
+     .c.o:
+             $(CC) $(CFLAGS) -c $<
+
+This line is an "abstract" rule that tells `make' how to make `.o'
+files from `.c' files. The punctuation marks have the following
+meanings:
+`$<'
+     are the dependencies that changed causing the target to need to be
+     rebuilt
+
+`$@'
+     is the target
+
+`$^'
+     are _all_ the dependencies for the current rule
+
+In the same spirit, the next rule tells how to make the executable file
+from the `.o' files.
+     .o:
+             $(CC) $(CFLAGS) $< -o $@
+
+All that has to follow the abstract rules is the dependencies,
+_without_ the specific rules! If you are using `gcc' these dependencies
+can be generated automatically and then you can "include" them from
+your Makefile. Unfortunately this approach doesn't work with all of the
+other compilers. And there is no standard way to include another file
+into Makefile source.  (1) Of course, what we will point out eventually
+is that `automake' can take care of the dependencies for you.
+
+   The Makefile in our example can be enhanced in the following way:
+     CC = gcc
+     CFLAGS = -Wall -g
+     OBJECTS = foo1.o foo2.o foo3.o foo4.o
+     PREFIX = /usr/local
+     
+     .SUFFIXES: .c .o
+     
+     .c.o:
+             $(CC) $(CFLAGS) -c $<
+     
+     .o:
+             $(CC) $(CFLAGS) $< -o $@
+     
+     foo: $(OBJECTS)
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+     
+     clean:
+             rm -f $(OBJECTS)
+     
+     distclean:
+             rm -f $(OBJECTS) foo
+     
+     install:
+             rm -f $(PREFIX)/bin/foo
+             cp foo $(PREFIX)/bin/foo
+
+We've added three fake targets called `clean' and `distclean',
+`install' and introduced a few more macro-variables to control
+redundancy. I am sure some bells are ringing now. When you type:
+     % make
+
+the first target (which is `foo') gets build, and your program compiles.
+When you type
+     % make install
+
+since there is no file called `install' anywhere, the rule there is
+executed which has the effect of copying the executable over at
+`/usr/local/bin'. To get rid of the object files,
+     % make clean
+
+and to get rid of the executable as well
+     % make distclean
+
+Such fake targets are called "phony targets" in makefile parlance.  As
+you can see, the `make' utility is quite powerful and there's a lot it
+can do. If you want to become a `make' wizard, all you need to do is
+read the _GNU Make Manual_ and waste a lot of time spiffying up your
+makefiles, instead of getting your programs debugged, The GNU Make
+manual is extremely well written, and will make for enjoyable reading.
+It is also "free", unlike "published" books.
+
+   The reason we went to the trouble to explain `make' is because it is
+important to understand what happens behind the hood, and because in
+many cases, `make' is a fine thing to use. It works for simple programs.
+And it works for many other things such as formatting TeX documents and
+so on.
+
+   As we evolve to more and more complicated projects, there's two
+things that we need. A more high-level way of specifying what you want
+to build, and a way of automatically determining the values that you
+want to put to things like CFLAGS, PREFIX and so on. The first thing is
+what `automake' does, the second thing is what `autoconf' does.
+
+   ---------- Footnotes ----------
+
+   (1) If this sounds surprising, don't forget that there is no ANSI
+standard for Makefiles
+

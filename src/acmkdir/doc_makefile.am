@@ -1,0 +1,67 @@
+# Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+#  
+# This file is free software; as a special exception the author gives
+# unlimited permission to copy and/or distribute it, with or without 
+# modifications, as long as this notice is preserved.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+# These files are the documentation
+# The order with which they are listed is the order with which
+# they are put together
+documentation =
+
+# This is the name of the generated texinfo file without the .texi suffix
+targetname = 
+
+# You should not have to modify anything bellow this line #
+###########################################################
+
+# These are the filenames that we wish to generate
+texifile  = $(targetname).texi
+dvifile   = $(targetname).dvi
+htmlfiles = $(targetname).html $(targetname)_toc.html $(targetname)_foot.html
+
+# These are the files that should be part of the distribution
+EXTRA_DIST = $(documentation) texi2html.pl texidoc.pl texirm.sh
+
+# These are the tools
+TEXIDOC   = $(PERL)  $(srcdir)/texidoc.pl
+TEXI2HTML = $(PERL)  $(srcdir)/texi2html.pl
+TEXIRM    = $(SHELL) $(srcdir)/texirm.sh
+
+# FIXME: i really need an autoconf macro for this documentation crap.
+TEXI2DVI = texi2dvi
+
+# Target for building the texinfo file from the documentation
+$(texifile): $(documentation)
+	rm -f $(texifile)
+	(cd $(srcdir); cat $(documentation)) | $(TEXIDOC) > $(texifile)
+
+# This is how to build my html files
+$(targetname).html: $(texifile)
+	$(TEXI2HTML) $(texifile)
+
+$(targetname)_toc.html: $(targetname).html
+
+$(targetname)_foot.html: $(targetname).html
+	touch $(targetname)_foot.html
+
+# This is how to build the dvi files
+$(dvifile): $(texifile)
+	$(TEXI2DVI) $(texifile)
+
+# This is how to build the postscript file
+$(psfile): $(dvifile)
+	$(DVIPS) -f $(dvifile) > $(psfile)
+
+# HTML generation should be triggered by the HTML target
+dvi: $(dvifile) $(htmlfiles) $(psfile)
+
+# Clean target
+clean-local:
+	$(TEXIRM) $(targetname)
+	rm -f $(targetname).texi
+	rm -f $(htmlfiles) $(psfile)

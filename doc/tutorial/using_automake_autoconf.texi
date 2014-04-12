@@ -1,0 +1,1657 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Using Automake and Autoconf, Using Autotools, Compiling with Makefiles, Top
+@chapter Using Automake and Autoconf
+
+@menu
+* Hello World revisited::       
+* OLD Using configuration headers::  
+* The building process::        
+* Some general advice::         
+* Standard organization with Automake::  
+* Programs and Libraries with Automake::  
+* General Automake principles::  
+* Simple Automake examples::    
+* Built sources::               
+* Installation directories.::   
+* Handling shell scripts::      
+* Handling other obscurities::  
+@end menu
+
+@node Hello World revisited, OLD Using configuration headers, Using Automake and Autoconf, Using Automake and Autoconf
+@section Hello World revisited
+
+To begin, let's review the simplest example, the hello world program:
+@table @file
+@item hello.c
+@example
+#include <stdio.h>
+main()
+@{
+ printf("Howdy, world!\n");
+@}
+@end example
+@noindent
+@item Makefile.am
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c
+@end example
+@noindent
+@item configure.in
+@example
+AC_INIT(hello.cc)
+AM_INIT_AUTOMAKE(hello,1.0)
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_OUTPUT(Makefile)
+@end example
+@noindent
+@end table
+
+The language of @file{Makefile.am} is a @dfn{logic language}. There is no
+explicit statement of execution. Only a statement of relations from which
+execution is inferred. On the other hand, the language of @file{configure.in}
+is @dfn{procedural}. Each line of @file{configure.in} is a command that 
+is executed. 
+
+Seen in this light, here's what the @file{configure.in} commands shown do:
+@itemize @bullet
+@item
+The @code{AC_INIT} command initializes the configure script. It must be
+passed as argument the name of one of the source files. Any source file
+will do.
+@item
+The @code{AM_INIT_AUTOMAKE} performs some further initializations that are
+related to the fact that we are using @samp{automake}. If you are writing
+your @file{Makefile.in} by hand, then you don't need to call this command.
+The two comma-separated arguments are the name of the package and the
+version number.
+@item
+The @code{AC_PROG_CC} checks to see which C compiler you have.
+@item
+The @code{AC_PROG_INSTALL} checks to see whether your system has a BSD
+compatible install utility. If not then it uses @file{install-sh} which
+@file{automake} will install at the root of your package directory if it's
+not there yet.
+@item
+The @code{AC_OUTPUT} tells the configure script to generate @file{Makefile}
+from @file{Makefile.in}
+@end itemize
+
+The @file{Makefile.am} is more obvious. The first line specifies the name
+of the program we are building. The second line specifies the source files
+that compose the program.
+
+For now, as far as @file{configure.in} is concerned you need to know the
+following additional facts:
+@itemize @bullet
+@item
+If you are building a library, then your configure script must determine
+how to handle @samp{ranlib}. To do that, add the @code{AC_PROG_RANLIB} 
+command.
+@item
+If you want to have your makefiles call recursively makefiles at subdirectories
+then the configure script needs to be told to find out how to do that.
+For this purpose you add the @code{AC_PROG_MAKE_SET} command.
+@item
+If you have any makefiles in subdirectories you must also put them in the
+@code{AC_OUTPUT} statement like this:
+@example
+AC_OUTPUT(Makefile          \
+          dir1/Makefile     \
+          dir2/Makefile     \
+         )
+@end example
+@noindent
+Note that the backslashes are not needed if you are using the bash shell.
+For portability reasons, however, it is a good idea to include them.
+@end itemize
+
+As we explained before to build this package you need to execute the following
+commands:
+@example
+% aclocal
+% autoconf
+% touch README AUTHORS NEWS ChangeLog
+% automake -a 
+% configure
+% make
+@end example
+@noindent
+The first three commands, are for the maintainer only. When the user unpacks
+a distribution, he should be able to start from @samp{configure} and move on.
+@itemize @bullet
+@item
+The @samp{aclocal} command installs a file called @file{aclocal.m4}. Normally,
+in that file you are supposed to place the definitions of any @samp{autoconf} 
+macros that you've written that happen to be in use in @file{configure.in}.
+We will teach you how to write @samp{autoconf} macros later.
+The @samp{automake} utility uses the @code{AM_INIT_AUTOMAKE} macro which is
+not part of the standard @samp{autoconf} macros. For this reason, it's
+definition needs to be placed in @file{aclocal.m4}. If you call @samp{aclocal}
+with no arguments then it will generate the appropriate @file{aclocal.m4} file.
+Later we will show you how to use @samp{aclocal} to also install your
+own @samp{autoconf} macros.
+@item
+The @samp{autoconf} command combines the @file{aclocal.m4} and 
+@file{configure.in} files and produces the @file{configure} script.
+And now we are in bussiness.
+@item
+The @samp{touch} command makes the files @file{README} and friends exist.
+It is important that these files exist before calling Automake, because
+Automake decides whether to include them in a distribution by checking
+if they exist at the time that you invoke @samp{automake}. Automake
+@emph{must} decide to include these files, because when you type
+@samp{make distcheck} the presense of these files will be required.
+@item
+The @samp{automake} command compiles a @file{Makefile.in} file from
+@file{Makefile.am} and if absent it installs various files that are required
+either by the GNU coding standards or by the makefile that will be generated.
+@end itemize
+
+If you are curious you can take a look at the generated @file{Makefile}.
+It looks like gorilla spit but it will give you an idea of how one gets
+there from the @file{Makefile.am}.
+
+The @samp{configure} script is an information gatherer. It finds out things
+about your system. That information is given to you in two ways. One way
+is through defining C preprocessor macros that you can test for directly
+in your source code with preprocessor directives. This is done by passing
+@code{-D} flags to the compiler. The other way is by making certain 
+variables defined at the @file{Makefile.am} level. This way you can, for
+example, have the configure script find out how a certain library is linked,
+export is as a @file{Makefile.am} variable and use that variable in your
+@file{Makefile.am}. Also, through certain special variables, @file{configure}
+can control how the compiler is invoked by the @file{Makefile}.
+
+@c =========================================================================
+
+@node OLD Using configuration headers, The building process, Hello World revisited, Using Automake and Autoconf
+@section OLD Using configuration headers
+
+As you may have noticed, the @samp{configure} script in the previous example
+defines two preprocessor macros that you can use in your code: 
+@code{PACKAGE} and @code{VERSION}. As you become a power-user of 
+@samp{autoconf} you will get define even more such macros. If you inspect
+the output of @samp{make} during compilation, you will see that these macros
+get defined by passing @samp{-D} flags to the compiler, one for each macro.
+When there is too many of these flags getting passed around, this can cause 
+two problems: it can make the @samp{make} output hard to
+read, and more importantly it can hit the buffer limits of various braindead
+implementations of @samp{make}. To work around this problem, an alternative
+approach is to define all these macros in a special header file and include
+it in all the sources. 
+
+A hello world program using this technique looks like this
+@table @file
+@item configure.in
+@example
+AC_INIT
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(hello,0.1)
+AC_PROG_CXX
+AC_PROG_INSTALL
+AC_OUTPUT(Makefile)
+@end example
+@noindent
+@item Makefile.am
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c
+@end example
+@noindent
+@item hello.c
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <stdio.h>
+main()
+@{
+ printf("Howdy, pardner!\n");
+@}
+@end example
+@noindent
+@end table
+@noindent
+Note that we call a new macro in @file{configure.in}: 
+@code{AM_CONFIG_HEADER}. Also we include the configuration file conditionally
+with the following three lines:
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+@end example
+@noindent
+It is important to make sure that the @file{config.h} file is the first thing
+that gets included. Now do the usual routine:
+@example
+% aclocal
+% autoconf
+% touch NEWS README AUTHORS ChangeLog
+% automake -a
+@end example
+@noindent
+Automake will give you an error message saying that it needs a file called
+@samp{config.h.in}. You can generate such a file with the @samp{autoheader}
+program. So run:
+@example
+% autoheader
+Symbol `PACKAGE' is not covered by acconfig.h
+Symbol `VERSION' is not covered by acconfig.h
+@end example
+@noindent
+Again, you get error messages. The problem is that @code{autoheader} is 
+bundled with the @code{autoconf} distribution, not the @code{automake}
+distribution, and consequently doesn't know how to deal with the 
+@code{PACKAGE} and @code{VERSION} macros. Of course, if @samp{configure}
+defines a macro, there's nothing to know. On the other hand, when a macro
+@emph{is not defined} then there are at least two possible defaults:
+@example
+#undef PACKAGE
+#define PACKAGE 0
+@end example
+@noindent
+The @code{autoheader} program here complains that it doesn't know the defaults
+for the @code{PACKAGE} and @code{VERSION} macros. To provide the defaults,
+create a new file @file{acconfig.h}:
+@table @file
+@item acconfig.h
+@example
+#undef PACKAGE
+#undef VERSION
+@end example
+@noindent
+@end table
+@noindent
+and run @samp{autoheader} again:
+@example
+% autoheader
+@end example
+@noindent
+At this point you must run @code{autoconf} again, so that it takes into account
+the presense of @code{acconfig.h}:
+@example
+% aclocal
+% autoconf
+@end example
+@noindent
+Now you can go ahead and build the program:
+@example
+% configure
+% make
+Computing dependencies for hello.cc...
+echo > .deps/.P
+gcc -DHAVE_CONFIG_H -I. -I. -I.   -g -O2 -c hello.cc
+gcc -g -O2  -o hello  hello.o  
+@end example
+@noindent
+Note that now instead of multiple @code{-D} flags, there is only one 
+such flag passed: @code{-DHAVE_CONFIG_H}. Also, appropriate @code{-I}
+flags are passed to make sure that @file{hello.cc} can find and include
+@file{config.h}.
+To test the distribution, type:
+@example
+% make distcheck
+......
+========================
+hello-0.1.tar.gz is ready for distribution
+========================
+@end example
+@noindent
+and it should all work out.
+
+The @file{config.h} files go a long way back in history. In the past, there
+used to be packages where you would have to manually edit @file{config.h}
+files and adjust the macros you wanted defined by hand. This made these
+packages very difficult to install because they required intimate knowledge
+of your operating system. For example, it was not unusual to see a comment
+saying @emph{``if your system has a broken vfork, then define this macro''}.
+How the hell are you supposed to know if your systems @code{vfork} is
+broken?? With auto-configuring packages all of these details are taken 
+care of automatically, shifting the burden from the user to the developer
+where it belongs.
+
+Normally in the @file{acconfig.h} file you put statements like 
+@example
+#undef MACRO
+#define MACRO default
+@end example
+@noindent
+These values are copied over to @file{config.h.in} and are supplemented with
+additional defaults for C preprocessor macros that get defined by 
+native @code{autoconf} macros like
+@code{AC_CHECK_HEADERS}, @code{AC_CHECK_FUNCS}, @code{AC_CHECK_SIZEOF},
+@code{AC_CHECK_LIB}. 
+
+If the file @file{acconfig.h} contains the string @code{@@TOP@@} then all
+the lines before the string will be included verbatim to @file{config.h} 
+@emph{before} the custom definitions. Also, if the file @file{acconfig.h} 
+contains the string @code{@@BOTTOM@@} then all the lines after the string will 
+be included verbatim to @file{config.h} @emph{after} the custom definitions.
+This allows you to include further preprocessor directives that are related
+to configuration. Some of these directives may be using the custom definitions
+to conditionally issue further preprocessor directives. Due to a bug in
+some versions of @code{autoheader} if the strings @code{@@TOP@@} and
+@code{@@BOTTOM@@} do appear in your @code{acconfig.h} file, then you must
+make sure that there is at least one line appearing before 
+@code{@@TOP@@} and one line after @code{@@BOTTOM@@}, even if it has to be
+a comment. Otherwise, @code{autoheader} may not work correctly.
+
+With @samp{autotools} we distribute a utility called @file{acconfig} which
+will build @file{acconfig.h} automatically. By default it will always
+make sure that 
+@example
+#undef PACKAGE
+#undef VERSION
+@end example
+@noindent
+are there. Additionally, if you install macros that are @file{acconfig} friendly
+then @samp{acconfig} will also install entries for these macros. 
+The @code{acconfig} program may be revised in the future and perhaps
+it might be eliminated. There is an unofficial patch to Autoconf that
+will automate the maintance of @file{acconfig.h}, eliminating the need
+for a seperate program. I am not yet certain if that patch will be
+part of the official next version of Autoconf, but I very much expect it
+to. Until then, if you are interested, see:
+@code{http://www.clark.net/pub/dickey/autoconf/autoconf.html}
+This situation creates a bit of a dilemma about whether I should
+document and encourage @code{acconfig} in this tutorial or not. 
+I believe that the Autoconf patch is a superior solution. However since
+I am not the one maintaining Autoconf, my hands are tied. For now
+let's say that if you confine yourself to using only the macros provided
+by @code{autoconf}, @code{automake}, and @code{autotools} then
+@file{acconfig.h} will be completely taken care for you by @file{acconfig}.
+In the future, I hope that @code{acconfig.h} will be generated
+by @code{configure} and be the sole responsibility of Autoconf.
+
+You may be wondering whether it is worth using @file{config.h} files in the
+programs you develop if there aren't all that many macros being defined.
+My personal recommendation is @emph{yes}. Use @file{config.h} files because
+perhaps in the future your @file{configure} might need to define even more
+macros. So get started on the right foot from the beginning. Also, it is
+nice to just have a @code{config.h} file lying around because you can have
+all your configuration specific C preprocessor directives in one place. 
+In fact, if you are one of these people writing peculiar system software
+where you get to @code{#include} 20 header files on every single source file
+you write, you can just have them on all thrown into @code{config.h} once
+and for all. 
+In the next chapter we will tell you about the @code{LF} macros that get
+distributed with @code{autotools} and this tutorial. These macros do require
+you to use the @file{config.h} file. The bottom line is: @file{config.h}
+is your friend; trust the @code{config.h}.
+
+@c =========================================================================
+
+@node The building process, Some general advice, OLD Using configuration headers, Using Automake and Autoconf
+@section The building process
+
+FIXME: @emph{write about VPATH builds and how to modify optimization}
+
+@c =========================================================================
+
+@node Some general advice, Standard organization with Automake, The building process, Using Automake and Autoconf
+@section Some general advice
+
+In software engineering, people start from a precise, well-designed 
+specification and proceed to implementation. In research, the specification
+is fluid and immaterial and the goal is to be able to solve a slightly 
+different problem every day. To have the flexibility to go from variation
+to variation with the least amount of fuss is the name of the game. By fuss, 
+we refer to @dfn{debugging},
+@dfn{testing} and @dfn{validation}. Once you have a code that you know gives 
+the right
+answer to a specific set of problems, you want to be able to move on to a
+different set of similar problems with reinventing, debugging and testing
+as little as possible. These are the two distinct situations that computer
+programmers get to confront in their lives.
+
+Software engineers can take good care of themselves in both situations.
+It's part of their training. However, people whose specialty is the scientific
+problem and not software engineering, must confront the hardest of the two 
+cases,
+the second one, with very little training in software engineering.
+As a result they develop code that's clumsy in implementation, clumsy in usage,
+and with only redeeming quality the fact that it gives the right answer.
+This way, they do get the work of the day done, but they leave behind them
+no legacy to do the work of tomorrow. No general-purpose tools, no 
+documentation, no reusable code. 
+
+The key to better software engineering is to focus away from developing 
+monolithic applications that do only one job, and focus on developing
+libraries. One way to think of libraries is as a 
+@emph{program with multiple entry points}. Every library you write becomes
+a legacy that you can pass on to other developers.
+Just like in mathematics you develop
+little theorems and use the little theorems to hide the complexity in
+proving bigger theorems, in software engineering you develop libraries
+to take care of low-level details once and for all so that they are
+out of the way everytime you make a different implementation for
+a variation of the problem. 
+
+On a higher level you still don't create just
+one application. You create many little applications that work together. 
+The centralized all-in-one approach in my experience is far less flexible
+than the decentralized approach in which a set of applications work together
+as a team to accomplish the goal. In fact this is the fundamental principle
+behind the design of the Unix operating system. Of course, it is still
+important to glue together the various components to do the job. This you
+can do either with scripting or with actually building a suite of 
+specialized monolithic applications derived from the underlying tools.
+
+The name of the game is like this:
+Break down the program to parts. And the parts to smaller parts, until you
+get down to simple subproblems that can be easily tested, and from which
+you can construct variations of the original problem. Implement each one
+of these as a library, write test code for each library and make sure that
+the library works. It is very important for your library to have a complete
+@dfn{test suite}, a collection of programs that are supposed to run silently
+and return normally (@code{exit(0);}) if they execute successfully,
+and return abnormally (@code{assert(false); exit(1);}) if they fail.
+The purpose of the test suite is to detect bugs in the library, and to
+convince you, the developer, that the library works. The best time to
+write a test program is @emph{as soon as it is possible!} Don't be lazy.
+Don't just keep throwing in code after code after code. The minute there
+is enough new code in there to put together some kind of test program,
+@emph{just do it!} I can not emphasize that enough. When you write new code
+you have the illusion that you are producing work, only to find out tomorrow
+that you need an entire week to debug it. As a rule, internalize the reality
+that you @emph{know} you have produced new work everytime you write a working 
+test program for the new features, and @emph{not a minute before}.
+Another time when you should definetly write a test suite is when you
+find a bug while ordinarily using the library. Then, before you even
+fix the bug, write a test program that detects the bug. Then go fix it.
+This way, as you add new features to your libraries you have insurance that
+they won't reawaken old bugs. 
+
+Please keep documentation up to date as you go. The best time to write 
+documentation
+is right after you get a few new test programs working. You might feel that
+you are too busy to write documentation, but the truth of the matter
+is that you will @emph{always} be too busy. After long hours debugging
+these seg faults, think of it as a celebration of triumph to fire up the
+editor and document your brand-spanking new cool features.
+
+Please make sure that
+computational code is completely seperated from I/O code so that someone
+else can reuse your computational code without being forced to also follow
+your I/O model. Then write @emph{programs} that invoke your collection
+of libraries to solve various problems. By dividing and conquering the
+problem library by library with a test suite for each step along the way,
+you can write good and robust code. Also, if you are developing 
+numerical software, please don't expect that other users of your code will be 
+getting a high while entering data for your @dfn{input files}. Instead write
+an interactive utility that will allow users to configure input files in
+a user friendly way. Granted, this is too much work in Fortran. Then again,
+you do know more powerful languages, don't you?
+
+Examples of useful libraries are
+things like linear algebra libraries, general ODE solvers, interpolation
+algorithms, and so on. 
+As a result you end up with two packages. A package
+of libraries complete with a test suite, and a package of applications that 
+invoke the libraries.
+The package of libraries is well-tested code that can be passed down to
+future developers. It is code that won't have to be rewritten if it's
+treated with respect. The package of applications is something that each
+developer will probably rewrite since different people will probably want
+to solve different problems. The effect of having a package of libraries
+is that C++ is elevated to a @emph{Very High Level Language} that's closer
+to the problems you are solving.
+In fact a good rule of thumb is to 
+@emph{make the libraries sufficiently sophisticated so that each executable that you produce can be expressed in @strong{one} source file.}
+All this may sound like common sense, but you will be surprised at how many
+scientific developers maintain just one does-everything-program that they
+perpetually hack until it becomes impossible to maintain. And then you will
+be even more surprised when you find that some professors don't understand
+why a ``simple mathematical modification'' of someone else's code is taking 
+you so long.
+
+Every library must have its own directory and @code{Makefile}. So a library
+package will have many subdirectories, each directory being one library.
+And perhaps if you have too many of them, you might want to group them 
+even further down. Then, there's the @dfn{applications}. If you've done 
+everything right, there should be enough stuff in your libraries to enable
+you to have one source file per application. Which means that all the source
+files can probably go down under the same directory. 
+
+Very often you will
+come to a situation where there's something that your libraries to-date 
+can't do, so you implement it and stick it along in your source file
+for the application. If you find yourself cut and pasting that implementation
+to other source files, then this means that you have to put this in a library
+somewhere. And if it doesn't belong to any library you've written so far,
+maybe to a new library. When you are in a deadline crunch, there's a 
+tendency not to do this since it's easier to cut and paste. The problem
+is that if you don't take action right then, eventually your code will
+degenerate to a hard-to-use mess. Keeping the entropy down is something
+that must be done on a daily basis.
+
+Finally, a word about the age-old issue of language-choice. The GNU coding
+standards encourage you to program in C and avoid using languages other
+than C, such as C++ or Fortran. The main advantage of C over C++ and 
+Fortran is that it produces object files that can be linked by any C
+or C++ compiler. In contrast, C++ object files can only be linked by 
+the compiler that produced them. As for Fortran, aside from the fact that
+Fortran 90 and 95 have no free compilers, it is not very trivial to mix
+Fortran 77 with C/C++, so it makes no sense to invite all that trouble 
+without a compelling reason. Nevertheless, my suggestion is to code in C++.
+The main benefit you get with C++ is robustness. Having constructors
+and destructors and references can go a long way towayrds helping you to
+void memory errors, if you know how to make them work for you.
+
+@c ==========================================================================
+
+@node Standard organization with Automake, Programs and Libraries with Automake, Some general advice, Using Automake and Autoconf
+@section Standard organization with Automake
+
+Now we get into the gory details of software organization. I'll tell you one
+way to do it. This is advice, not divine will. It's simply a way that works
+well in general, and a way that works well with @code{autoconf} and
+@code{automake} in particular.
+
+The first principle is to maintain the package of libraries seperate from
+the package of applications. This is not an iron-clad rule. In software
+engineering, where you have a crystal clear specification, it makes no
+sense to keep these two seperate. I found from experience that it makes
+a lot more sense in research.
+Either of these two packages must have a toplevel directory under which
+live all of its guts. Now what do the guts look like?
+
+First of all you have the traditional set of information files that
+we described in Chapter 1:
+@example
+README, AUTHORS, NEWS, ChangeLog, INSTALL, COPYING
+@end example
+@noindent
+You also have the following subdirectories:
+@table @samp
+@item m4
+Here, you install any new @samp{m4} files that your package may want
+to install. These files define new @samp{autoconf} commands that you
+may want to make available to other developers who want to use your 
+libraries. 
+@item doc
+Here you put the documentation for your code. You have the creative freedom
+to present the documentation in any way you desire. However, the prefered
+way to document software is to use Texinfo. Texinfo has the advantage that
+you can produce both on-line help as well as a nice printed book from the
+same source. We will say something about Texinfo later.
+@item src
+Here's the source code. You could put it at the toplevel directory as
+many developers do, but I find it more convenient to keep it away in
+a subdirectory. Automake makes it trivially easy to do recursive 
+@samp{make}, so there is no reason not to take advantage of it to keep
+your files more organized.
+@item include
+This is an optional directory for distributions that use many libraries.
+You can have the @code{configure} script link all public header files
+in all the subdirectories under @code{src} to this directory. This way
+it will only be necessary to pass one @code{-I} flag to test suites that
+want to access the include files of other libraries in the distribution.
+We will discuss this later.
+@item lib
+This is an optional directory where you put portability-related 
+source code. This is mainly replacement implementations for system calls
+that may not exist on some systems. You can also put tools here that you
+commonly use accross many different packages, tools that are too simple
+to just make libraries out of every each one of them. It is suggested
+that you maintain these tools in a central place. 
+We will discuss this much later.
+@end table
+Together with these subdirectories you need to put a @file{Makefile.am}
+and a @file{configure.in} file. I also suggest that you put a shell script,
+which you can call @file{reconf}, that contains the following:
+@example
+#!/bin/sh
+rm -f config.cache
+rm -f acconfig.h
+touch acconfig.h
+aclocal -I m4
+autoconf
+autoheader
+acconfig
+automake -a
+exit
+@end example
+@noindent
+This will generate @file{configure} and @file{Makefile.in} and needs to
+be called whenever you change a @file{Makefile.am} or a @file{configure.in}
+as well as when you change something under the @file{m4} directory.
+It will also call @code{acconfig} which automatically generates 
+@code{acconfig.h} and calle @samp{autoheader} to make @code{config.h.in}.
+The @file{acconfig} utility is part of @samp{autotools}, and if you are
+maintaining @file{acconfig.h} by hand, then you want to use this script
+instead:
+@example
+#!/bin/sh
+rm -f config.cache
+aclocal -I m4
+autoconf
+autoheader
+automake -a
+exit
+@end example
+@noindent
+At the toplevel directory, you need to put a @file{Makefile.am} that will
+tell the computer that all the source code is under the @file{src}
+directory. The way to do it is to put the following lines in 
+@file{Makefile.am}:
+@example
+EXTRA_DIST = reconf
+SUBDIRS = m4 doc src
+@end example
+@noindent
+@itemize @bullet
+@item 
+The first line tells @code{automake} that the @file{reconf} script
+is part of the distribution and must be included when you do @code{make dist}.
+@item
+The second line tells @code{automake} that the rest of the distribution is
+in the subdirectories @file{m4}, @file{doc} and @file{src}. It instructs
+@file{make} to recursively call itself in these subdirectories. It is important
+to include the @file{doc} and @file{m4} subdirectories here and enhance them
+with @file{Makefile.am} so that @code{make dist} includes them into the
+distribution.
+@end itemize
+
+If you are also using a @file{lib} subdirectory, then it should be built
+before @file{src}:
+@example
+EXTRA_DIST = reconf
+SUBDIRS = m4 doc lib src
+@end example
+@noindent
+The @file{lib} subdirectory should build a static library that is linked
+by your executables in @file{src}. There should be no need to install that
+library.
+
+At the toplevel directory you also need to put the @file{configure.in}
+file. That should look like this:
+@example
+AC_INIT
+AM_INIT_AUTOMAKE(packagename,versionnumber)
+[...put your tests here...]
+AC_OUTPUT(Makefile                   \
+          doc/Makefile               \
+          m4/Makefile                \
+          src/Makefile               \
+          src/dir1/Makefile          \
+          src/dir2/Makefile          \
+          src/dir3/Makefile          \
+          src/dir1/foo1/Makefile     \
+          ............               \
+         )
+
+@end example
+@noindent
+You will not need another @file{configure.in} file. However, 
+@strong{every directory level on your tree must have a @file{Makefile.am}}. 
+When you call 
+@code{automake} on the top-level directory, it looks at @samp{AC_OUTPUT} at
+your
+@file{configure.in} to decide what other directories have a @file{Makefile.am}
+that needs parsing. As you can see from above, a @file{Makefile.am} file
+is needed even under the @file{doc} and @file{m4} directories. How to set
+that up is up to you. If you aren't building anything, but just have files
+and directories hanging around, you must declare these files and directories
+in the @file{Makefile.am} like this:
+@example
+SUBDIRS = dir1 dir2 dir3
+EXTRA_DIST = file1 file2 file3
+@end example
+@noindent
+Doing that will cause @code{make dist} to include these files and directories
+to the package distribution.
+
+This tedious setup work needs to be done everytime that you create a new
+package. If you create enough packages to get sick of it, then you
+want to look into the @samp{acmkdir} utility that is distributed by
+Autotools. We will describe it at the next chapter.
+
+@c ==========================================================================
+
+@node Programs and Libraries with Automake, General Automake principles, Standard organization with Automake, Using Automake and Autoconf
+@section Programs and Libraries with Automake
+
+Next we explain how to develop @file{Makefile.am} files for the source code
+directory levels. A @file{Makefile.am} is a set of assignments.
+These assignments imply the Makefile, a set of targets, dependencies
+and rules, and the Makefile implies the execution of building.
+
+The first set of assignments going at the beginning look like this:
+@example
+INCLUDES = -I/dir1 -I/dir2 -I/dir3 ....
+LDFLAGS = -L/dir1 -L/dir2 -L/dir3 .... 
+LDADD = -llib1 -llib2 -llib3 ...
+@end example
+@noindent
+@itemize @bullet
+@item
+The @samp{INCLUDES} assignment is where you insert the @code{-I} flags that
+you need to pass to your compiler. If the stuff in this directory is 
+dependent on a library in another directory of the same package, then
+the @code{-I} flag must point to that directory.
+@item
+The @samp{LDFLAGS} assignment is where you insert the @code{-L} flags 
+that are needed by the compiler when it links all the object files to
+an executable. 
+@item
+The @samp{LDADD} assignment is where you list a long set of installed
+libraries that you want to link in with all of your executables. 
+Use the @code{-l} flag only for installed libraries. You can list
+libraries that have been built but not installed yet as well, but
+do this only be providing the full path to these libraries. 
+@end itemize
+@noindent
+If your package contains subdirectories with libraries and you want to
+link these libraries in another subdirectory you need to put @samp{-I}
+and @samp{-L} flags in the two variables above. To express the path to
+these other subdirectories, use the @samp{$(top_srcdir)} variable.
+For example if you want to access a library under @file{src/libfoo}
+you can put something like:
+@example
+INCLUDES = ... -I$(top_srcdir)/src/libfoo ...
+LDFLAGS  = ... -L$(top_srcdir)/src/libfoo ...
+@end example
+@noindent
+on the @file{Makefile.am} of every directory level that wants access to
+these libraries. Also, you must make sure that the libraries are built 
+before the directory level is built. To guarantee that, list the library
+directories in @samp{SUBDIRS} @strong{before} the directory levels that
+depend on it. One way to do this is to put all the library directories under
+a @file{lib} directory and all the executable directories under a @file{bin}
+directory and on the @file{Makefile.am} for the directory level that
+contains @file{lib} and @file{bin} list them as:
+@example
+SUBDIRS = lib bin
+@end example
+@noindent
+This will guarantee that all the libraries are available before building
+any executables. Alternatively, you can simply order your directories
+in such a way so that the library directories are built first.
+
+Next we list the things that are to be built in this directory level:
+@example
+bin_PROGRAMS    = prog1 prog2 prog3 ....
+lib_LIBRARIES   = libfoo1.a libfoo2.a libfoo3.a ....
+check_PROGRAMS  = test1 test2 test3 ....
+TESTS           = $(check_PROGRAMS)
+include_HEADERS = header1.h header2.h ....
+@end example
+@noindent
+@itemize @bullet
+@item
+The @samp{bin_PROGRAMS} line lists all the executable files that will be
+compiled with @code{make} and installed with @code{make install} under
+@file{/prefix/bin}, where @file{prefix} is usually @file{/usr/local}.
+@item
+The @samp{lib_LIBRARIES} line lists all the library files that will be
+compiled with @code{make} and installed with @code{make install} under
+@file{/prefix/lib}.
+@item
+The @samp{check_PROGRAMS} line lists executable files that are 
+@strong{not} compiled with a simple @code{make} but only with a
+@code{make check}. These programs serve as tests that you, the user
+can use to test the library.
+@item
+The @samp{TESTS} line lists executable files which are to be compiled
+@emph{and executed} when you run @code{make check}. These programs 
+constitute the @dfn{test suite} and they are indispensible when you
+develop a library. It is common to just set
+@example
+TESTS = $(check_PROGRAMS)
+@end example
+@noindent
+This way by commenting the line in and out, you can modify the behaviour
+of @code{make check}. While debugging your test suite, you will want to
+comment out this line so that @code{make check} doesn't run it. However,
+in the end product, you will want to comment it back in.
+@item
+The @samp{include_HEADERS} line lists public headers present in this
+directory that you want to install in @code{/prefix/include}. You must
+list a header file here if you want to cause it to be installed. You
+can also list it under @code{libfoo_a_SOURCES} for the library that it
+belongs to, but it is imperative to list public headers here so that they
+can be installed.
+@end itemize
+@noindent
+It is good programming practice to keep libraries and executables under
+seperate directory levels. However, it is okey to keep the library and
+the @emph{check} executables that test the library under the same directory 
+level because that makes it easier for you to link them with the library.
+
+For each of these types of targets, we must state information that
+will allow @code{automake} and @code{make} to infer the building process.
+
+@itemize @bullet
+@item
+@strong{For each Program:} You need to declare the set of files that are
+sources of the program, the set of libraries that must be linked with the
+program and (optionally) a set of dependencies that need to be built before
+the program is built. These are declared in assignments that look like
+this:
+@example
+prog1_SOURCES = foo1.cc foo2.cc ... header1.h header2.h ....
+prog1_LDADD   = -lbar1 -lbar2 -lbar3
+prog1_LDFLAGS = -L/dir1 -L/dir2 -L/dir3 ...
+prog1_DEPENDENCIES = dep1 dep2 dep3 ...
+@end example
+@noindent
+In each assignment substitute @samp{prog1} with the name of the program that
+you are building as it appeared in @samp{bin_PROGRAMS} or 
+@samp{check_PROGRAMS}.
+@itemize @minus
+@item
+@samp{prog1_SOURCES}: Here you list all the @file{*.cc} and @file{*.h} files
+that compose the source code of the program. The presense of a header file
+here doesn't cause the file to be installed at @file{/prefix/include} but
+it does cause it to be added to the distribution when you do @code{make dist}.
+To cause header files to be installed you must also put them in 
+@samp{include_HEADERS}.
+@item
+@samp{prog1_LDADD}: Here you add primarily the @code{-l} flags for linking
+whatever libraries are needed by your code. You may also list object files,
+which have been compiled in an exotic way, as well as paths to uninstalled 
+yet libraries.
+@item
+@samp{prog_LDFLAGS}: Here you add the @code{-L} flags that are needed to
+resolve the libraries you passed in @samp{prog_LDADD}. Certain flags that
+need to be passed on @emph{every} program can be expressed on a global
+basis by assigning them at @samp{LDFLAGS}.
+@item
+@samp{prog1_DEPENDENCIES}:
+If for any reason you want certain other targets to be built before building
+this program, you can list them here.
+@end itemize
+This is all you need to do. There is no need to write an extended Makefile
+with all the targets, dependencies and rules that are required to build
+the program. They are computed for you by this minimal information by
+@file{automake}. Moreover, the targets @samp{dist}, @samp{install},
+@samp{clean} and @samp{distclean} are appropriately setup to handle the
+program. You don't need to take care of them by yourself.
+
+@item
+@strong{For each Library:}
+There's a total of four assignments that are relevant to building libraries:
+@example
+lib_LIBRARIES = ... libfoo1.a ...
+libfoo1_a_SOURCES      = foo1.cc foo2.cc private1.h private2.h ...
+libfoo1_a_LIBADD       = obj1.o obj2.o obj3.o
+libfoo1_a_DEPENDENCIES = dep1 dep2 dep3 ...
+@end example
+@noindent
+Note that if the name of the library is @file{libfoo1.a} the prefix that
+appears in the variables that are related with that library is 
+@samp{libfoo1_a_}.
+@itemize @minus
+@item
+@samp{libfoo1_a_SOURCES}: Just like with programs, here you list all the
+@file{*.cc} files as well as all the @strong{private} header files that
+compose the library. By @dfn{private header file} we mean a header file
+that is used internally by the library and the maintainers of the library,
+but is not exported to the end-user. You can list @dfn{public header files}
+also if you like, and perhaps you should for documentation purposes, but
+if you mention them in @code{include_HEADERS} it is not required to repeat
+them a second time here.
+@item
+@samp{libfoo1_a_DEPENDENCIES}: If there are any other targets that need to
+be built before this library is built, list them here.
+@item
+@samp{libfoo1_a_LIBADD}: If there are any other object files that you want
+to include in the library list them here. You might be tempted to list
+them as dependencies in @samp{libfoo1_a_DEPENDENCIES}, but that will not
+work. If you do that, the object files will be built before the library
+is built @emph{but they will not be included in the library!} By listing
+an object file here, you are stating that you want it to be built @strong{and}
+you want it to be included in the library.
+@end itemize
+@end itemize
+
+@c ========================================================================
+
+@node General Automake principles, Simple Automake examples, Programs and Libraries with Automake, Using Automake and Autoconf
+@section General Automake principles
+
+In the previous section we described how to use Automake to compile 
+programs, libraries and test suites. To exploit the full power of Automake
+however, it is important to understand the fundamental ideas behind it. 
+
+The simplest way to look at a @file{Makefile.am} is as a collection of
+assignments which infer a set of Makefile rules, which in turn infer the
+building process. There are three types of such assignments:
+@itemize @bullet
+@item
+@dfn{Global} assignments modify the behaviour of the entire Makefile for the
+given subdirectory. Examples of such assignments are @samp{INCLUDES}, 
+@samp{LDADD}, @samp{LDFLAGS}, @samp{TESTS}. These assignments affect the
+behaviour of the Makefile in the given directory indepedent of what gets
+built. In order for an assignment to be @dfn{global}, the name of the 
+variable to which you are assigning must have a special meaning to Automake.
+If it does not, then the assignment has no effect, but it may be used
+as a variable in other assignments.
+@item
+@dfn{Primitive} assignments declare the primitives that we want to build.
+Such assignments are @samp{bin_PROGRAMS}, @samp{lib_LIBRARIES}, and others.
+The general pattern of these assignments is two words seperated by an
+underscore. The second word is the type of the primitive being built, and
+it affects what Makefile rules are generated for building the primitive.
+The first word contains information about where to install the primitive
+once its built, so it affects the Makefile rules that handle the
+@samp{install} and @samp{uninstall} targets. The way this works is that
+for @samp{bin} there corresponds a global assignment for @samp{bindir}
+containing the installation directory. For example the symbols @samp{bin}, 
+@samp{lib}, @samp{include} have the following default assignments:
+@example
+bindir     = $(prefix)/bin
+libdir     = $(prefix)/lib
+includedir = $(prefix)/include
+@end example
+@noindent
+These are the directories where you install executables, libraries and 
+public header files. You can override the defaults by inserting different
+assignments in your @file{Makefile.am}, but please don't do that. Instead
+you can define new assignments. For example, if you do
+@example
+foodir = $(prefix)/foo
+@end example
+@noindent
+then that makes writing @file{foo_PROGRAMS}, @file{foo_LIBRARIES} install
+in the @samp{$(prefix)/foo} direcory instead.
+The symbols @samp{check} and @samp{noinst} have special meanings and you
+should not ever try to assign to @samp{checkdir} and @samp{noinstdir}.
+@itemize @minus
+@item
+The @samp{check} symbol, suggests that the primitive should only be 
+built when the user invokes @samp{make check} and it should not be installed.
+It is only meant to be executed as part of a test suite and then get scrapped.
+@item
+The @samp{noinst} symbol, suggests that the primitive should not be
+installed. It will be built however normally, when you invoke @samp{make}. 
+You could use this to build convenience libraries which you 
+intend to link in statically to executables which you do plan to install.
+You could also use this to build executables which will generate source
+code that will subsequently be used to build something installable.
+@end itemize
+@item
+@dfn{Property} assignments define the properties for every primitive that
+you declare. A property is also made of two words that are seperated by
+an underscore. The first word names the primitive to which the property
+refers to. The second word names the name of the property itself. For 
+example when you define 
+@example
+bin_PROGRAMS = hello
+@end example
+@noindent
+this means that you can then say:
+@example
+hello_SOURCES = ...
+hello_LDADD   = ...
+@end example
+@noindent
+and so on. The @samp{SOURCES} and @samp{LDADD} are properties of @samp{hello}
+which is a @samp{PROGRAMS} primitive. 
+@end itemize
+
+In addition to all this, you may include ordinary targets in a 
+@file{Makefile.am} just as you would in an ordinary @file{Makefile.in}.
+If you do that however, then please check at some point that your
+distribution can properly build with @samp{make distcheck}. It is very
+important that when you define your own rules, to build whatever
+you want to build, to follow the following guidelines:
+@itemize @bullet
+@item
+Prepend all source files both in the dependencies and the rules with
+@code{$(srcdir)}. This variable points to the directory where
+your source code is located during the current @samp{make}, which is not 
+necessarily the same directory as the one returned by @samp{`pwd`}. 
+It is possible to do what is called a @dfn{VPATH build} where the generated
+files are created in a seperate directory tree from the source code. 
+What @samp{`pwd`} would return to you in that case would be the directory in
+which files are @emph{written}, not the directory from which files are
+@emph{read}.
+If you mess this up, then you will know when
+@code{make distcheck} fails, which attempts to do a VPATH build. The 
+directory in which files are written can be accessed by the dot. 
+For example, @samp{./foo}. 
+@item
+If you need to get to any files from the top-level directory use
+@code{$(top_srcdir)} for files which @emph{you} wrote (and your compiler
+tools @emph{read}) and 
+@code{$(top_builddir)} for files which @emph{the compiler} wrote.
+@item
+For your rules use only the following commands directly:
+@example
+ar cat chmod cmp cp diff echo egrep expr false grep ls 
+mkdir mv pwd rm rmdir sed sleep sort tar test touch true 
+@end example
+@noindent
+Any other programs that you want to use, you must do so through make variables.
+That includes programs such as these:
+@example
+awk bash bison cc flex install latex ld ldconfig lex ln make
+makeinfo perl ranlib shar texi2dvi yacc
+@end example
+@noindent
+The make variables you define through Autoconf in your @code{configure.in}.
+For special-purpose tools, use the AC_PATH_PROGS macro. For example:
+@example
+AC_PATH_PROGS(BASH, bash sh)
+AC_PATH_PROGS(PERL, perl perl5.005 perl5.004 perl5.003 perl5.002 perl5.001)
+AC_PATH_PROGS(SHAR, shar)
+AC_PATH_PROGS(BISON, bison)
+@end example
+@noindent
+Some special tools have their own macros:
+@example
+AC_PROG_MAKE_SET -> $(MAKE)   -> make
+AC_PROG_RANLIB   -> $(RANLIB) -> ranlib | (do-nothing)
+AC_PROG_AWK      -> $(AWK)    -> mawk | gawk | nawk | awk
+AC_PROG_LEX      -> $(LEX)    -> flex | lex
+AC_PROG_YACC     -> $(YACC)   -> 'bison -y' | byacc | yacc
+AC_PROG_LN_S     -> $(LN_S)   -> ln -s
+@end example
+@noindent
+Before using any of these macros, consult the Autoconf documentation to see
+exactly what it is that they do.
+@end itemize
+
+@node Simple Automake examples, Built sources, General Automake principles, Using Automake and Autoconf
+@section Simple Automake examples
+
+A real life example of a @file{Makefile.am} for libraries is the one I use
+to build the Blas-1 library. It looks like this:
+
+@noindent
+@bullet{} @file{blas1/Makefile.am}
+@example
+SUFFIXES = .f
+.f.o:
+       $(F77) $(FFLAGS) -c $<
+
+lib_LIBRARIES = libblas1.a
+libblas1_a_SOURCES = f2c.h caxpy.f ccopy.f cdotc.f cdotu.f crotg.f cscal.f \
+ csrot.f csscal.f cswap.f dasum.f daxpy.f dcabs1.f dcopy.f ddot.f dnrm2.f \
+ drot.f drotg.f drotm.f drotmg.f dscal.f dswap.f dzasum.f dznrm2.f icamax.f \
+ idamax.f isamax.f izamax.f sasum.f saxpy.f scasum.f scnrm2.f scopy.f \ 
+ sdot.f snrm2.f srot.f srotg.f srotm.f srotmg.f sscal.f sswap.f zaxpy.f \ 
+ zcopy.f zdotc.f zdotu.f zdrot.f zdscal.f zrotg.f zscal.f zswap.f 
+@end example
+@noindent
+Because the Blas library is written in Fortran, I need to declare the
+Fortran suffix at the beginning of the @file{Makefile.am} with the 
+@samp{SUFFIXES} assignment and then insert an implicit rule for building
+object files from fortran files. The variables @samp{F77} and @samp{FFLAGS}
+are defined by Autoconf, by using the Fortran support provided by Autotools.
+For C or C++ files there is no need to include implicit rules. 
+We discuss Fortran support at a later chapter. 
+
+Another important thing to note is the use of the symbol @samp{$<}. We
+introduced these symbols in Chapter 2, where we mentioned that @samp{$<}
+is the dependencies that changed causing the target to need to be rebuilt.
+If you've been paying attention you may be wondering why we didn't say
+@samp{$(srcdir)/$<} instead. The reason is because for VPATH builds, 
+@samp{make} is sufficiently intelligent to substitute @samp{$<} with the
+Right Thing.
+
+Now consider the @file{Makefile.am} for building a library for solving
+linear systems of equations in a nearby directory:
+
+@noindent
+@bullet{} @file{lin/Makefile.am}
+@example
+SUFFIXES = .f
+.f.o:
+       $(F77) $(FFLAGS) -c $<
+INCLUDES = -I../blas1 -I../mathutil
+
+lib_LIBRARIES = liblin.a
+include_HEADERS = lin.h
+liblin_a_SOURCES = dgeco.f dgefa.f dgesl.f f2c.h f77-fcn.h lin.h lin.cc
+
+check_PROGRAMS = test1 test2 test3
+TESTS = $(check_PROGRAMS)
+LDADD = liblin.a ../blas1/libblas1.a ../mathutil/libmathutil.a $(FLIBS) -lm
+
+test1_SOURCES = test1.cc f2c-main.cc
+test2_SOURCES = test2.cc f2c-main.cc  
+test3_SOURCES = test3.cc f2c-main.cc
+@end example
+@noindent
+In this case, we have a library that contains mixed Fortran and C++ code.
+We also have an example of a test suite, which in this case contains three
+test programs. What's new here is that in order to link the test suite
+properly we need to link in libraries that have been built already in
+other directories but haven't been installed yet. Because every test
+program requires to be linked against the same libraries, we set these
+libraries globally with an @samp{LDADD} assignment for all executables.
+Because the libraries have not been installed yet we specify them with their
+full path. This will allow Automake to track dependencies correctly; if
+@file{libblas1.a} is modified, it will cause the test suite to be rebuilt.
+Also the variable @samp{INCLUDES} is globally assigned to make the 
+header files of the other two libraries accessible to the source code in
+this directory.
+The variable @samp{$(FLIBS)} is assigned by Autoconf to link the run-time 
+Fortran libraries, and then we link the installed @file{libm.a} library. 
+Because that library is installed, it must be linked with the @samp{-l} flag.
+Another peculiarity in this example is the file @file{f2c-main.cc} which
+is shared by all three executables. As we will explain later, when you link
+executables that are derived from mixed Fortran and C or C++ code, then you
+need to link with the executable this kludge file.
+
+The test-suite files for numerical code will usually invoke the library
+to perform a computation for which an exact result is known and then
+verify that the result is true. For non-numerical code, the library will
+need to be tested in different ways depending on what it does.
+
+@node Built sources, Installation directories., Simple Automake examples, Using Automake and Autoconf
+@section Built sources
+
+In some complicated packages, you want to generate part of their source
+code by executing a program at compile time. For example, in one of
+the packages that I wrote for an assignment, I had to generate a file
+@file{incidence.out} that contained a lot of hairy matrix definitions that
+were too ugly to just compute and write by hand. That file was then
+included by @file{fem.cc} which was part of a library that I wrote to
+solve simple finite element problems, with a preprocessor statement:
+@example
+#include "incidence.out"
+@end example
+@noindent
+All source code files that are to be generated during compile time should
+be listed in the global definition of @samp{BUILT_SOURCES}. This will
+make sure that these files get compiled before anything else. In our
+example, the file @file{incidence.out} is computed by running a program
+called @file{incidence} which of course also needs to be compiled before
+it is run. So the @file{Makefile.am} that we used looked like this:
+@example
+noinst_PROGRAMS = incidence
+lib_LIBRARIES = libpmf.a
+
+incidence_SOURCES = incidence.cc mathutil.h
+incidence_LDADD = -lm
+
+incidence.out: incidence
+      ./incidence > incidence.out
+
+BUILT_SOURCES = incidence.out
+libpmf_a_SOURCES = laplace.cc laplace.h fem.cc fem.h mathutil.h
+
+check_PROGRAMS = test1 test2
+TESTS = $(check_PROGRAMS)
+
+test1_SOURCES = test1.cc
+test1_LDADD = libpmf.a -lm
+
+test2_SOURCES = test2.cc
+test2_LDADD = libpmf.a -lm
+@end example
+@noindent
+Note that because the executable @file{incidence} has been created at
+compile time, the correct path is @file{./incidence}. Always keep in mind,
+that the correct path to source files, such as @file{incidence.cc} is
+@file{$(srcdir)/incidence.cc}. Because the @file{incidence} program is used
+temporarily only for the purposes of building the @file{libpmf.a} library,
+there is no reason to install it. So, we use the @samp{noinst} prefix to
+instruct Automake not to install it.
+
+@node Installation directories., Handling shell scripts, Built sources, Using Automake and Autoconf
+@section Installation directories.
+
+Previously, we mentioned that the symbols @samp{bin}, @samp{lib} and
+@samp{include} refer to installation locations that are defined respectively
+by the variables @samp{bindir}, @samp{libdir} and @samp{includedir}.
+For completeness, we will now list the installation locations available by 
+default by Automake and describe their purpose.
+
+All installation locations are placed under one of the following directories:
+@table @samp
+@item prefix
+The default value of @samp{$(prefix)} is @file{/usr/local} and it is used
+to construct installation locations for machine-indepedent files. The actual
+value is specified at configure-time with the @samp{--prefix} argument.
+For example:
+@example
+configure --prefix=/home/lf
+@end example
+@noindent
+@item exec_prefix
+The default value of @samp{$(exec_prefix)} is @samp{$(prefix)} and it
+used to construct installation location for machine-dependent files.
+The actual value is specified at configure-time with the @samp{--exec-prefix}
+argument. For example:
+@example
+configure --prefix=/home/lf --exec-prefix=/home/lf/gnulinux
+@end example
+@noindent
+The purpose of using a seperate location for machine-dependent files
+is because then it makes it possible to install the software 
+on a networked file server and make that available to 
+machines with different architectures. To do that there must be seperate
+copies of all the machine-dependent files for each architecture in use.
+@end table
+
+@noindent
+Executable files are installed in one of the following locations:
+@example
+bindir     = $(exec_prefix)/bin
+sbindir    = $(exec_prefix)/sbin
+libexecdir = $(exec_prefix)/libexec
+@end example
+@noindent
+@table @samp
+@item bin
+Executable programs that users can run. 
+@item sbin
+Executable programs for the super-user.
+@item libexec
+Executable programs to be called by other programs.
+@end table
+
+@noindent
+Library files are installed under
+@example
+libdir = $(exec_prefix)/lib
+
+@end example
+@noindent
+@noindent
+Include files are installed under
+@example
+includedir = $(prefix)/include
+
+@end example
+@noindent
+@noindent
+Data files are installed in one of the following locations:
+@example
+datadir        = $(prefix)/share
+sysconfdir     = $(prefix)/etc
+sharedstatedir = $(prefix)/com
+localstatedir  = $(prefix)/var
+@end example
+@noindent
+@table @samp
+@item data
+Read-only architecture indepedent data files.
+@item sysconf
+Read-only configuration files that pertain to a specific machine. 
+All the files in this directory should be ordinary ASCII files.
+@item sharedstate
+Architecture indepedent data files which programs modify while they run. 
+@item localstate
+Data files which programs modify while they run that pertain to a
+specific machine.
+@end table
+
+Autoconf macros should be installed in @samp{$(datadir)/aclocal}. There is
+no symbol defined for this location, so you need to define it yourself:
+@example
+m4dir = $(datadir)/aclocal
+
+@end example
+@noindent
+@noindent
+FIXME: Emacs Lisp files?
+
+@noindent
+FIXME: Documentation?
+
+Automake, to encourage tidyness, also provides the following locations
+such that each package can keep its stuff under its own subdirectory:
+@example
+pkglibdir         = $(libdir)/@@PACKAGE@@
+pkgincludedir     = $(includedir)/@@PACKAGE@@
+pkgdatadir        = $(datadir)/@@PACKAGE@@
+@end example
+@noindent
+There are a few other such @samp{pkg} locations, but they are not practically
+useful.
+
+@node Handling shell scripts, Handling other obscurities, Installation directories., Using Automake and Autoconf
+@section Handling shell scripts
+
+Sometimes you may feel the need to implement some of your programs in
+a scripting language like Bash or Perl. For example, the @samp{autotools}
+package is exclusively a collection of shell scripts.
+Theoretically, a script does
+not need to be compiled. However, there are still issues pertaining to
+scripts such as:
+@itemize @bullet
+@item
+You want scripts to be installed with @code{make install}, uninstalled
+with @code{make uninstall} and distributed with @code{make dist}.
+@item
+You want scripts to get the path in the @code{#!} right.
+@end itemize
+To let Automake deal with all this, you need to use the @samp{SCRIPTS} 
+primitive.
+By listing a file under a @samp{SCRIPTS} primitive assignment, you are telling
+Automake that this file needs to be built, and must be allowed to be installed
+in a location where executable files are normally installed. Automake by
+default will not clean scripts when you invoke the @samp{clean} target.
+To force Automake to clean all the scripts, you need to add the following
+line to your @file{Makefile.am}:
+@example
+CLEANFILES = $(bin_SCRIPTS)
+@end example
+@noindent
+You also need to write your own targets for building the script by hand.
+
+@noindent
+For example:
+@table @samp
+@item hello1.sh
+@example
+# -* bash *-
+echo "Howdy, world!"
+exit 0
+@end example
+@noindent
+@item hello2.pl
+@example
+# -* perl *-
+print "Howdy, world!\n";
+exit(0);
+@end example
+@noindent
+@item Makefile.am
+@example
+bin_SCRIPTS = hello1 hello2
+CLEANFILES = $(bin_SCRIPTS)
+EXTRA_DIST = hello1.sh hello2.pl
+
+hello1: $(srcdir)/hello1.sh
+      rm -f hello1
+      echo "#! " $(BASH) > hello1
+      cat $(srcdir)/hello1.sh >> hello1
+      chmod ugo+x hello1
+
+hello2: $(srcdir)/hello2.pl
+      $(PERL) -c hello2.pl
+      rm -f hello2
+      echo "#! " $(PERL) > hello2
+      cat $(srcdir)/hello2.pl >> hello2
+      chmod ugo+x hello2
+@end example
+@noindent
+@item configure.in
+@example
+AC_INIT
+AM_INIT_AUTOMAKE(hello,0.1)
+AC_PATH_PROGS(BASH, bash sh)
+AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+AC_OUTPUT(Makefile)
+@end example
+@noindent
+@end table
+@noindent
+Note that in the ``source'' files @file{hello1.sh} and @file{hello2.pl}
+we do not include a line like
+@example
+#!/bin/bash
+#!/usr/bin/perl
+@end example
+@noindent
+Instead we let Autoconf pick up the correct path, and then we insert it
+during @code{make}. Since we omit the @code{#!} line, we leave a comment
+instead that indicates what kind of file this is.
+
+In the special case of @code{perl} we also invoke
+@example
+perl -c hello2.pl
+@end example
+@noindent
+This checks the perl script for correct syntax. If your scripting language
+supports this feature I suggest that you use it to catch errors at
+``compile'' time.
+The @code{AC_PATH_PROGS} macro looks for a specific utility and returns
+the full path.
+
+If you wish to conform to the GNU coding standards, you may want your script
+to support the @code{--help} and @code{--version} flags, and you may want
+@code{--version} to pick up the version number from 
+@code{AM_INIT_AUTOMAKE}.
+
+Here's an enhanced hello world scripts:
+@itemize @bullet
+@item
+@strong{version.sh.in}
+@example
+VERSION=@@VERSION@@
+@end example
+@noindent
+@item
+@strong{version.pl.in}
+@example
+$VERSION="@@VERSION@@";
+@end example
+@noindent
+@item
+@strong{hello1.sh}
+@example
+# -* bash *-
+function usage
+@{
+ cat << EOF
+Usage: 
+% hello [OPTION]
+ 
+Options:
+  --help     Print this message
+  --version  Print version information
+
+Bug reports to: monica@@whitehouse.gov
+EOF 
+@}
+ 
+function version
+@{
+ cat << EOF
+hello $VERSION - The friendly hello world program
+Copyright (C) 1997 Monica Lewinsky <monica@@whitehouse.gov>
+This is free software, and you are welcome to redistribute it and modify it 
+under certain conditions. There is ABSOLUTELY NO WARRANTY for this software.
+For legal details see the GNU General Public License.
+EOF
+@}
+
+function invalid
+@{
+ echo "Invalid usage. For help:"
+ echo "% hello --help"
+@}
+
+# -------------------------
+if test $# -ne 0
+then
+  case $1 in
+  --help)
+    usage
+    exit
+    ;;
+  --version)
+    version
+    exit
+    ;;
+  *)
+    invalid
+    exit
+    ;;
+fi
+
+# ------------------------ 
+echo "Howdy world"
+exit
+@end example
+@noindent
+@item
+@strong{hello2.pl}
+@example
+# -* perl *-
+sub usage
+@{
+ print <<"EOF";
+Usage: 
+% hello [OPTION]
+
+Options:
+  --help     Print this message
+  --version  Print version information
+
+Bug reports to: monica@@whitehouse.gov
+EOF
+exit(1);
+@}
+
+sub version
+@{
+ print <<"EOF";
+hello $VERSION - The friendly hello world program
+Copyright (C) 1997 Monica Lewinsky <monica@@whitehouse.gov>
+This is free software, and you are welcome to redistribute it and modify it 
+under certain conditions. There is ABSOLUTELY NO WARRANTY for this software.
+For legal details see the GNU General Public License.
+EOF
+ exit(1);
+@}
+
+sub invalid
+@{
+ print "Invalid usage. For help:\n";
+ print "% hello --help\n";
+ exit(1);
+@}
+
+# --------------------------
+if ($#ARGV == 0)
+@{
+ do version() if ($ARGV[0] eq "--version");
+ do usage()   if ($ARGV[0] eq "--help");
+ do invalid();
+@}
+# --------------------------
+print "Howdy world\n";
+exit(0);
+@end example
+@noindent
+@item
+@strong{Makefile.am}
+@example
+bin_SCRIPTS = hello1 hello2
+CLEANFILES = $(bin_SCRIPTS)
+EXTRA_DIST = hello1.sh hello2.pl
+
+hello1: $(srcdir)/hello1.sh $(srcdir)/version.sh
+      rm -f hello1
+      echo "#! " $(BASH) > hello1
+      cat $(srcdir)/version.sh $(srcdir)/hello1.sh >> hello1
+      chmod ugo+x hello1
+
+hello2: $(srcdir)/hello2.pl $(srcdir)/version.pl
+      $(PERL) -c hello2.pl
+      rm -f hello2
+      echo "#! " $(PERL) > hello2
+      cat $(srcdir)/version.pl $(srcdir)/hello2.pl >> hello2
+      chmod ugo+x hello2
+@end example
+@noindent
+@item
+@strong{configure.in}
+@example
+AC_INIT
+AM_INIT_AUTOMAKE(hello,0.1)
+AC_PATH_PROGS(BASH, bash sh)
+AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+AC_OUTPUT(Makefile
+          version.sh
+          version.pl
+         )
+@end example
+@noindent
+@end itemize
+
+Basically the idea with this approach is that when @code{configure} calls
+@code{AC_OUTPUT} it will substitute the files @code{version.sh} and
+@code{version.pl} with the correct version information. Then, during
+building, the version files are merged with the scripts. The scripts
+themselves need some standard boilerplate code to handle the options.
+I've included that code here as a sample implementation, which I hereby
+place in the public domain.
+
+This approach can be easily generalized with other scripting languages
+as well, like Python and Guile.
+
+@node Handling other obscurities,  , Handling shell scripts, Using Automake and Autoconf
+@section Handling other obscurities
+
+To install data files, you should use the @samp{DATA} primitive instead of
+the @samp{SCRIPTS}. The main difference is that @samp{DATA} will allow
+you to install files in data installation locations, whereas @samp{SCRIPTS}
+will only allow you to install files in executable installation locations.
+
+Normally it is assumed that the files listed in @samp{DATA} are not 
+derived, so they are not cleaned. If you do want to derive them however
+from an executable file, then you can do so like this:
+
+@example
+bin_PROGRAMS = mkdata
+mkdata_SOURCES = mkdata.cc
+
+pkgdata_DATA = thedata
+CLEANFILES = $(datadir_DATA)
+
+thedata: mkdata
+      ./mkdata > thedata
+
+@end example
+@noindent
+In general however, data files are boring. You just write them, and
+list them in a @samp{DATA} assignment:
+@example
+pkgdata_DATA = foo1.dat foo2.dat foo3.dat ...
+
+@end example
+@noindent
+If your package requires you to edit a certain type of files, you
+might want to write an Emacs editing mode for that file type. Emacs modes
+are written in Elisp files that are prefixed with @samp{.el} like
+in @file{foo.el}. Automake will byte-compile and install Elisp files using
+Emacs for you. You need to invoke the
+@example
+AM_PATH_LISPDIR
+@end example
+@noindent
+macro in your @file{configure.in} and list your Elisp files under the 
+@samp{LISP} primitive:
+@example
+lisp_LISP = mymode.el
+@end example
+@noindent
+The @samp{LISP} primitive also accepts the @samp{noinst} location.
+
+There is also support for installing Autoconf macros, documentation and
+dealing with shared libraries. These issues however are complicated,
+and they will be discussed in seperate chapters.

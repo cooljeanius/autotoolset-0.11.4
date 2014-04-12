@@ -1,0 +1,1065 @@
+This is tutorial.info, produced by makeinfo version 4.3 from
+tutorial.texi.
+
+INFO-DIR-SECTION Miscellaneous
+START-INFO-DIR-ENTRY
+* Autotoolset Tutorial: (tutorial).        Autotools tutorial.
+END-INFO-DIR-ENTRY
+
+
+File: tutorial.info,  Node: Top,  Next: Preface,  Prev: (dir),  Up: (dir)
+
+Learning the GNU development tools
+**********************************
+
+* Menu:
+
+* Preface::
+* Acknowledgements::
+* Copying::
+* Introduction to the GNU build system::
+* Writing Good Programs::
+* Using GNU Emacs::
+* Compiling with Makefiles::
+* Using Automake and Autoconf::
+* Using Autotools::
+* C++ and Autoconf::
+* Fortran with Autoconf::
+* Maintaining Documentation::
+* Legal issues with Free Software::
+* Philosophical issues::
+
+
+ --- The Detailed Node Listing ---
+
+Introduction to the GNU build system
+
+* Installing a GNU package::
+* Installing the GNU build system::
+* Hello world example::
+* Understanding the hello world example::
+* Using configuration headers::
+* Maintaining the documentation files::
+* Organizing your project in subdirectories::
+* Hello world with an attitude::
+* Tracking version numbers::
+
+Writing Good Programs
+
+* Why good code is important::
+* Choosing a good programming language::
+* Developing libraries::
+* Developing applications::
+* Free software is good software::
+* Invoking the gpl utility::
+* Inserting notices with Emacs::
+
+Using GNU Emacs
+
+* Introduction to Emacs::
+* Installing GNU Emacs::
+* Configuring GNU Emacs::
+* Using vi emulation::
+* Using Emacs as an IDE::
+* Inserting copyright notices with Emacs::
+* Using Emacs as an email client::
+* Handling patches::
+* Further reading on Emacs::
+
+Compiling with Makefiles
+
+* Direct compilation::
+* Enter Makefiles::
+* Problems with Makefiles and workarounds::
+* Building libraries::
+
+Using Automake and Autoconf
+
+* Hello World revisited::
+* OLD Using configuration headers::
+* The building process::
+* Some general advice::
+* Standard organization with Automake::
+* Programs and Libraries with Automake::
+* General Automake principles::
+* Simple Automake examples::
+* Built sources::
+* Installation directories.::
+* Handling shell scripts::
+* Handling other obscurities::
+
+Using Autotools
+
+* Introduction to Autotools::
+* Compiler configuration with the LF macros::
+* The features of LF_CPP_PORTABILITY::
+* Writing portable C++::
+* Hello world revisited again::
+* Invoking acmkdir::
+* Handling Embedded text::
+* Handling very deep packages::
+
+Fortran with Autoconf
+
+* Introduction to Fortran support::
+* Fortran compilers and linkage::
+* Walkthrough a simple example::
+* The gory details::
+* Portability problems with Fortran::
+
+Maintaining Documentation
+
+* Writing proper manuals::
+* Introduction to Texinfo::
+* Markup in Texinfo::
+* GNU Emacs support for Texinfo::
+* Writing documentation with LaTeX::
+* Creating a LaTeX package::
+* Further reading about LaTeX::
+
+Legal issues with Free Software
+
+* Understanding Copyright::
+* Other legal concerns::
+* Freeing your software::
+
+Philosophical issues
+
+* Why software should not have owners::
+* Why free software needs free documentation::
+* Copyleft; Pragmatic Idealism::
+* The X Windows Trap::
+* Categories of software::
+* Confusing words::
+
+
+File: tutorial.info,  Node: Preface,  Next: Acknowledgements,  Prev: Top,  Up: Top
+
+Preface
+*******
+
+   The purpose of this document is to introduce you to the GNU build
+system, and show you how to use it to write good code.  It also
+discusses peripheral topics such as how to use GNU Emacs as a source
+code navigator, how to write good software, and the philosophical
+concerns behind the free software movement. The intended reader should
+be a software developer who knows his programming languages, and wants
+to learn how to package his programs in a way that follows the GNU
+coding standards.
+
+   This manual introduces you to the GNU build system and showes you how
+to develop high-quality
+
+   This manual shows you how to develop high-quality software on GNU
+using the GNU build system that conforms to the GNU coding standards.
+These techniques are also useful for software development on GNU/Linux
+and most variants of the Unix system. In fact, one of the reasons for
+the elaborate GNU build system was to make software portable between
+GNU and other similar operating systems.  We also discuss peripheral
+topics such as how to use GNU Emacs as an IDE (integrated development
+environment), and the various practical, legal and philosophical
+concerns behind software development.
+
+   When we speak of the "GNU build system" we refer primarily to the
+following four packages:
+   * *Autoconf* produces a "configuration shell script", named
+     `configure', which probes the installer platform for portability
+     related information which is required to customize makefiles,
+     configuration header files, and other application specific files.
+     Then it proceeds to generate customized versions of these files
+     from generic templates. This way, the user will not need to
+     customize these files manually.
+
+   * *Automake* produces makefile templates, `Makefile.in' to be used
+     by Autoconf, from a very high level specification stored in a file
+     called `Makefile.am'. Automake produces makefiles that conform to
+     the GNU makefile standards, taking away the extraordinary effort
+     required to produce them by hand. Automake requires Autoconf in
+     order to be used properly.
+
+   * *Libtool* makes it possible to compile position indepedent code and
+     build shared libraries in a portable manner. It does not require
+     either Autoconf, or Automake and can be used indepedently.
+     Automake however supports libtool and interoperates with it in a
+     seamless manner.
+
+   * *Autotools* _FIXME: Add content_
+
+   The GNU build system has two goals. The first is to simplify the
+development of portable programs. The second is to simplify the
+building of programs that are distributed as source code. The first
+goal is achieved by the automatic generation of a `configure' shell
+script. The second goal is achieved by the automatic generation of
+Makefiles and other shell scripts that are typically used in the
+building process. This way the developer can concentrate on debugging
+his source code, instead of his overly complex Makefiles.  And the
+installer can compile and install the program directly from the source
+code distribution by a simple and automatic procedure.
+
+   The GNU build system needs to be installed only when you are
+developing programs that are meant to be distributed. To build a
+program from distributed source code, you only need a working `make', a
+compiler, a shell, and sometimes standard Unix utilities like `sed',
+`awk', `yacc', `lex'. The objective is to make software installation as
+simple and as automatic as possible for the installer. Also, by setting
+up the GNU build system such that it creates programs that don't
+require the build system to be present during their installation, it
+becomes possible to use the build system to bootstrap itself.
+
+   Some tasks that are simplified by the GNU build system include:
+   * Building multidirectory software packages. It is much more
+     difficult to use raw `make' recursively. Having simplified this
+     step, the developer is encouraged to organize his source code in a
+     deep directory tree rather than lump everything under the same
+     directory. Developers that use raw `make' often can't justify the
+     inconvenience of recursive make and prefer to disorganize their
+     source code. With the GNU tools this is no longer necessary.
+
+   * Automatic configuration. You will never have to tell your users
+     that they need to edit your Makefile. You yourself will not have
+     to edit your Makefiles as you move new versions of your code back
+     and forth between different machines.
+
+   * Automatic makefile generation. Writing makefiles involves a lot of
+     repetition, and in large projects it will get on your nerves. The
+     GNU build system instead requires you to write `Makefile.am' files
+     that are much more terse and easy to maintain.
+
+   * Support for test suites. You can very easily write test suite
+     code, and by adding one extra line in your `Makefile.am' make a
+     `check' target available such that you can compile and run the
+     entire test suite by running `make check'.
+
+   * Automatic distribution building. The GNU build tools are meant to
+     be used in the development of "free software", therefore if you
+     have a working build system in place for your programs, you can
+     create a source code distribution out of it by running `make
+     distcheck'.
+
+   * Shared libraries. Building shared libraries becomes as easy as
+     building static libraries.
+
+   The Autotools package complements the GNU build system by providing
+the following additional features:
+   * Automatic generation of legal notices that are needed in order to
+     apply the GNU GPL license.
+
+   * Automatic generation of directory trees for new software packages,
+     such that they conform to the GNITS standard (more or less).
+
+   * Some rudimentary portability framework for C++ programs. There is
+     a lot of room for improvement here, in the future. Also a
+     framework for embedding text into your executable and handling
+     include files accross multiple directories.
+
+   * Support for writing portable software that uses both Fortran and
+     C++.
+
+   * Additional support for writing software documentation in Texinfo,
+     but also in LaTeX.
+   Autotools is still under development and there may still be bugs. At
+the moment Autotools doesn't do shared libraries, but that will change
+in the future.
+
+   This effort began by my attempt to write a tutorial for Autoconf. It
+involved into _"Learning Autoconf and Automake"_. Along the way I
+developed Autotools to deal with things that annoyed me or to cover
+needs from my own work. Ultimately I want this document to be both a
+unified introduction of the GNU build system as well as documentation
+for the Autotools package.
+
+   I believe that knowing these tools and having this know-how is very
+important, and should not be missed from engineering or science
+students who will one day go out and do software development for
+academic or industrial research.  Many students are incredibly
+undertrained in software engineering and write a lot of bad code.  This
+is very very sad because of all people, it is them that have the
+greatest need to write portable, robust and reliable code. I found from
+my own experience that moving away from Fortran and C, and towards C++
+is the first step in writing better code. The second step is to use the
+sophisticated GNU build system and use it properly, as described in
+this document.  Ultimately, I am hoping that this document will help
+people get over the learning curve of the second step, so they can be
+productive and ready to study the reference manuals that are distributed
+with all these tools.
+
+   This manual of course is still under construction. When I am done
+constructing it some paragraph somewhere will be inserted with the
+traditional run-down of summaries about each chapter. I write this
+manual in a highly non-linear way, so while it is under construction
+you will find that some parts are better-developed than others. If you
+wish to contribute sections of the manual that I haven't written or
+haven't yet developed fully, please contact me.
+
+   Chapters 1,2,3,4 are okey. Chapter 5 is okey to, but needs a little
+more work. I removed the other chapters to minimize confusion, but the
+sources for them are still being distributed as part of the Autotools
+package for those that found them useful. The other chapters need a lot
+of rewriting and they would do more harm than good at this point to the
+unsuspecting reader.  Please contact me if you have any suggestions for
+improving this manual.
+
+   Remarks by Marcelo: I am currentrly updating this manual to the last
+release of the autoconf/automake tools.
+
+
+File: tutorial.info,  Node: Acknowledgements,  Next: Copying,  Prev: Preface,  Up: Top
+
+Acknowledgements
+****************
+
+This document and the Autotools package have originally been written by
+Eleftherios Gkioulekas. Many people have further contributed to this
+effort, directly or indirectly, in various way. Here is a list of these
+people. Please help me keep it complete and exempt of errors.
+
+   * The appendix _Philosophical issues_ has been written by Richard
+     Stallman.  (*note Philosophical issues::)
+
+   * The chapter on Fortran, and the Autotools support for developing
+     software that is partly written in Fortran is derived from the
+     work of John Eaton on GNU Octave, which I mainly generalized for
+     use in other programs.  (*note Fortran with Autoconf::).
+
+   * Mark Galassi was the first person, to the best of my knowledge,
+     who tried to write an Autoconf tutorial. It is thanks to his work
+     that I was inspired to begin this work.
+
+   FIXME: _I need to start keeping track of acknowledgements here_
+
+
+File: tutorial.info,  Node: Copying,  Next: Introduction to the GNU build system,  Prev: Acknowledgements,  Up: Top
+
+Copying
+*******
+
+   The following notice refers to the Autotools package with which this
+document is being distributed.  The following notice refers to the
+Autotools package, which includes this documentation, as well as the
+source code for utilities like `acmkdir' and for additional Autoconf
+macros.  The complete GNU build system involves other packages also,
+such as "Autoconf", "Automake", "Libtool" and a few other accessories.
+These packages are also free software, and you can obtain them from the
+Free Software Foundation. For details on doing so, please visit their
+web site `http://www.fsf.org/'. Although Autotools has been designed to
+work with the GNU build system, it is not yet an official part of the
+GNU project.
+
+   The Autotools package is "free"; this means that everyone is free to
+use it and free to redistribute it on a free basis. The Autotools
+package is  not in the public domain; it is copyrighted and there are
+restrictions on its distribution, but these restrictions are designed
+to permit everything that a good cooperating citizen would want to do.
+What is not allowed is to try to prevent others from further sharing
+any version of this package that they might get from you.
+
+   Specifically, we want to make sure that you have the right to give
+away copies of the programs that relate to "Autotools", that you receive
+source code or else can get it if you want it, that you can change these
+programs or use pieces of them in new free programs, and that you know
+you can do these things.
+
+   To make sure that everyone has such rights, we have to forbid you to
+deprive anyone else of these rights.  For example, if you distribute
+copies of the "Autotools"-related code, you must give the recipients all
+the rights that you have.  You must make sure that they, too, receive or
+can get the source code.  And you must tell them their rights.
+
+   Also,  for our own protection, we must make certain that everyone
+finds out that there is no warranty for the programs that relate to
+"Autotools".  If these programs are modified by someone else and passed
+on, we want their recipients to know that what they have is not what we
+distributed, so that any problems introduced by others will not reflect
+on our reputation.
+
+   The precise conditions of the licenses for the programs currently
+being distributed that relate to "Autotools" are found in the General
+Public Licenses that accompany it.
+
+
+File: tutorial.info,  Node: Introduction to the GNU build system,  Next: Writing Good Programs,  Prev: Copying,  Up: Top
+
+Introduction to the GNU build system
+************************************
+
+* Menu:
+
+* Installing a GNU package::
+* Installing the GNU build system::
+* Hello world example::
+* Understanding the hello world example::
+* Using configuration headers::
+* Maintaining the documentation files::
+* Organizing your project in subdirectories::
+* Hello world with an attitude::
+* Tracking version numbers::
+
+
+File: tutorial.info,  Node: Installing a GNU package,  Next: Installing the GNU build system,  Prev: Introduction to the GNU build system,  Up: Introduction to the GNU build system
+
+Installing a GNU package
+========================
+
+   When you download an autoconfiguring package , it usually has a
+filename like: `foo-1.0.tar.gz' where the number is a "version number".
+To install it, first you have to unpack the package to a directory
+someplace:
+     % gunzip foo-1.0.tar.gz
+     % tar xf foo-1.0.tar
+   Then you enter the directory and look for files like `README' or
+`INSTALL' that explain what you need to do. Almost always this amounts
+to typing the following commands:
+     % cd foo-1.0
+     % ./configure
+     % make
+     % make check
+     % su
+     # make install
+
+The `configure' command invokes a shell script that is distributed with
+the package that configures the package for you automatically.  First
+it probes your system through a set of tests that allow it to determine
+things it needs to know, and then it uses this knowledge to generate
+automatically a `Makefile' from a template stored in a file called
+`Makefile.in'. When you invoke `make' with no argument, it executes the
+default target of the generated `Makefile'.  That target will compile
+your source code, but will not install it.  If your software comes with
+self-tests then you can compile and run them by typing `make check'.
+To install your software, you need to explicitly invoke `make' again
+with the target `install'. In order for `make' to work, you must make
+the directory where the `Makefile' is located the current directory.
+
+   During installation, the following files go to the following places:
+     Executables   -> /usr/local/bin
+     Libraries     -> /usr/local/lib
+     Header files  -> /usr/local/include
+     Man pages     -> /usr/local/man/man?
+     Info files    -> /usr/local/info
+
+where `foo' is the name of the package.  The `/usr/local' directory is
+called the "prefix". The default prefix is always `/usr/local' but you
+can set it to anything you like when you call `configure' by adding a
+`--prefix' option.  For example, suppose that you are not a privilidged
+user, so you can not install anything in `/usr/local', but you would
+still like to install the package for your own use. Then you can tell
+the `configure' script to install the package in your home directory
+`/home/username':
+     % ./configure --prefix=/home/username
+     % make
+     % make check
+     % make install
+
+The `--prefix' argument tells `configure' where you want to install
+your package, and `configure' will take that into account and build the
+proper makefile automatically.
+
+   The `configure' script is compiled by `autoconf' from the contents
+of a file called `configure.ac'. These files are very easy to maintain,
+and in this tutorial we will teach you how they work. The `Makefile.in'
+file is also compiled by `automake' from a very high-level specification
+stored in a file called `Makefile.am'. The developer then only needs to
+maintain `configure.ac' and `Makefile.am'. As it turns out, these are
+so much easier to work with than Makefiles and so much more powerful,
+that you will find that you will not want to go back to Makefiles ever
+again once you get the hang of it.
+
+   In some packages, the `configure' script supports many more options
+than just `--prefix'. To find out about these options you should
+consult the file `INSTALL' and `README' that are traditionally
+distributed with the package, and also look at `configure''s self
+documenting facility:
+     % configure --help
+
+Configure scripts can also report the version of Autoconf that generated
+them:
+     % configure --version
+
+The makefiles generated by `automake' support a few more targets for
+undoing the installation process to various levels. More specifically:
+   * If `configure' or `make' did it, `make distclean' undoes it.
+
+   * If `make' did it, `make clean' undoes it.
+
+   * If `make install' did it, `make uninstall' undoes it.
+
+   Also, in the spirit of free redistributable code, there are targets
+for cutting a source code distribution. If you type
+     % make dist
+
+it will rebuild the `foo-1.0.tar.gz' file that you started with.  If
+you modified the source, the modifications will be included in the
+distribution (and you should probably change the version number).
+Before putting a distribution up on FTP, you can test its integrity
+with:
+     % make distcheck
+
+This makes the distribution, then unpacks it in a temporary subdirectory
+and tries to configure it, build it, run the test-suite, and check if
+the installation script works. If everything is okey then you're told
+that your distribution is ready.
+
+   Once you go through this tutorial, you'll have the know-how you need
+to develop autoconfiguring programs with such powerful Makefiles.
+
+
+File: tutorial.info,  Node: Installing the GNU build system,  Next: Hello world example,  Prev: Installing a GNU package,  Up: Introduction to the GNU build system
+
+Installing the GNU build system
+===============================
+
+   It is not unusual to be stuck on a system that does not have the GNU
+build tools installed. If you do have them installed, check to see
+whether you have the most recent versions. To do that type:
+     % autoconf --version
+     % automake --version
+     % libtool --version
+
+If you don't have any of the above packages, you need to get a copy and
+install them on your computer. The distribution filenames for the GNU
+build tools, sans the version numbers, are:
+     autoconf-*.tar.gz
+     automake-*.tar.gz
+     libtool-*.tar.gz
+
+Before installing these packages however, you will need to install the
+following needed packages from the FSF:
+     make-*.tar.gz
+     m4-*.tar.gz
+     texinfo-*.tar.gz
+     tar-*.shar.gz
+
+You will need the GNU versions of `make', `m4' and `tar' even if your
+system already has native versions of these utilities.  To check
+whether you do have the GNU versions see whether they accept the
+`--version' flag. If you have proprietory versions of `make' or `m4',
+rename them and then install the GNU ones.  You will also need to
+install _Perl_, the _GNU C compiler_, and the _TeX_ typesetter.
+
+   It is important to note that the end user will only need a decent
+shell and a working `make' to build a source code distribution. The
+developer however needs to gather all of these tools in order to create
+the distribution.
+
+   Finally, to install _Autotoolset_ begin by installing the following
+additional utilities from FSF:
+     bash-*.tar.gz
+     sharutils-*.tar.gz
+
+and then install
+     autotools-*.tar.gz
+
+You should be able to obtain a copy of Autotoolset from the same site
+from which you received this document.
+
+   The installation process, for most of these tools is rather
+straightforward:
+     % ./configure
+     % make
+     % make check
+     % make install
+
+Most of these tools include documentation which you can build with
+     % make dvi
+
+Exceptions to the rule are Perl, the GNU C compiler and TeX which have
+a more complicated installation procedure. However, you are very likely
+to have these installed already.
+
+
+File: tutorial.info,  Node: Hello world example,  Next: Understanding the hello world example,  Prev: Installing the GNU build system,  Up: Introduction to the GNU build system
+
+Hello world example
+===================
+
+   To get started we will show you how to do the Hello world program
+using `autoconf' and `automake'. In the fine tradition of K&R, the C
+version of the hello world program is:
+     #include <stdio.h>
+     main()
+     {
+      printf("Howdy world!\n");
+     }
+
+Call this `hello.c' and place it under an empty directory.  Simple
+programs like this can be compiled and ran directly with the following
+commands:
+     % gcc hello.c -o hello
+     % hello
+
+If you are on a Unix system instead of a GNU system, your compiler might
+be called `cc' but the usage will be pretty much the same.
+
+   Now to do the same thing the `autoconf' and `automake' way create
+first the following files:
+
+`Makefile.am'
+          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+
+`configure.ac'
+          AC_INIT([Hello Program],[1.0],
+                  [Author Of The Program <aotp@zxcv.com>],
+                  [hello])
+          AC_CONFIG_AUX_DIR(config)
+          AM_INIT_AUTOMAKE([dist-bzip2])
+          AC_PROG_CC
+          AC_PROG_INSTALL
+          AC_CONFIG_FILES([Makefile])
+          AC_OUTPUT
+
+Now run `autoconf':
+     % aclocal
+     % autoconf
+
+This will create the shell script `configure'.  Next, create the config
+directory and run `automake':
+     % mkdir config
+     % automake -a
+     configure.ac: installing `config/install-sh'
+     configure.ac: installing `config/mkinstalldirs'
+     configure.ac: installing `config/missing'
+     Makefile.am: installing `./INSTALL'
+     Makefile.am: required file `./NEWS' not found
+     Makefile.am: required file `./README' not found
+     Makefile.am: installing `./COPYING'
+     Makefile.am: required file `./AUTHORS' not found
+     Makefile.am: required file `./ChangeLog' not found
+     Makefile.am: installing `config/depcomp'
+
+The first time you do this, you get a spew of messages.  It says that
+`automake' installed a whole bunch of cryptic stuff: `install-sh',
+`mkinstalldirs', `missing' and `decomp'. These are shell scripts that
+are needed by the makefiles that `automake' generates. You don't have
+to worry about what they do. It also complains that the following files
+are not around:
+     INSTALL, COPYING, NEWS, README, AUTHORS, ChangeLog
+
+These files are required to be present by the GNU coding standards, and
+we discuss them in detail in *Note Maintaining the documentation
+files::.  At this point, it is important to at least touch these files,
+otherwise if you attempt to do a `make distcheck' it will deliberately
+fail.  To make these files exist, type:
+     % touch NEWS README AUTHORS ChangeLog
+
+and to make Automake aware of the existence of these files, rerun it:
+     % automake -a
+
+You can assume that the generated `Makefile.in' is correct, only when
+Automake completes without any error messages.
+
+   Now the package is exactly in the state that the end-user will find
+it when person unpacks it from a source code distribution. For future
+reference, we will call this state "autoconfiscated".  Being in an
+autoconfiscated state means that, you are ready to type:
+     % ./configure
+     % make
+     % ./hello
+
+to compile and run the hello world program. If you really want to
+install it, go ahead and call the `install' target:
+     # make install
+
+To undo installation, that is to "uninstall" the package, do:
+     # make uninstall
+
+If you didn't use the `--prefix' argument to point to your home
+directory, or a directory in which you have permissions to write and
+execute, you may need to be superuser to invoke the install and
+uninstall commands.  If you feel like cutting a source code
+distribution, type:
+     make distcheck
+
+This will create a file called `hello-0.1.tar.gz' in the current
+working directory that contains the project's source code, and test it
+out to see whether all the files are actually included and whether the
+source code passes the regression test suite.
+
+   In order to do all of the above, you need to use the GNU `gcc'
+compiler. Automake depends on `gcc''s ability to compute dependencies.
+Also, the `distcheck' target requires GNiU make and GNU tar.
+
+   The GNU build tools assume that there are two types of hats that
+people like to wear: the "developer" hat and the "installer" hat.
+Developers develop the source code and create the source code
+distribution.  Installers just want to compile and install a source
+code distribution on their system. In the free software community, the
+same people get to wear either hat depending on what they want to do.
+If you are a developer, then you need to install the entire GNU build
+system, period (*note Installing the GNU build system::).  If you are
+an installer, then all you need to compile and install a GNU package is
+a minimal `make' utility and a minimal shell.  Any native Unix shell
+and `make' will work.
+
+   Both Autoconf and Automake take special steps to ensure that
+packages generated through the `distcheck' target can be easily
+installed with minimal tools. Autoconf generates `configure' shell
+scripts that use only portable Bourne shell features.  (_FIXME:
+Crossrefence: Portable shell programming_) Automake ensures that the
+source code is in an autoconfiscated state when it is unpacked. It also
+regenerates the makefiles before adding them to the distribution, such
+that the installer targets (`all', `install', `uninstall', `check',
+`clean', `distclean') do not depend on GNU make features. The
+regenerated makefiles also do not use the `gcc' cruft to compute
+dependencies.  Instead, precomputed dependencies are included in the
+regenerated makefiles, and the dependencies generation mechanism is
+disabled. This will allow the end-user to compile the package using a
+native compiler, if the GNU compiler is not available. For future
+reference we will call this the "installer state".
+
+   Now wear your installer hat, and install `hello-0.1.tar.gz':
+     % gunzip hello-0.1.tar.gz
+     % tar xf hello-0.1.tar
+     % cd hello-0.1
+     % configure
+     % make
+     % ./hello
+
+This is the full circle. The distribution compiles, and by typing `make
+install' it installs. If you need to switch back to the developer hat,
+then you should rerun `automake' to get regenerate the makefiles.
+
+   When you run the `distcheck' target, `make' will create the source
+code distribution `hello-0.1.tar.gz' _and_ it will pretend that it is
+an installer and see if it the distribution can be unpacked,
+configured, compiled and installed. It will also run the test suite, if
+one is bundled. If you would like to skip these tests, then run the
+`dist' target instead:
+     % make dist
+
+Nevertheless, running `distcheck' is extremely helpful in debugging
+your build cruft. Please never release a distribution without getting
+it through `distcheck'. If you make daily distributions for off-site
+backup, please do pass them through `distcheck'. If there are files
+missing from your distribution, the `distcheck' target will detect
+them. If you fail to notice such problems, then your backups will be
+incomplete leading you to a false sense of security.
+
+
+File: tutorial.info,  Node: Understanding the hello world example,  Next: Using configuration headers,  Prev: Hello world example,  Up: Introduction to the GNU build system
+
+Understanding the hello world example
+=====================================
+
+   When you made the `hello-0.1.tar.gz' distribution, most of the files
+were automatically generated. The only files that were actually written
+by your fingers were:
+`hello.c'
+          #include <stdio.h>
+          main()
+          {
+           printf("Howdy, world!\n");
+          }
+
+`Makefile.am'
+          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+
+`configure.ac'
+          AC_INIT([Hello Program],[1.0],
+                  [Author Of The Program <aotp@zxcv.com>],
+                  [hello])
+          AC_CONFIG_AUX_DIR(config)
+          AM_INIT_AUTOMAKE([dist-bzip2])
+          AC_PROG_CC
+          AC_PROG_INSTALL
+          AC_CONFIG_FILES([Makefile])
+          AC_OUTPUT
+
+   In this section we explain briefly what the files `Makefile.am' and
+`configure.ac' mean.
+
+   The language of `Makefile.am' is a "logic language". There is no
+explicit statement of execution. Only a statement of relations from
+which execution is inferred. On the other hand, the language of
+`configure.ac' is "procedural". Each line of `configure.ac' is a
+command that is executed.
+
+   Seen in this light, here's what the `configure.ac' commands shown do:
+   * The `AC_INIT' command process any command-line arguments and
+     perform various initializations and verifications. The first
+     parameter is the name of the package The second parameter is the
+     version of the package. The third parameter is optional and should
+     be an e-mail to which users should send bug reports. The fourth
+     parameter is also optional and is used when the name of the
+     generated tar file of the project differs from the first parameter.
+
+   * The `AC_CONFIG_AUX_DIR' command instructs autoconf/automake to
+     create their auxiliary scripts in an auxiliary directory. This
+     way, the root directory of the package is kept cleaner.
+
+   * The `AM_INIT_AUTOMAKE' performs some further initializations that
+     are related to the fact that we are using `automake'. The
+     parameter is a list of options that control the behavior of
+     automake.
+
+   * The `AC_PROG_CC' checks to see which C compiler you have.
+
+   * The `AC_PROG_INSTALL' checks to see whether your system has a BSD
+     compatible install utility. If not then it uses `install-sh' which
+     `automake' will install at the root of your package directory if
+     it's not there yet.
+
+   * The `AC_CONFIG_FILES' is a list of the files that should be
+     generated by the configure script, by processing other files,
+     usually with the same name, plus the extension ".in"
+
+   * The `AC_OUTPUT' tells the configure script to generate the files
+     specified in the list of `AC_CONFIG_FILES', usually this is to
+     generate the file `Makefile' from the file `Makefile.in'
+
+   The `Makefile.am' is more obvious. The first line specifies the name
+of the program we are building. The second line specifies the source
+files that compose the program.
+
+   For now, as far as `configure.ac' is concerned you need to know the
+following additional facts:
+   * If you are building a library, then your configure script must
+     determine how to handle `ranlib'. To do that, add the
+     `AC_PROG_RANLIB' command.
+
+   * If you want to have your makefiles call recursively makefiles at
+     subdirectories then the configure script needs to be told to find
+     out how to do that.  For this purpose you add the
+     `AC_PROG_MAKE_SET' command.
+
+   * If you have any makefiles in subdirectories you must also put them
+     in the `AC_CONFIG_FILES' statement like this:
+          AC_AC_CONFIG_FILES([
+                  Makefile
+                  dir1/Makefile
+                  dir2/Makefile
+                  ])
+
+
+   Now consider the commands that are used to build the hello world
+distribution:
+     % aclocal
+     % autoconf
+     % touch README AUTHORS NEWS ChangeLog
+     % mkdir config
+     % automake -a
+     configure.ac: installing `config/install-sh'
+     configure.ac: installing `config/mkinstalldirs'
+     configure.ac: installing `config/missing'
+     Makefile.am: installing `./INSTALL'
+     Makefile.am: installing `./COPYING'
+     Makefile.am: installing `config/depcomp'
+     % ./configure
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking whether build environment is sane... yes
+     checking for gawk... gawk
+     checking whether make sets $(MAKE)... yes
+     checking for gcc... gcc
+     checking for C compiler default output... a.out
+     checking whether the C compiler works... yes
+     checking whether we are cross compiling... no
+     checking for suffix of executables...
+     checking for suffix of object files... o
+     checking whether we are using the GNU C compiler... yes
+     checking whether gcc accepts -g... yes
+     checking for gcc option to accept ANSI C... none needed
+     checking for style of include used by make... GNU
+     checking dependency style of gcc... gcc3
+     checking for a BSD-compatible install... /usr/bin/install -c
+     configure: creating ./config.status
+     config.status: creating Makefile
+     config.status: executing depfiles commands
+     % make
+     source='hello.c' object='hello.o' libtool=no \
+     depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+     depmode=gcc3 /bin/sh ./config/depcomp \
+     gcc -DPACKAGE_NAME=\"Hello\ Program\" -DPACKAGE_TARNAME=\"hello\"
+        -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"Hello\ Program\ 1.0\"
+        -DPACKAGE_BUGREPORT=\"Author\ Of\ The\ Program\ \<aotp@zxcv.com\>\"
+        -DPACKAGE=\"hello\" -DVERSION=\"1.0\"  -I. -I.     -g -O2
+        -c `test -f 'hello.c' || echo './'`hello.c
+     gcc  -g -O2   -o hello  hello.o
+
+The first four commands bring the package in autoconfiscated state. The
+remaining two commands do the actual configuration and building. More
+specifically:
+   * The `aclocal' command installs a file called `aclocal.m4'.
+     Normally, in that file you are supposed to place the definitions
+     of any `autoconf' macros that you've written that happen to be in
+     use in `configure.ac'.  We will teach you how to write `autoconf'
+     macros later.  The `automake' utility uses the `AM_INIT_AUTOMAKE'
+     macro which is not part of the standard `autoconf' macros. For
+     this reason, it's definition needs to be placed in `aclocal.m4'.
+     If you call `aclocal' with no arguments then it will generate the
+     appropriate `aclocal.m4' file.  Later we will show you how to use
+     `aclocal' to also install your own `autoconf' macros.
+
+   * The `autoconf' command combines the `aclocal.m4' and
+     `configure.ac' files and produces the `configure' script.  And now
+     we are in bussiness.
+
+   * The `touch' command makes the files `README' and friends exist.
+     It is important that these files exist before calling Automake,
+     because Automake decides whether to include them in a distribution
+     by checking if they exist at the time that you invoke `automake'.
+     Automake _must_ decide to include these files, because when you
+     type `make distcheck' the presense of these files will be required.
+
+   * The `mkdir config' command is necessary to create the directory
+     specified in the `AC_CONFIG_AUX_DIR' command.
+
+   * The `automake' command compiles a `Makefile.in' file from
+     `Makefile.am' and the -a parameter makes it install various files
+     that are required either by the GNU coding standards or by the
+     makefile that will be generated, in case they are missing.
+
+   The `configure' script probes your platform and generates makefiles
+that are customized for building the source code on your platform. The
+specifics of how the probing should be done are programmed in
+`configure.ac'. The generated makefiles are based on templates that
+appear in `Makefile.in' files. In order for these templates to
+cooperate with `configure' and produce makefiles that conform to the
+GNU coding standards they need to contain a tedious amount of boring
+stuff. This is where Automake comes in. Automake generates the
+`Makefile.in' files from the more terse description in `Makefile.am'.
+As you have seen in the example, `Makefile.am' files can be very simple
+in simple cases. Once you have customized makefiles, your make utility
+takes over.
+
+
+File: tutorial.info,  Node: Using configuration headers,  Next: Maintaining the documentation files,  Prev: Understanding the hello world example,  Up: Introduction to the GNU build system
+
+Using configuration headers
+===========================
+
+   If you inspect the output of `make' while compiling the hello world
+example, you will see that the generated Makefile is passing `-D' flags
+to the compiler that define the macros `PACKAGE' and `VERSION'.  These
+macros are assigned the arguments that are passed to the
+`AM_INIT_AUTOMAKE' command in `configure.ac'.  One of the ways in which
+`configure' customizes your source code to a specific platform is by
+getting such C preprocessors defined. The definition is requested by
+appropriate commands in the `configure.ac'.  The `AM_INIT_AUTOMAKE'
+command is one such command.
+
+   The GNU build system by default implements C preprocessor macro
+definitions by passing `-D' flags to the compiler. When there is too
+many of these flags, we have two problems: the `make' output becomes
+hard to read, and more importantly we are running the risk of hitting
+the buffer limits of braindead Unix implementations of `make'. To work
+around this problem, you can ask Autoconf to use another approach in
+which all macros are defined in a special header file that is included
+in all the sources.  This header file is called a "configuration
+header".
+
+   A hello world program using this technique looks like this
+`configure.ac'
+          AC_INIT([Hello Program],[1.0],
+                  [Author Of The Program <aotp@zxcv.com>],
+                  [hello])
+          AC_CONFIG_AUX_DIR(config)
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE([dist-bzip2])
+          AC_PROG_CC
+          AC_PROG_INSTALL
+          AC_CONFIG_FILES([Makefile])
+          AC_OUTPUT
+
+`Makefile.am'
+          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+
+`hello.c'
+          #ifdef HAVE_CONFIG_H
+          #include <config.h>
+          #endif
+          
+          #include <stdio.h>
+          main()
+          {
+           printf("Howdy, partner!\n");
+          }
+
+To request the use of a configuration header we use the
+`AM_CONFIG_HEADER' command. The configuration header must be installed
+conditionally with the following three lines:
+     #if HAVE_CONFIG_H
+     #include <config.h>
+     #endif
+
+It is important that `config.h' is the first thing that gets included.
+Now autoconfiscate the source code by typing:
+     % aclocal
+     % autoconf
+     % autoheader
+     % touch NEWS README AUTHORS ChangeLog
+     % mkdir config
+     % automake -a
+     configure.ac: installing `config/install-sh'
+     configure.ac: installing `config/mkinstalldirs'
+     configure.ac: installing `config/missing'
+     Makefile.am: installing `./INSTALL'
+     Makefile.am: installing `./COPYING'
+     Makefile.am: installing `config/depcomp'
+
+It is important to type these commands in the order shown. The
+difference between this, and what we did in *Note Hello world example::
+is that we had to run a new program: `autoheader'. This program scans
+`configure.ac' and generates a template file `config.h.in' listing all
+the C preprocessor macros that might be defined and comments that should
+accompany the macros describing what they do. When you run `configure',
+it will load in `config.h.in' and use it to generate the final
+`config.h' that will be used by the source code during compilation.
+
+   Now you can go ahead and build the program:
+     % configure
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking whether build environment is sane... yes
+     checking for gawk... gawk
+     checking whether make sets $(MAKE)... yes
+     checking for gcc... gcc
+     checking for C compiler default output... a.out
+     checking whether the C compiler works... yes
+     checking whether we are cross compiling... no
+     checking for suffix of executables...
+     checking for suffix of object files... o
+     checking whether we are using the GNU C compiler... yes
+     checking whether gcc accepts -g... yes
+     checking for gcc option to accept ANSI C... none needed
+     checking for style of include used by make... GNU
+     checking dependency style of gcc... gcc3
+     checking for a BSD-compatible install... /usr/bin/install -c
+     configure: creating ./config.status
+     config.status: creating Makefile
+     config.status: creating config.h
+     config.status: executing depfiles commands
+     % make
+     make  all-am
+     make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello2'
+     source='hello.c' object='hello.o' libtool=no \
+     depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+     depmode=gcc3 /bin/sh ./config/depcomp \
+     gcc -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -c `test -f 'hello.c' ||
+        echo './'`hello.c
+     gcc  -g -O2   -o hello  hello.o
+     make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello2'
+
+Note that now instead of multiple `-D' flags, there is only one such
+flag passed: `-DHAVE_CONFIG_H'. Also, appropriate `-I' flags are passed
+to make sure that `hello.c' can find and include `config.h'.  To test
+the distribution, type:
+     % make distcheck
+     ......
+     ========================
+     hello-0.1.tar.gz is ready for distribution
+     ========================
+
+and it should all work out.
+
+   The `config.h' files go a long way back in history. In the past,
+there used to be packages where you would have to manually edit
+`config.h' files and adjust the macros you wanted defined by hand. This
+made these packages very difficult to install because they required
+intimate knowledge of your operating system. For example, it was not
+unusual to see a comment saying _"if your system has a broken vfork,
+then define this macro"_.  Many installers found this frustrating
+because they didn't really know how to configure the esoteric details
+of the `config.h' files.  With autoconfiscated source code all of these
+details can be taken care of automatically, shifting this burden from
+the installer to the developer where it belongs.
+

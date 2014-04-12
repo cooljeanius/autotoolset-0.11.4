@@ -1,0 +1,78 @@
+This is Info file gnits.info, produced by Makeinfo version 1.68 from
+the input file gnits.texi.
+
+START-INFO-DIR-ENTRY
+* Gnits: (gnits).                Gnits Standards.
+END-INFO-DIR-ENTRY
+
+   Gnits Standards Copyright (C) 1996 Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+
+
+Indirect:
+gnits.info-1: 932
+gnits.info-2: 48156
+
+Tag Table:
+(Indirect)
+Node: Top932
+Node: Preface4008
+Node: Intellectual Property7953
+Node: Reading Non-Free Code8365
+Node: Contributions9411
+Node: Copyright Notices11642
+Node: Design Advice13538
+Node: Program Behavior13743
+Node: Semantics14333
+Node: Libraries14529
+Node: Errors14701
+Node: User Interfaces15317
+Node: File Arguments15714
+Node: Version Output16301
+Node: Help Output18673
+Node: Option Table31877
+Node: Memory Usage32080
+Node: Writing C32241
+Node: Formatting32965
+Node: Comments33157
+Node: Syntactic Conventions34698
+Node: Names35799
+Node: System Portability36004
+Node: CPU Portability36233
+Node: System Functions36451
+Node: Internationalization36673
+Node: Documentation37327
+Node: GNU Manuals39075
+Node: Manual Structure Details39370
+Node: NEWS File40226
+Node: Change Logs40409
+Node: Man Pages40577
+Node: Reading other Manuals41514
+Node: README file41734
+Node: AUTHORS file43762
+Node: THANKS file44422
+Node: Managing Releases46711
+Node: Configuration47062
+Node: Makefile Conventions47295
+Node: Makefile Basics47901
+Node: Utilities in Makefiles48156
+Node: Command Variables55301
+Node: Directory Variables55561
+Node: Standard Targets56528
+Node: Install Command Categories67294
+Node: Releases67533
+
+End Tag Table

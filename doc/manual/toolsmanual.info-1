@@ -1,0 +1,1081 @@
+This is toolsmanual.info, produced by makeinfo version 4.2 from
+toolsmanual.texi.
+
+INFO-DIR-SECTION Development
+START-INFO-DIR-ENTRY
+* toolsmanual: (toolsmanual).      Developing software with GNU
+END-INFO-DIR-ENTRY
+
+
+File: toolsmanual.info,  Node: Top,  Next: Preface,  Prev: (dir),  Up: (dir)
+
+Developing software with GNU
+****************************
+
+   This manual is a tutorial introduction to the GNU development tools,
+which include Emacs, Make, Automake, Autoconf, Libtool, Gettext, and
+Texinfo.  All of these tools are introduced in this manual to help you
+become a contributing member of the free software community.
+
+* Menu:
+
+* Preface::
+* Copying::
+* Acknowledgements::
+* Installing GNU software::
+* Using GNU Emacs::
+* Compiling with Makefiles::
+* The GNU build system::
+* Using Automake::
+* Using Libtool::
+* Using C effectively::
+* Using Fortran effectively::
+* Internationalization::
+* Maintaining Documentation::
+* Portable shell programming::
+* Writing Autoconf macros::
+* Legal issues with Free Software::
+* Philosophical issues::
+* Licensing Free Software::
+* GNU GENERAL PUBLIC LICENSE::
+
+ --- The Detailed Node Listing ---
+
+Installing GNU software
+
+* Installing a GNU package::
+* The Makefile standards::
+* Configuration options::
+* Doing a VPATH build::
+* Making a binary distribution::
+
+Using GNU Emacs
+
+* Installing GNU Emacs::
+* Basic Emacs concepts::
+* Configuring GNU Emacs::
+* Using vi emulation::
+* Navigating source code::
+* Using Emacs as an email client::
+* Handling patches::
+* Inserting copyright notices with Emacs::
+* Hacker sanity with Emacs::
+* Further reading on Emacs::
+
+Compiling with Makefiles
+
+* Compiling simple programs::
+* Programs with many source files::
+* Building libraries::
+* Dealing with header files::
+* The GPL and libraries::
+* The language runtime libraries::
+* Basic Makefile concepts::
+* More about Makefiles::
+
+The GNU build system
+
+* Introducing the GNU tools::
+* Installing the GNU build system::
+* Hello world example with Autoconf and Automake::
+* Understanding the hello world example::
+* Using configuration headers::
+* Maintaining the documentation files::
+* Organizing your project in subdirectories::
+* Applying the GPL::
+* Handling version numbers::
+* Hello world with acmkdir::
+
+Using Automake
+
+* Simple use of Automake::
+* General Automake principles::
+* Installation standard directories::
+* Libraries with Automake::
+* Applications with Automake::
+* Dealing with built sources::
+* Embedded text with Automake::
+* Scripts with Automake::
+* Emacs Lisp with Automake::
+* Guile with Automake::
+* Data files with Automake::
+
+Using Fortran effectively
+
+* Fortran compilers and linkage::
+* Walkthrough a simple example::
+* Portability problems with Fortran::
+* Other Fortran dialects::
+* Popular free software in Fortran::
+
+Maintaining Documentation
+
+* Browsing documentation::
+* Writing proper manuals::
+* Introduction to Texinfo::
+* Markup in Texinfo::
+* GNU Emacs support for Texinfo::
+* Writing man pages::
+* Writing documentation with LaTeX::
+* Creating a LaTeX package::
+* Further reading about LaTeX::
+
+Legal issues with Free Software
+
+* Understanding Copyright::
+* Software patents::
+* Export restrictions on encryption software::
+
+Philosophical issues
+
+* The Right to Read::
+* What is Free Software::
+* Why software should not have owners::
+* Why free software needs free documentation::
+* Categories of software::
+* Confusing words::
+
+Licensing Free Software
+
+* What is Copyleft::
+* Why you should use the GPL::
+* The LGPL vs the GPL::
+
+
+File: toolsmanual.info,  Node: Preface,  Next: Copying,  Prev: Top,  Up: Top
+
+Preface
+*******
+
+   The GNU project was founded in 1984 by Richard Stallman in response
+to the increasing obstacles to cooperation imposed on the computing
+community by the owners of proprietary software. The goal of the GNU
+project is to remove these obstacles by developing a complete software
+system, named GNU (1) and distributing it as free software. GNU is not
+about software that costs $0. It is about software that gives to all
+its users the freedom to use, modify and redistribute it. These
+freedoms are essential to building a community based on cooperation and
+the open sharing of ideas.
+
+   Today, millions of people use GNU/Linux, a combination of the GNU
+system and the popular Linux kernel that was developed since 1991 by
+Linus Torvalds and a group of volunteers.  The GNU project's kernel,
+the Hurd, is also in service but it is not yet sufficiently developed
+for widespread use. Technically, Unix and GNU have many similarities,
+and it is very easy to port software from Unix to GNU or use GNU
+software on Unix systems.
+
+   Because GNU is a community effort, it provides very powerful
+development tools that enable every user to contribute to the community
+by writing free software. The GNU development tools include the "GNU
+compilers", the "GNU build system" and "Emacs".  Proprietary systems
+often do not bundle such tools with their distributions because their
+developers regard the users as a market that buys software licenses and
+treats the computer as an appliance.  (2)
+
+   This manual will introduce you to the development tools that are used
+in the GNU system. These tools can also be used to develop software with
+GNU/Linux and Unix.  This manual will not teach you how to use C, or
+any other programming language. It is assumed that you are already
+familiar with C. This manual will also not cover every detail about the
+tools that we discuss.  Each tool has its own reference manual, and you
+should also read these manuals, sooner or later, if you want to learn
+more. This manual aims to be a practical introduction to the GNU
+development tools that will show you how to use them together to
+accomplish specific common tasks.  The intended audience is a
+programmer that has learned programming in C, and would now like to
+learn everything else that person needs to know to develop software
+that conforms to the GNU coding standards. So, we will tell you what to
+need to know, and then you can read the specific reference manuals to
+learn everything that you can possibly learn.
+
+Note on terminology
+===================
+
+   There is a growing concern among womyn that there are important
+gender issues with the English language. As a result, it became common
+to use terms such as "chairperson" instead of "chairman".  In this
+manual we will use the words "person", "per", "pers" and "perself".
+These words are used just like the words she, her, hers, herself. For
+example, we will say: "person wrote a manual to feel good about
+perself, and to encourage per potential significant other's heart to
+become pers". These terms were introduced, and perhaps invented, by
+Marge Piercy, and have been first used in software documentation and
+email correspondance by Richard Stallman.  By using these terms, we
+hope to make this manual less threatening to womyn and to encourage our
+womyn readers to join the free software community.
+
+Roadmap to manual
+=================
+
+   This manual was written as a tutorial and not a reference manual, so
+in general, it works to read the chapters in the order in which they
+are presented. If you came fresh from your CS courses with a good
+knowledge of C, but have learned nothing about the GNU development
+tools, reading all the chapters in order is probably what you should do.
+However, if you are already familiar with some of the topics that we
+discuss, you might want to skip a few chapters to get to the material
+that is new to you.
+
+   For example, many readers are already familiar with Emacs and
+Makefiles, and they just want to get started with learning about
+Autoconf and Automake. In that case, you can skip to *Note The GNU
+build system::, and start reading from there.  If you are a vi user and
+are not interested in learning Emacs, please reconsider (*note Using vi
+emulation::). You will find some of the other development tools,
+especially the Texinfo documentation system, much easier to use with
+Emacs than without it.
+
+   Here's a brief outline of the chapters in this manual, and what is
+covered by each chapter.
+   * *Note Installing GNU software::, explains how to install free
+     software that is distributed in autoconfiguring source
+     distributions. The rest of the manual will tell you what you need
+     to know to make your software autoconfiguring as well.
+
+   * *Note Using GNU Emacs::, shows you how to install and configure
+     Emacs, and how to use it to develop and maintain your software.
+
+   * *Note Compiling with Makefiles::, introduces the compiler and the
+     `make' utility and explains how to write Makefiles.
+
+   * *Note The GNU build system::, explains how to develop simple
+     programs with Automake and Autoconf.
+
+   * *Note Using Automake::, explains in a lot more detail how to write
+     sophisticated `Makefile.am' files.
+
+   * *Note Using Libtool::, explains how to use Libtool to write
+     portable source distributions that compile shared libraries both
+     on GNU and Unix.
+
+   * *Note Using C effectively::, explains how to make the best use of
+     the GNU build system to develop C programs.
+
+   * *Note Using Fortran effectively::, explains how to write programs
+     that use both Fortran and C.
+
+   * *Note Internationalization::, explains how to write programs whose
+     user interface can be translated to foreign languages.
+
+   * *Note Maintaining Documentation::, explains how to document your
+     software using Texinfo, LaTeX and man pages.
+
+   * *Note Portable shell programming::, explains how to write portable
+     shell scripts. This is essential to writing your own Autoconf
+     macros.
+
+   * *Note Writing Autoconf macros::, explains how to write your own
+     Autoconf macros.
+
+   * *Note Legal issues with Free Software::, discusses legal issues
+     such as software copyrights, patents and governmental stupidity.
+     Understanding these issues is essential in keeping your free
+     software free and protecting it from hoarders. If you are
+     publishing free software to our community it is very important to
+     understand the law, even if in your country copyrights and patents
+     are not strictly enforced.
+
+   * *Note Philosophical issues::, is a collection of articles by
+     Richard Stallman that discuss the free software philosophy. Our
+     philosophy is very important, because it is what will motivate us
+     to keep free software free, and defend our freedom now that the
+     free software movement has been noticed by the mainstream media.
+
+   * *Note Licensing Free Software::, is another collection of articles
+     that contain advice about licensing free software. Most of these
+     articles, except for one, have also been written by Richard
+     Stallman.
+
+   ---------- Footnotes ----------
+
+   (1) The acronym GNU means, "GNU's Not Unix"
+
+   (2) One very popular operating system actually bundles advertising
+icons on the standard configuration of their desktop system. This is
+sick.
+
+
+File: toolsmanual.info,  Node: Copying,  Next: Acknowledgements,  Prev: Preface,  Up: Top
+
+Copying
+*******
+
+   This book that you are now reading is actually free. The information
+in it is freely available to anyone. The machine readable source code
+for the book is freely distributed on the internet and anyone may take
+this book and make as many copies as they like. (take a moment to check
+the copying permissions on the Copyright page). If you paid money for
+this book, what you actually paid for was the book's nice printing and
+binding, and the publisher's associated costs to produce it.
+
+   The _GNU development tools_ include Automake, Autoconf, Libtool,
+Make, Emacs, Texinfo and the GNU C and C++ compilers. These programs
+are "free"; this means that everyone is free to use them and free to
+redistribute them on a free basis. These programs are not in the public
+domain; they are copyrighted and there are restrictions on their
+distribution, but these restrictions are designed to permit everything
+that a good cooperating citizen would want to do. What is not allowed
+is to try to prevent others from further sharing any version of these
+programs that they might get from you.
+
+   Specifically, we want to make sure that you have the right to give
+away copies of the programs and documents that relate to them, that you
+receive source code or else can get it if you want it, that you can
+change these programs or use pieces of them in new free programs, and
+that you know you can do these things.
+
+   To make sure that everyone has such rights, we don't allow you to
+deprive anyone else of these rights. For example, if you distribute
+copies of the code related to the _GNU development tools_, you must
+give the recipients all the rights that you have. You must make sure
+that they, too, can get the source code. And you must tell them their
+rights.
+
+   Also for our own protection, we must make certain that everyone
+finds out that there is no warranty for the programs that relate to the
+_GNU development tools_. If these programs are modified by someone else
+and passed on, we want their recipients to know that what they have is
+not what we distributed, so that any problems introduced by others will
+not reflect on our reputation.
+
+   The precise conditions of the licenses for the _GNU development
+tools_ are found in the General Public Licenses that accompany them.
+
+
+File: toolsmanual.info,  Node: Acknowledgements,  Next: Installing GNU software,  Prev: Copying,  Up: Top
+
+Acknowledgements
+****************
+
+   This manual was written and is being maintained by Eleftherios
+Gkioulekas.  Many people have contributed to this effort in various
+ways. Here is a list of these contributions. Please help me keep it
+complete and exempt of errors.
+
+   * *Note Philosophical issues::, and *Note Licensing Free Software::,
+     were written by Richard Stallman. Richard has also contributed
+     many useful review comments and helped me with the legal paperwork.
+
+   * *Note Installation standard directories::, was adapted from `The
+     GNU coding standards'.
+
+   * *Note Maintaining the documentation files::, was adapted from an
+     unfinished draft of `The GNITS coding standards', which was
+     developed by the members of the GNITS-pickers gang: Francois
+     Pinard, Tom Tromey, Jim Meyering, Aharon Robbins, Ulrich Drepper,
+     Karl Berry, Greg McGary.
+
+   * Most of the material in *Note Using Fortran effectively::, is based
+     on my studying of GNU Octave's source code, written by John Eaton.
+     John is the first free software developer, to the best of my
+     knowledge, that has written an extensive project that combines
+     Fortran, C and C++ so effectively.
+
+
+File: toolsmanual.info,  Node: Installing GNU software,  Next: Using GNU Emacs,  Prev: Acknowledgements,  Up: Top
+
+Installing GNU software
+***********************
+
+   Free software is distributed in source code distributions. Many of
+these programs are difficult to install because they use system
+dependent features, and they require the user to edit makefiles and
+configuration headers.  By contrast, the software distributed by the
+GNU project is "autoconfiguring"; it is possible to compile it from
+source code and install it automatically, without any tedious user
+intervention.
+
+   In this chapter we discuss how to compile and install
+autoconfiguring software written by others. In the subsequent chapters
+we discuss how to use the development tools that allow you to make your
+software autoconfiguring as well.
+
+* Menu:
+
+* Installing a GNU package::
+* The Makefile standards::
+* Configuration options::
+* Doing a VPATH build::
+* Making a binary distribution::
+
+
+File: toolsmanual.info,  Node: Installing a GNU package,  Next: The Makefile standards,  Prev: Installing GNU software,  Up: Installing GNU software
+
+Installing a GNU package
+========================
+
+   Autoconfiguring software is distributed with packaged source code
+distributions. These are big files with filenames of the form:
+     PACKAGE-VERSION.tar.gz
+
+For example, the file `autoconf-2.13.tar.gz' contains version 2.13 of
+GNU Autoconf.  We often call these files "source distributions";
+sometimes we simply call them "packages".
+
+   The steps for installing an autoconfiguring source code distribution
+are simple, and if the distribution is not buggy, can be carried out
+without substantial user intervention.
+  1. First, you have to unpack the package to a directory:
+          % gunzip foo-1.0.tar.gz
+          % tar xf foo-1.0.tar
+     This will create the directory `foo-1.0' which contains the
+     package's source code and documentation. Look for the files
+     `README' to see if there's anything that you should do next. The
+     `README' file might suggest that you need to install other
+     packages before installing this one, or it might suggest that you
+     have to do unusual things to install this package. If the source
+     distribution conforms to the GNU coding standards, you will find
+     many other documentation files like `README'.  *Note Maintaining
+     the documentation files::, for an explanation of what these files
+     mean.
+
+  2. Configure the source code. Once upon a time that used to mean that
+     you have to edit makefiles and header files. In the wonderful
+     world of Autoconf, source distributions provide a `configure'
+     script that will do that for you automatically. To run the script
+     type:
+          % ./configure
+
+  3. Now you can compile the source code. Type:
+          % cd foo-1.0
+          % make
+
+     and if the program is big, you can make some coffee. After the
+     program compiles, you can run its regression test-suite, if it has
+     one, by typing
+          % make check
+
+  4. If everything is okey, you can install the compiled distribution
+     with:
+          % su
+          # make install
+
+   The `make' program launches the shell commands necessary for
+compiling, testing and installing the package from source code.
+However, `make' has no knowledge of what it is really doing. It takes
+its orders from "makefiles", files called `Makefile' that have to be
+present in every subdirectory of your source code directory tree. From
+the installer perspective, the makefiles define a set of "targets" that
+correspond to things that the installer wants to do. The default target
+is always compiling the source code, which is what gets invoked when
+you simply run `make'.  Other targets, such as `install', `check' need
+to be mentioned explicitly. Because `make' takes its orders from the
+makefile in the current directory, it is important to run it from the
+correct directory. *Note Compiling with Makefiles::, for the full story
+behind `make'.
+
+   The `configure' program is a shell script that probes your system
+through a set of tests to determine things that it needs to know, and
+then uses the results to generate `Makefile' files from templates stored
+in files called `Makefile.in'. In the early days of the GNU project,
+developers used to write `configure' scripts by hand. Now, no-one ever
+does that any more. Now, `configure' scripts are automatically
+generated by GNU Autoconf from an input file `configure.in'.  GNU
+Autoconf is part of the GNU build system and we first introduce in in
+*Note The GNU build system::.
+
+   As it turns out, you don't have to write the `Makefile.in' templates
+by hand either. Instead you can use another program, GNU Automake, to
+generate `Makefile.in' templates from higher-level descriptions stored
+in files called `Makefile.am'. In these files you describe what is
+being created by your source code, and Automake computes the makefile
+targets for compiling, installing and uninstalling it. Automake also
+computes targets for compiling and running test suites, and targets for
+recursively calling `make' in subdirectories. The details about
+Automake are first introduced in *Note Using Automake::.
+
+
+File: toolsmanual.info,  Node: The Makefile standards,  Next: Configuration options,  Prev: Installing a GNU package,  Up: Installing GNU software
+
+The Makefile standards
+======================
+
+   The "GNU coding standards" are a document that describes the
+requirements that must be satisfied by all GNU programs. These
+requirements are driven mainly by technical ocnsiderations, and they
+are excellent advice for writing good software. The "makefile
+standards", a part of the GNU coding standards, require that your
+makefiles do a lot more than simply compile and install the software.
+
+   One requirement is "cleaning targets"; these targets remove the files
+that were generated while installing the package and restore the source
+distribution to a previous state. There are three cleaning targets that
+corresponds to three levels of cleaning: `clean', `distclean',
+`maintainer-clean'.
+`clean'
+     Cleans up all the files that were generated by `make' and `make
+     check', but not the files that were generated by running
+     `configure'. This targets cleans the build, but does not undo the
+     source configuration by the configure script.
+
+`distclean'
+     Cleans up all the files generated by `make' and `make check', but
+     also cleans the files that were generated by running `configure'.
+     As a result, you can not invoke any other make targets until you
+     run the configure script again. This target reverts your source
+     directory tree back to the state in which it was when you first
+     unpacked it.
+
+`maintainer-clean'
+     Cleans up all the files that `distclean' cleans. However it also
+     removes files that the developers have automatically generated
+     with the GNU build system. Because users shouldn't need the entire
+     GNU build system to install a package, these files should not be
+     removed in the final source distribution.  However, it is
+     occasionally useful for the maintainer to remove and regenerate
+     these files.
+
+   Another type of cleaning that is required is erasing the package
+itself from the installation directory; "uninstalling" the package. To
+uninstall the package, you must call
+     % make uninstall
+
+from the toplevel directory of the source distribution. This will work
+only if the source distribution is configured first. It will work best
+only if you do it from the same source distribution, with the same
+configuration, that you've used to install the package in the first
+place.
+
+   When you install GNU software, archive the source code to all the
+packages that you install in a directory like `/usr/src' or
+`/usr/local/src'.  To do that, first run `make clean' on the source
+distribution, and then use a recursive copy to copy it to `/usr/src'.
+The presense of a source distribution in one of these directories
+should be a signal to you that the corresponding package is currently
+installed.
+
+   Francois Pinard came up with a cute rule for remembering what the
+cleaning targets do:
+   * If `configure' or `make' did it, `make distclean' undoes it.
+
+   * If `make' did it, `make clean' undoes it.
+
+   * If `make install' did it, `make uninstall' undoes it.
+
+   * If _you_ did it, `make maintainer-clean' undoes it.
+
+   GNU standard compliant makefiles also have a target for generating
+"tags".  Tags are files, called `TAGS', that are used by GNU Emacs to
+allow you to navigate your source distribution more efficiently.  More
+specifically, Emacs uses tags to take you from a place where a C
+function is being used in a file, to the file and line number where the
+function is defined. To generate the tags call:
+     % make tags
+
+Tags are particularly useful when you are not the original author of the
+code you are working on, and you haven't yet memorized where everything
+is.  *Note Navigating source code::, for all the details about
+navigating large source code trees with Emacs.
+
+   Finally, in the spirit of free redistributable code, there must be
+targets for cutting a source code distribution. If you type
+     % make dist
+
+it will rebuild the `foo-1.0.tar.gz' file that you started with.  If
+you modified the source, the modifications will be included in the
+distribution (and you should probably change the version number).
+Before putting a distribution up on FTP, you can test its integrity
+with:
+     % make distcheck
+
+This makes the distribution, then unpacks it in a temporary subdirectory
+and tries to configure it, build it, run the test-suite, and check if
+the installation script works. If everything is okey then you're told
+that your distribution is ready.
+
+   Writing reliable makefiles that support all of these targets is a
+very difficult undertaking. This is why we prefer to generate our
+makefiles instead with GNU Automake.
+
+
+File: toolsmanual.info,  Node: Configuration options,  Next: Doing a VPATH build,  Prev: The Makefile standards,  Up: Installing GNU software
+
+Configuration options
+=====================
+
+   The `configure' script accepts many command-line flags that modify
+its behaviour and the configuration of your source distribution. To
+obtain a list of all the options that are available type
+     % ./configure --help
+
+on the shell prompt.
+
+   The most useful parameter that the installer controls during
+configuration is the directory where they want the package to be
+installed.  During installation, the following files go to the
+following directories:
+     Executables   ==> /usr/local/bin
+     Libraries     ==> /usr/local/lib
+     Header files  ==> /usr/local/include
+     Man pages     ==> /usr/local/man/man?
+     Info files    ==> /usr/local/info
+
+The `/usr/local' directory is called the "prefix". The default prefix
+is always `/usr/local' but you can set it to anything you like when you
+call `configure' by adding a `--prefix' option.  For example, suppose
+that you are not a privilidged user, so you can not install anything in
+`/usr/local', but you would still like to install the package for your
+own use. Then you can tell the `configure' script to install the
+package in your home directory `/home/USERNAME':
+     % ./configure --prefix=/home/USERNAME
+     % make
+     % make check
+     % make install
+
+The `--prefix' argument tells `configure' where you want to install
+your package, and `configure' will take that into account and build the
+proper makefile automatically.
+
+   If you are installing the package on a filesystem that is shared by
+computers that run variations of GNU or Unix, you need to install the
+files that are independent of the operating system in a shared
+directory, but separate the files that are dependent on the operating
+systems in different directories. Header files and documentation can be
+shared. However, libraries and executables must be installed
+separately. Usually the scheme used to handle such situations is:
+     Executables   ==> /usr/local/SYSTEM/bin
+     Libraries     ==> /usr/local/SYSTEM/lib
+     Header files  ==> /usr/local/include
+     Man pages     ==> /usr/local/man/manN
+     Info files    ==> /usr/local/info
+
+The directory `/var/local/SYSTEM' is called the "executable prefix",
+and it is usually a subdirectory of the prefix.  In general, it can be
+any directory. If you don't specify the executable prefix, it defaults
+to being equal to the prefix. To change that, use the `--exec-prefix'
+flag.  For example, to configure for a GNU/Linux system, you would run:
+     % configure --exec-prefix=/usr/local/linux
+
+To configure for GNU/Hurd, you would run:
+     % configure --exec-prefix=/usr/local/hurd
+
+   In general, there are many directories where a package may want to
+install files. Some of these directories are controlled by the prefix,
+where others are controlled by the executable prefix.  *Note
+Installation standard directories::, for a complete discussion of what
+these directories are, and what they are for.
+
+   Some packages allow you to enable or disable certain features while
+you configure the source code. They do that with flags of the form:
+        --with-PACKAGE   --enable-FEATURE
+     --without-PACKAGE  --disable-FEATURE
+
+The `--enable' flags usually control whether to enable certain optional
+features of the package. Support for international languages, debugging
+features, and shared libraries are features that are usually controlled
+by these options.  The `--with' flags instead control whether to
+compile and install certain optional components of the package.  The
+specific flags that are available for a particular source distribution
+should be documented in the `README' file.
+
+   Finally, `configure' scripts can be passed parameters via environment
+variables. One of the things that `configure' does is decide what
+compiler to use and what flags to pass to that compiler. You can
+overrule the decisions that `configure' makes by setting the flags `CC'
+and `CFLAGS'. For example, to specify that you want the package to
+compile with full optimization and without any debugging symbols (which
+is a bad idea, yet people want to do it):
+     % export CFLAGS="-O3"
+     % ./configure
+
+To tell `configure' to use the system's native compiler instead of
+`gcc', and compile without optimization and with debugging symbols:
+     % export CC="cc"
+     % export CFLAGS="-g"
+     % ./configure
+
+This assumes that you are using the `bash' shell as your default shell.
+If you use the `csh' or `tcsh' shellls, you need to assign environment
+variables with the `setenv' command instead. For example:
+     % setenv CFLAGS "-O3"
+     % ./configure
+
+Similarly, the flags `CXX', `CXXFLAGS' control the C++ compiler.
+
+
+File: toolsmanual.info,  Node: Doing a VPATH build,  Next: Making a binary distribution,  Prev: Configuration options,  Up: Installing GNU software
+
+Doing a VPATH build
+===================
+
+   Autoconfiguring source distributions also support vpath builds. In a
+vpath build, the source distribution is stored in a, possibly read-only,
+directory, and the actual building takes place in a different directory
+where all the generated files are being stored. We call the first
+directory, the "source tree", and the second directory the "build
+tree". The build tree may be a subdirectory of the source tree, but it
+is better if it is a completely separate directory.
+
+   If you, the developer, use the standard features of the GNU build
+system, you don't need to do anything special to allow your packages to
+support vpath builds. The only exception to this is when you define
+your own make rules (*note General Automake principles::). Then you
+have to follow certain conventions to allow vpath to work correctly.
+
+   You, the installer, however do need to do something special. You need
+to install and use GNU make. Most Unix make utilities do not support
+vpath builds, or their support doesn't work. GNU make is extremely
+portable, and if vpath is important to you, there is no excuse for not
+installing it.
+
+   Suppose that `/sources/foo-0.1' contains a source distribution, and
+you want to build it in the directory `/build/foo-0.1'.  Assuming that
+both directories exist, all you have to do is:
+     % cd /build/foo-0.1
+     % /sources/foo-0.1/configure ...OPTIONS...
+     % make
+     % make check
+     % su
+     # make install
+
+The configure script and the generated makefiles will take care of the
+rest.
+
+   vpath builds are prefered by some people for the following reasons:
+  1. They prevent the build process form cluttering your source
+     directory with all sorts of build files.
+
+  2. To remove a build, all you have to do is remove the build
+     directory.
+
+  3. You can build the same source multiple times using different
+     options.  This is very useful if you would like to write a script
+     that will run the test suite for a package while the package is
+     configured in many different ways (e.g. different features,
+     different compiler optimization, and so on). It is also useful if
+     you would like to do the same with releasing binary distributions
+     of the source.
+        Some developers like to use vpath builds all the time. Others
+use them only when necessary.  In general, if a source distribution
+builds with a vpath build, it also builds under the ordinary build. The
+opposite is not true however.  This is why the `distcheck' target
+checks if your distribution is correct by attempting a vpath build.
+
+
+File: toolsmanual.info,  Node: Making a binary distribution,  Prev: Doing a VPATH build,  Up: Installing GNU software
+
+Making a binary distribution
+============================
+
+   After compiling a source distribution, instead of installing it, you
+can make a snapshot of the files that it would install and package that
+snapshot in a tarball. It is often convenient to the installers to
+install from such snapshots rather than compile from source, especially
+when the source is extremely large, or when the amount of packages that
+they need to install is large.
+
+   To create a binary distribution run the following commands as root:
+     # make install DESTDIR=/tmp/dist
+     # tar -C /tmp/dist -cvf PACKAGE-VERSION.tar
+     # gzip -9 PACKAGE-VERSION.tar
+
+The variable `DESTDIR' specifies a directory, alternative to root, for
+installing the compiled package. The directory tree under that directory
+is the exact same tree that would have normally been installed.  Why
+not just specify a different prefix? Because very often, the prefix
+that you use to install the software affects the contents of the files
+that actually get installed.
+
+   Please note that under the terms of the GNU General Public License,
+if you distribute your software as a binary distribution, you also need
+to provide the corresponding source distribution. The simplest way to
+comply with this requirement is to distribute both distributions
+together.
+
+
+File: toolsmanual.info,  Node: Using GNU Emacs,  Next: Compiling with Makefiles,  Prev: Installing GNU software,  Up: Top
+
+Using GNU Emacs
+***************
+
+   Emacs is an environment for running Lisp programs that manipulate
+text interactively. To call Emacs merely an "editor" does not do it
+justice, unless you redefine the word "editor" to the broadest meaning
+possible. Emacs is so extensive, powerful and flexible, that you can
+almost think of it as a self-contained "operating system" in its own
+right.
+
+   Emacs is a very important part of the GNU development tools because
+it provides an integrated environment for software development.  The
+simplest thing you can do with Emacs is edit your source code.
+However, you can do a lot more than that. You can run a debugger, and
+step through your program while Emacs showes you the corresponding
+sources that you are stepping through. You can browse on-line Info
+documentation and man pages, download and read your email off-line, and
+follow discussions on newsgroups. Emacs is particularly helpful with
+writing documentation with the Texinfo documentation system. You will
+find it harder to use Texinfo, if you don't use Emacs. It is also very
+helpful with editing files on remote machines over FTP, especially when
+your connection to the internet is over a slow modem.  Finally, and
+most importantly, Emacs is _programmable_. You can write Emacs
+functions in Emacs Lisp to automate any chore that you find
+particularly useful in your own work. Because Emacs Lisp is a full
+programming language, there is no practical limit to what you can do
+with it.
+
+   If you already know a lot about Emacs, you can skip this chapter and
+move on.  If you are a "vi" user, then we will assimilate you: *Note
+Using vi emulation::, for details.  (1) This chapter will be most
+useful to the novice user who would like to set per Emacs up and
+running for software development, however it is not by any means
+comprehensive. *Note Further reading on Emacs::, for references to more
+comprehensive Emacs documentation.
+
+* Menu:
+
+* Installing GNU Emacs::
+* Basic Emacs concepts::
+* Configuring GNU Emacs::
+* Using vi emulation::
+* Navigating source code::
+* Using Emacs as an email client::
+* Handling patches::
+* Inserting copyright notices with Emacs::
+* Hacker sanity with Emacs::
+* Further reading on Emacs::
+
+   ---------- Footnotes ----------
+
+   (1) The author is also a former "vi" user that has found much
+happiness and bliss in Emacs
+
+
+File: toolsmanual.info,  Node: Installing GNU Emacs,  Next: Basic Emacs concepts,  Prev: Using GNU Emacs,  Up: Using GNU Emacs
+
+Installing GNU Emacs
+====================
+
+   If Emacs is not installed on your system, you will need to get a
+source code distribution and compile it yourself. Installing Emacs is
+not difficult. If Emacs is already installed on your GNU/Linux system,
+you might still need to reinstall it: you might not have the most
+recent version, you might have Xemacs instead, you might not have
+support for internationalization, or your Emacs might not have compiled
+support for reading mail over POP (a feature very useful to developers
+that hook up over modem). If any of these is the case, then uninstall
+that version of Emacs, and reinstall Emacs from a source code
+distribution.
+
+   The entire Emacs source code is distributed in three separate files:
+`emacs-20.3.tar.gz'
+     This is the main Emacs distribution. If you do not care about
+     international language support, you can install this by itself.
+
+`leim-20.3.tar.gz'
+     This supplements the Emacs distribution with support for multiple
+     languages.  If you develop internationalized software, it is
+     likely that you will need this.
+
+`intlfonts-1.1.tar.gz'
+     This file contains the fonts that Emacs uses to support
+     international languages. If you want international language
+     support, you will definetely need this.  Get a copy of these three
+files, place them under the same directory and unpack them with the
+following commands:
+     % gunzip emacs-20.3.tar.gz
+     % tar xf emacs-20.3.tar
+     % gunzip leim-20.3.tar.gz
+     % tar xf leim-20.3.tar
+
+Both tarballs will unpack under the `emacs-20.3' directory.  When this
+is finished, configure the source code with the following commands:
+     % cd emacs-20.3
+     % ./configure --with-pop --with-gssapi
+     % make
+
+The `--with-pop' flag is almost always a good idea, especially if you
+are running Emacs from a home computer that is connected to the
+internet over modem. It will let you use Emacs to download your email
+from your internet provider and read it off-line (*note Using Emacs as
+an email client::). Most internet providers use GSSAPI-authenticated
+POP. If you need to support other authentication protocols however, you
+may also want to add one of the following flags:
+`--with-kerberos'
+     support Kerberos-authenticated POP
+
+`--with-kerberos5'
+     support Kerberos version 5 authenticated POP
+
+`--with-hesiod'
+     support Hesiod to get the POP server host Then compile and install
+Emacs with:
+     $ make
+     # make install
+
+Emacs is a very large program, so this will take a while.
+
+   To install `intlfonts-1.1.tar.gz' unpack it, and follow the
+instructions in the `README' file. Alternatively, you may find it more
+straightforward to install it from a Debian package. Packages for
+`intlfonts' exist as of Debian 2.1.
+
+
+File: toolsmanual.info,  Node: Basic Emacs concepts,  Next: Configuring GNU Emacs,  Prev: Installing GNU Emacs,  Up: Using GNU Emacs
+
+Basic Emacs concepts
+====================
+
+   In this section we describe what Emacs is and what it does. We will
+not yet discuss how to make Emacs work. That discussion is taken up in
+the subsequent sections, starting with *Note Configuring GNU Emacs::.
+This section instead covers the fundamental ideas that you need to
+understand in order to make sense out of Emacs.
+
+   You can run Emacs from a text terminal, such as a vt100 terminal,
+but it is usually nicer to run Emacs under the X-windows system.  To
+start Emacs type
+     % emacs &
+
+on your shell prompt. The seasoned GNU developer usually sets up per X
+configuration such that it starts Emacs when person logs in. Then,
+person uses that Emacs process for all of per work until person logs
+out.  To quit Emacs press `C-x C-c', or select
+     Files ==> Exit Emacs
+
+from the menu. The notation `C-c' means `<CTRL>-c'. The separating dash
+`-' means that you press the key after the dash while holding down the
+key before the dash.  Be sure to quit Emacs before logging out, to
+ensure that your work is properly saved. If there are any files that
+you haven't yet saved, Emacs will prompt you and ask you if you want to
+save them, before quiting.  If at any time you want Emacs to stop doing
+what it's doing, press `C-g'.
+
+   Under the X window system, Emacs controls multiple x-windows which
+are called "franes". Each frame has a menubar and the main editing area.
+The editing area is divided into "windows" (1) by horizontal bars,
+called "status bars". Every status bar contains concise information
+about the status of the window _above_ the status bar. The minimal
+editing area has at least one big window, where editing takes place,
+and a small one-line window called the "minibuffer".  Emacs uses the
+minibuffer to display brief messages and to prompt the user to enter
+commands or other input. The minibuffer has no status bar of its own.
+
+   Each window is bound to a "buffer". A buffer is an Emacs data
+structure that contains text. Most editing commands operate on buffers,
+modifying their contents. When a buffer is bound to a window, then you
+can see its contents as they are being changed. It is possible for a
+buffer to be bound to two windows, on different frames or on the same
+frame. Then whenever a change is made to the buffer, it is reflected on
+both windows. It is not necessary for a buffer to be bound to a window,
+in order to operate on it. In a typical Emacs session you may be
+manipulating more buffers than the windows that you actually have on
+your screen.
+
+   A buffer can be "visiting" files. In that case, the contents of the
+buffer reflect the contents of a file that is being editted. But buffers
+can be associated with anything you like, so long as you program it up.
+For example, under the Dired directory editor, a buffer is bound to a
+directory, showing you the contents of the directory. When you press
+<RET> while the cursor is over a file name, Emacs creates a new buffer,
+visits the file, and rebinds the window with that buffer.  From the
+user's perspective, by pressing <RET> person "opened" the file for
+editing. If the file has already been "opened" then Emacs simply
+rebinds the existing buffer for that file.
+
+   Sometimes Emacs will divide a frame to two or more windows.  You can
+switch from one window to another by clicking the 1st mouse button,
+while the mouse is inside the destination window.  To resize these
+windows, grab the status bar with the 1st mouse button and move it up
+or down. Pressing the 2nd mouse button, while the mouse is on a status
+bar, will "bury" the window bellow the status bar.  Pressing the 3rd
+mouse button will "bury" the window above the status bar, instead.
+Buried windows are not killed; they still exist and you can get back to
+them by selecting them from the menu bar, under:
+     Buffers ==> NAME-OF-BUFFER
+
+Buffers, with some exceptions, are usually named after the filenames of
+the files that they correspond to.
+
+   Once you visit a file for editing, then all you need to do is to
+edit it!  The best way to learn how to edit files using the standard
+Emacs _editor_ is by working through the on-line Emacs tutorial. To
+start the on-line tutorial type `C-h t' or select:
+     Help ==> Emacs Tutorial
+
+If you are a vi user, or you simply prefer to use `vi' keybindings, then
+read *Note Using vi emulation::.
+
+   In Emacs, every "event" causes a Lisp function to be executed.  An
+"event" can be any keystroke, mouse movement, mouse clicking or
+dragging, or a menu bar selection. The function implements the
+appropriate response to the event. Almost all of these functions are
+written in a variant of Lisp called Emacs Lisp. The actual Emacs
+program, the executable, is an Emacs Lisp interpreter with the
+implementation of frames, buffers, and so on. However, the actual
+functionality that makes Emacs usable is implemented in Emacs Lisp.
+
+   Sometimes, Emacs will bind a few words of text to an Emacs function.
+For example, when you use Emacs to browse Info documentation, certain
+words that corresponds to hyperlinks to other nodes are bound to a
+function that makes Emacs follow the hyperlink. When such a binding is
+actually installed, moving the mouse over the bound text highlights it
+momentarily.  While the text is highlighted, you can invoke the binding
+by clicking the 2nd mouse button.
+
+   Sometimes, an Emacs function might go into an infinite loop, or it
+might start doing something that you want to stop. You can *always* make
+Emacs abort (2) the function it is currently running by pressing `C-g'.
+
+   Emacs functions are usually spawned by Emacs itself in response to an
+event. However, the user can also spawn an Emacs function by typing:
+     <ALT>-x FUNCTION-NAME <RET>
+
+These functions can also be aborted with `C-g'.
+
+   It is standard in Emacs documentation to refer to the <ALT> key with
+the letter `M'. So, in the future, we will be refering to function
+invokations as:
+     M-x FUNCTION-NAME
+
+Because Emacs functionality is implemented in an "event-driven" fashion,
+the Emacs developer has to write Lisp functions that implement
+functionality, and then bind these functions to events. Tables of such
+bindings are called "keymaps".
+
+   Emacs has a "global keymap", which is in effect at all times, and
+then it has specialized keymaps depending on what "editing mode" you
+use. Editing modes are selected when you visit a file depending on the
+name of the file. So, for example, if you visit a C file, Emacs goes
+into the C mode. If you visit `Makefile', Emacs goes into makefile
+mode. The reason for associating different modes with different types
+of files is that the user's editing needs depend on the type of file
+that person is editing.
+
+   You can also enter a mode by running the Emacs function that
+initializes the mode.  Here are the most commonly used modes:
+`M-x c-mode'
+     Mode for editing C programs according to the GNU coding standards.
+
+`M-x c++-mode'
+     Mode for editing C++ programs
+
+`M-x sh-mode'
+     Mode for editing shell scripts.
+
+`M-x m4-mode'
+     Mode for editing Autoconf macros.
+
+`M-x texinfo-mode'
+     Mode for editing documentation written in the Texinfo formatting
+     language.  *Note Introduction to Texinfo::.
+
+`M-x makefile-mode'
+     Mode for editing makefiles.
+
+As a user you shouldn't have to worry too much about the modes. The
+defaults do the right thing. However, you might want to enhance Emacs
+to suit your needs better.
+
+   ---------- Footnotes ----------
+
+   (1) Note that in Emacs lingo a "window" does not correspond to an X
+window. It is the "frame" that corresponds to an X window.  A "window"
+is merely a region within the frame. And the same Emacs process can
+actually be responsible for more than one frame
+
+   (2) Proposed Federal censorship regulations may prohibit us from
+giving you information about the possibility of aborting Emacs
+functions. We would be required to say that this is not an acceptable
+way of terminating an unwanted  function
+

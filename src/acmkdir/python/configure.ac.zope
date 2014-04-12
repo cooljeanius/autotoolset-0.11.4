@@ -1,0 +1,39 @@
+AC_INIT(package_name, 0.0.1)
+AC_CONFIG_AUX_DIR(config)
+AM_INIT_AUTOMAKE
+
+AC_ARG_WITH(zope-datadir, [  --with-zope-datadir=DIR         Location of Zope data])
+
+if test "x$with_zope_datadir" = x ; then
+  zope_datadir="/usr/lib/zope"
+else
+  zope_datadir=$with_zope_datadir
+fi
+
+AC_ARG_WITH(zope-product-dir, [  --with-zope-product-dir=DIR         Location of Zope Products dir])
+
+if test "x$with_zope_product_dir" = x ; then
+  zope_product_dir="lib/python/Products/"
+else
+  zope_product_dir=$with_zope_product_dir
+fi
+
+PACKAGENAME="package_name"
+ZOPEDIR="$zope_datadir"
+ZOPEPRODUCTSDIR="$zope_product_dir"
+
+
+AC_SUBST(ZOPEDIR)
+AC_SUBST(ZOPEPRODUCTSDIR)
+AC_SUBST(PACKAGE_NAME)
+
+AC_CONFIG_FILES([
+	README
+	Makefile
+	m4/Makefile
+	src/Makefile
+	src/www/Makefile
+	src/dtml/Makefile
+])
+
+AC_OUTPUT

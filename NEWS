@@ -1,0 +1,133 @@
+TODO:
+* have the other documents also installed
+* develop macros and tools for dealing with documentation MY way.
+* Eliminate the LF_CONFIGURE_* macros. Write macros for testing Fortran.
+* Write macros for testing C++ compatibility issues.
+* Chapter explaining Texinfo 
+* Chapter explaining how to write your own macros
+* Tools for setting up large Fortran packages automatically
+* I am not sure if the f77/f2c compatibility test is sufficient
+* See what happens with the f77 incompatibilities that Dennis mentioned.
+* Wrap calls to f2c with a shell script and fix up mkfortran.sh a bit
+* Automake will soon support 'include'. Must make adjustments in tutorial
+
+Major changes in version 0.11.0
+* Mainly packaging bugfixes
+
+Major changes in version 0.10
+* Reorganized the src directory tree. All emacs modes are now in the
+  same directory.
+* Added support for -latex in acmkdir
+* A few more Emacs macros (still to be documented)
+* Bug fixes
+
+Major changes in version 0.9
+* Started the migration away from texidoc.
+  Emacs macros will be used instead to handle documentation issues
+* Bug fixes in txtc.sh and f2c_comp.sh scripts. Please update your copies in 
+  your packages!
+* The documentation needs to catch up a little bit with the 
+  Emacs/documentation stuff, but due to these two bug fixes, I am releasing 
+  this version now.
+
+Major changes in version 0.8
+* Overhaul of the txtc compiler. Now rewritten in sh/awk/sed.
+* Updated some of the copyright notices. Watch out for them.
+* Bug fixes and some cleaning up
+
+Major changes in version 0.7
+* Overhaul of the Fortran support
+* Chapters 1,2,3,4,5 are now a coherent document, mostly.
+* The LF_CONFIGURE macros now call the traditional Autoconf macros.
+* Bug fixes
+
+Major changes in version 0.6.2
+* Chapter 3 of the tutorial is now more or less complete.
+  Chapters 1,2,3 are good. The rest need more work. 
+
+Major changes in version 0.6.1
+* Fixed some errors in the tutorial. New stuff
+* Complete overhaul of the 'acmkdir' utility
+* New stuff in the 'gpl' utility.
+* Bug fixes.
+
+Major changes in version 0.6
+* New stuff in the tutorial
+* Improvements in acmkdir. More improvements to come next version.
+* New support for handling include files in deep package. Still not 
+  documented however.
+* Bug fixes.
+
+Major changes in version 0.5.2
+* I have reorganized the documentation. 
+* The tutorial now gets built and installed.
+
+Major changes in version 0.5.1
+* Not much.
+
+Major changes in version 0.5.0
+* Package has been renamed to autotools.
+* mkpkgdir has been renamed as acmkdir
+* Now the LF macros are installed as aclocal macros, changes in acmkdir 
+  to take this into account.
+* New options in gpl utility
+* New utility, acconfig, for automated generation of acconfig.h
+* Bug fixes
+* New stuff in the tutorial.
+* Local installation for deep packages
+* Bug fixes
+
+Major changes in version 0.3.0
+* Bug fixes.
+* cpp.h is dead. Long live config.h
+* Use of configuration header files is now the default.
+* The distribution now passes the ``make distcheck'' test correctly.
+
+Major changes in version 0.2.0
+* Better support for Fortran. 
+* Bug fixes.
+* The INTEGER problem on Dec Alpha's is fixed.
+
+Major changes in version 0.1.0
+* Support for Fortran
+* Lots of improvements in the tutorial and a brand-spankin-new chapter
+  on mixing Fortran with C/C++ in a portable manner.
+* Reorganized the LF macros, in light of Fortran support, and to
+  make them more flexible
+* Support for using configure header files.
+* This cool TODO thingy at the top of this file :^)
+* Monica Lewinsky blowed the wrong cylinder.  
+
+Major changes in version 1.3
+* Fixed bugs in cpp.m4
+* More improvements in the tutorial
+* Now the other texinfo documentation (autoconf+automake+standards)
+  is not broken any more
+
+Major changes in version 1.2
+* Reorganized the tutorial a little bit. Now it's more coherent.
+  The applications in this package, with the exception of texidoc
+  are now documented. Also added is a lot of propaganda about copyright :-)
+
+Major changes in version 1.1
+* Added texinfo-refcard.ps to the distribution.
+* Various bug fixes.
+
+Major changes in version 1.0
+* The package is set-up with all the goodies that it requires to be
+  useful.
+
+-------------------------------------------------------
+Copying information:
+
+Copyright (C) 1998, Eleftherios Gkioulekas <lf@amath.washington.edu>
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and this permission notice are preserved,
+   thus giving the recipient permission to redistribute in turn.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them.

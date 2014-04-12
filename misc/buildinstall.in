@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# @configure_input@
+#
+tar zxvf @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
+cd @PACKAGE_TARNAME@-@PACKAGE_VERSION@
+mkdir inst
+mkdir build
+cd build
+../configure --prefix=/home/mroberto/programs/autotoolset/autotoolset/@PACKAGE_TARNAME@-@PACKAGE_VERSION@/inst
+make install
+cd ../inst
+find . -type f > files.txt

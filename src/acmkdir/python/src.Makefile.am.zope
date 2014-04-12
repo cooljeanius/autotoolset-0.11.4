@@ -1,0 +1,10 @@
+SUBDIRS = www dtml 
+
+CLEANFILES = *~ *.swp
+DISTCLEANFILES = Makefile.in
+
+pkgdatadir = @ZOPEPRODUCTSDIR@/@PACKAGE_NAME@
+
+pkgdata_SCRIPTS = __init__.py 
+EXTRA_DIST = $(SCRIPTS) Makefile.in 
+

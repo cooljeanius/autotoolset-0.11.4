@@ -1,0 +1,4 @@
+#! /bin/bash
+./reconf
+./configure
+make distcheck && rm -f *.tar.gz && make rpm-sign

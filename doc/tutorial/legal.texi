@@ -1,0 +1,373 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Legal issues with Free Software, Philosophical issues, Maintaining Documentation, Top
+@appendix Legal issues with Free Software
+
+@menu
+* Understanding Copyright::     
+* Other legal concerns::        
+* Freeing your software::       
+@end menu
+
+@node Understanding Copyright, Other legal concerns, Legal issues with Free Software, Legal issues with Free Software
+@section Understanding Copyright
+
+If you are just writing your own programs for your own internal use and you 
+don't
+plan to redistribute them, you don't really
+need to worry too much about copyright. However, if you want to give 
+your programs to other people or use programs that were written by 
+other people then copyright issues become relavant. 
+The main reason why @file{autoconf} and @file{automake} were developed
+was to facilitate the distribution of source code for the GNU
+project by making packages autoconfiguring. So, if you want to
+use these tools, you probably also want to know something about copyright
+issues. The following sections will focus primarily on the legal issues 
+surrounding software. For a discussion of the philosophical issues 
+please see @ref{Philosophical issues}.
+At this point, I should point out that
+@strong{I am not a lawyer, this is not legal advice, and I do not represent the opinions of the Free Software Foundation}.
+
+When you create an original work, like a computer program, or a novel, and so 
+on, the government automatically grants you a set of legal rights called 
+@dfn{copyright}.
+This means that you have the right to forbid others to @emph{use},
+@emph{modify} and @emph{redistribute} your work. By default,
+you have the @emph{exclusive} right to do these things, and anyone that
+would like to use, modify or redistribute you work needs to enter an
+agreement with you. The government grants you this monopoly and limits the
+freedom of the public because, it is believed, that it will encourage the
+creation of more works. 
+
+Copyright is transferable. This means that you have the right to transfer
+most your rights, that we call @dfn{copyright}, to another person or 
+organization. When a work is being developed by a team, it
+makes legal sense to transfer the copyright to a single organization that
+can then coordinate enforcement of the copyright. In the free software
+community, some people assign their software to the Free Software Foundation.
+The arrangement is that copyright is transfered to the FSF. The FSF then
+grants you all the rights back in the form of a license agreement, and 
+commits itself legally to distributing the work only as free software.
+If you want to do this, you should contact the FSF for more information.
+It is not a good idea to assign your copyright to anyone else, unless you
+know what you are getting into. By assigning you rights to someone and
+not getting any of those rights back in the form of an agreement, you may place
+yourself in a position where you are not allowed to use your own work. 
+Unfortunately, if you are employed or a student in a University you have
+probably already signed many of your rights away. Universities as well as
+companies like to lay as much claim on any copyrightable work you produce
+as possible, even work that you do as a hobby that has nothing to do with
+them.
+
+Copyright covers mainly original works. However it also covers 
+@dfn{derived works}. If you grant permission to someone to
+modify your code, and person goes ahead and produces a modified version, then
+that version is @dfn{derived work} and legally the owner of that
+version is still you. Similarly, if you write a library and person writes
+a program that links against your library, then the executable is derived
+work of both the library and the portion that person wrote. As a result,
+person can only distribute the executable under terms that are consistent
+with the terms of the library that it is based on. 
+
+The concept of derived work is actually very slippery ground. 
+The key to understanding it is that copyright law covers implementations
+and not algorithms. This means that if you take someone's code, fire up
+an editor and modiy it, then the result is derived work. If someone
+else takes the code, writes up an essay describing what it does, gives
+you the essay and you go ahead and rewrite the code from scratch, then
+it is @strong{not} derived work. In fact it will @strong{not} be derived
+work, even if by some stroke of luck, the two works are identical, if you
+can prove to the court that you wrote your version completely from scratch.
+
+Because copyright law is by default restrictive, you must explicitly
+grant permissions to your users to enable them to use your work when you
+give them a copy. One way of doing it is by simply granting them permissions,
+which can be conditional on certain requirements. In the free software
+community, we standardize on using a legal document, the
+@dfn{General Public License} to grant such permissions. 
+
+@node Other legal concerns, Freeing your software, Understanding Copyright, Legal issues with Free Software
+@section Other legal concerns
+
+In addition to copyright law, there is another legal beast: the patent law.
+Unlike copyright, which you own automatically by the act of creating the work,
+you don't get a patent unless you file an application for it. If approved,
+the work is published but others must pay you royalties in order to use it
+in any way. 
+
+The problem with patents is that they cover algorithms, and 
+if an algorithm is patented you can't write an implementation for it without
+a license. What makes it worse is that it is very difficult and expensive to
+find out whether the algorithms that you use are patented or will be 
+patented in the future. What makes it insane is that the patent office,
+in its infinite stupidity, has patented algorithms that are very trivial
+with nothing innovative about them. For example, the use of
+@dfn{backing store} in a multiprocesing window system, like X11, is
+covered by patent 4,555,775. In the spring of 1991, the owner of the
+patent, AT&T, threatened to sue every member of the X Consortium including
+MIT. Backing store is the idea that the windowing system save the contents of 
+all windows at all times. This way, when a window is covered by another 
+window and then exposed again, it is redrawn by the windowing system, and
+not the code responsible for the application. Other insane patents include
+the IBM patent 4,674,040 which covers ``cut and paste between files'' in
+a text editor. Recently, a Microsoft backed company called ``Wang'' took
+Netscape to court over a patent that covered ``bookmarks''! Wang lost.
+Although most of these patents don't stand a chance in court, the cost
+of litigation is sufficient to terrorize small bussinesses, non-profit
+organizations like the Free Software Foundation, as well as individual 
+software developers. 
+
+Companies like to use software patents as strategic weapons. They build
+an arsenal of software patents by trying to pass whatever can get
+through the Patent Office. Then years later, when another company threatens
+their interest, they can go through their patent arsenal and sue the 
+other company. So far there have been no patent attacks aimed directly 
+against the free software community. On November of 1998 however two 
+internal memos were leaked from Microsoft about our community. According to 
+these memos, Microsoft perceives the free software community as a competitor 
+and they seem to consider a patent-based attack among other things.
+We live in interesting times.
+
+An additional legal burden to both copyrights and patents is governmental
+paranoia over encryption algorithms. According to the US government,
+a computer program implementing an encryption algorithm is considered
+munition, therefore export-control laws on munitions apply. What is
+not allowed under these laws is to export the software outside the
+borders of the US. The government is pushing the issue by claiming that
+making encryption software available on the internet is the same thing
+as exporting it. Zimmermann, the author of a popular encryption program,
+was sued by the government based on this interpretation of the law. 
+However the government's position was not tested at court because the
+government decided to drop the charges, after dragging the case for a few 
+years, long enough to send a message of terror to the internet community.
+The current wisdom seems to be
+that it is okey to make encryption software available on the net provided
+that you take strong measures that will prevent foreigners to download your
+work. It should be noted however that doing so still @emph{is} taking
+a legal risk that could land you to federal prison in the company of
+illegal arms dealers.
+
+It is quite obvious that the government's
+attitude towards encryption is completely unconstitutional because it
+violates our inalienable right to freedom of speech. Appearently, it is
+the current policy of the government that publishing a book that contains the 
+source code for encryption software is legal, but publishing
+the same content electronically is illegal. The reason why the government
+maintains such a strange position is because in the past they have tried
+to suppress even the publication of encryption algorithms in books.
+When the RSA algorithm was discovered, the NSA attempted to prevent the 
+inventors from publishing their discovery in journals and presenting it at 
+conferences.
+Judges understand books and conferences, so the government has given up
+fighting that battle. They still haven't given up on the electronic front
+however.
+
+Other countries also have restrictive laws against encryption. In certain
+places you may not be even allowed to run such programs. The reason why
+governments are so paranoid of encryption is because it is the key
+to a wide array of technologies that empower the individual citizens to
+circumvent governmental snooping on their privacy. The US export laws
+however hurt US bussiness interests, and they are pointless since good
+encryption software @emph{is} available on the internet from other 
+countries. 
+
+@node Freeing your software,  , Other legal concerns, Legal issues with Free Software
+@section Freeing your software
+
+Both copyright and patent laws are being used mainly to destroy our
+@dfn{freedom} to cooperate with our fellow hackers.
+By freedom we refer to three things: the freedom to
+use software, the freedom to modify it and improve it, and the freedom
+to redistribute it with the modifications and improvements so that the
+whole community benefits. Combined with the possible default assignment of 
+your rights to an employer or university, the laws can actually interfere
+even with your ability to write computer programs for a hobby and cooperate
+with other hackers on that basis! 
+
+To defend our freedoms from those
+who would like to take them from us, the free software community uses the
+General Public License, also known as the GPL. In broads strokes, the GPL
+does the following:
+@itemize @bullet
+@item 
+Grants you unrestricted permission to run the software and maintain as
+many copies as you like. You can also make personal custom modifications
+and use them freely. The GNU GPL does not restrict what you do in the
+privacy of your own computer in any way. On the contrary it waives all
+the restrictions that the copyright law applies to private use. 
+It only kicks in when you 
+distribute the software you have received to other people. 
+@item 
+Grants permission to redistribute the software or modified versions (derived 
+work) provided that you do so @strong{only} under the terms of the GNU public 
+license. This means that if you make any changes, they must also be
+free. This protects the freedom of the package by forbidding someone
+to make a free version proprietary. This measure is called
+@dfn{copyleft} because it subverts the copyright law to do the opposite of
+what copyright is normally used for (i.e. to prevent a user to make a 
+proprietary package free). The GNU GPL does not oblidge you to distribute
+your modifications. It only requires that you distribute them freely,
+@emph{if} you choose to distribute them at all. The decision of whether
+or not to distribute your derived work is entirely up to you.
+The freedom to choose @emph{not} to distribute your modifications is
+as important as the freedom to distribute them. The GPL grants you both
+freedoms.
+@item
+Disclaims all warranty to protect the authors from lawsuits, including 
+various implied warranties such as the warranty for @dfn{merchantability}
+and @dfn{fitness for a particular purpose}. 
+@item
+Protects the software's freedom from patents as much as this is possible.
+The scenario that we want to avoid is someone receiving the source code,
+and then filing a patent application for the algorithms it uses, effectively 
+making the software proprietary. If you do that, the GPL will forbid you from 
+redistributing the software as well as derived work. So you will not want
+to do it. The patent law itself will prevent someone else, who distributes
+a competing product, to patent the algorithm if your implementation predates
+his. 
+@end itemize
+
+The purpose of the GPL is to use the copyright law to encourage a world in
+which software is not copyrighted. If copyright didn't cover software, then
+we would all be free to use, modify and redistribute software, 
+@emph{and} we would not be able to restrict others from enjoying these
+freedoms because there would be no law giving anyone such power.
+One way to grant the freedoms to the users of your software is
+to revoke your copyright on the software completely. This is called putting
+your work in the @dfn{public domain}. The problem with this is that it
+only grants the freedoms. It does not create the reality in which no-one
+can take these freedoms away from derived works. In fact the copyright law
+covers by default derived works regardless of whether the original was
+public domain or copyrighted. By distributing your work under the GPL,
+you grant the same freedoms, and at the same time you protect these freedoms
+from hoarders. 
+
+The GNU GPL is a legal instrument that has been 
+designed to create a
+safe haven in which software can be written free from copyright law
+encumberence. It allows developers to freely share their work with
+a friendly community that is also willing to share theirs, and at the
+same time protect them from being exploited by publishers of proprietary
+software. Many developers would not contribute to our community without
+this protection.
+
+To apply the GPL to your programs you need to do the following things:
+@itemize @bullet
+@item
+Attach a copy of the GNU public license to the toplevel directory of your
+source code in a file called @file{COPYING}.
+@item
+Include a legal notice to @emph{every} file that you want covered by the GPL,
+saying that it is covered by the GPL. It is important that all files that
+constitute source code must include this notice, including @file{Makefile.am},
+@file{configure.in} files and shell scripts.
+The legal notice should look like this:
+@example
+// Copyright (C) (years) (Your Name) <your@@email.address>
+// 
+// This program is free software; you can redistribute it and/or 
+// modify it under the terms of the GNU General Public License 
+// as published by the Free Software Foundation; either 
+// version 2 of the License, or (at your option) any later 
+// version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+@end example
+@noindent
+If you have assigned your copyright to an organization, like the Free 
+Software Foundation, then you should probably fashion your copyright
+notice like this:
+@example
+// Copyright (C) (years) Free Software Foundation
+// (your name) <your@@email.address> (initial year)
+// etc...
+@end example
+@noindent
+This legal notice works like a subroutine. By invoking it, you invoke the
+full text of the GNU General Public License which is too lengthy to include
+in every source file. Where you see @samp{(years)} you need to list all the
+years in which you finished preparing a version that was actually released,
+and which was an ancestor to the current version. This list is 
+@emph{not} the list of years in which versions were released. It is a list
+of years in which versions, later released, were completed. If you finish
+a version on Dec 31, 1997 and release it on Jan 1, 1998, you need to
+include 1997, but you do not need to include 1998. This rule is complicated,
+but it is dictated by international copyright law. 
+@item 
+Use the @file{AUTHORS} file to keep records of who wrote what. These
+records will be important if you decide at some point to register your
+copyright. They are also important if you plan to assign your work to the
+FSF, because they will want to register the copyright.
+We discuss this in more detail later.
+@item
+If you modify someone else's GPL covered file make sure to comply with 
+section 2 of the GPL. To do that place notices stating that you changed
+the file and the date of the change. Also your program should advertise the
+fact that it is free software, that there is no warranty and that it can
+be redistributed under the condition of the GPL. A standard way of doing
+this is to make your program output this notice when it is passed the 
+@code{--version} command-line flag. For details please read the GPL.
+@end itemize
+
+If you are unfamiliar with all this legalese you may find it surprising;
+you might even find it stupid. This is a very natural reaction. Until 1980,
+software copyright was not taken seriously in the US. In fact copyrights
+then had to be registered in order to be valid, and it was very natural
+for people to just copy software around, even though they knew it was 
+illegal. It took significant amounts of
+lobbying and
+propaganda by proprietary publishers to cultivate the current litigious 
+paranoia over copyrights and ``convince'' the public that helping out their
+neighbour by giving them an unauthorized copy is not only illegal, but
+it also ``morally wrong''. Even though
+copyright laws are international, through treaties, 
+there are many countries in the world, where this brainwashing hasn't yet 
+taken place, and where people still make unauthorized copies of software for 
+their friends with no second thoughts. Such people are being described
+with smear words like ``pirates'' by publishers and their lawyers, but
+it is not true that these people do what they do because of a malicious
+intent. These people do what they do, because it is natural for them to
+be nice and help their friends.
+
+One problem with this attitude is that many of us don't want to disobey
+the law, because copyright is an indiscriminate weapon that cuts both ways.
+We prefer therefore to beat the hoarders at their own game. This means
+that we can not use, modify or distribute programs that are not
+distributed with a copyright notice and appropriate permissions, because
+the default status of such programs is that 
+@emph{no permissions are granted whatsoever}. 
+If you write a program that you want to share with other people,
+then please apply the terms of the GPL to the copies that you distribute,
+so that your friends can use, modify and share the program with their
+friends, without breaking any laws and to protect your contribution
+to our community from the hoarders. Please do not violate copyright law.
+Instead, say no to proprietary software and use free software on the
+free GNU/Linux operating system.
+

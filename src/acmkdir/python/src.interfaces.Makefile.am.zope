@@ -1,0 +1,8 @@
+clean:
+	rm -rf *~ \#*
+
+distclean: clean
+	rm -f Makefile.in
+
+
+

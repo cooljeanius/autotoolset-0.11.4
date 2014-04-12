@@ -1,0 +1,67 @@
+@charset "ISO-8859-1";
+:link {
+   background-color: #CCCCCC;
+   color: #0000CC
+}
+:visited {
+   background-color: #CCCCCC;
+   color: #660066
+}
+:active {
+   background-color: #CCCCCC;
+   color: #FF0000
+}
+body {
+   background-color: #CCCCCC;
+   color: #000000;
+   margin-left: 5%;
+   margin-right: 5%;
+   font-family: Verdana, Helvetica, sans-serif;
+}
+h1, h2, h3, h4, h5, p, ul {
+   font-family: Verdana, Helvetica, sans-serif;
+}
+h1 {
+   text-align: center;
+   font-weight: bold;
+}
+h3 {
+   text-indent: 1em;
+}
+pre {
+   font-family: monospace;
+}
+p {
+   text-indent: 2em;
+   text-align: justify;
+}
+p.centrado {
+   text-align: center;
+}
+p.centritalico {
+   font-style: italic;
+   font-family: serif;
+   font-size: 75%;
+   text-align: center;
+}
+table {
+   font-family: Garamond, "Times New Roman", serif;
+}
+table.rodape {
+    width: 100%;
+}
+hr.half {
+   width: 50%;
+   margin-top: 3ex;
+   margin-bottom: 3ex;
+}
+img.left {
+   float: left;
+}
+ol.RomanoMaiusculo {
+   list-style-type: upper-roman;
+}
+ol.AlfaMinusculo {
+   list-style-type: lower-alpha;
+}
+

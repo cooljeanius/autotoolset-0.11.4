@@ -1,0 +1,1216 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Using Autotools, C++ and Autoconf, Using Automake and Autoconf, Top
+@chapter Using Autotools
+
+@menu
+* Introduction to Autotools::   
+* Compiler configuration with the LF macros::  
+* The features of LF_CPP_PORTABILITY::  
+* Writing portable C++::        
+* Hello world revisited again::  
+* Invoking acmkdir::            
+* Handling Embedded text::      
+* Handling very deep packages::  
+@end menu
+
+@node Introduction to Autotools, Compiler configuration with the LF macros, Using Autotools, Using Autotools
+@section Introduction
+
+At the moment Autotools distributes the following additional utilitities:
+@itemize @bullet
+@item
+The @samp{gpl} utility, for generating copyright notices.
+@item
+The @samp{acmkdir} utility for generating directory trees for new packages
+@item
+The @code{LF} macros which introduce mainly support for C++, Fortran and 
+embedded text.
+@end itemize
+We have already discussed the @samp{gpl} utility in Chapter 1. In this
+chapter we will focus mainly on the @code{LF} macros and the @samp{acmkdir}
+utility but we will postpone our discussion of Fortran support until the
+next chapter.
+
+@c =========================================================================
+
+@node Compiler configuration with the LF macros, The features of LF_CPP_PORTABILITY, Introduction to Autotools, Using Autotools
+@section Compiler configuration with the @code{LF} macros
+
+@noindent
+In last chapter we explained that a minimal @file{configure.in} file looks
+like this:
+@example
+AC_INIT
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(package,version)
+AC_PROG_CXX
+AC_PROG_RANLIB
+AC_OUTPUT(Makefile ... )
+@end example
+@noindent
+If you are not building libraries, you can omit @code{AC_PROG_RANLIB}.
+
+Alternatively you can use the following macros that are distributed with
+Autotools, and made accessible through the @samp{aclocal} utility. All of
+them are prefixed with @samp{LF} to distinguish them from the standard
+macros:
+
+@table @strong
+@item LF_CONFIGURE_CC
+This macro is equivalent to the following invokation:
+@example
+AC_PROG_CC
+AC_PROG_CPP
+AC_AIX
+AC_ISC_POSIX
+AC_MINIX
+AC_HEADER_STDC
+@end example
+@noindent
+which is a traditional Autoconf idiom for setting up the C compiler.
+@item LF_CONFIGURE_CXX
+This macro calls  
+@example
+AC_PROG_CXX
+AC_PROG_CXXCPP
+@end example
+@noindent
+and then invokes the portability macro:
+@example
+LF_CPP_PORTABILITY
+@end example
+@noindent
+This is the recommended way for configuring your C++ compiler.
+@item LF_HOST_TYPE
+This is here mainly because it is required by @samp{LF_CONFIGURE_FORTRAN}.
+This macro determines your operating system and defines the C preprocessor
+macro @samp{YOUR_OS} with the answer. You can use this in your program for
+spiffiness purposes such as when the program identifies itself at the
+user's request, or during initialization.
+@item LF_CPP_PORTABILITY
+This macro allows you to make your @samp{C++} code more portable and
+a little nicer. 
+@itemize @bullet
+@item 
+It detects whether your compiler supports @samp{bool}.
+@item 
+It checks whether your compiler deals with for loops correctly.
+@item 
+At the users option, it introduces nice and powerful assertions.
+@item
+It defines syntactic sugar, that I am personally addicted to
+@end itemize
+If you must call this macro, do so @emph{after} calling
+@samp{LF_CONFIGURE_CXX}. We describe the features in more detail in the next
+section. To take advantage of these features, all you have to do is
+@example
+#include <config.h>
+@end example
+@noindent
+In the past it used to be necessary to have to include a file called
+@file{cpp.h}. I've sent this file straight to hell.
+@item LF_SET_WARNINGS
+This macro enables you to activate warnings at configure time. If called, then
+the user can request warnings by passing the @samp{--with-warnings} flag
+to the compiler like this:
+@example
+$ configure ... --with-warnings ...
+@end example
+@noindent
+Warnings can help you find out many bugs, as well as help you improve your
+coding habits. On the other hand, in many cases, many of these warnings are
+false alarms, which is why the default behaviour of the compiler is to not
+show them to you. You are probably interested in warnings if you are
+the developer, or a paranoid end-user.
+@end table
+The minimal recommended @file{configure.in} file for a pure C++ project is:
+@example
+AC_INIT
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(package,version)
+LF_CONFIGURE_CXX
+AC_PROG_RANLIB
+AC_OUTPUT(Makefile .... )
+
+@end example
+@noindent
+A full-blown @file{configure.in} file for projects that mix Fortran and
+C++ (and may need the C compiler also if using @samp{f2c}) invokes all 
+of the above macros:
+@example
+AC_INIT
+AM_INIT_AUTOMAKE(package,version)
+LF_CANONICAL_HOST
+LF_CONFIGURE_CC
+LF_CONFIGURE_CXX
+LF_CONFIGURE_FORTRAN
+LF_SET_WARNINGS
+AC_PROG_RANLIB
+AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+AC_OUTPUT(Makefile ...)
+
+@end example
+@noindent
+@c ==========================================================================
+
+@node The features of LF_CPP_PORTABILITY, Writing portable C++, Compiler configuration with the LF macros, Using Autotools
+@section The features of  @samp{LF_CPP_PORTABILITY}
+
+In order for @code{LF_CPP_PORTABILITY} to work correctly you need to append
+certain things at the bottom of your @file{acconfig.h}. This is done for you
+automatically by @code{acmkdir}. 
+When the @code{LF_CPP_PORTABILITY} macro is invoked by @file{configure.in}
+then the following portability problems are checked:
+@itemize @bullet
+@item
+@strong{The bool data type}:
+It is rather unfortunate that most proprietary compilers don't have such
+a beautiful and handy feature.   If the configure
+script detects that you have no bool, then it defines the macro
+@code{CXX_HAS_NO_BOOL}. It is possible to emulate @code{bool} with the 
+following C preprocessor directives:
+@example
+#ifdef CXX_HAS_NO_BOOL
+#define bool int
+#define true 1
+#define false 0
+#endif
+@end example
+@noindent
+To make your code portable to compilers that don't support
+bool, through this workaround, you must follow one rule: never
+overload your functions in a way in which the only distinguishing feature is
+@code{bool} vs @code{int}.
+This workaround is included in the default @file{acconfig.h} after 
+@code{@@BOTTOM@@} that gets installed by @code{acmkdir}.
+@item
+@strong{Incorrect for-loop scoping}:
+Another obnoxious bug with many compilers is that they refuse to compile
+the following code:
+@example
+#include <iostream.h>
+main()
+@{
+ for (int i=0;i<10;i++) @{ @}
+ for (int i=0;i<10;i++) @{ @}
+@}
+@end example
+@noindent
+This is legal C++ and the variable @code{i} is supposed to have scope only
+inside the forloop braces and the parentheses. Unfortunately, most C++
+compilers use an obsolete version of the standard's draft in which the
+scope of @code{i} is the entire @code{main} in this example.
+The workaround we use is as follows:
+@example
+#ifdef CXX_HAS_BUGGY_FOR_LOOPS
+#define for if(1) for
+#endif
+@end example
+@noindent
+By nesting the forloop inside an if-statement, the variable @code{i} is
+assigned the correct scope. Now if your if-statement scoping is also broken
+then you really need to get another compiler.
+The macro @code{CXX_HAS_BUGGY_FOR_LOOPS} is defined for you if appropriate,
+and the code for the work-around is included with the 
+default @code{acconfig.h}.
+@end itemize
+
+In addition to these workarounds, the following additional features are
+introduced at the end of the default @code{acconfig.h}. The features are
+enabled only if your @file{configure.in} calls @code{LF_CPP_PORTABILITY}.
+@itemize @bullet
+@item
+@strong{Looping macros:}
+The macro @code{loop} is defined such that 
+@example
+loop(i,a,b)
+@end example
+@noindent
+is equivalent
+@example
+for (int i = a; i <= b; i++)
+@end example
+@noindent
+This is syntactic sugar that makes it easier on the hand to write
+nested loops like:
+@example
+int Ni,Nj,Nk;
+loop(i,0,Ni) loop(j,0,Nj) loop(k,0,Nk) @{ ... @}
+@end example
+@noindent
+minimizing the probability of making a spelling bug.
+If you need to do more unusual looping you can use one of the following
+macros:
+@example
+inverse_loop(i,a,b)   <--> for (int i = a; i >= b; i--)
+integer_loop(i,a,b,s) <--> for (int i = a; i <= b; i += s)
+@end example
+@noindent
+This feature depends on having correct scoping in @file{for} which
+fortunately is easily taken care of.
+@item
+@strong{Class protection levels:}
+The following macros are defined:
+@example
+#define pub public:
+#define pro protected:
+#define pri private:
+@end example
+@noindent
+Now you can declare a class prototype in a java-like style like this:
+@example
+class foo
+@{
+ pri double a,b;
+ pub double c,d;
+ 
+ pub foo();
+ pub virtual ~foo();
+ 
+ pri void method1(void);
+ pub void method2(void);
+@};
+@end example
+@noindent
+Personally I find this notation more lucid than the standard C++ syntax
+because this way I can see the protection level of each variable and
+method without having to possibly scroll up to see what it is. Also,
+it is less bug-prone this way.
+@item
+@strong{The Pi}:
+Every mathematician would like to know what pi is, so this is as good a
+place as any to throw it in:
+@example
+const double pi = 3.14159265358979324;
+@end example
+@noindent
+@item
+@strong{Assert}:
+The idea behind @code{assert} is simple. Suppose that at a certain point
+in your code, you expect two variables to be equal. If this expectation
+is a @dfn{precondition} that must be satisfied in order for the subsequent
+code to execute correctly, you must @code{assert} it with a statement
+like this:
+@example
+assert(var1 == var2);
+@end example
+@noindent
+In general @code{assert} takes as argument a @dfn{boolean expression}.
+If the boolean expression is true, execution continues. Otherwise the 
+@samp{abort} system call is invoked and the program execution is stopped.
+If a bug prevents the precondition from being true, then you
+can trace the bug at the point where the precondition breaks down instead
+of further down in execution or not at all. The @samp{assert} call is 
+implemented as a C preprocessor macro, so it can be enabled or disabled
+at will. 
+
+One way to enable assertions is to include @file{assert.h}. 
+@example
+#include <assert.h>
+@end example
+@noindent
+Then it's possible to disable them by defining the @samp{NDEBUG} macro. 
+Alternatively, because it is easy to provide our own assert, if your
+@file{configure.in} invokes @samp{LF_CPP_PORTABILITY} then @samp{assert}
+will be conditionally defined for you in the @file{config.h} file. 
+By default, the @samp{configure} script will enable assertions. You can
+disable assertions at configure-time like this:
+@example
+% configure ... --disable-assert ...
+@end example
+@noindent
+During debugging and testing it is a good idea to leave assertions enabled.
+However, for production runs it's best to disable them.
+
+If your program crashes at an assertion, then the first thing you should
+do is to find out where the error happens. To do this, run the program
+under the @file{gdb} debugger. First invoke the debugger:
+@example
+% gdb
+...copyright notice...
+@end example
+@noindent
+Then load the executable and set a breakpoint at the @samp{abort} system
+call:
+@example
+(gdb) file "executable"
+(gdb) break abort
+@end example
+@noindent
+Now run the program:
+@example
+(gdb) run
+@end example
+@noindent
+Instead of crashing, under the debugger the program will be paused when the
+@samp{abort} system call is invoked, and you will get back the debugger
+prompt. Now type:
+@example
+(gdb) where
+@end example
+@noindent
+to see where the crash happened. You can use the @samp{print} command to
+look at the contents of variables and you can use the @samp{up} and
+@samp{down} commands to navigate the stack. For more information, see
+the GDB documentation or type @samp{help} at the prompt of gdb.
+
+Another suggestion is to never call the @code{abort} system call directly.
+Instead, please do this:
+@example
+assert(false);
+exit(1);
+@end example
+@noindent
+This way if assertions are enabled, the program will stop and the stack will
+be retained. Otherwise the program will simply exit. 
+
+@end itemize
+
+@c ===========================================================================
+
+@node Writing portable C++, Hello world revisited again, The features of LF_CPP_PORTABILITY, Using Autotools
+@section Writing portable C++
+
+The C++ language has been standardized very recently. As a result, not all
+compilers fully support all the features that the ANSI C++ standard requires,
+including the @code{g++} compiler itself. Some of the problems commonly
+encountered, such as incorrect scoping in for-loops and lack of the 
+@code{bool} data type can be easily worked around. In this section we
+give some tips for avoiding more portability problems. I welcome people on
+the net reading this to email me their tips, to be included in this 
+tutorial.
+@itemize @bullet
+@item
+The following code, as much as it may seem reasonable is not correct:
+@example
+int n = 10;
+double **foo;
+foo = new (double *)[i];
+@end example
+@noindent
+The @code{g++} compiler will parse this and do the right thing, but other
+compilers are more picky. The correct way to do it is:
+@example
+int n = 10;
+double **foo;
+foo = new double * [i];
+@end example
+@noindent
+@item
+Do not use exceptions, RTTI and STL. Yes, they can make your code more spiffy,
+but almost certainly you can live without them, and save yourself serious
+portability pains.
+@item
+Do not use templates, unless it is absolutely necessary. If you believe it
+is possible to implement an idea without templates, then do it without
+templates. If you do need to use templates, try to limit the amount of 
+features you invoke to the absolute minimum. In particular:
+@itemize @minus
+@item
+A class can have a template function as a member function. Unfortunately this
+is not supported by @code{g++}.
+@item
+Some people discovered that by using templates with types that are templates
+of types that are templates of types that are templates .... recursively,
+they can force the C++ compiler to do computation at compile time and generate
+C++ code that is highly optimized. Problems in linear algebra, FFTs and such
+have been implemented in this manner, and the performance of the corresponding
+C++ code beat out Fortran implementations. This is a great idea of the future,
+but at the moment many compilers, including g++ can't properly cope with
+such code. For now don't make templates of templates of things. Only make
+templates of things.
+@end itemize
+@end itemize
+
+FIXME: @emph{I need to add some stuff here.}
+
+@c ===========================================================================
+
+@node Hello world revisited again, Invoking acmkdir, Writing portable C++, Using Autotools
+@section Hello world revisited again
+
+Putting all of this together, we will now show you how to create a super
+Hello World package, using the @code{LF} macros and the utilities that
+are distributed with the @samp{autotools} distribution.
+
+The first step is to build a directory tree for the new project. Instead of
+doing it by hand, use the @samp{acmkdir} utility. Type:
+@example
+% acmkdir hello
+@end example
+@noindent
+@samp{acmkdir} prompts you with the current directory pathname. Make
+sure that this is indeed the directory where you want to install the
+directory tree for the new package. You will be prompted for some information
+about the newly created package.
+When you are done, @samp{acmkdir} will ask you if you really want to go
+for it. Say @samp{y}. Then @samp{acmkdir} will do the following:
+@itemize @bullet
+@item
+Create the @file{hello-0.1} directory and the @file{doc}, @file{m4}
+and @file{src} subdirectories.
+@item
+Generate the following @file{configure.in}:
+@example
+AC_INIT
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(test,0.1)
+LF_HOST_TYPE
+LF_CONFIGURE_CXX
+LF_SET_WARNINGS
+AC_PROG_RANLIB
+AC_OUTPUT(Makefile doc/Makefile m4/Makefile src/Makefile)
+@end example
+@noindent
+You can edit this and customize it to your needs. More specifically, you
+will need to update the version number here everytime to you cut a new
+distribution.
+@item
+Place boilerplate @file{Makefile.am} files on the toplevel directory as well
+as the @file{doc}, @file{m4} and @file{src} subdirectories. The toplevel
+@file{Makefile.am} contains:
+@example
+EXTRA_DIST = reconf configure
+SUBDIRS = m4 doc src
+@end example
+@noindent
+The ones in the @code{src} and @code{doc} subdirectories are empty. The
+one in @file{m4} contains a template @file{Makefile.am} which you should
+edit if you want to add new macros.
+@item
+Install the GPL in @file{COPYING} and a standard @file{INSTALL} file which
+you can customize.
+@item
+Create the files @file{AUTHORS}, @file{NEWS}, @file{README}, @file{THANKS} and
+@file{ChangeLog} and place some default content in them which you should
+edit further.
+@item
+Create a @file{reconf} script for reconfiguring your package every time
+you modify the contents of the @file{m4} subdirectory and need to rebuild
+@file{configure} and the makefiles:
+@example
+#!/bin/sh
+rm -f config.cache
+rm -f acconfig.h
+aclocal -I m4
+autoconf
+acconfig
+autoheader
+automake -a
+exit
+@end example
+@noindent
+The makes sure that all the utilities are invoked, and in the right order.
+Before @samp{acmkdir} exits, it will call the @samp{reconf} script for
+you once to set things up. 
+@end itemize
+@noindent
+It must be obvious that having to do these tasks manually for every package
+you write can get to be tiring. With @file{acmkdir} you can slap together
+all this grunt-work in a matter of seconds.
+
+Now enter the directory @file{hello-0.1/src} and start coding:
+@example
+% cd hello-0.1/src
+% gpl -cc hello.cc
+% vi hello.cc
+% vi Makefile.am
+@end example
+@noindent
+This time we will use the following modified hello world program:
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <iostream.h>
+
+main()
+@{
+ cout << "Welcome to " << PACKAGE << " version " << VERSION;
+ cout << " for " << YOUR_OS << endl;
+ cout << "Hello World!" << endl;
+@}
+@end example
+@noindent
+and for @file{Makefile.am} the same old thing:
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.cc 
+@end example
+@noindent
+Now back to the toplevel directory:
+@example
+% cd ..
+% reconf
+% configure
+% make
+% src/hello
+Welcome to test version 0.1 for i486-pc-linux-gnulibc1
+Hello World!
+@end example
+@noindent
+Note that by using the special macros @code{PACKAGE}, @code{VERSION}, 
+@code{YOUR_OS} the program can identify itself, its version number and the
+operating system for which it was compiled. The @code{PACKAGE} and 
+@code{VERSION} are defined by @code{AM_INIT_AUTOMAKE} and 
+@code{YOUR_OS} by @code{LF_HOST_TYPE}.
+
+Now you can experiment with the various options that configure offers.
+You can do:
+@example
+% make distclean
+@end example
+@noindent
+and reconfigure the package with one of the following variations in options:
+@example
+% configure --disable-assert
+% configure --with-warnings
+@end example
+@noindent
+or a combination of the above. You can also build a distribution of your
+hello world and feel cool about yourself:
+@example
+% make distcheck
+@end example
+@noindent
+The important thing is that you can write extensive programs like this
+and stay focused on writing code instead of maintaining stupid header file,
+scripts, makefiles and all that.
+
+@node Invoking acmkdir, Handling Embedded text, Hello world revisited again, Using Autotools
+@section Invoking @samp{acmkdir}
+
+The @samp{acmkdir} utility can be invoked in the simple manner that we
+showed in the last chapter to prepare the directory tree for writing
+C++ code. Alternatively, it can be instructed to create directory
+trees for Fortran/C++ code as well as documentation directories.
+
+In general, you invoke @samp{acmkdir} in the following manner:
+@example
+% acmkdir [OPTIONS] "dirname"
+@end example
+@noindent
+If you are creating a toplevel directory, then everything will appear
+under @samp{dirname-0.1}. Otherwise, the name @samp{dirname} will be used
+instead. 
+
+@samp{acmkdir} supports the following options:
+@table @samp
+@item --help
+Print a short message reminding the usage of the @samp{acmkdir} command.
+@item --version
+Print the version information and copyright notice for @samp{acmkdir}.
+@item -latex
+Instruct @samp{acmkdir} to create a @code{latex} documentation directory
+(@pxref{Writing documentation with LaTeX}).
+If your package will have more than
+one documentation texts, you usually want to invoke this under the 
+@samp{doc} subdirectory:
+@example
+% cd doc
+% acmkdir -latex tutorial
+% acmkdir -latex manual
+@end example
+@noindent
+Of course, the @file{Makefile.am} under the @file{doc} directory will need
+to refer to these subdirectories with a @code{SUBDIRS} entry:
+@example
+SUBDIRS = tutorial manual
+@end example
+@noindent
+Alternatively, if you decide to use the @file{doc} directory itself 
+for documentation (and you are massively sure about this), then you can
+@example
+% rm -rf doc
+% acmkdir -latex doc
+@end example
+@noindent
+You should use this feature if you wish to typeset your documentation
+using LaTeX instead of Texinfo. 
+The disadvantage of using @samp{latex} for your documentation
+is that you can only produce a printed book; you can not also generate
+on-line documentation. The advantage is that you can typeset very complex
+mathematics, something which you can not do under Texinfo since it only
+uses plain TeX. If you are documentating mathematical software, you may
+prefer to write the documentation in Latex. Autotools will provide you
+with LaTeX macros to make your printed documentation look like Texinfo 
+printed documentation.
+@item -t, --type=TYPE
+Instruct @samp{acmkdir} to create a top-level directory of type @code{TYPE}.
+The types available are: @code{default}, @code{traditional}, 
+@code{fortran}. Eventually I may implement two additional types:
+@code{f77}, @code{f90}.
+@end table
+
+Now, a brief description of these toplevel types:
+@table @strong
+@item default
+This is the default type of toplevel directory. It is intended for C++
+programs and uses the @code{LF} macros installed by Autotools. 
+The @file{acconfig.h} file is automagically generated and a custom 
+@file{INSTALL} file is installed. The defaults reflect my own personal
+habits.
+@item traditional
+This is much closer to the FSF default habits. The default language is C,
+the traditional Autoconf macros are used and the @file{acconfig.h} file
+is not automatically generated, except for adding the lines
+@example
+#undef PACKAGE
+#undef VERSION
+@end example
+@noindent
+which are required by Automake.
+@item fortran
+This is a rather complicated type. It is intended for programs that mix
+C++ and Fortran. It installs an appropriate @file{configure.in}, and
+creates an entire directory under the toplevel directory called
+@file{fortran}. In that directory, there's installed a copy of the
+@code{f2c} translator. The software is configured such that if a Fortran
+compiler is not available, @code{f2c} is built instead, and then used
+to compile the Fortran code. We will explain all about Fortran in the
+next chapter.
+@end table
+
+@node Handling Embedded text, Handling very deep packages, Invoking acmkdir, Using Autotools
+@section Handling Embedded text
+
+In some cases, we want to embed text to the executable file of an application.
+This may be on-line help pages, or it may be a script of some sort that we 
+intend to execute by an interpreter library that we are linking with, like
+Guile or Tcl. Whatever the reason, if we want to compile the application as
+a stand-alone executable, it is necessary to embed the text in the source
+code. Autotools provides with the build tools necessary to do this painlessly.
+
+As a tutorial example, we will write a simple program that prints the contents
+of the GNU General Public License. First create the directory tree for
+the program:
+@example
+% acmkdir copyleft
+@end example
+@noindent
+Enter the directory and create a copy of the @code{txtc} compiler:
+@example
+% cd copyleft-0.1
+% mktxtc
+@end example
+@noindent
+Then edit the file @file{configure.in} and add a call to the 
+@code{LF_PROG_TXTC} macro. This macro depends on 
+@example
+AC_PROG_CC
+AC_PROG_AWK
+@end example
+@noindent
+so make sure that these are invoked also. Finally add @file{txtc.sh} to
+your @code{AC_OUTPUT}.
+The end-result should look like this:
+@example
+AC_INIT(reconf)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(copyleft,0.1)
+LF_HOST_TYPE
+LF_CONFIGURE_CC
+LF_CONFIGURE_CXX
+LF_SET_OPTIMIZATION
+LF_SET_WARNINGS
+AC_PROG_RANLIB
+AC_PROG_AWK
+LF_PROG_TXTC
+AC_OUTPUT(Makefile txtc.sh doc/Makefile m4/Makefile src/Makefile)
+@end example
+@noindent
+Then, enter the @file{src} directory and create the following files:
+@example
+% cd src
+% gpl -l gpl.txt
+% gpl -cc gpl.h
+% gpl -cc copyleft.cc
+@end example
+@noindent
+The @file{gpl.txt} file is the text that we want to print. You can substitute
+it with any text you want. This file will be compiled into @file{gpl.o} 
+during the build process. The @file{gpl.h} file is a header file that gives
+access to the symbols defined by @file{gpl.o}. The file @file{copyleft.cc}
+is where the @code{main} will be written. 
+
+Next, add content to these files as follows:
+@table @strong
+@item gpl.h
+@example
+extern int gpl_txt_length;
+extern char *gpl_txt[];
+@end example
+@noindent
+@item copyleft.cc
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <iostream.h>
+#include "gpl.h"
+ 
+main()
+@{
+ loop(i,1,gpl_txt_length)
+ @{ cout << gpl_txt[i] << endl; @}
+@}
+@end example
+@noindent
+@item Makefile.am
+@example
+SUFFIXES = .txt
+.txt.o:
+       $(TXTC) $<
+ 
+bin_PROGRAMS = copyleft
+foo_SOURCES = copyleft.cc gpl.h gpl.txt
+@end example
+@noindent
+@end table
+@noindent
+and now you're set to build. Go back to the toplevel directory and go for it:
+@example
+$ cd ..
+$ reconf
+$ configure
+$ make
+$ src/copyleft | less
+@end example
+@noindent
+To verify that this works properly, do the following:
+@example
+$ cd src
+$ copyleft > copyleft.out 
+$ diff gpl.txt copyleft.out
+@end example
+@noindent
+The two files should be identical.
+Finally, convince yourself that you can make a distribution:
+@example
+$ make distcheck
+@end example
+@noindent
+and there you are.
+
+Note that in general the text file, as encoded by the text compiler, will
+not be always identical to the original. There is one and only one modification
+being made: If any line has any blank spaces at the end, they are trimmed off.
+This feature was introduced to deal with a bug in the Tcl interpreter, and
+it is in general a good idea since it conserves a few bytes, it never hurts,
+and additional whitespace at the end of a line shouldn't really be there.
+
+This magic is put together from many different directions. It begins with
+the @code{LF_PROG_TXTC} macro:
+@table @strong
+@item LF_PROG_TXTC
+This macro will define the variable @code{TXTC} to point to a Text-to-C 
+compiler. To create a copy of the compiler at the toplevel directory of your
+source code, use the @code{mktxtc} command:
+@example
+% mktxtc
+@end example
+@noindent
+The compiler is implemented as a shell script, and it depends on @code{sed},
+@code{awk} and the C compiler, so you should call the following two macros
+before invoking @code{AC_PROG_TXTC}:
+@example
+AC_PROG_CC
+AC_PROG_AWK
+@end example
+@noindent
+The compiler is intended to be used as follows:
+@example
+$(TXTC) text1.txt text2.txt text3.txt ...
+@end example
+@noindent
+such that given the files @file{text1.txt}, @file{text2.txt}, etc. 
+object files @file{text1.o}, @file{text2.o}, etc, are 
+generated that contains the text from these files. 
+@end table
+@noindent
+From the Automake point of view, you need to add the following two lines
+to Automake:
+@example
+SUFFIXES = .txt
+.txt.o:
+        $(TXTC) $<
+@end example
+@noindent
+assuming that your text files will end in the @code{.txt} suffix. The first
+line informs Automake that there exist source files using non-standard
+suffixes. Then we describe, in terms of an abstract Makefile rule, how to
+build an object file from these non-standard suffixes. Recall the use of
+the symbol @code{$<}. Also note that it is not necessary
+to use @code{$(srcdir)} on @code{$<} for VPATH builds.
+If you embed more than one type of files, then you may want to use more
+than one suffixes. For example, you may have @file{.hlp} files containing
+online help and @file{.scm} files containing Guile code. Then you
+want to write a rule for each suffix as follows:
+@example
+SUFFIXES = .hlp .scm
+.hlp.o:
+        $(TXTC) $<
+.scm.o:
+        $(TXTC) $<
+@end example
+@noindent
+It is important to put these lines before mentioning any @code{SOURCES}
+assignments. Automake is smart enough to parse these abstract makefile
+rules and recognize that files ending in these suffixes are valid source
+code that can be built to object code. This allows you to simply list
+@file{gpl.txt} with the other source files in the @code{SOURCES} assignment:
+@example
+copyleft_SOURCES = copyleft.cc gpl.h gpl.txt
+@end example
+@noindent
+In order for this to work however, Automake must be able to see your
+abstract rules first.
+
+When you ``compile'' a text file @file{foo.txt} this makes an object file
+that defines the following two symbols:
+@example
+int foo_txt_length;
+char *foo_txt[];
+@end example
+@noindent
+Note that the dot characters are converted into underscores. To make these
+symbols accessible, you need to define an appropriate header file with 
+the following general form:
+@example
+extern int foo_txt_length; 
+extern char *foo_txt[];
+@end example
+@noindent
+When you include this header file into your other C or C++ files then:
+@itemize @bullet
+@item
+You can obtain the filename containing the original text from
+@example
+foo_txt[0];
+@end example
+@noindent
+and use it to print diagnostic messages.
+@item
+You can obtain the text itself line by line:
+@example
+char *foo_txt[1];   -> first line
+char *foo_txt[2];   -> second line
+...
+@end example
+@noindent
+@item
+The last line is set to NULL and @code{foo_txt_length} is defined such that
+@example
+char *foo_txt[foo_txt_length+1] == NULL
+@end example
+@noindent
+The last line of the text is:
+@example
+char *foo_txt[foo_txt_length];
+@end example
+@noindent
+You can use a @code{for} loop (or the @code{loop} macro defined by 
+LF_CPP_PORTABILITY)
+together with @code{foo_txt_length} to loop over the entire text, or you can
+exploit the fact that the last line points to @code{NULL} and do a 
+@code{while} loop.
+@end itemize
+and that's all there is to it.
+
+@node Handling very deep packages,  , Handling Embedded text, Using Autotools
+@section Handling very deep packages 
+
+When making a package, you can organize it as a @dfn{flat} package or
+a @dfn{deep} package. In a flat package, all the source files are placed
+under @code{src} without any subdirectory structure. In a deep package,
+libraries and groups of executables are seperated by a subdirectory
+structure. The perennial problem with deep packages is dealing with 
+interdirectory dependencies. What do you do if to compile one library you
+need header files from another library in another directory? What do you do if 
+to compile the test suite of your library you need to link in another library
+that has just been compiled in a different directory? 
+
+One approach is to just put all these interdependent things in the same
+directory. This is not very unreasonable since the @code{Makefile.am}
+can document quite thoroughly where each file belongs, in case you need to
+split them up in the future. On the other hand, this solution becomes less
+and less preferable as your project grows. You may not want to clutter
+a directory with source code for too many different things. What do you
+do then?
+
+The second approach is to be careful about these dependencies and just
+invoke the necessary features of Automake to make everything work out.
+
+For @code{*.a} files (library binaries), the recommended thing to do
+is to link them by giving the full relative pathname. Doing that allows
+Automake to work out the dependencies correctly accross multiple directories.
+It also allows you to easily upgrade to shared libraries with Libtool.
+To retain some flexibility it may be best to list these interdirectory
+link sequences in variables and then use these variables. This way, when you
+move things around you minimize the amount of editing you have to do. 
+In fact, if all you need these library binaries for is to build a test suite
+you can simply assign them to @code{LDFLAGS}. To make these assignments
+more uniform, you may want to start your pathnames with @code{$(top_builddir)}.
+
+For @code{*.h} files (header files), you can include an
+@example
+INCLUDES = -I../dir1 -I../dir2 -I../dir3 ...
+@end example
+@noindent
+assignment on every @file{Makefile.am} of every directory level listing
+the directories that contain include files that you want to use. If your
+directory tree is very complicated, you may want to make these assignments
+more uniform by starting your pathnames from @code{$(top_srcdir)}.
+In your source code, you should use the syntax
+@example
+#include "foo.h"
+@end example
+@noindent
+for include files in the current directory and
+@example
+#include <foo.h>
+@end example
+@noindent
+for include files in other directories.
+
+There is a better third approach, provided by Autotools, but it only 
+applies to include files. There is nothing more that can be done with
+library binaries; you simply have to give the path. But with header files,
+it is possible to arrange at configure-time that all header files are
+symlinked under the directory @code{$(top_builddir)/include}. Then you will
+only need to list one directory instead of many. 
+
+Autotools provides two Autoconf macros: @code{LF_LINK_HEADERS} and
+@code{LF_SET_INCLUDES}, to handle this symlinking. 
+@table @strong
+@item LF_LINK_HEADERS
+This macro links the public header files under a certain set of directories
+under an include directory from the toplevel. A simple way to invoke this
+macro is by listing the set of directories that contain public header files:
+@example
+LF_LINK_HEADERS(src/dir1 src/dir2 src/dir3 ... src/dirN)
+@end example
+@noindent
+When this macro is invoked for the first time, the directory 
+@file{$(top_srcdir)/include} is erased. Then for each directory 
+@file{src/dirK} listed, we look for the file @file{src/dirK/Headers} and
+link the public header files mentioned in that file under
+@file{$(top_srcdir)/include}. The link will be either symbolic or hard,
+depending on the capabilities of your operating system. If possible,
+a symbolic link will be prefered. 
+
+You can invoke the same macro by passing an optional argument that specifies
+a directory name. For example:
+@example
+LF_LINK_HEADERS(src/dir1 src/dir2 ... src/dirN , foo)
+@end example
+@noindent
+Then the symlinks will be created under the 
+@file{$(top_srcdir)/include/foo} directory instead. This can be significantly
+useful if you have very many header files to install and you'd like to
+call them something like:
+@example
+#include <foo/file1.h>
+@end example
+@noindent
+During compilation, when you try to 
+@item LF_SET_INCLUDES
+This macro will cause the @file{Makefile.am} variable 
+@code{$(default_includes)} to contain the correct collection of @code{-I}
+flags, such that the include files are accessible. If you invoke it with
+no arguments as
+@example
+LF_SET_INCLUDES
+@end example
+@noindent
+then the following assignment will take place:
+@example
+default_includes = -I$(prefix) -I$(top_srcdir)/include
+@end example
+@noindent
+If you invoke it with arguments:
+@example
+LF_SET_INCLUDES(dir1 dir2 ... dirN)
+@end example
+@noindent
+then the following assignment will take place instead:
+@example
+default_includes = -I$(prefix) -I$(top_srcdir)/include/dir1 \
+                   -I$(top_srcdir)/include/dir2 ...         \
+                   -I$(top_srcdir)/include/dirN
+@end example
+@noindent
+You may use this variable as part of your @code{INCLUDES} assignment
+in your @file{Makefile.am} like this:
+@example
+INCLUDES = $(default_includes)
+@end example
+@noindent
+If your distribution has a @file{lib} directory, in which you install
+various codelets and header files, then a path to that library is
+added to @code{default_includes} also. In that case, you have one
+of the following:
+@example
+default_includes = -I$(prefix) -I$(top_srcdir)/lib -I$(top_srcdir)/include
+@end example
+@noindent
+or
+@example
+default_includes = -I$(prefix) -I$(top_srcdir)/lib \
+                   -I$(top_srcdir)/include/dir1 ... \
+                   -I$)top_srcdir)/include/dirN
+@end example
+@noindent
+@end table
+
+A typical use of this system involves invoking 
+@example
+LF_LINK_HEADERS(src/dir1 src/dir2 ... src/dirN)
+LF_SET_INCLUDES
+@end example
+@noindent
+in your @file{configure.in} and adding the following two lines in your
+@file{Makefile.am}:
+@example
+INCLUDES = $(default_includes)
+EXTRA_DIST = Headers
+@end example
+@noindent
+The variable @code{$(default_includes)} will be assigned by the 
+@code{configure} script to point to the Right Thing. You will also
+need to include a file called @file{Headers} in every directory level
+that you mention in @code{LF_LINK_HEADERS} containing the public header
+files that you wish to symlink. The filenames need to be separated by
+carriage returns in the @file{Headers} file. You also need to mention
+these public header files in a
+@example
+include_HEADERS = foo1.h foo2.h ...
+@end example
+@noindent
+assignment, in your @file{Makefile.am}, to make sure that they are installed. 
+
+With this usage, other programs can access the installed header files
+as:
+@example
+#include <foo1.h>
+@end example
+@noindent
+Other directories within the same package can access the uninstalled yet
+header files in exactly the same manner. Finally, in the same directory
+you should access the header files as
+@example
+#include "foo1.h"
+@end example
+@noindent
+This will force the header file in the current directory to be installed,
+even when there is a similar header file already installed. This is very
+important when you are rebuilding a new version of an already installed
+library. Otherwise, building might be confused if your code tries to 
+include the already installed, and not up-to-date, header files from the
+older version.
+
+Alternatively, you can categorize the header files under a directory,
+by invoking
+@example
+LF_LINK_HEADERS(src/dir1 src/dir2 , name1)
+LF_LINK_HEADERS(src/dir3 src/dir4 , name2)
+LF_SET_INCLUDES(name1 name2)
+@end example
+@noindent
+in your @file{configure.in}. In your @file{Makefile.am} files you still
+add the same two lines:
+@example
+INCLUDES = $(default_includes)
+EXTRA_DIST = Headers
+@end example
+@noindent
+and maintain the @file{Headers} file as before. However, now the header files
+will be symlinked to subdirectories of @file{$(top_srcdir)/include}. 
+This means that although uninstalled header files in all directories must
+be included by code in the same directory as:
+@example
+#include "header.h"
+@end example
+@noindent
+code in other directories must access these uninstalled header files as
+@example
+#include <name1/header.h>
+@end example
+@noindent
+if the header file is under @file{src/dir1} or @file{src/dir2} or as
+@example
+#include <name2/header.h>
+@end example
+@noindent
+if the header file is under @file{src/dir3} or @file{src/dir4}.
+It follows that you probably intend for these header files to be installed
+correspondingly in such a manner so that other programs can also include them
+the same way. To accomplish that, under @file{src/dir1} and @file{src/dir2}
+you should list the header files in your @file{Makefile.am} like this:
+@example
+name1dir = $(includedir)/name1
+name1_HEADERS = header.h ...
+@end example
+@noindent
+and under @file{src/dir3} and @file{src/dir4} like this:
+@example
+name2dir = $(includedir)/name2
+name2_HEADERS = header.h
+
+@end example
+@noindent
+One disadvantage of this approach is that the source tree is modified 
+during configure-time, even during a VPATH build. Some may not like that, but 
+it suits me just fine. 
+Unfortunately, because Automake requires the GNU compiler to compute 
+dependencies, the header files need to be placed in a constant location
+with respect to the rest of the source code. If a @code{mkdep} utility
+were to be distributed by Automake to compute dependencies when the installer
+installs the software and not when the developer builds a source code
+distribution, then it would be possible to allow the location of the header
+files to be dynamic. If that development ever takes place in Automake,
+Autotools will immediate follow. If you really don't like this,
+then don't use this feature.
+
+Usually, if you are installing one or two header files per library you
+want them to be installed under @code{$(includedir)} and be includable
+with  
+@example
+#include <foo.h>
+@end example
+@noindent
+On the other hand, there are many applications that install a lot of header
+files, just for one library. In that case, you should put them under a
+prefix and let them be included as:
+@example
+#include <prefix/foo.h>
+@end example
+@noindent
+Examples of libraries doing this X11 and Mesa.
+
+This mechanism for tracking include files is most useful for very large 
+projects. You may not want to bother for simple homework-like throwaway 
+hacks. When a project starts to grow, it is very easy to switch.

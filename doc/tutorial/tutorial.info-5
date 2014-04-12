@@ -1,0 +1,1222 @@
+This is tutorial.info, produced by makeinfo version 4.3 from
+tutorial.texi.
+
+INFO-DIR-SECTION Miscellaneous
+START-INFO-DIR-ENTRY
+* Autotoolset Tutorial: (tutorial).        Autotools tutorial.
+END-INFO-DIR-ENTRY
+
+
+File: tutorial.info,  Node: General Automake principles,  Next: Simple Automake examples,  Prev: Programs and Libraries with Automake,  Up: Using Automake and Autoconf
+
+General Automake principles
+===========================
+
+   In the previous section we described how to use Automake to compile
+programs, libraries and test suites. To exploit the full power of
+Automake however, it is important to understand the fundamental ideas
+behind it.
+
+   The simplest way to look at a `Makefile.am' is as a collection of
+assignments which infer a set of Makefile rules, which in turn infer the
+building process. There are three types of such assignments:
+   * "Global" assignments modify the behaviour of the entire Makefile
+     for the given subdirectory. Examples of such assignments are
+     `INCLUDES', `LDADD', `LDFLAGS', `TESTS'. These assignments affect
+     the behaviour of the Makefile in the given directory indepedent of
+     what gets built. In order for an assignment to be "global", the
+     name of the variable to which you are assigning must have a
+     special meaning to Automake.  If it does not, then the assignment
+     has no effect, but it may be used as a variable in other
+     assignments.
+
+   * "Primitive" assignments declare the primitives that we want to
+     build.  Such assignments are `bin_PROGRAMS', `lib_LIBRARIES', and
+     others.  The general pattern of these assignments is two words
+     seperated by an underscore. The second word is the type of the
+     primitive being built, and it affects what Makefile rules are
+     generated for building the primitive.  The first word contains
+     information about where to install the primitive once its built,
+     so it affects the Makefile rules that handle the `install' and
+     `uninstall' targets. The way this works is that for `bin' there
+     corresponds a global assignment for `bindir' containing the
+     installation directory. For example the symbols `bin', `lib',
+     `include' have the following default assignments:
+          bindir     = $(prefix)/bin
+          libdir     = $(prefix)/lib
+          includedir = $(prefix)/include
+
+     These are the directories where you install executables, libraries
+     and public header files. You can override the defaults by
+     inserting different assignments in your `Makefile.am', but please
+     don't do that. Instead you can define new assignments. For
+     example, if you do
+          foodir = $(prefix)/foo
+
+     then that makes writing `foo_PROGRAMS', `foo_LIBRARIES' install in
+     the `$(prefix)/foo' direcory instead.  The symbols `check' and
+     `noinst' have special meanings and you should not ever try to
+     assign to `checkdir' and `noinstdir'.
+        - The `check' symbol, suggests that the primitive should only be
+          built when the user invokes `make check' and it should not be
+          installed.  It is only meant to be executed as part of a test
+          suite and then get scrapped.
+
+        - The `noinst' symbol, suggests that the primitive should not be
+          installed. It will be built however normally, when you invoke
+          `make'.  You could use this to build convenience libraries
+          which you intend to link in statically to executables which
+          you do plan to install.  You could also use this to build
+          executables which will generate source code that will
+          subsequently be used to build something installable.
+
+   * "Property" assignments define the properties for every primitive
+     that you declare. A property is also made of two words that are
+     seperated by an underscore. The first word names the primitive to
+     which the property refers to. The second word names the name of
+     the property itself. For example when you define
+          bin_PROGRAMS = hello
+
+     this means that you can then say:
+          hello_SOURCES = ...
+          hello_LDADD   = ...
+
+     and so on. The `SOURCES' and `LDADD' are properties of `hello'
+     which is a `PROGRAMS' primitive.
+
+   In addition to all this, you may include ordinary targets in a
+`Makefile.am' just as you would in an ordinary `Makefile.in'.  If you
+do that however, then please check at some point that your distribution
+can properly build with `make distcheck'. It is very important that
+when you define your own rules, to build whatever you want to build, to
+follow the following guidelines:
+   * Prepend all source files both in the dependencies and the rules
+     with `$(srcdir)'. This variable points to the directory where your
+     source code is located during the current `make', which is not
+     necessarily the same directory as the one returned by ``pwd`'.  It
+     is possible to do what is called a "VPATH build" where the
+     generated files are created in a seperate directory tree from the
+     source code.  What ``pwd`' would return to you in that case would
+     be the directory in which files are _written_, not the directory
+     from which files are _read_.  If you mess this up, then you will
+     know when `make distcheck' fails, which attempts to do a VPATH
+     build. The directory in which files are written can be accessed by
+     the dot.  For example, `./foo'.
+
+   * If you need to get to any files from the top-level directory use
+     `$(top_srcdir)' for files which _you_ wrote (and your compiler
+     tools _read_) and `$(top_builddir)' for files which _the compiler_
+     wrote.
+
+   * For your rules use only the following commands directly:
+          ar cat chmod cmp cp diff echo egrep expr false grep ls
+          mkdir mv pwd rm rmdir sed sleep sort tar test touch true
+
+     Any other programs that you want to use, you must do so through
+     make variables.  That includes programs such as these:
+          awk bash bison cc flex install latex ld ldconfig lex ln make
+          makeinfo perl ranlib shar texi2dvi yacc
+
+     The make variables you define through Autoconf in your
+     `configure.in'.  For special-purpose tools, use the AC_PATH_PROGS
+     macro. For example:
+          AC_PATH_PROGS(BASH, bash sh)
+          AC_PATH_PROGS(PERL, perl perl5.005 perl5.004 perl5.003 perl5.002 perl5.001)
+          AC_PATH_PROGS(SHAR, shar)
+          AC_PATH_PROGS(BISON, bison)
+
+     Some special tools have their own macros:
+          AC_PROG_MAKE_SET -> $(MAKE)   -> make
+          AC_PROG_RANLIB   -> $(RANLIB) -> ranlib | (do-nothing)
+          AC_PROG_AWK      -> $(AWK)    -> mawk | gawk | nawk | awk
+          AC_PROG_LEX      -> $(LEX)    -> flex | lex
+          AC_PROG_YACC     -> $(YACC)   -> 'bison -y' | byacc | yacc
+          AC_PROG_LN_S     -> $(LN_S)   -> ln -s
+
+     Before using any of these macros, consult the Autoconf
+     documentation to see exactly what it is that they do.
+
+
+File: tutorial.info,  Node: Simple Automake examples,  Next: Built sources,  Prev: General Automake principles,  Up: Using Automake and Autoconf
+
+Simple Automake examples
+========================
+
+   A real life example of a `Makefile.am' for libraries is the one I use
+to build the Blas-1 library. It looks like this:
+
+* `blas1/Makefile.am'
+     SUFFIXES = .f
+     .f.o:
+            $(F77) $(FFLAGS) -c $<
+     
+     lib_LIBRARIES = libblas1.a
+     libblas1_a_SOURCES = f2c.h caxpy.f ccopy.f cdotc.f cdotu.f crotg.f cscal.f \
+      csrot.f csscal.f cswap.f dasum.f daxpy.f dcabs1.f dcopy.f ddot.f dnrm2.f \
+      drot.f drotg.f drotm.f drotmg.f dscal.f dswap.f dzasum.f dznrm2.f icamax.f \
+      idamax.f isamax.f izamax.f sasum.f saxpy.f scasum.f scnrm2.f scopy.f \
+      sdot.f snrm2.f srot.f srotg.f srotm.f srotmg.f sscal.f sswap.f zaxpy.f \
+      zcopy.f zdotc.f zdotu.f zdrot.f zdscal.f zrotg.f zscal.f zswap.f
+
+Because the Blas library is written in Fortran, I need to declare the
+Fortran suffix at the beginning of the `Makefile.am' with the
+`SUFFIXES' assignment and then insert an implicit rule for building
+object files from fortran files. The variables `F77' and `FFLAGS' are
+defined by Autoconf, by using the Fortran support provided by Autotools.
+For C or C++ files there is no need to include implicit rules.  We
+discuss Fortran support at a later chapter.
+
+   Another important thing to note is the use of the symbol `$<'. We
+introduced these symbols in Chapter 2, where we mentioned that `$<' is
+the dependencies that changed causing the target to need to be rebuilt.
+If you've been paying attention you may be wondering why we didn't say
+`$(srcdir)/$<' instead. The reason is because for VPATH builds, `make'
+is sufficiently intelligent to substitute `$<' with the Right Thing.
+
+   Now consider the `Makefile.am' for building a library for solving
+linear systems of equations in a nearby directory:
+
+* `lin/Makefile.am'
+     SUFFIXES = .f
+     .f.o:
+            $(F77) $(FFLAGS) -c $<
+     INCLUDES = -I../blas1 -I../mathutil
+     
+     lib_LIBRARIES = liblin.a
+     include_HEADERS = lin.h
+     liblin_a_SOURCES = dgeco.f dgefa.f dgesl.f f2c.h f77-fcn.h lin.h lin.cc
+     
+     check_PROGRAMS = test1 test2 test3
+     TESTS = $(check_PROGRAMS)
+     LDADD = liblin.a ../blas1/libblas1.a ../mathutil/libmathutil.a $(FLIBS) -lm
+     
+     test1_SOURCES = test1.cc f2c-main.cc
+     test2_SOURCES = test2.cc f2c-main.cc
+     test3_SOURCES = test3.cc f2c-main.cc
+
+In this case, we have a library that contains mixed Fortran and C++
+code.  We also have an example of a test suite, which in this case
+contains three test programs. What's new here is that in order to link
+the test suite properly we need to link in libraries that have been
+built already in other directories but haven't been installed yet.
+Because every test program requires to be linked against the same
+libraries, we set these libraries globally with an `LDADD' assignment
+for all executables.  Because the libraries have not been installed yet
+we specify them with their full path. This will allow Automake to track
+dependencies correctly; if `libblas1.a' is modified, it will cause the
+test suite to be rebuilt.  Also the variable `INCLUDES' is globally
+assigned to make the header files of the other two libraries accessible
+to the source code in this directory.  The variable `$(FLIBS)' is
+assigned by Autoconf to link the run-time Fortran libraries, and then
+we link the installed `libm.a' library.  Because that library is
+installed, it must be linked with the `-l' flag.  Another peculiarity
+in this example is the file `f2c-main.cc' which is shared by all three
+executables. As we will explain later, when you link executables that
+are derived from mixed Fortran and C or C++ code, then you need to link
+with the executable this kludge file.
+
+   The test-suite files for numerical code will usually invoke the
+library to perform a computation for which an exact result is known and
+then verify that the result is true. For non-numerical code, the
+library will need to be tested in different ways depending on what it
+does.
+
+
+File: tutorial.info,  Node: Built sources,  Next: Installation directories.,  Prev: Simple Automake examples,  Up: Using Automake and Autoconf
+
+Built sources
+=============
+
+   In some complicated packages, you want to generate part of their
+source code by executing a program at compile time. For example, in one
+of the packages that I wrote for an assignment, I had to generate a file
+`incidence.out' that contained a lot of hairy matrix definitions that
+were too ugly to just compute and write by hand. That file was then
+included by `fem.cc' which was part of a library that I wrote to solve
+simple finite element problems, with a preprocessor statement:
+     #include "incidence.out"
+
+All source code files that are to be generated during compile time
+should be listed in the global definition of `BUILT_SOURCES'. This will
+make sure that these files get compiled before anything else. In our
+example, the file `incidence.out' is computed by running a program
+called `incidence' which of course also needs to be compiled before it
+is run. So the `Makefile.am' that we used looked like this:
+     noinst_PROGRAMS = incidence
+     lib_LIBRARIES = libpmf.a
+     
+     incidence_SOURCES = incidence.cc mathutil.h
+     incidence_LDADD = -lm
+     
+     incidence.out: incidence
+           ./incidence > incidence.out
+     
+     BUILT_SOURCES = incidence.out
+     libpmf_a_SOURCES = laplace.cc laplace.h fem.cc fem.h mathutil.h
+     
+     check_PROGRAMS = test1 test2
+     TESTS = $(check_PROGRAMS)
+     
+     test1_SOURCES = test1.cc
+     test1_LDADD = libpmf.a -lm
+     
+     test2_SOURCES = test2.cc
+     test2_LDADD = libpmf.a -lm
+
+Note that because the executable `incidence' has been created at
+compile time, the correct path is `./incidence'. Always keep in mind,
+that the correct path to source files, such as `incidence.cc' is
+`$(srcdir)/incidence.cc'. Because the `incidence' program is used
+temporarily only for the purposes of building the `libpmf.a' library,
+there is no reason to install it. So, we use the `noinst' prefix to
+instruct Automake not to install it.
+
+
+File: tutorial.info,  Node: Installation directories.,  Next: Handling shell scripts,  Prev: Built sources,  Up: Using Automake and Autoconf
+
+Installation directories.
+=========================
+
+   Previously, we mentioned that the symbols `bin', `lib' and `include'
+refer to installation locations that are defined respectively by the
+variables `bindir', `libdir' and `includedir'.  For completeness, we
+will now list the installation locations available by default by
+Automake and describe their purpose.
+
+   All installation locations are placed under one of the following
+directories:
+`prefix'
+     The default value of `$(prefix)' is `/usr/local' and it is used to
+     construct installation locations for machine-indepedent files. The
+     actual value is specified at configure-time with the `--prefix'
+     argument.  For example:
+          configure --prefix=/home/lf
+
+`exec_prefix'
+     The default value of `$(exec_prefix)' is `$(prefix)' and it used
+     to construct installation location for machine-dependent files.
+     The actual value is specified at configure-time with the
+     `--exec-prefix' argument. For example:
+          configure --prefix=/home/lf --exec-prefix=/home/lf/gnulinux
+
+     The purpose of using a seperate location for machine-dependent
+     files is because then it makes it possible to install the software
+     on a networked file server and make that available to machines
+     with different architectures. To do that there must be seperate
+     copies of all the machine-dependent files for each architecture in
+     use.
+
+Executable files are installed in one of the following locations:
+     bindir     = $(exec_prefix)/bin
+     sbindir    = $(exec_prefix)/sbin
+     libexecdir = $(exec_prefix)/libexec
+
+`bin'
+     Executable programs that users can run.
+
+`sbin'
+     Executable programs for the super-user.
+
+`libexec'
+     Executable programs to be called by other programs.
+
+Library files are installed under
+     libdir = $(exec_prefix)/lib
+
+Include files are installed under
+     includedir = $(prefix)/include
+
+Data files are installed in one of the following locations:
+     datadir        = $(prefix)/share
+     sysconfdir     = $(prefix)/etc
+     sharedstatedir = $(prefix)/com
+     localstatedir  = $(prefix)/var
+
+`data'
+     Read-only architecture indepedent data files.
+
+`sysconf'
+     Read-only configuration files that pertain to a specific machine.
+     All the files in this directory should be ordinary ASCII files.
+
+`sharedstate'
+     Architecture indepedent data files which programs modify while
+     they run.
+
+`localstate'
+     Data files which programs modify while they run that pertain to a
+     specific machine.
+
+Autoconf macros should be installed in `$(datadir)/aclocal'. There is
+no symbol defined for this location, so you need to define it yourself:
+     m4dir = $(datadir)/aclocal
+
+FIXME: Emacs Lisp files?
+
+FIXME: Documentation?
+
+   Automake, to encourage tidyness, also provides the following
+locations such that each package can keep its stuff under its own
+subdirectory:
+     pkglibdir         = $(libdir)/@PACKAGE@
+     pkgincludedir     = $(includedir)/@PACKAGE@
+     pkgdatadir        = $(datadir)/@PACKAGE@
+
+There are a few other such `pkg' locations, but they are not practically
+useful.
+
+
+File: tutorial.info,  Node: Handling shell scripts,  Next: Handling other obscurities,  Prev: Installation directories.,  Up: Using Automake and Autoconf
+
+Handling shell scripts
+======================
+
+   Sometimes you may feel the need to implement some of your programs in
+a scripting language like Bash or Perl. For example, the `autotools'
+package is exclusively a collection of shell scripts.  Theoretically, a
+script does not need to be compiled. However, there are still issues
+pertaining to scripts such as:
+   * You want scripts to be installed with `make install', uninstalled
+     with `make uninstall' and distributed with `make dist'.
+
+   * You want scripts to get the path in the `#!' right.
+   To let Automake deal with all this, you need to use the `SCRIPTS'
+primitive.  By listing a file under a `SCRIPTS' primitive assignment,
+you are telling Automake that this file needs to be built, and must be
+allowed to be installed in a location where executable files are
+normally installed. Automake by default will not clean scripts when you
+invoke the `clean' target.  To force Automake to clean all the scripts,
+you need to add the following line to your `Makefile.am':
+     CLEANFILES = $(bin_SCRIPTS)
+
+You also need to write your own targets for building the script by hand.
+
+For example:
+`hello1.sh'
+          # -* bash *-
+          echo "Howdy, world!"
+          exit 0
+
+`hello2.pl'
+          # -* perl *-
+          print "Howdy, world!\n";
+          exit(0);
+
+`Makefile.am'
+          bin_SCRIPTS = hello1 hello2
+          CLEANFILES = $(bin_SCRIPTS)
+          EXTRA_DIST = hello1.sh hello2.pl
+          
+          hello1: $(srcdir)/hello1.sh
+                rm -f hello1
+                echo "#! " $(BASH) > hello1
+                cat $(srcdir)/hello1.sh >> hello1
+                chmod ugo+x hello1
+          
+          hello2: $(srcdir)/hello2.pl
+                $(PERL) -c hello2.pl
+                rm -f hello2
+                echo "#! " $(PERL) > hello2
+                cat $(srcdir)/hello2.pl >> hello2
+                chmod ugo+x hello2
+
+`configure.in'
+          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PATH_PROGS(BASH, bash sh)
+          AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+          AC_OUTPUT(Makefile)
+
+Note that in the "source" files `hello1.sh' and `hello2.pl' we do not
+include a line like
+     #!/bin/bash
+     #!/usr/bin/perl
+
+Instead we let Autoconf pick up the correct path, and then we insert it
+during `make'. Since we omit the `#!' line, we leave a comment instead
+that indicates what kind of file this is.
+
+   In the special case of `perl' we also invoke
+     perl -c hello2.pl
+
+This checks the perl script for correct syntax. If your scripting
+language supports this feature I suggest that you use it to catch
+errors at "compile" time.  The `AC_PATH_PROGS' macro looks for a
+specific utility and returns the full path.
+
+   If you wish to conform to the GNU coding standards, you may want
+your script to support the `--help' and `--version' flags, and you may
+want `--version' to pick up the version number from `AM_INIT_AUTOMAKE'.
+
+   Here's an enhanced hello world scripts:
+   * *version.sh.in*
+          VERSION=@VERSION@
+
+   * *version.pl.in*
+          $VERSION="@VERSION@";
+
+   * *hello1.sh*
+          # -* bash *-
+          function usage
+          {
+           cat << EOF
+          Usage:
+          % hello [OPTION]
+          
+          Options:
+            --help     Print this message
+            --version  Print version information
+          
+          Bug reports to: monica@whitehouse.gov
+          EOF
+          }
+          
+          function version
+          {
+           cat << EOF
+          hello $VERSION - The friendly hello world program
+          Copyright (C) 1997 Monica Lewinsky <monica@whitehouse.gov>
+          This is free software, and you are welcome to redistribute it and modify it
+          under certain conditions. There is ABSOLUTELY NO WARRANTY for this software.
+          For legal details see the GNU General Public License.
+          EOF
+          }
+          
+          function invalid
+          {
+           echo "Invalid usage. For help:"
+           echo "% hello --help"
+          }
+          
+          # -------------------------
+          if test $# -ne 0
+          then
+            case $1 in
+            --help)
+              usage
+              exit
+              ;;
+            --version)
+              version
+              exit
+              ;;
+            *)
+              invalid
+              exit
+              ;;
+          fi
+          
+          # ------------------------
+          echo "Howdy world"
+          exit
+
+   * *hello2.pl*
+          # -* perl *-
+          sub usage
+          {
+           print <<"EOF";
+          Usage:
+          % hello [OPTION]
+          
+          Options:
+            --help     Print this message
+            --version  Print version information
+          
+          Bug reports to: monica@whitehouse.gov
+          EOF
+          exit(1);
+          }
+          
+          sub version
+          {
+           print <<"EOF";
+          hello $VERSION - The friendly hello world program
+          Copyright (C) 1997 Monica Lewinsky <monica@whitehouse.gov>
+          This is free software, and you are welcome to redistribute it and modify it
+          under certain conditions. There is ABSOLUTELY NO WARRANTY for this software.
+          For legal details see the GNU General Public License.
+          EOF
+           exit(1);
+          }
+          
+          sub invalid
+          {
+           print "Invalid usage. For help:\n";
+           print "% hello --help\n";
+           exit(1);
+          }
+          
+          # --------------------------
+          if ($#ARGV == 0)
+          {
+           do version() if ($ARGV[0] eq "--version");
+           do usage()   if ($ARGV[0] eq "--help");
+           do invalid();
+          }
+          # --------------------------
+          print "Howdy world\n";
+          exit(0);
+
+   * *Makefile.am*
+          bin_SCRIPTS = hello1 hello2
+          CLEANFILES = $(bin_SCRIPTS)
+          EXTRA_DIST = hello1.sh hello2.pl
+          
+          hello1: $(srcdir)/hello1.sh $(srcdir)/version.sh
+                rm -f hello1
+                echo "#! " $(BASH) > hello1
+                cat $(srcdir)/version.sh $(srcdir)/hello1.sh >> hello1
+                chmod ugo+x hello1
+          
+          hello2: $(srcdir)/hello2.pl $(srcdir)/version.pl
+                $(PERL) -c hello2.pl
+                rm -f hello2
+                echo "#! " $(PERL) > hello2
+                cat $(srcdir)/version.pl $(srcdir)/hello2.pl >> hello2
+                chmod ugo+x hello2
+
+   * *configure.in*
+          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PATH_PROGS(BASH, bash sh)
+          AC_PATH_PROGS(PERL, perl perl5.004 perl5.003 perl5.002 perl5.001 perl5)
+          AC_OUTPUT(Makefile
+                    version.sh
+                    version.pl
+                   )
+
+
+   Basically the idea with this approach is that when `configure' calls
+`AC_OUTPUT' it will substitute the files `version.sh' and `version.pl'
+with the correct version information. Then, during building, the
+version files are merged with the scripts. The scripts themselves need
+some standard boilerplate code to handle the options.  I've included
+that code here as a sample implementation, which I hereby place in the
+public domain.
+
+   This approach can be easily generalized with other scripting
+languages as well, like Python and Guile.
+
+
+File: tutorial.info,  Node: Handling other obscurities,  Prev: Handling shell scripts,  Up: Using Automake and Autoconf
+
+Handling other obscurities
+==========================
+
+   To install data files, you should use the `DATA' primitive instead of
+the `SCRIPTS'. The main difference is that `DATA' will allow you to
+install files in data installation locations, whereas `SCRIPTS' will
+only allow you to install files in executable installation locations.
+
+   Normally it is assumed that the files listed in `DATA' are not
+derived, so they are not cleaned. If you do want to derive them however
+from an executable file, then you can do so like this:
+
+     bin_PROGRAMS = mkdata
+     mkdata_SOURCES = mkdata.cc
+     
+     pkgdata_DATA = thedata
+     CLEANFILES = $(datadir_DATA)
+     
+     thedata: mkdata
+           ./mkdata > thedata
+
+In general however, data files are boring. You just write them, and
+list them in a `DATA' assignment:
+     pkgdata_DATA = foo1.dat foo2.dat foo3.dat ...
+
+If your package requires you to edit a certain type of files, you might
+want to write an Emacs editing mode for that file type. Emacs modes are
+written in Elisp files that are prefixed with `.el' like in `foo.el'.
+Automake will byte-compile and install Elisp files using Emacs for you.
+You need to invoke the
+     AM_PATH_LISPDIR
+
+macro in your `configure.in' and list your Elisp files under the `LISP'
+primitive:
+     lisp_LISP = mymode.el
+
+The `LISP' primitive also accepts the `noinst' location.
+
+   There is also support for installing Autoconf macros, documentation
+and dealing with shared libraries. These issues however are complicated,
+and they will be discussed in seperate chapters.
+
+
+File: tutorial.info,  Node: Using Autotools,  Next: C++ and Autoconf,  Prev: Using Automake and Autoconf,  Up: Top
+
+Using Autotools
+***************
+
+* Menu:
+
+* Introduction to Autotools::
+* Compiler configuration with the LF macros::
+* The features of LF_CPP_PORTABILITY::
+* Writing portable C++::
+* Hello world revisited again::
+* Invoking acmkdir::
+* Handling Embedded text::
+* Handling very deep packages::
+
+
+File: tutorial.info,  Node: Introduction to Autotools,  Next: Compiler configuration with the LF macros,  Prev: Using Autotools,  Up: Using Autotools
+
+Introduction
+============
+
+   At the moment Autotools distributes the following additional
+utilitities:
+   * The `gpl' utility, for generating copyright notices.
+
+   * The `acmkdir' utility for generating directory trees for new
+     packages
+
+   * The `LF' macros which introduce mainly support for C++, Fortran and
+     embedded text.
+   We have already discussed the `gpl' utility in Chapter 1. In this
+chapter we will focus mainly on the `LF' macros and the `acmkdir'
+utility but we will postpone our discussion of Fortran support until the
+next chapter.
+
+
+File: tutorial.info,  Node: Compiler configuration with the LF macros,  Next: The features of LF_CPP_PORTABILITY,  Prev: Introduction to Autotools,  Up: Using Autotools
+
+Compiler configuration with the `LF' macros
+===========================================
+
+In last chapter we explained that a minimal `configure.in' file looks
+like this:
+     AC_INIT
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(package,version)
+     AC_PROG_CXX
+     AC_PROG_RANLIB
+     AC_OUTPUT(Makefile ... )
+
+If you are not building libraries, you can omit `AC_PROG_RANLIB'.
+
+   Alternatively you can use the following macros that are distributed
+with Autotools, and made accessible through the `aclocal' utility. All
+of them are prefixed with `LF' to distinguish them from the standard
+macros:
+
+*LF_CONFIGURE_CC*
+     This macro is equivalent to the following invokation:
+          AC_PROG_CC
+          AC_PROG_CPP
+          AC_AIX
+          AC_ISC_POSIX
+          AC_MINIX
+          AC_HEADER_STDC
+
+     which is a traditional Autoconf idiom for setting up the C
+     compiler.
+
+*LF_CONFIGURE_CXX*
+     This macro calls
+          AC_PROG_CXX
+          AC_PROG_CXXCPP
+
+     and then invokes the portability macro:
+          LF_CPP_PORTABILITY
+
+     This is the recommended way for configuring your C++ compiler.
+
+*LF_HOST_TYPE*
+     This is here mainly because it is required by
+     `LF_CONFIGURE_FORTRAN'.  This macro determines your operating
+     system and defines the C preprocessor macro `YOUR_OS' with the
+     answer. You can use this in your program for spiffiness purposes
+     such as when the program identifies itself at the user's request,
+     or during initialization.
+
+*LF_CPP_PORTABILITY*
+     This macro allows you to make your `C++' code more portable and a
+     little nicer.
+        * It detects whether your compiler supports `bool'.
+
+        * It checks whether your compiler deals with for loops
+          correctly.
+
+        * At the users option, it introduces nice and powerful
+          assertions.
+
+        * It defines syntactic sugar, that I am personally addicted to
+     If you must call this macro, do so _after_ calling
+     `LF_CONFIGURE_CXX'. We describe the features in more detail in the
+     next section. To take advantage of these features, all you have to
+     do is
+          #include <config.h>
+
+     In the past it used to be necessary to have to include a file
+     called `cpp.h'. I've sent this file straight to hell.
+
+*LF_SET_WARNINGS*
+     This macro enables you to activate warnings at configure time. If
+     called, then the user can request warnings by passing the
+     `--with-warnings' flag to the compiler like this:
+          $ configure ... --with-warnings ...
+
+     Warnings can help you find out many bugs, as well as help you
+     improve your coding habits. On the other hand, in many cases, many
+     of these warnings are false alarms, which is why the default
+     behaviour of the compiler is to not show them to you. You are
+     probably interested in warnings if you are the developer, or a
+     paranoid end-user.  The minimal recommended `configure.in' file
+for a pure C++ project is:
+     AC_INIT
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(package,version)
+     LF_CONFIGURE_CXX
+     AC_PROG_RANLIB
+     AC_OUTPUT(Makefile .... )
+
+A full-blown `configure.in' file for projects that mix Fortran and C++
+(and may need the C compiler also if using `f2c') invokes all of the
+above macros:
+     AC_INIT
+     AM_INIT_AUTOMAKE(package,version)
+     LF_CANONICAL_HOST
+     LF_CONFIGURE_CC
+     LF_CONFIGURE_CXX
+     LF_CONFIGURE_FORTRAN
+     LF_SET_WARNINGS
+     AC_PROG_RANLIB
+     AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+     AC_OUTPUT(Makefile ...)
+
+
+File: tutorial.info,  Node: The features of LF_CPP_PORTABILITY,  Next: Writing portable C++,  Prev: Compiler configuration with the LF macros,  Up: Using Autotools
+
+The features of  `LF_CPP_PORTABILITY'
+=====================================
+
+In order for `LF_CPP_PORTABILITY' to work correctly you need to append
+certain things at the bottom of your `acconfig.h'. This is done for you
+automatically by `acmkdir'.  When the `LF_CPP_PORTABILITY' macro is
+invoked by `configure.in' then the following portability problems are
+checked:
+   * *The bool data type*: It is rather unfortunate that most
+     proprietary compilers don't have such a beautiful and handy
+     feature.   If the configure script detects that you have no bool,
+     then it defines the macro `CXX_HAS_NO_BOOL'. It is possible to
+     emulate `bool' with the following C preprocessor directives:
+          #ifdef CXX_HAS_NO_BOOL
+          #define bool int
+          #define true 1
+          #define false 0
+          #endif
+
+     To make your code portable to compilers that don't support bool,
+     through this workaround, you must follow one rule: never overload
+     your functions in a way in which the only distinguishing feature is
+     `bool' vs `int'.  This workaround is included in the default
+     `acconfig.h' after `@BOTTOM@' that gets installed by `acmkdir'.
+
+   * *Incorrect for-loop scoping*: Another obnoxious bug with many
+     compilers is that they refuse to compile the following code:
+          #include <iostream.h>
+          main()
+          {
+           for (int i=0;i<10;i++) { }
+           for (int i=0;i<10;i++) { }
+          }
+
+     This is legal C++ and the variable `i' is supposed to have scope
+     only inside the forloop braces and the parentheses. Unfortunately,
+     most C++ compilers use an obsolete version of the standard's draft
+     in which the scope of `i' is the entire `main' in this example.
+     The workaround we use is as follows:
+          #ifdef CXX_HAS_BUGGY_FOR_LOOPS
+          #define for if(1) for
+          #endif
+
+     By nesting the forloop inside an if-statement, the variable `i' is
+     assigned the correct scope. Now if your if-statement scoping is
+     also broken then you really need to get another compiler.  The
+     macro `CXX_HAS_BUGGY_FOR_LOOPS' is defined for you if appropriate,
+     and the code for the work-around is included with the default
+     `acconfig.h'.
+
+   In addition to these workarounds, the following additional features
+are introduced at the end of the default `acconfig.h'. The features are
+enabled only if your `configure.in' calls `LF_CPP_PORTABILITY'.
+   * *Looping macros:* The macro `loop' is defined such that
+          loop(i,a,b)
+
+     is equivalent
+          for (int i = a; i <= b; i++)
+
+     This is syntactic sugar that makes it easier on the hand to write
+     nested loops like:
+          int Ni,Nj,Nk;
+          loop(i,0,Ni) loop(j,0,Nj) loop(k,0,Nk) { ... }
+
+     minimizing the probability of making a spelling bug.  If you need
+     to do more unusual looping you can use one of the following macros:
+          inverse_loop(i,a,b)   <--> for (int i = a; i >= b; i--)
+          integer_loop(i,a,b,s) <--> for (int i = a; i <= b; i += s)
+
+     This feature depends on having correct scoping in `for' which
+     fortunately is easily taken care of.
+
+   * *Class protection levels:* The following macros are defined:
+          #define pub public:
+          #define pro protected:
+          #define pri private:
+
+     Now you can declare a class prototype in a java-like style like
+     this:
+          class foo
+          {
+           pri double a,b;
+           pub double c,d;
+          
+           pub foo();
+           pub virtual ~foo();
+          
+           pri void method1(void);
+           pub void method2(void);
+          };
+
+     Personally I find this notation more lucid than the standard C++
+     syntax because this way I can see the protection level of each
+     variable and method without having to possibly scroll up to see
+     what it is. Also, it is less bug-prone this way.
+
+   * *The Pi*: Every mathematician would like to know what pi is, so
+     this is as good a place as any to throw it in:
+          const double pi = 3.14159265358979324;
+
+   * *Assert*: The idea behind `assert' is simple. Suppose that at a
+     certain point in your code, you expect two variables to be equal.
+     If this expectation is a "precondition" that must be satisfied in
+     order for the subsequent code to execute correctly, you must
+     `assert' it with a statement like this:
+          assert(var1 == var2);
+
+     In general `assert' takes as argument a "boolean expression".  If
+     the boolean expression is true, execution continues. Otherwise the
+     `abort' system call is invoked and the program execution is
+     stopped.  If a bug prevents the precondition from being true, then
+     you can trace the bug at the point where the precondition breaks
+     down instead of further down in execution or not at all. The
+     `assert' call is implemented as a C preprocessor macro, so it can
+     be enabled or disabled at will.
+
+     One way to enable assertions is to include `assert.h'.
+          #include <assert.h>
+
+     Then it's possible to disable them by defining the `NDEBUG' macro.
+     Alternatively, because it is easy to provide our own assert, if
+     your `configure.in' invokes `LF_CPP_PORTABILITY' then `assert'
+     will be conditionally defined for you in the `config.h' file.  By
+     default, the `configure' script will enable assertions. You can
+     disable assertions at configure-time like this:
+          % configure ... --disable-assert ...
+
+     During debugging and testing it is a good idea to leave assertions
+     enabled.  However, for production runs it's best to disable them.
+
+     If your program crashes at an assertion, then the first thing you
+     should do is to find out where the error happens. To do this, run
+     the program under the `gdb' debugger. First invoke the debugger:
+          % gdb
+          ...copyright notice...
+
+     Then load the executable and set a breakpoint at the `abort' system
+     call:
+          (gdb) file "executable"
+          (gdb) break abort
+
+     Now run the program:
+          (gdb) run
+
+     Instead of crashing, under the debugger the program will be paused
+     when the `abort' system call is invoked, and you will get back the
+     debugger prompt. Now type:
+          (gdb) where
+
+     to see where the crash happened. You can use the `print' command to
+     look at the contents of variables and you can use the `up' and
+     `down' commands to navigate the stack. For more information, see
+     the GDB documentation or type `help' at the prompt of gdb.
+
+     Another suggestion is to never call the `abort' system call
+     directly.  Instead, please do this:
+          assert(false);
+          exit(1);
+
+     This way if assertions are enabled, the program will stop and the
+     stack will be retained. Otherwise the program will simply exit.
+
+
+
+File: tutorial.info,  Node: Writing portable C++,  Next: Hello world revisited again,  Prev: The features of LF_CPP_PORTABILITY,  Up: Using Autotools
+
+Writing portable C++
+====================
+
+   The C++ language has been standardized very recently. As a result,
+not all compilers fully support all the features that the ANSI C++
+standard requires, including the `g++' compiler itself. Some of the
+problems commonly encountered, such as incorrect scoping in for-loops
+and lack of the `bool' data type can be easily worked around. In this
+section we give some tips for avoiding more portability problems. I
+welcome people on the net reading this to email me their tips, to be
+included in this tutorial.
+   * The following code, as much as it may seem reasonable is not
+     correct:
+          int n = 10;
+          double **foo;
+          foo = new (double *)[i];
+
+     The `g++' compiler will parse this and do the right thing, but
+     other compilers are more picky. The correct way to do it is:
+          int n = 10;
+          double **foo;
+          foo = new double * [i];
+
+   * Do not use exceptions, RTTI and STL. Yes, they can make your code
+     more spiffy, but almost certainly you can live without them, and
+     save yourself serious portability pains.
+
+   * Do not use templates, unless it is absolutely necessary. If you
+     believe it is possible to implement an idea without templates,
+     then do it without templates. If you do need to use templates, try
+     to limit the amount of features you invoke to the absolute
+     minimum. In particular:
+        - A class can have a template function as a member function.
+          Unfortunately this is not supported by `g++'.
+
+        - Some people discovered that by using templates with types
+          that are templates of types that are templates of types that
+          are templates .... recursively, they can force the C++
+          compiler to do computation at compile time and generate C++
+          code that is highly optimized. Problems in linear algebra,
+          FFTs and such have been implemented in this manner, and the
+          performance of the corresponding C++ code beat out Fortran
+          implementations. This is a great idea of the future, but at
+          the moment many compilers, including g++ can't properly cope
+          with such code. For now don't make templates of templates of
+          things. Only make templates of things.
+
+   FIXME: _I need to add some stuff here._
+
+
+File: tutorial.info,  Node: Hello world revisited again,  Next: Invoking acmkdir,  Prev: Writing portable C++,  Up: Using Autotools
+
+Hello world revisited again
+===========================
+
+   Putting all of this together, we will now show you how to create a
+super Hello World package, using the `LF' macros and the utilities that
+are distributed with the `autotools' distribution.
+
+   The first step is to build a directory tree for the new project.
+Instead of doing it by hand, use the `acmkdir' utility. Type:
+     % acmkdir hello
+
+`acmkdir' prompts you with the current directory pathname. Make sure
+that this is indeed the directory where you want to install the
+directory tree for the new package. You will be prompted for some
+information about the newly created package.  When you are done,
+`acmkdir' will ask you if you really want to go for it. Say `y'. Then
+`acmkdir' will do the following:
+   * Create the `hello-0.1' directory and the `doc', `m4' and `src'
+     subdirectories.
+
+   * Generate the following `configure.in':
+          AC_INIT
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE(test,0.1)
+          LF_HOST_TYPE
+          LF_CONFIGURE_CXX
+          LF_SET_WARNINGS
+          AC_PROG_RANLIB
+          AC_OUTPUT(Makefile doc/Makefile m4/Makefile src/Makefile)
+
+     You can edit this and customize it to your needs. More
+     specifically, you will need to update the version number here
+     everytime to you cut a new distribution.
+
+   * Place boilerplate `Makefile.am' files on the toplevel directory as
+     well as the `doc', `m4' and `src' subdirectories. The toplevel
+     `Makefile.am' contains:
+          EXTRA_DIST = reconf configure
+          SUBDIRS = m4 doc src
+
+     The ones in the `src' and `doc' subdirectories are empty. The one
+     in `m4' contains a template `Makefile.am' which you should edit if
+     you want to add new macros.
+
+   * Install the GPL in `COPYING' and a standard `INSTALL' file which
+     you can customize.
+
+   * Create the files `AUTHORS', `NEWS', `README', `THANKS' and
+     `ChangeLog' and place some default content in them which you should
+     edit further.
+
+   * Create a `reconf' script for reconfiguring your package every time
+     you modify the contents of the `m4' subdirectory and need to
+     rebuild `configure' and the makefiles:
+          #!/bin/sh
+          rm -f config.cache
+          rm -f acconfig.h
+          aclocal -I m4
+          autoconf
+          acconfig
+          autoheader
+          automake -a
+          exit
+
+     The makes sure that all the utilities are invoked, and in the
+     right order.  Before `acmkdir' exits, it will call the `reconf'
+     script for you once to set things up.
+
+It must be obvious that having to do these tasks manually for every
+package you write can get to be tiring. With `acmkdir' you can slap
+together all this grunt-work in a matter of seconds.
+
+   Now enter the directory `hello-0.1/src' and start coding:
+     % cd hello-0.1/src
+     % gpl -cc hello.cc
+     % vi hello.cc
+     % vi Makefile.am
+
+This time we will use the following modified hello world program:
+     #ifdef HAVE_CONFIG_H
+     #include <config.h>
+     #endif
+     
+     #include <iostream.h>
+     
+     main()
+     {
+      cout << "Welcome to " << PACKAGE << " version " << VERSION;
+      cout << " for " << YOUR_OS << endl;
+      cout << "Hello World!" << endl;
+     }
+
+and for `Makefile.am' the same old thing:
+     bin_PROGRAMS = hello
+     hello_SOURCES = hello.cc
+
+Now back to the toplevel directory:
+     % cd ..
+     % reconf
+     % configure
+     % make
+     % src/hello
+     Welcome to test version 0.1 for i486-pc-linux-gnulibc1
+     Hello World!
+
+Note that by using the special macros `PACKAGE', `VERSION', `YOUR_OS'
+the program can identify itself, its version number and the operating
+system for which it was compiled. The `PACKAGE' and `VERSION' are
+defined by `AM_INIT_AUTOMAKE' and `YOUR_OS' by `LF_HOST_TYPE'.
+
+   Now you can experiment with the various options that configure
+offers.  You can do:
+     % make distclean
+
+and reconfigure the package with one of the following variations in
+options:
+     % configure --disable-assert
+     % configure --with-warnings
+
+or a combination of the above. You can also build a distribution of your
+hello world and feel cool about yourself:
+     % make distcheck
+
+The important thing is that you can write extensive programs like this
+and stay focused on writing code instead of maintaining stupid header
+file, scripts, makefiles and all that.
+
+
+File: tutorial.info,  Node: Invoking acmkdir,  Next: Handling Embedded text,  Prev: Hello world revisited again,  Up: Using Autotools
+
+Invoking `acmkdir'
+==================
+
+   The `acmkdir' utility can be invoked in the simple manner that we
+showed in the last chapter to prepare the directory tree for writing
+C++ code. Alternatively, it can be instructed to create directory trees
+for Fortran/C++ code as well as documentation directories.
+
+   In general, you invoke `acmkdir' in the following manner:
+     % acmkdir [OPTIONS] "dirname"
+
+If you are creating a toplevel directory, then everything will appear
+under `dirname-0.1'. Otherwise, the name `dirname' will be used instead.
+
+   `acmkdir' supports the following options:
+`--help'
+     Print a short message reminding the usage of the `acmkdir' command.
+
+`--version'
+     Print the version information and copyright notice for `acmkdir'.
+
+`-latex'
+     Instruct `acmkdir' to create a `latex' documentation directory
+     (*note Writing documentation with LaTeX::).  If your package will
+     have more than one documentation texts, you usually want to invoke
+     this under the `doc' subdirectory:
+          % cd doc
+          % acmkdir -latex tutorial
+          % acmkdir -latex manual
+
+     Of course, the `Makefile.am' under the `doc' directory will need
+     to refer to these subdirectories with a `SUBDIRS' entry:
+          SUBDIRS = tutorial manual
+
+     Alternatively, if you decide to use the `doc' directory itself for
+     documentation (and you are massively sure about this), then you can
+          % rm -rf doc
+          % acmkdir -latex doc
+
+     You should use this feature if you wish to typeset your
+     documentation using LaTeX instead of Texinfo.  The disadvantage of
+     using `latex' for your documentation is that you can only produce
+     a printed book; you can not also generate on-line documentation.
+     The advantage is that you can typeset very complex mathematics,
+     something which you can not do under Texinfo since it only uses
+     plain TeX. If you are documentating mathematical software, you may
+     prefer to write the documentation in Latex. Autotools will provide
+     you with LaTeX macros to make your printed documentation look like
+     Texinfo printed documentation.
+
+`-t, --type=TYPE'
+     Instruct `acmkdir' to create a top-level directory of type `TYPE'.
+     The types available are: `default', `traditional', `fortran'.
+     Eventually I may implement two additional types: `f77', `f90'.
+
+   Now, a brief description of these toplevel types:
+*default*
+     This is the default type of toplevel directory. It is intended for
+     C++ programs and uses the `LF' macros installed by Autotools.  The
+     `acconfig.h' file is automagically generated and a custom
+     `INSTALL' file is installed. The defaults reflect my own personal
+     habits.
+
+*traditional*
+     This is much closer to the FSF default habits. The default
+     language is C, the traditional Autoconf macros are used and the
+     `acconfig.h' file is not automatically generated, except for
+     adding the lines
+          #undef PACKAGE
+          #undef VERSION
+
+     which are required by Automake.
+
+*fortran*
+     This is a rather complicated type. It is intended for programs
+     that mix C++ and Fortran. It installs an appropriate
+     `configure.in', and creates an entire directory under the toplevel
+     directory called `fortran'. In that directory, there's installed a
+     copy of the `f2c' translator. The software is configured such that
+     if a Fortran compiler is not available, `f2c' is built instead,
+     and then used to compile the Fortran code. We will explain all
+     about Fortran in the next chapter.
+

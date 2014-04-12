@@ -1,0 +1,273 @@
+\input texinfo
+
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@c %**start of header
+@setfilename tutorial.info
+@set TITLE Learning the GNU development tools
+@settitle @value{TITLE}
+@c %**end of header
+
+@ifinfo
+@format
+@dircategory Miscellaneous
+@direntry
+* Autotoolset Tutorial: (tutorial).        Autotools tutorial.
+@end direntry
+@end format
+@end ifinfo
+
+@c ---------------------------------------- 
+@c Include configuration information here.
+@c ---------------------------------------- 
+@c @set UPDATED 1998-07-29
+@c @iftex
+@c   @tex
+@c     @set UPDATED March $20^{th}$, 2003
+@c   @end tex
+@c @end iftex
+@c @ifnottex
+@c   @set UPDATED March 20th, 2003
+@c @end ifnottex
+@c @set EDITION 1.0.0
+@include version.texi
+@set OWNER1 Eleftherios Gkioulekas @email{<lf@@amath.washington.edu>}
+@set PLACE1 Department of Applied Mathematics - University of Washington
+@set OWNER2 Marcelo Roberto Jimenez @email{<mroberto@@cetuc.puc-rio.br>}
+@set PLACE2 Pontif@'icia Universidade Cat@'olica do Rio de Janeiro (PUC-Rio)
+@set THEOWNER Eleftherios Gkioulekas and Marcelo Roberto Jimenez
+@set YEARS 1998-2003
+
+@c ------------------------------------------------------------
+@c Formatting style commands. You may insert more of them here.
+@c For example: headings, indices, etc...
+@c ------------------------------------------------------------
+@setchapternewpage odd
+
+@c ---------------------------------
+@c Canonical title related template
+@c ---------------------------------
+
+@shorttitlepage @value{TITLE}
+@titlepage
+@title @value{TITLE}
+@subtitle Learning the GNU development tools
+@subtitle This is edition @value{EDITION}
+@subtitle Last updated, @value{UPDATED}
+@author @value{OWNER1}
+@r{@value{PLACE1}}
+@sp
+@author @value{OWNER2}
+@r{@value{PLACE2}}
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} @value{YEARS} @value{THEOWNER}. All rights reserved.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the sections
+entitled ``Copying'' and ``Philosophical issues'' are included exactly as
+in the original, and
+provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice and the sections entitled ``Copying'' and
+``Philosophical issues'' may be stated in a translation approved
+by the Free Software Foundation instead of the original English.
+@end titlepage
+
+@c ---------------------
+@c Menu stuff for info
+@c ----------------------
+
+@ifinfo
+@node Top, Preface, (dir), (dir)
+@comment node-name, next, previous, up
+@top @value{TITLE}
+@end ifinfo
+
+@c ===================================================================
+@c ===================================================================
+
+@c introductory stuff
+
+@menu
+* Preface::                     
+* Acknowledgements::            
+* Copying::                     
+* Introduction to the GNU build system::  
+* Writing Good Programs::       
+* Using GNU Emacs::             
+* Compiling with Makefiles::    
+* Using Automake and Autoconf::  
+* Using Autotools::             
+* C++ and Autoconf::            
+* Fortran with Autoconf::       
+* Maintaining Documentation::   
+* Legal issues with Free Software::  
+* Philosophical issues::  
+
+
+@detailmenu
+ --- The Detailed Node Listing ---
+
+Introduction to the GNU build system
+
+* Installing a GNU package::    
+* Installing the GNU build system::  
+* Hello world example::         
+* Understanding the hello world example::  
+* Using configuration headers::  
+* Maintaining the documentation files::  
+* Organizing your project in subdirectories::  
+* Hello world with an attitude::  
+* Tracking version numbers::    
+
+Writing Good Programs
+
+* Why good code is important::  
+* Choosing a good programming language::  
+* Developing libraries::        
+* Developing applications::     
+* Free software is good software::  
+* Invoking the gpl utility::    
+* Inserting notices with Emacs::  
+
+Using GNU Emacs
+
+* Introduction to Emacs::       
+* Installing GNU Emacs::        
+* Configuring GNU Emacs::       
+* Using vi emulation::          
+* Using Emacs as an IDE::       
+* Inserting copyright notices with Emacs::  
+* Using Emacs as an email client::  
+* Handling patches::            
+* Further reading on Emacs::    
+
+Compiling with Makefiles
+
+* Direct compilation::          
+* Enter Makefiles::             
+* Problems with Makefiles and workarounds::  
+* Building libraries::          
+
+Using Automake and Autoconf
+
+* Hello World revisited::       
+* OLD Using configuration headers::  
+* The building process::        
+* Some general advice::         
+* Standard organization with Automake::  
+* Programs and Libraries with Automake::  
+* General Automake principles::  
+* Simple Automake examples::    
+* Built sources::               
+* Installation directories.::   
+* Handling shell scripts::      
+* Handling other obscurities::  
+
+Using Autotools
+
+* Introduction to Autotools::   
+* Compiler configuration with the LF macros::  
+* The features of LF_CPP_PORTABILITY::  
+* Writing portable C++::        
+* Hello world revisited again::  
+* Invoking acmkdir::            
+* Handling Embedded text::      
+* Handling very deep packages::  
+
+Fortran with Autoconf
+
+* Introduction to Fortran support::  
+* Fortran compilers and linkage::  
+* Walkthrough a simple example::  
+* The gory details::            
+* Portability problems with Fortran::  
+
+Maintaining Documentation
+
+* Writing proper manuals::      
+* Introduction to Texinfo::     
+* Markup in Texinfo::           
+* GNU Emacs support for Texinfo::  
+* Writing documentation with LaTeX::  
+* Creating a LaTeX package::    
+* Further reading about LaTeX::  
+
+Legal issues with Free Software
+
+* Understanding Copyright::     
+* Other legal concerns::        
+* Freeing your software::       
+
+Philosophical issues
+
+* Why software should not have owners::  
+* Why free software needs free documentation::  
+* Copyleft; Pragmatic Idealism::  
+* The X Windows Trap::          
+* Categories of software::      
+* Confusing words::             
+
+@end detailmenu
+@end menu
+
+@c ===================================================================
+@c ===================================================================
+
+@shortcontents
+@contents
+
+@include preface.texi
+@include acknowledgements.texi
+@include copying.texi
+
+@c The chapters
+@include basic_concepts.texi
+@include good_code.texi
+@include gnu_emacs.texi
+@include makefiles.texi
+@include using_automake_autoconf.texi
+@include using_autotools.texi
+@include cxx.texi
+@include fortran.texi
+@include documentation.texi
+
+@ The appendices
+@include legal.texi
+@include philosophy.texi
+
+
+@c ===================================================================
+@c ===================================================================
+
+@bye
+

@@ -1,0 +1,1214 @@
+%!PS-Adobe-3.0
+%%Creator: groff version 1.04
+%%DocumentNeededResources: font Times-Bold
+%%+ font Times-Roman
+%%+ font Courier
+%%+ font Times-Italic
+%%DocumentSuppliedResources: procset grops 1.04 0
+%%Pages: 2
+%%PageOrder: Ascend
+%%Orientation: Landscape
+%%EndComments
+%%BeginProlog
+%%BeginResource: procset grops 1.04 0
+
+/setpacking where {
+	pop
+	currentpacking
+	true setpacking
+} if
+
+/grops 120 dict dup begin 
+
+% The ASCII code of the space character.
+/SC 32 def
+
+/A /show load def
+/B { 0 SC 3 -1 roll widthshow } bind def
+/C { 0 exch ashow } bind def
+/D { 0 exch 0 SC 5 2 roll awidthshow } bind def
+/E { 0 rmoveto show } bind def
+/F { 0 rmoveto 0 SC 3 -1 roll widthshow } bind def
+/G { 0 rmoveto 0 exch ashow } bind def
+/H { 0 rmoveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+/I { 0 exch rmoveto show } bind def
+/J { 0 exch rmoveto 0 SC 3 -1 roll widthshow } bind def
+/K { 0 exch rmoveto 0 exch ashow } bind def
+/L { 0 exch rmoveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+/M { rmoveto show } bind def
+/N { rmoveto 0 SC 3 -1 roll widthshow } bind def
+/O { rmoveto 0 exch ashow } bind def
+/P { rmoveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+/Q { moveto show } bind def 
+/R { moveto 0 SC 3 -1 roll widthshow } bind def
+/S { moveto 0 exch ashow } bind def
+/T { moveto 0 exch 0 SC 5 2 roll awidthshow } bind def
+
+% name size font SF -
+
+/SF {
+	findfont exch
+	[ exch dup 0 exch 0 exch neg 0 0 ] makefont
+	dup setfont
+	[ exch /setfont cvx ] cvx bind def
+} bind def
+
+% name a c d font MF -
+
+/MF {
+	findfont
+	[ 5 2 roll
+	0 3 1 roll % b
+	neg 0 0 ] makefont
+	dup setfont
+	[ exch /setfont cvx ] cvx bind def
+} bind def
+
+/level0 0 def
+/RES 0 def
+/PL 0 def
+/LS 0 def
+
+% BP -
+
+/BP {
+	/level0 save def
+	1 setlinecap
+	1 setlinejoin
+	72 RES div dup scale
+	LS {
+		90 rotate
+	} {
+		0 PL translate
+	} ifelse
+	1 -1 scale
+} bind def
+
+/EP {
+	level0 restore
+	showpage
+} bind def
+
+
+% centerx centery radius startangle endangle DA -
+
+/DA {
+	newpath arcn stroke
+} bind def
+
+% x y SN - x' y'
+% round a position to nearest (pixel + (.25,.25))
+
+/SN {
+	transform 
+	.25 sub exch .25 sub exch
+	round .25 add exch round .25 add exch
+	itransform
+} bind def
+	
+% endx endy startx starty DL -
+% we round the endpoints of the line, so that parallel horizontal
+% and vertical lines will appear even
+
+/DL {
+	SN
+	moveto
+	SN
+	lineto stroke
+} bind def
+
+% centerx centery radius DC -
+
+/DC {
+	newpath 0 360 arc closepath
+} bind def
+
+
+/TM matrix def
+
+%  width height centerx centery DE -
+
+/DE {
+	TM currentmatrix pop
+	translate scale newpath 0 0 .5 0 360 arc closepath
+	TM setmatrix
+} bind def
+
+% these are for splines
+
+/RC /rcurveto load def
+/RL /rlineto load def
+/ST /stroke load def
+/MT /moveto load def
+/CL /closepath load def
+
+% fill the last path
+
+% amount FL -
+
+/FL {
+	currentgray exch setgray fill setgray
+} bind def
+
+% fill with the ``current color''
+
+/BL /fill load def
+
+/LW /setlinewidth load def
+% new_font_name encoding_vector old_font_name RE -
+
+/RE {
+	findfont
+	dup maxlength dict begin
+	{
+		1 index /FID ne { def } { pop pop } ifelse
+	} forall
+	/Encoding exch def
+	dup /FontName exch def
+	currentdict end definefont pop
+} bind def
+
+/DEFS 0 def
+
+% hpos vpos EBEGIN -
+
+/EBEGIN {
+	moveto
+	DEFS begin
+} bind def
+
+/EEND /end load def
+
+/CNT 0 def
+/level1 0 def
+
+% llx lly newwid wid newht ht newllx newlly PBEGIN -
+
+/PBEGIN {
+	/level1 save def
+	translate
+	div 3 1 roll div exch scale
+	neg exch neg exch translate
+	% set the graphics state to default values
+	0 setgray
+	0 setlinecap
+	1 setlinewidth
+	0 setlinejoin
+	10 setmiterlimit
+	[] 0 setdash
+	/setstrokeadjust where {
+		pop
+		false setstrokeadjust
+	} if
+	/setoverprint where {
+		pop
+		false setoverprint
+	} if
+	newpath
+	/CNT countdictstack def
+	userdict begin
+	/showpage {} def
+} bind def
+
+/PEND {
+	clear
+	countdictstack CNT sub { end } repeat
+	level1 restore
+} bind def
+
+end def
+
+/setpacking where {
+	pop
+	setpacking
+} if
+%%EndResource
+%%IncludeResource: font Times-Bold
+%%IncludeResource: font Times-Roman
+%%IncludeResource: font Courier
+%%IncludeResource: font Times-Italic
+grops begin/DEFS 1 dict def DEFS begin/u{.001 mul}bind def end/RES 72 def/PL
+792 def/LS true def/ENC0[/asciicircum/asciitilde/Scaron/Zcaron/scaron/zcaron
+/Ydieresis/trademark/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef
+/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/.notdef/space/exclam
+/quotedbl/numbersign/dollar/percent/ampersand/quoteright/parenleft/parenright
+/asterisk/plus/comma/hyphen/period/slash/zero/one/two/three/four/five/six/seven
+/eight/nine/colon/semicolon/less/equal/greater/question/at/A/B/C/D/E/F/G/H/I/J
+/K/L/M/N/O/P/Q/R/S/T/U/V/W/X/Y/Z/bracketleft/backslash/bracketright/circumflex
+/underscore/quoteleft/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z
+/braceleft/bar/braceright/tilde/.notdef/quotesinglbase/guillemotleft
+/guillemotright/bullet/florin/fraction/perthousand/dagger/daggerdbl/endash
+/emdash/ff/fi/fl/ffi/ffl/dotlessi/dotlessj/grave/hungarumlaut/dotaccent/breve
+/caron/ring/ogonek/quotedblleft/quotedblright/oe/lslash/quotedblbase/OE/Lslash
+/.notdef/exclamdown/cent/sterling/currency/yen/brokenbar/section/dieresis
+/copyright/ordfeminine/guilsinglleft/logicalnot/minus/registered/macron/degree
+/plusminus/twosuperior/threesuperior/acute/mu/paragraph/periodcentered/cedilla
+/onesuperior/ordmasculine/guilsinglright/onequarter/onehalf/threequarters
+/questiondown/Agrave/Aacute/Acircumflex/Atilde/Adieresis/Aring/AE/Ccedilla
+/Egrave/Eacute/Ecircumflex/Edieresis/Igrave/Iacute/Icircumflex/Idieresis/Eth
+/Ntilde/Ograve/Oacute/Ocircumflex/Otilde/Odieresis/multiply/Oslash/Ugrave
+/Uacute/Ucircumflex/Udieresis/Yacute/Thorn/germandbls/agrave/aacute/acircumflex
+/atilde/adieresis/aring/ae/ccedilla/egrave/eacute/ecircumflex/edieresis/igrave
+/iacute/icircumflex/idieresis/eth/ntilde/ograve/oacute/ocircumflex/otilde
+/odieresis/divide/oslash/ugrave/uacute/ucircumflex/udieresis/yacute/thorn
+/ydieresis]def/Times-Italic@0 ENC0/Times-Italic RE/Courier@0 ENC0/Courier RE
+/Times-Roman@0 ENC0/Times-Roman RE/Times-Bold@0 ENC0/Times-Bold RE
+%%EndProlog
+%%Page: 1 1
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 11/Times-Bold@0 SF -1.012(Te)155.092 37.2 S(xinfo Refer)1.012 E(ence Card)
+-.198 E/F1 9/Times-Roman@0 SF
+(Copyright \(C\) 1992 Free Software Foundation, Inc.)118.259 48 Q/F2 7
+/Times-Roman@0 SF 98.413(Command Notes)36 69 R(Description)3.5 E .28 LW 39.5
+71.4 36 71.4 DL 43 71.4 39.5 71.4 DL 46.5 71.4 43 71.4 DL 50 71.4 46.5 71.4 DL
+53.5 71.4 50 71.4 DL 57 71.4 53.5 71.4 DL 60.5 71.4 57 71.4 DL 64 71.4 60.5
+71.4 DL 67.5 71.4 64 71.4 DL 71 71.4 67.5 71.4 DL 74.5 71.4 71 71.4 DL 78 71.4
+74.5 71.4 DL 81.5 71.4 78 71.4 DL 85 71.4 81.5 71.4 DL 88.5 71.4 85 71.4 DL 92
+71.4 88.5 71.4 DL 95.5 71.4 92 71.4 DL 99 71.4 95.5 71.4 DL 102.5 71.4 99 71.4
+DL 106 71.4 102.5 71.4 DL 109.5 71.4 106 71.4 DL 113 71.4 109.5 71.4 DL 116.5
+71.4 113 71.4 DL 120 71.4 116.5 71.4 DL 123.5 71.4 120 71.4 DL 127 71.4 123.5
+71.4 DL 130.5 71.4 127 71.4 DL 134 71.4 130.5 71.4 DL 137.5 71.4 134 71.4 DL
+141 71.4 137.5 71.4 DL 144.5 71.4 141 71.4 DL 148 71.4 144.5 71.4 DL 151.5 71.4
+148 71.4 DL 155 71.4 151.5 71.4 DL 158.5 71.4 155 71.4 DL 162 71.4 158.5 71.4
+DL 165.5 71.4 162 71.4 DL 169 71.4 165.5 71.4 DL 172.5 71.4 169 71.4 DL 176
+71.4 172.5 71.4 DL 179.5 71.4 176 71.4 DL 183 71.4 179.5 71.4 DL 186.5 71.4 183
+71.4 DL 190 71.4 186.5 71.4 DL 193.5 71.4 190 71.4 DL 197 71.4 193.5 71.4 DL
+200.5 71.4 197 71.4 DL 204 71.4 200.5 71.4 DL 207.5 71.4 204 71.4 DL 211 71.4
+207.5 71.4 DL 214.5 71.4 211 71.4 DL 218 71.4 214.5 71.4 DL 221.5 71.4 218 71.4
+DL 225 71.4 221.5 71.4 DL 228.5 71.4 225 71.4 DL 232 71.4 228.5 71.4 DL 235.5
+71.4 232 71.4 DL 239 71.4 235.5 71.4 DL 242.5 71.4 239 71.4 DL 246 71.4 242.5
+71.4 DL 249.5 71.4 246 71.4 DL 253 71.4 249.5 71.4 DL 256.5 71.4 253 71.4 DL
+260 71.4 256.5 71.4 DL 263.5 71.4 260 71.4 DL 267 71.4 263.5 71.4 DL 270.5 71.4
+267 71.4 DL 274 71.4 270.5 71.4 DL 277.5 71.4 274 71.4 DL 281 71.4 277.5 71.4
+DL 284.5 71.4 281 71.4 DL 288 71.4 284.5 71.4 DL 291.5 71.4 288 71.4 DL 295
+71.4 291.5 71.4 DL 298.5 71.4 295 71.4 DL 302 71.4 298.5 71.4 DL 305.5 71.4 302
+71.4 DL 309 71.4 305.5 71.4 DL 312.5 71.4 309 71.4 DL 316 71.4 312.5 71.4 DL
+319.5 71.4 316 71.4 DL 323 71.4 319.5 71.4 DL 326.5 71.4 323 71.4 DL 330 71.4
+326.5 71.4 DL 333.5 71.4 330 71.4 DL 337 71.4 333.5 71.4 DL 340.5 71.4 337 71.4
+DL 344 71.4 340.5 71.4 DL 347.5 71.4 344 71.4 DL 351 71.4 347.5 71.4 DL 354.5
+71.4 351 71.4 DL 358 71.4 354.5 71.4 DL 361.5 71.4 358 71.4 DL 365 71.4 361.5
+71.4 DL 368.5 71.4 365 71.4 DL 372 71.4 368.5 71.4 DL 375.5 71.4 372 71.4 DL
+379 71.4 375.5 71.4 DL 382.5 71.4 379 71.4 DL 386 71.4 382.5 71.4 DL .32 LW
+108.664 84.84 104.664 84.84 DL 110 84.84 106 84.84 DL 114 84.84 110 84.84 DL
+118 84.84 114 84.84 DL 122 84.84 118 84.84 DL 126 84.84 122 84.84 DL 130 84.84
+126 84.84 DL 134 84.84 130 84.84 DL 138 84.84 134 84.84 DL 142 84.84 138 84.84
+DL 146 84.84 142 84.84 DL 150 84.84 146 84.84 DL 154 84.84 150 84.84 DL 158
+84.84 154 84.84 DL 162 84.84 158 84.84 DL 166 84.84 162 84.84 DL 170 84.84 166
+84.84 DL 174 84.84 170 84.84 DL 178 84.84 174 84.84 DL 182 84.84 178 84.84 DL
+186 84.84 182 84.84 DL 190 84.84 186 84.84 DL 194 84.84 190 84.84 DL 198 84.84
+194 84.84 DL 202 84.84 198 84.84 DL 206 84.84 202 84.84 DL 210 84.84 206 84.84
+DL 214 84.84 210 84.84 DL 218 84.84 214 84.84 DL 222 84.84 218 84.84 DL 226
+84.84 222 84.84 DL 230 84.84 226 84.84 DL 234 84.84 230 84.84 DL 238 84.84 234
+84.84 DL 242 84.84 238 84.84 DL 246 84.84 242 84.84 DL 250 84.84 246 84.84 DL
+254 84.84 250 84.84 DL 258 84.84 254 84.84 DL 262 84.84 258 84.84 DL 266 84.84
+262 84.84 DL 270 84.84 266 84.84 DL 274 84.84 270 84.84 DL 278 84.84 274 84.84
+DL 282 84.84 278 84.84 DL 286 84.84 282 84.84 DL 290 84.84 286 84.84 DL 294
+84.84 290 84.84 DL 298 84.84 294 84.84 DL 302 84.84 298 84.84 DL 306 84.84 302
+84.84 DL 310 84.84 306 84.84 DL 314 84.84 310 84.84 DL 318 84.84 314 84.84 DL
+322 84.84 318 84.84 DL 326 84.84 322 84.84 DL 330 84.84 326 84.84 DL 334 84.84
+330 84.84 DL 338 84.84 334 84.84 DL 342 84.84 338 84.84 DL 346 84.84 342 84.84
+DL 350 84.84 346 84.84 DL 354 84.84 350 84.84 DL 358 84.84 354 84.84 DL 362
+84.84 358 84.84 DL 366 84.84 362 84.84 DL 370 84.84 366 84.84 DL 374 84.84 370
+84.84 DL 378 84.84 374 84.84 DL 382 84.84 378 84.84 DL 386 84.84 382 84.84 DL
+/F3 8/Times-Bold@0 SF(General Commands)36 84.84 Q F2
+(\\input MACRO-DEFINITIONS-FILE)36 93.24 Q -.644(LT)165.332 93.24 S
+(Use the speci\214ed macro de\214nitions \214le, normally `texinfo.tex'.)
+185.163 93.24 Q(@include FILENAME)36 101.64 Q 15.554(LI)165.332 101.64 S
+(nclude the \214le FILENAME)187.494 101.64 Q(@set\214lename INFO-FILE)36 110.04
+Q 15.554(LP)165.332 110.04 S(rovide a name for the Info \214le.)189.055 110.04
+Q(@settitle TITLE)36 118.44 Q 15.554(LP)165.332 118.44 S
+(rovide a title for page headers in a printed manual.)189.055 118.44 Q 111.027
+(@bye L)36 126.84 R -.49(Te)185.163 126.84 S(rminate T).49 E
+(eX processing on the \214le.)-.49 E(@c COMMENT)36 135.24 Q(@comment COMMENT)36
+143.64 Q(Begin a comment \(to end of line\).)185.163 139.44 Q 121.112 157.08
+117.112 157.08 DL 122 157.08 118 157.08 DL 126 157.08 122 157.08 DL 130 157.08
+126 157.08 DL 134 157.08 130 157.08 DL 138 157.08 134 157.08 DL 142 157.08 138
+157.08 DL 146 157.08 142 157.08 DL 150 157.08 146 157.08 DL 154 157.08 150
+157.08 DL 158 157.08 154 157.08 DL 162 157.08 158 157.08 DL 166 157.08 162
+157.08 DL 170 157.08 166 157.08 DL 174 157.08 170 157.08 DL 178 157.08 174
+157.08 DL 182 157.08 178 157.08 DL 186 157.08 182 157.08 DL 190 157.08 186
+157.08 DL 194 157.08 190 157.08 DL 198 157.08 194 157.08 DL 202 157.08 198
+157.08 DL 206 157.08 202 157.08 DL 210 157.08 206 157.08 DL 214 157.08 210
+157.08 DL 218 157.08 214 157.08 DL 222 157.08 218 157.08 DL 226 157.08 222
+157.08 DL 230 157.08 226 157.08 DL 234 157.08 230 157.08 DL 238 157.08 234
+157.08 DL 242 157.08 238 157.08 DL 246 157.08 242 157.08 DL 250 157.08 246
+157.08 DL 254 157.08 250 157.08 DL 258 157.08 254 157.08 DL 262 157.08 258
+157.08 DL 266 157.08 262 157.08 DL 270 157.08 266 157.08 DL 274 157.08 270
+157.08 DL 278 157.08 274 157.08 DL 282 157.08 278 157.08 DL 286 157.08 282
+157.08 DL 290 157.08 286 157.08 DL 294 157.08 290 157.08 DL 298 157.08 294
+157.08 DL 302 157.08 298 157.08 DL 306 157.08 302 157.08 DL 310 157.08 306
+157.08 DL 314 157.08 310 157.08 DL 318 157.08 314 157.08 DL 322 157.08 318
+157.08 DL 326 157.08 322 157.08 DL 330 157.08 326 157.08 DL 334 157.08 330
+157.08 DL 338 157.08 334 157.08 DL 342 157.08 338 157.08 DL 346 157.08 342
+157.08 DL 350 157.08 346 157.08 DL 354 157.08 350 157.08 DL 358 157.08 354
+157.08 DL 362 157.08 358 157.08 DL 366 157.08 362 157.08 DL 370 157.08 366
+157.08 DL 374 157.08 370 157.08 DL 378 157.08 374 157.08 DL 382 157.08 378
+157.08 DL 386 157.08 382 157.08 DL F3(Structuring Commands)36 157.08 Q F2
+(@node NAME, NEXT)36 165.48 Q 1.75(,P)-.518 G(REV)-1.75 E 1.75(,U)-.903 G 32.34
+(PL)-1.75 G(De\214ne the beginning of a new node.)185.163 165.48 Q 105.581
+(@menu LIE)36 173.88 R(Mark the beginning of a menu of nodes in Info.)8.946 E
+(@inforef{NODE,)36 182.28 Q([ENTR)46.5 190.68 Q(Y], INFO-FILE})-.385 E
+(Make a cross reference to an Info \214le for which there is no printed)185.163
+182.28 Q(manual.)185.163 190.68 Q(Make a reference which starts with `see'.)
+185.163 199.08 Q(@pxref{NODE, [ENTR)36 199.08 Q(Y], [T)-.385 E(OPIC],)-.126 E
+([INFO-FILE], [MANUAL]})46.5 207.48 Q(Make a reference which doesn')185.163
+215.88 Q 1.75(ts)-.126 G(tart with `see'.)-1.75 E(@ref{NODE, [ENTR)36 215.88 Q
+(Y], [T)-.385 E(OPIC],)-.126 E([INFO-FILE], [MANUAL]})46.5 224.28 Q(@top TITLE)
+36 232.68 Q 11.473(LI Indicate)165.332 232.68 R(which node is the `top'.)1.75 E
+(Make a reference that starts with `See'.)185.163 241.08 Q(@xref{NODE, [ENTR)36
+241.08 Q(Y], [T)-.385 E(OPIC],)-.126 E([INFO-FILE], [MANUAL]})46.5 249.48 Q
+136.664 262.92 132.664 262.92 DL 138 262.92 134 262.92 DL 142 262.92 138 262.92
+DL 146 262.92 142 262.92 DL 150 262.92 146 262.92 DL 154 262.92 150 262.92 DL
+158 262.92 154 262.92 DL 162 262.92 158 262.92 DL 166 262.92 162 262.92 DL 170
+262.92 166 262.92 DL 174 262.92 170 262.92 DL 178 262.92 174 262.92 DL 182
+262.92 178 262.92 DL 186 262.92 182 262.92 DL 190 262.92 186 262.92 DL 194
+262.92 190 262.92 DL 198 262.92 194 262.92 DL 202 262.92 198 262.92 DL 206
+262.92 202 262.92 DL 210 262.92 206 262.92 DL 214 262.92 210 262.92 DL 218
+262.92 214 262.92 DL 222 262.92 218 262.92 DL 226 262.92 222 262.92 DL 230
+262.92 226 262.92 DL 234 262.92 230 262.92 DL 238 262.92 234 262.92 DL 242
+262.92 238 262.92 DL 246 262.92 242 262.92 DL 250 262.92 246 262.92 DL 254
+262.92 250 262.92 DL 258 262.92 254 262.92 DL 262 262.92 258 262.92 DL 266
+262.92 262 262.92 DL 270 262.92 266 262.92 DL 274 262.92 270 262.92 DL 278
+262.92 274 262.92 DL 282 262.92 278 262.92 DL 286 262.92 282 262.92 DL 290
+262.92 286 262.92 DL 294 262.92 290 262.92 DL 298 262.92 294 262.92 DL 302
+262.92 298 262.92 DL 306 262.92 302 262.92 DL 310 262.92 306 262.92 DL 314
+262.92 310 262.92 DL 318 262.92 314 262.92 DL 322 262.92 318 262.92 DL 326
+262.92 322 262.92 DL 330 262.92 326 262.92 DL 334 262.92 330 262.92 DL 338
+262.92 334 262.92 DL 342 262.92 338 262.92 DL 346 262.92 342 262.92 DL 350
+262.92 346 262.92 DL 354 262.92 350 262.92 DL 358 262.92 354 262.92 DL 362
+262.92 358 262.92 DL 366 262.92 362 262.92 DL 370 262.92 366 262.92 DL 374
+262.92 370 262.92 DL 378 262.92 374 262.92 DL 382 262.92 378 262.92 DL 386
+262.92 382 262.92 DL F3(Chapter/Section Commands)36 262.92 Q F2(@chapter TITLE)
+36 271.32 Q 8.75(LH Begin)165.332 271.32 R 1.75(ac)1.75 G(hapter)-1.75 E(.)
+-.385 E(@section TITLE)36 279.72 Q 8.75(LH Begin)165.332 279.72 R 1.75(as)1.75
+G(ection.)-1.75 E(@subsection TITLE)36 288.12 Q 8.75(LH Begin)165.332 288.12 R
+1.75(as)1.75 G(ubsection.)-1.75 E(@subsubsection TITLE)36 296.52 Q 8.75
+(LH Begin)165.332 296.52 R 1.75(as)1.75 G(ubsubsection.)-1.75 E
+(@appendix TITLE)36 304.92 Q 8.75(LH Begin)165.332 304.92 R(an appendix.)1.75 E
+(@appendixsec TITLE)36 313.32 Q 8.75(LH Begin)165.332 313.32 R
+(an appendix section.)1.75 E(@appendixsubsec TITLE)36 321.72 Q 8.75(LH Begin)
+165.332 321.72 R(an appendix subsection.)1.75 E(@appendixsubsubsec TITLE)36
+330.12 Q 8.75(LH Begin)165.332 330.12 R(an appendix subsubsection.)1.75 E
+(@unnumbered TITLE)36 338.52 Q 8.75(LH Begin)165.332 338.52 R
+(an unnumbered chapter)1.75 E(.)-.385 E(@unnumberedsec TITLE)36 346.92 Q 8.75
+(LH Begin)165.332 346.92 R(an unnumbered section.)1.75 E
+(@unnumberedsubsec TITLE)36 355.32 Q 8.75(LH Begin)165.332 355.32 R
+(an unnumbered subsection.)1.75 E(@unnumberedsubsubsec TITLE)36 363.72 Q 8.75
+(LH Begin)165.332 363.72 R(an unnumbered subsubsection.)1.75 E
+(@chapheading TITLE)36 372.12 Q(@majorheading TITLE)36 380.52 Q 15.554(LP)
+165.332 376.32 S(rint a chapter)189.055 376.32 Q(-like heading.)-.14 E
+(@heading TITLE)36 388.92 Q 15.554(LP)165.332 388.92 S
+(rint an unnumbered heading.)189.055 388.92 Q(@subheading TITLE)36 397.32 Q
+15.554(LP)165.332 397.32 S(rint an unnumbered subsection-like heading.)189.055
+397.32 Q(@subsubheading TITLE)36 405.72 Q 15.554(LP)165.332 405.72 S
+(rint an unnumbered subsubsection-like heading.)189.055 405.72 Q 97.804
+(@contents L)36 414.12 R 11.921(TP)-.644 G(rint a complete table of contents.)
+189.055 414.12 Q(@shortcontents)36 422.52 Q(@summarycontents)36 430.92 Q 11.459
+-.644(LT P)165.332 426.72 T(rint a short table of contents.).644 E 100.672
+444.36 96.672 444.36 DL 102 444.36 98 444.36 DL 106 444.36 102 444.36 DL 110
+444.36 106 444.36 DL 114 444.36 110 444.36 DL 118 444.36 114 444.36 DL 122
+444.36 118 444.36 DL 126 444.36 122 444.36 DL 130 444.36 126 444.36 DL 134
+444.36 130 444.36 DL 138 444.36 134 444.36 DL 142 444.36 138 444.36 DL 146
+444.36 142 444.36 DL 150 444.36 146 444.36 DL 154 444.36 150 444.36 DL 158
+444.36 154 444.36 DL 162 444.36 158 444.36 DL 166 444.36 162 444.36 DL 170
+444.36 166 444.36 DL 174 444.36 170 444.36 DL 178 444.36 174 444.36 DL 182
+444.36 178 444.36 DL 186 444.36 182 444.36 DL 190 444.36 186 444.36 DL 194
+444.36 190 444.36 DL 198 444.36 194 444.36 DL 202 444.36 198 444.36 DL 206
+444.36 202 444.36 DL 210 444.36 206 444.36 DL 214 444.36 210 444.36 DL 218
+444.36 214 444.36 DL 222 444.36 218 444.36 DL 226 444.36 222 444.36 DL 230
+444.36 226 444.36 DL 234 444.36 230 444.36 DL 238 444.36 234 444.36 DL 242
+444.36 238 444.36 DL 246 444.36 242 444.36 DL 250 444.36 246 444.36 DL 254
+444.36 250 444.36 DL 258 444.36 254 444.36 DL 262 444.36 258 444.36 DL 266
+444.36 262 444.36 DL 270 444.36 266 444.36 DL 274 444.36 270 444.36 DL 278
+444.36 274 444.36 DL 282 444.36 278 444.36 DL 286 444.36 282 444.36 DL 290
+444.36 286 444.36 DL 294 444.36 290 444.36 DL 298 444.36 294 444.36 DL 302
+444.36 298 444.36 DL 306 444.36 302 444.36 DL 310 444.36 306 444.36 DL 314
+444.36 310 444.36 DL 318 444.36 314 444.36 DL 322 444.36 318 444.36 DL 326
+444.36 322 444.36 DL 330 444.36 326 444.36 DL 334 444.36 330 444.36 DL 338
+444.36 334 444.36 DL 342 444.36 338 444.36 DL 346 444.36 342 444.36 DL 350
+444.36 346 444.36 DL 354 444.36 350 444.36 DL 358 444.36 354 444.36 DL 362
+444.36 358 444.36 DL 366 444.36 362 444.36 DL 370 444.36 366 444.36 DL 374
+444.36 370 444.36 DL 378 444.36 374 444.36 DL 382 444.36 378 444.36 DL 386
+444.36 382 444.36 DL F3(Index Commands)36 444.36 Q F2(@de\214ndex INDEX)36
+452.76 Q 15.554(LD)165.332 452.76 S(e\214ne a new index.)190.217 452.76 Q
+(@defcodeindex INDEX)36 461.16 Q 15.554(LD)165.332 461.16 S
+(e\214ne a new index \(uses @code font\).)190.217 461.16 Q
+(@syncodeindex FINDEX IINDEX)36 469.56 Q 15.554(LM)165.332 469.56 S(er)191.386
+469.56 Q(ge FINDEX into the IINDEX.)-.126 E(@synindex FINDEX IINDEX)36 477.96 Q
+15.554(LM)165.332 477.96 S(er)191.386 477.96 Q(ge FINDEX into the IINDEX.)-.126
+E(@cindex ENTR)36 486.36 Q 79.527(YL)-.385 G(Add ENTR)185.163 486.36 Q 1.75(Yt)
+-.385 G 1.75(ot)-1.75 G(he index of concepts.)-1.75 E(@\214ndex ENTR)36 494.76
+Q 80.689(YL)-.385 G(Add ENTR)185.163 494.76 Q 1.75(Yt)-.385 G 1.75(ot)-1.75 G
+(he index of functions.)-1.75 E(@kindex ENTR)36 503.16 Q 79.135(YL)-.385 G
+(Add ENTR)185.163 503.16 Q 1.75(Yt)-.385 G 1.75(ot)-1.75 G(he index of keys.)
+-1.75 E(@pindex ENTR)36 511.56 Q 79.135(YL)-.385 G(Add ENTR)185.163 511.56 Q
+1.75(Yt)-.385 G 1.75(ot)-1.75 G(he index of programs.)-1.75 E(@tindex ENTR)36
+519.96 Q 80.689(YL)-.385 G(Add ENTR)185.163 519.96 Q 1.75(Yt)-.385 G 1.75(ot)
+-1.75 G(he index of data types)-1.75 E(@vindex ENTR)36 528.36 Q 79.135(YL)-.385
+G(Add ENTR)185.163 528.36 Q 1.75(Yt)-.385 G 1.75(ot)-1.75 G
+(he index of variables.)-1.75 E(@printindex INDEX)36 536.76 Q 15.554(LP)165.332
+536.76 S(rint an index.)189.055 536.76 Q 73.328 550.2 69.328 550.2 DL 74 550.2
+70 550.2 DL 78 550.2 74 550.2 DL 82 550.2 78 550.2 DL 86 550.2 82 550.2 DL 90
+550.2 86 550.2 DL 94 550.2 90 550.2 DL 98 550.2 94 550.2 DL 102 550.2 98 550.2
+DL 106 550.2 102 550.2 DL 110 550.2 106 550.2 DL 114 550.2 110 550.2 DL 118
+550.2 114 550.2 DL 122 550.2 118 550.2 DL 126 550.2 122 550.2 DL 130 550.2 126
+550.2 DL 134 550.2 130 550.2 DL 138 550.2 134 550.2 DL 142 550.2 138 550.2 DL
+146 550.2 142 550.2 DL 150 550.2 146 550.2 DL 154 550.2 150 550.2 DL 158 550.2
+154 550.2 DL 162 550.2 158 550.2 DL 166 550.2 162 550.2 DL 170 550.2 166 550.2
+DL 174 550.2 170 550.2 DL 178 550.2 174 550.2 DL 182 550.2 178 550.2 DL 186
+550.2 182 550.2 DL 190 550.2 186 550.2 DL 194 550.2 190 550.2 DL 198 550.2 194
+550.2 DL 202 550.2 198 550.2 DL 206 550.2 202 550.2 DL 210 550.2 206 550.2 DL
+214 550.2 210 550.2 DL 218 550.2 214 550.2 DL 222 550.2 218 550.2 DL 226 550.2
+222 550.2 DL 230 550.2 226 550.2 DL 234 550.2 230 550.2 DL 238 550.2 234 550.2
+DL 242 550.2 238 550.2 DL 246 550.2 242 550.2 DL 250 550.2 246 550.2 DL 254
+550.2 250 550.2 DL 258 550.2 254 550.2 DL 262 550.2 258 550.2 DL 266 550.2 262
+550.2 DL 270 550.2 266 550.2 DL 274 550.2 270 550.2 DL 278 550.2 274 550.2 DL
+282 550.2 278 550.2 DL 286 550.2 282 550.2 DL 290 550.2 286 550.2 DL 294 550.2
+290 550.2 DL 298 550.2 294 550.2 DL 302 550.2 298 550.2 DL 306 550.2 302 550.2
+DL 310 550.2 306 550.2 DL 314 550.2 310 550.2 DL 318 550.2 314 550.2 DL 322
+550.2 318 550.2 DL 326 550.2 322 550.2 DL 330 550.2 326 550.2 DL 334 550.2 330
+550.2 DL 338 550.2 334 550.2 DL 342 550.2 338 550.2 DL 346 550.2 342 550.2 DL
+350 550.2 346 550.2 DL 354 550.2 350 550.2 DL 358 550.2 354 550.2 DL 362 550.2
+358 550.2 DL 366 550.2 362 550.2 DL 370 550.2 366 550.2 DL 374 550.2 370 550.2
+DL 378 550.2 374 550.2 DL 382 550.2 378 550.2 DL 386 550.2 382 550.2 DL F3
+(Footnotes)36 550.2 Q F2(@footnote{TEXT)36 558.6 Q 43.127(-OF-FOOTNOTE} Enter)
+-.644 F 1.75(af)1.75 G(ootnote.)-1.75 E(@footnotestyle STYLE)36 567 Q 11.473
+(IL Specify)165.332 567 R(an Info \214le')1.75 E 1.75(sf)-.385 G
+(ootnote style.)-1.75 E 98.413(Command Notes)406 32.4 R(Description)3.5 E .28
+LW 409.5 34.8 406 34.8 DL 413 34.8 409.5 34.8 DL 416.5 34.8 413 34.8 DL 420
+34.8 416.5 34.8 DL 423.5 34.8 420 34.8 DL 427 34.8 423.5 34.8 DL 430.5 34.8 427
+34.8 DL 434 34.8 430.5 34.8 DL 437.5 34.8 434 34.8 DL 441 34.8 437.5 34.8 DL
+444.5 34.8 441 34.8 DL 448 34.8 444.5 34.8 DL 451.5 34.8 448 34.8 DL 455 34.8
+451.5 34.8 DL 458.5 34.8 455 34.8 DL 462 34.8 458.5 34.8 DL 465.5 34.8 462 34.8
+DL 469 34.8 465.5 34.8 DL 472.5 34.8 469 34.8 DL 476 34.8 472.5 34.8 DL 479.5
+34.8 476 34.8 DL 483 34.8 479.5 34.8 DL 486.5 34.8 483 34.8 DL 490 34.8 486.5
+34.8 DL 493.5 34.8 490 34.8 DL 497 34.8 493.5 34.8 DL 500.5 34.8 497 34.8 DL
+504 34.8 500.5 34.8 DL 507.5 34.8 504 34.8 DL 511 34.8 507.5 34.8 DL 514.5 34.8
+511 34.8 DL 518 34.8 514.5 34.8 DL 521.5 34.8 518 34.8 DL 525 34.8 521.5 34.8
+DL 528.5 34.8 525 34.8 DL 532 34.8 528.5 34.8 DL 535.5 34.8 532 34.8 DL 539
+34.8 535.5 34.8 DL 542.5 34.8 539 34.8 DL 546 34.8 542.5 34.8 DL 549.5 34.8 546
+34.8 DL 553 34.8 549.5 34.8 DL 556.5 34.8 553 34.8 DL 560 34.8 556.5 34.8 DL
+563.5 34.8 560 34.8 DL 567 34.8 563.5 34.8 DL 570.5 34.8 567 34.8 DL 574 34.8
+570.5 34.8 DL 577.5 34.8 574 34.8 DL 581 34.8 577.5 34.8 DL 584.5 34.8 581 34.8
+DL 588 34.8 584.5 34.8 DL 591.5 34.8 588 34.8 DL 595 34.8 591.5 34.8 DL 598.5
+34.8 595 34.8 DL 602 34.8 598.5 34.8 DL 605.5 34.8 602 34.8 DL 609 34.8 605.5
+34.8 DL 612.5 34.8 609 34.8 DL 616 34.8 612.5 34.8 DL 619.5 34.8 616 34.8 DL
+623 34.8 619.5 34.8 DL 626.5 34.8 623 34.8 DL 630 34.8 626.5 34.8 DL 633.5 34.8
+630 34.8 DL 637 34.8 633.5 34.8 DL 640.5 34.8 637 34.8 DL 644 34.8 640.5 34.8
+DL 647.5 34.8 644 34.8 DL 651 34.8 647.5 34.8 DL 654.5 34.8 651 34.8 DL 658
+34.8 654.5 34.8 DL 661.5 34.8 658 34.8 DL 665 34.8 661.5 34.8 DL 668.5 34.8 665
+34.8 DL 672 34.8 668.5 34.8 DL 675.5 34.8 672 34.8 DL 679 34.8 675.5 34.8 DL
+682.5 34.8 679 34.8 DL 686 34.8 682.5 34.8 DL 689.5 34.8 686 34.8 DL 693 34.8
+689.5 34.8 DL 696.5 34.8 693 34.8 DL 700 34.8 696.5 34.8 DL 703.5 34.8 700 34.8
+DL 707 34.8 703.5 34.8 DL 710.5 34.8 707 34.8 DL 714 34.8 710.5 34.8 DL 717.5
+34.8 714 34.8 DL 721 34.8 717.5 34.8 DL 724.5 34.8 721 34.8 DL 728 34.8 724.5
+34.8 DL 731.5 34.8 728 34.8 DL 735 34.8 731.5 34.8 DL 738.5 34.8 735 34.8 DL
+742 34.8 738.5 34.8 DL 745.5 34.8 742 34.8 DL 749 34.8 745.5 34.8 DL 752.5 34.8
+749 34.8 DL 756 34.8 752.5 34.8 DL .32 LW 438.896 51.6 434.896 51.6 DL 440 51.6
+436 51.6 DL 444 51.6 440 51.6 DL 448 51.6 444 51.6 DL 452 51.6 448 51.6 DL 456
+51.6 452 51.6 DL 460 51.6 456 51.6 DL 464 51.6 460 51.6 DL 468 51.6 464 51.6 DL
+472 51.6 468 51.6 DL 476 51.6 472 51.6 DL 480 51.6 476 51.6 DL 484 51.6 480
+51.6 DL 488 51.6 484 51.6 DL 492 51.6 488 51.6 DL 496 51.6 492 51.6 DL 500 51.6
+496 51.6 DL 504 51.6 500 51.6 DL 508 51.6 504 51.6 DL 512 51.6 508 51.6 DL 516
+51.6 512 51.6 DL 520 51.6 516 51.6 DL 524 51.6 520 51.6 DL 528 51.6 524 51.6 DL
+532 51.6 528 51.6 DL 536 51.6 532 51.6 DL 540 51.6 536 51.6 DL 544 51.6 540
+51.6 DL 548 51.6 544 51.6 DL 552 51.6 548 51.6 DL 556 51.6 552 51.6 DL 560 51.6
+556 51.6 DL 564 51.6 560 51.6 DL 568 51.6 564 51.6 DL 572 51.6 568 51.6 DL 576
+51.6 572 51.6 DL 580 51.6 576 51.6 DL 584 51.6 580 51.6 DL 588 51.6 584 51.6 DL
+592 51.6 588 51.6 DL 596 51.6 592 51.6 DL 600 51.6 596 51.6 DL 604 51.6 600
+51.6 DL 608 51.6 604 51.6 DL 612 51.6 608 51.6 DL 616 51.6 612 51.6 DL 620 51.6
+616 51.6 DL 624 51.6 620 51.6 DL 628 51.6 624 51.6 DL 632 51.6 628 51.6 DL 636
+51.6 632 51.6 DL 640 51.6 636 51.6 DL 644 51.6 640 51.6 DL 648 51.6 644 51.6 DL
+652 51.6 648 51.6 DL 656 51.6 652 51.6 DL 660 51.6 656 51.6 DL 664 51.6 660
+51.6 DL 668 51.6 664 51.6 DL 672 51.6 668 51.6 DL 676 51.6 672 51.6 DL 680 51.6
+676 51.6 DL 684 51.6 680 51.6 DL 688 51.6 684 51.6 DL 692 51.6 688 51.6 DL 696
+51.6 692 51.6 DL 700 51.6 696 51.6 DL 704 51.6 700 51.6 DL 708 51.6 704 51.6 DL
+712 51.6 708 51.6 DL 716 51.6 712 51.6 DL 720 51.6 716 51.6 DL 724 51.6 720
+51.6 DL 728 51.6 724 51.6 DL 732 51.6 728 51.6 DL 736 51.6 732 51.6 DL 740 51.6
+736 51.6 DL 744 51.6 740 51.6 DL 748 51.6 744 51.6 DL 752 51.6 748 51.6 DL 756
+51.6 752 51.6 DL F3(Displays)406 51.6 Q F2 100.912(@display LE)406 60 R
+(Begin a indented, un\214lled example.)555.163 60 Q 97.419(@example LE)406 68.4
+R(Begin an indented, un\214lled example.)555.163 68.4 Q 82.25(@smallexample LE)
+406 76.8 R(Indent text to indicate an example.)555.163 76.8 Q 102.473
+(@format LE)406 85.2 R(Begin an unindented example.)555.163 85.2 Q 94.689
+(@quotation LE)406 93.6 R(Narrow the mar)555.163 93.6 Q
+(gins to indicate text that is quoted.)-.126 E 111.02(@lisp LE)406 102 R
+(Begin an example of Lisp code.)555.163 102 Q 95.851(@smalllisp LE)406 110.4 R
+(Begin an example of Lisp code.)555.163 110.4 Q 93.926(@cartouche L)406 118.8 R
+5.894(TE Draw)-.644 F 1.75(ab)1.75 G(ox around text.)-1.75 E 505.56 132.24
+501.56 132.24 DL 508 132.24 504 132.24 DL 512 132.24 508 132.24 DL 516 132.24
+512 132.24 DL 520 132.24 516 132.24 DL 524 132.24 520 132.24 DL 528 132.24 524
+132.24 DL 532 132.24 528 132.24 DL 536 132.24 532 132.24 DL 540 132.24 536
+132.24 DL 544 132.24 540 132.24 DL 548 132.24 544 132.24 DL 552 132.24 548
+132.24 DL 556 132.24 552 132.24 DL 560 132.24 556 132.24 DL 564 132.24 560
+132.24 DL 568 132.24 564 132.24 DL 572 132.24 568 132.24 DL 576 132.24 572
+132.24 DL 580 132.24 576 132.24 DL 584 132.24 580 132.24 DL 588 132.24 584
+132.24 DL 592 132.24 588 132.24 DL 596 132.24 592 132.24 DL 600 132.24 596
+132.24 DL 604 132.24 600 132.24 DL 608 132.24 604 132.24 DL 612 132.24 608
+132.24 DL 616 132.24 612 132.24 DL 620 132.24 616 132.24 DL 624 132.24 620
+132.24 DL 628 132.24 624 132.24 DL 632 132.24 628 132.24 DL 636 132.24 632
+132.24 DL 640 132.24 636 132.24 DL 644 132.24 640 132.24 DL 648 132.24 644
+132.24 DL 652 132.24 648 132.24 DL 656 132.24 652 132.24 DL 660 132.24 656
+132.24 DL 664 132.24 660 132.24 DL 668 132.24 664 132.24 DL 672 132.24 668
+132.24 DL 676 132.24 672 132.24 DL 680 132.24 676 132.24 DL 684 132.24 680
+132.24 DL 688 132.24 684 132.24 DL 692 132.24 688 132.24 DL 696 132.24 692
+132.24 DL 700 132.24 696 132.24 DL 704 132.24 700 132.24 DL 708 132.24 704
+132.24 DL 712 132.24 708 132.24 DL 716 132.24 712 132.24 DL 720 132.24 716
+132.24 DL 724 132.24 720 132.24 DL 728 132.24 724 132.24 DL 732 132.24 728
+132.24 DL 736 132.24 732 132.24 DL 740 132.24 736 132.24 DL 744 132.24 740
+132.24 DL 748 132.24 744 132.24 DL 752 132.24 748 132.24 DL 756 132.24 752
+132.24 DL F3(Printed Manual Commands)406 132.24 Q F2 97.027(@titlepage TLE)406
+140.64 R(Indicate to T)7 E(exinfo the beginning of the title page.)-.49 E
+(@title TITLE)406 149.04 Q(TL)535.332 149.04 Q
+(Set a title \215ush to the left-hand side of the page)555.163 149.04 Q
+(in a lar)555.163 157.44 Q(ge font and underline it.)-.126 E(@subtitle TITLE)
+406 165.84 Q(LHT)535.332 165.84 Q
+(In a printed manual, set a subtitle in a normal sized)555.163 165.84 Q
+(font \215ush to the right-hand side of the page.)555.163 174.24 Q
+(@author AUTHOR)406 182.64 Q -.49(Ty)555.163 182.64 S
+(peset AUTHOR \215ushleft and underline it.).49 E
+(@headings ON|OFF|SINGLE|DOUBLE)406 191.04 Q(L)535.332 191.04 Q -.245(Tu)
+555.163 191.04 S(rn headings on or of).245 E(f, or specify single-sided)-.126 E
+(or double-sided headings.)555.163 199.44 Q(@setchapternewpage ON-OFF-ODD)406
+207.84 Q(L)535.332 207.84 Q
+(Specify whether chapters start on new pages, and if so, whether on)555.163
+207.84 Q(odd-numbered new pages.)555.163 216.24 Q
+(@evenfooting [L] @| [C] @| [R])406 224.64 Q 11.459 -.644(LT S)535.332 224.64 T
+(pecify footings for even-numbered \(left-hand\) pages.).644 E
+(@evenheading [L] @| [C] @| [R])406 233.04 Q 11.459 -.644(LT S)535.332 233.04 T
+(pecify headings for even-numbered \(left-hand\) pages.).644 E
+(@everyfooting [L] @| [C] @| [R])406 241.44 Q 11.459 -.644(LT S)535.332 241.44
+T(pecify footings for every page.).644 E(@everyheading [L] @| [C] @| [R])406
+249.84 Q 11.459 -.644(LT S)535.332 249.84 T(pecify headings for every page.)
+.644 E(@oddfooting [L] @| [C] @| [R])406 258.24 Q 11.459 -.644(LT S)535.332
+258.24 T(pecify footings for odd-numbered \(right-hand\) pages.).644 E
+(@oddheading [L] @| [C] @| [R])406 266.64 Q 11.459 -.644(LT S)535.332 266.64 T
+(pecify headings for odd-numbered \(right-hand\) pages.).644 E 90.419
+(@thischapter F)406 275.04 R(The name and number of the current chapter)555.163
+275.04 Q(.)-.385 E 75.257(@thischaptername F)406 283.44 R
+(The name and number of the current chapter)555.163 283.44 Q(.)-.385 E 102.074
+(@this\214le F)406 291.84 R(The name of the current `@include' \214le.)555.163
+291.84 Q 97.804(@thispage F)406 300.24 R(Current page number)555.163 300.24 Q
+(.)-.385 E 100.128(@thistitle F)406 308.64 R(The name of the document.)555.163
+308.64 Q 99.743(@\214nalout T)406 317.04 R(Prevent T)555.163 317.04 Q
+(eX from marking over)-.49 E(-wide lines.)-.14 E 91.966(@smallbook L)406 325.44
+R 11.921(TC)-.644 G(ause T)559.832 325.44 Q
+(eX to produce a smaller printed manual.)-.49 E 484.896 338.88 480.896 338.88
+DL 488 338.88 484 338.88 DL 492 338.88 488 338.88 DL 496 338.88 492 338.88 DL
+500 338.88 496 338.88 DL 504 338.88 500 338.88 DL 508 338.88 504 338.88 DL 512
+338.88 508 338.88 DL 516 338.88 512 338.88 DL 520 338.88 516 338.88 DL 524
+338.88 520 338.88 DL 528 338.88 524 338.88 DL 532 338.88 528 338.88 DL 536
+338.88 532 338.88 DL 540 338.88 536 338.88 DL 544 338.88 540 338.88 DL 548
+338.88 544 338.88 DL 552 338.88 548 338.88 DL 556 338.88 552 338.88 DL 560
+338.88 556 338.88 DL 564 338.88 560 338.88 DL 568 338.88 564 338.88 DL 572
+338.88 568 338.88 DL 576 338.88 572 338.88 DL 580 338.88 576 338.88 DL 584
+338.88 580 338.88 DL 588 338.88 584 338.88 DL 592 338.88 588 338.88 DL 596
+338.88 592 338.88 DL 600 338.88 596 338.88 DL 604 338.88 600 338.88 DL 608
+338.88 604 338.88 DL 612 338.88 608 338.88 DL 616 338.88 612 338.88 DL 620
+338.88 616 338.88 DL 624 338.88 620 338.88 DL 628 338.88 624 338.88 DL 632
+338.88 628 338.88 DL 636 338.88 632 338.88 DL 640 338.88 636 338.88 DL 644
+338.88 640 338.88 DL 648 338.88 644 338.88 DL 652 338.88 648 338.88 DL 656
+338.88 652 338.88 DL 660 338.88 656 338.88 DL 664 338.88 660 338.88 DL 668
+338.88 664 338.88 DL 672 338.88 668 338.88 DL 676 338.88 672 338.88 DL 680
+338.88 676 338.88 DL 684 338.88 680 338.88 DL 688 338.88 684 338.88 DL 692
+338.88 688 338.88 DL 696 338.88 692 338.88 DL 700 338.88 696 338.88 DL 704
+338.88 700 338.88 DL 708 338.88 704 338.88 DL 712 338.88 708 338.88 DL 716
+338.88 712 338.88 DL 720 338.88 716 338.88 DL 724 338.88 720 338.88 DL 728
+338.88 724 338.88 DL 732 338.88 728 338.88 DL 736 338.88 732 338.88 DL 740
+338.88 736 338.88 DL 744 338.88 740 338.88 DL 748 338.88 744 338.88 DL 752
+338.88 748 338.88 DL 756 338.88 752 338.88 DL F3(De\214nition Commands)406
+338.88 Q F2(@defopt OPTION)406 347.28 Q 9.527(LE Format)535.332 347.28 R 1.75
+(ad)1.75 G(escription for a user option.)-1.75 E(@def)406 355.68 Q(fn CA)-.126
+E 1.75(TN)-.777 G(AME ARGS)-1.75 E 9.527(LE Format)535.332 355.68 R 1.75(ad)
+1.75 G(escription for a function)-1.75 E(@deftypefn CLASS TYPE NAME ARGS)406
+364.08 Q 9.527(LE Format)535.332 364.08 R 1.75(ad)1.75 G
+(escription for a function.)-1.75 E(@defmac MACRO ARGS)406 372.48 Q 9.527
+(LE Format)535.332 372.48 R 1.75(ad)1.75 G(escription for a macro.)-1.75 E
+(@defspec SPECIAL-FORM ARGS)406 380.88 Q 9.527(LE Format)535.332 380.88 R 1.75
+(ad)1.75 G(escription for a special form.)-1.75 E(@deftp CA)406 389.28 Q 1.75
+(TT)-.777 G(YPE A)-1.75 E 49.385(TTRS LE)-.777 F
+(Format a description for a data type.)555.163 389.28 Q(@defcv CA)406 397.68 Q
+1.75(TC)-.777 G(LASS NAME)-1.75 E 9.527(LE Format)535.332 397.68 R 1.75(ac)1.75
+G(lass variable description \(OO\).)-1.75 E(@de\214var CLASS INST)406 406.08 Q
+(-V)-.644 E 45.297(AR LE)-.903 F(Format instance variable description \(OO\).)
+555.163 406.08 Q(@defmethod CLASS METHOD ARGS)406 414.48 Q 9.527(LE Format)
+535.332 414.48 R 1.75(am)1.75 G(ethod description \(OO\).)-1.75 E(@defop CA)406
+422.88 Q 1.75(TC)-.777 G(LASS NAME ARGS)-1.75 E 9.527(LE Format)535.332 422.88
+R(an operation \(OO\).)1.75 E(@deftypefun TYPE FUNCTION ARGS)406 431.28 Q 9.527
+(LE Format)535.332 431.28 R 1.75(ad)1.75 G
+(escription for a function in a typed language.)-1.75 E
+(@deftypevr CLASS TYPE NAME)406 439.68 Q 9.527(LE Format)535.332 439.68 R 1.75
+(ad)1.75 G(escription for something like a variable in a typed language.)-1.75
+E(@deftypevar TYPE V)406 448.08 Q 35.721(ARIABLE LE)-.903 F
+(Format a description for a variable in a typed language.)555.163 448.08 Q
+(@defun FUNCTION ARGS)406 456.48 Q 9.527(LE Format)535.332 456.48 R 1.75(ad)
+1.75 G(escription for functions.)-1.75 E(@defvar V)406 464.88 Q 67.025
+(ARIABLE LE)-.903 F(Format a description for variables.)555.163 464.88 Q
+(@defvr CA)406 473.28 Q 1.75(TN)-.777 G 69.034(AME LE)-1.75 F
+(Format a description for any kind of variable.)555.163 473.28 Q 494.68 486.72
+490.68 486.72 DL 496 486.72 492 486.72 DL 500 486.72 496 486.72 DL 504 486.72
+500 486.72 DL 508 486.72 504 486.72 DL 512 486.72 508 486.72 DL 516 486.72 512
+486.72 DL 520 486.72 516 486.72 DL 524 486.72 520 486.72 DL 528 486.72 524
+486.72 DL 532 486.72 528 486.72 DL 536 486.72 532 486.72 DL 540 486.72 536
+486.72 DL 544 486.72 540 486.72 DL 548 486.72 544 486.72 DL 552 486.72 548
+486.72 DL 556 486.72 552 486.72 DL 560 486.72 556 486.72 DL 564 486.72 560
+486.72 DL 568 486.72 564 486.72 DL 572 486.72 568 486.72 DL 576 486.72 572
+486.72 DL 580 486.72 576 486.72 DL 584 486.72 580 486.72 DL 588 486.72 584
+486.72 DL 592 486.72 588 486.72 DL 596 486.72 592 486.72 DL 600 486.72 596
+486.72 DL 604 486.72 600 486.72 DL 608 486.72 604 486.72 DL 612 486.72 608
+486.72 DL 616 486.72 612 486.72 DL 620 486.72 616 486.72 DL 624 486.72 620
+486.72 DL 628 486.72 624 486.72 DL 632 486.72 628 486.72 DL 636 486.72 632
+486.72 DL 640 486.72 636 486.72 DL 644 486.72 640 486.72 DL 648 486.72 644
+486.72 DL 652 486.72 648 486.72 DL 656 486.72 652 486.72 DL 660 486.72 656
+486.72 DL 664 486.72 660 486.72 DL 668 486.72 664 486.72 DL 672 486.72 668
+486.72 DL 676 486.72 672 486.72 DL 680 486.72 676 486.72 DL 684 486.72 680
+486.72 DL 688 486.72 684 486.72 DL 692 486.72 688 486.72 DL 696 486.72 692
+486.72 DL 700 486.72 696 486.72 DL 704 486.72 700 486.72 DL 708 486.72 704
+486.72 DL 712 486.72 708 486.72 DL 716 486.72 712 486.72 DL 720 486.72 716
+486.72 DL 724 486.72 720 486.72 DL 728 486.72 724 486.72 DL 732 486.72 728
+486.72 DL 736 486.72 732 486.72 DL 740 486.72 736 486.72 DL 744 486.72 740
+486.72 DL 748 486.72 744 486.72 DL 752 486.72 748 486.72 DL 756 486.72 752
+486.72 DL F3(Conditionals Commands)406 486.72 Q F2 103.25(@ignore LE)406 495.12
+R(Begin a stretch of text that will not appear anywhere.)555.163 495.12 Q
+105.966(@i\214nfo LEI)406 503.52 R
+(Begin a stretch of text that will only appear in info.)8.946 E 108.304
+(@iftex LET)406 511.92 R(Begin a stretch of text that will only appear in T)7 E
+(eX.)-.49 E 112.581(@tex LET)406 520.32 R(Enter T)7 E(eX completely)-.49 E(.)
+-.455 E(@clear FLAG)406 528.72 Q 15.554(LU)535.332 528.72 S(nset FLAG)560.217
+528.72 Q(@set FLAG)406 537.12 Q 15.554(LS)535.332 537.12 S(et FLAG)559.055
+537.12 Q(@ifclear FLAG)406 545.52 Q 9.527(LE If)535.332 545.52 R
+(FLAG is unset, process following text.)1.75 E(@ifset FLAG)406 553.92 Q 9.527
+(LE If)535.332 553.92 R(FLAG is set, process following text.)1.75 E EP
+%%Page: 2 2
+%%BeginPageSetup
+BP
+%%EndPageSetup
+/F0 7/Times-Roman@0 SF 98.413(Command Notes)36 30.4 R(Description)3.5 E .28 LW
+39.5 32.8 36 32.8 DL 43 32.8 39.5 32.8 DL 46.5 32.8 43 32.8 DL 50 32.8 46.5
+32.8 DL 53.5 32.8 50 32.8 DL 57 32.8 53.5 32.8 DL 60.5 32.8 57 32.8 DL 64 32.8
+60.5 32.8 DL 67.5 32.8 64 32.8 DL 71 32.8 67.5 32.8 DL 74.5 32.8 71 32.8 DL 78
+32.8 74.5 32.8 DL 81.5 32.8 78 32.8 DL 85 32.8 81.5 32.8 DL 88.5 32.8 85 32.8
+DL 92 32.8 88.5 32.8 DL 95.5 32.8 92 32.8 DL 99 32.8 95.5 32.8 DL 102.5 32.8 99
+32.8 DL 106 32.8 102.5 32.8 DL 109.5 32.8 106 32.8 DL 113 32.8 109.5 32.8 DL
+116.5 32.8 113 32.8 DL 120 32.8 116.5 32.8 DL 123.5 32.8 120 32.8 DL 127 32.8
+123.5 32.8 DL 130.5 32.8 127 32.8 DL 134 32.8 130.5 32.8 DL 137.5 32.8 134 32.8
+DL 141 32.8 137.5 32.8 DL 144.5 32.8 141 32.8 DL 148 32.8 144.5 32.8 DL 151.5
+32.8 148 32.8 DL 155 32.8 151.5 32.8 DL 158.5 32.8 155 32.8 DL 162 32.8 158.5
+32.8 DL 165.5 32.8 162 32.8 DL 169 32.8 165.5 32.8 DL 172.5 32.8 169 32.8 DL
+176 32.8 172.5 32.8 DL 179.5 32.8 176 32.8 DL 183 32.8 179.5 32.8 DL 186.5 32.8
+183 32.8 DL 190 32.8 186.5 32.8 DL 193.5 32.8 190 32.8 DL 197 32.8 193.5 32.8
+DL 200.5 32.8 197 32.8 DL 204 32.8 200.5 32.8 DL 207.5 32.8 204 32.8 DL 211
+32.8 207.5 32.8 DL 214.5 32.8 211 32.8 DL 218 32.8 214.5 32.8 DL 221.5 32.8 218
+32.8 DL 225 32.8 221.5 32.8 DL 228.5 32.8 225 32.8 DL 232 32.8 228.5 32.8 DL
+235.5 32.8 232 32.8 DL 239 32.8 235.5 32.8 DL 242.5 32.8 239 32.8 DL 246 32.8
+242.5 32.8 DL 249.5 32.8 246 32.8 DL 253 32.8 249.5 32.8 DL 256.5 32.8 253 32.8
+DL 260 32.8 256.5 32.8 DL 263.5 32.8 260 32.8 DL 267 32.8 263.5 32.8 DL 270.5
+32.8 267 32.8 DL 274 32.8 270.5 32.8 DL 277.5 32.8 274 32.8 DL 281 32.8 277.5
+32.8 DL 284.5 32.8 281 32.8 DL 288 32.8 284.5 32.8 DL 291.5 32.8 288 32.8 DL
+295 32.8 291.5 32.8 DL 298.5 32.8 295 32.8 DL 302 32.8 298.5 32.8 DL 305.5 32.8
+302 32.8 DL 309 32.8 305.5 32.8 DL 312.5 32.8 309 32.8 DL 316 32.8 312.5 32.8
+DL 319.5 32.8 316 32.8 DL 323 32.8 319.5 32.8 DL 326.5 32.8 323 32.8 DL 330
+32.8 326.5 32.8 DL 333.5 32.8 330 32.8 DL 337 32.8 333.5 32.8 DL 340.5 32.8 337
+32.8 DL 344 32.8 340.5 32.8 DL 347.5 32.8 344 32.8 DL 351 32.8 347.5 32.8 DL
+354.5 32.8 351 32.8 DL 358 32.8 354.5 32.8 DL 361.5 32.8 358 32.8 DL 365 32.8
+361.5 32.8 DL 368.5 32.8 365 32.8 DL 372 32.8 368.5 32.8 DL 375.5 32.8 372 32.8
+DL 379 32.8 375.5 32.8 DL 382.5 32.8 379 32.8 DL 386 32.8 382.5 32.8 DL .32 LW
+59.112 49.6 55.112 49.6 DL 62 49.6 58 49.6 DL 66 49.6 62 49.6 DL 70 49.6 66
+49.6 DL 74 49.6 70 49.6 DL 78 49.6 74 49.6 DL 82 49.6 78 49.6 DL 86 49.6 82
+49.6 DL 90 49.6 86 49.6 DL 94 49.6 90 49.6 DL 98 49.6 94 49.6 DL 102 49.6 98
+49.6 DL 106 49.6 102 49.6 DL 110 49.6 106 49.6 DL 114 49.6 110 49.6 DL 118 49.6
+114 49.6 DL 122 49.6 118 49.6 DL 126 49.6 122 49.6 DL 130 49.6 126 49.6 DL 134
+49.6 130 49.6 DL 138 49.6 134 49.6 DL 142 49.6 138 49.6 DL 146 49.6 142 49.6 DL
+150 49.6 146 49.6 DL 154 49.6 150 49.6 DL 158 49.6 154 49.6 DL 162 49.6 158
+49.6 DL 166 49.6 162 49.6 DL 170 49.6 166 49.6 DL 174 49.6 170 49.6 DL 178 49.6
+174 49.6 DL 182 49.6 178 49.6 DL 186 49.6 182 49.6 DL 190 49.6 186 49.6 DL 194
+49.6 190 49.6 DL 198 49.6 194 49.6 DL 202 49.6 198 49.6 DL 206 49.6 202 49.6 DL
+210 49.6 206 49.6 DL 214 49.6 210 49.6 DL 218 49.6 214 49.6 DL 222 49.6 218
+49.6 DL 226 49.6 222 49.6 DL 230 49.6 226 49.6 DL 234 49.6 230 49.6 DL 238 49.6
+234 49.6 DL 242 49.6 238 49.6 DL 246 49.6 242 49.6 DL 250 49.6 246 49.6 DL 254
+49.6 250 49.6 DL 258 49.6 254 49.6 DL 262 49.6 258 49.6 DL 266 49.6 262 49.6 DL
+270 49.6 266 49.6 DL 274 49.6 270 49.6 DL 278 49.6 274 49.6 DL 282 49.6 278
+49.6 DL 286 49.6 282 49.6 DL 290 49.6 286 49.6 DL 294 49.6 290 49.6 DL 298 49.6
+294 49.6 DL 302 49.6 298 49.6 DL 306 49.6 302 49.6 DL 310 49.6 306 49.6 DL 314
+49.6 310 49.6 DL 318 49.6 314 49.6 DL 322 49.6 318 49.6 DL 326 49.6 322 49.6 DL
+330 49.6 326 49.6 DL 334 49.6 330 49.6 DL 338 49.6 334 49.6 DL 342 49.6 338
+49.6 DL 346 49.6 342 49.6 DL 350 49.6 346 49.6 DL 354 49.6 350 49.6 DL 358 49.6
+354 49.6 DL 362 49.6 358 49.6 DL 366 49.6 362 49.6 DL 370 49.6 366 49.6 DL 374
+49.6 370 49.6 DL 378 49.6 374 49.6 DL 382 49.6 378 49.6 DL 386 49.6 382 49.6 DL
+/F1 8/Times-Bold@0 SF(Fonts)36 49.6 Q F0 74.361(@titlefont{TEXT} TF)36 58 R
+(print TEXT in a lar)185.163 58 Q(ger than normal font.)-.126 E 64.246
+(@cite{REFERENCE} F)36 66.4 R(Highlight the name of a book or other reference.)
+185.163 66.4 Q 52.199(@code{SAMPLE-CODE} F)36 74.8 R
+(Highlight program name or code.)185.163 74.8 Q 85.638(@dfn{TERM} F)36 83.2 R
+(Highlight the introductory or de\214ning use of a term.)185.163 83.2 Q 70.084
+(@\214le{FILENAME} F)36 91.6 R(Highlight the name of a \214le or directory)
+185.163 91.6 Q(.)-.455 E 39.361(@kbd{KEYBOARD-CHARS} F)36 100 R
+(Indicate text that consists of characters of input to be typed by users.)
+185.163 100 Q(@key{KEY)36 108.4 Q 67.76(-NAME} F)-.777 F(Highlight KEY)185.163
+108.4 Q(-NAME, a conventional name for a key on a keyboard.)-.777 E 81.753
+(@samp{TEXT} F)36 116.8 R
+(Highlight TEXT that is a literal example of a sequence of characters.)185.163
+116.8 Q 90.699(@sc{TEXT} F)36 125.2 R
+(Set TEXT in a printed output in THE SMALL CAPS FONT)185.163 125.2 Q(.)-.518 E
+62.699(@dmn{DIMENSION} FT)36 133.6 R(Put a narrow space before DIMENSION.)
+185.163 133.6 Q 80.976(@emph{TEXT} F)36 142 R(Highlight TEXT)185.163 142 Q(.)
+-.518 E 79.03(@strong{TEXT} F)36 150.4 R(Emphasize TEXT)185.163 150.4 Q(.)-.518
+E 94.199(@r{TEXT} FT)36 158.8 R(Print TEXT in roman font.)185.163 158.8 Q 93.03
+(@b{TEXT} FT)36 167.2 R(Print TEXT in bold font.)185.163 167.2 Q 94.584
+(@i{TEXT} FT)36 175.6 R(Print TEXT in italic font.)185.163 175.6 Q 94.584
+(@t{TEXT} FT)36 184 R(Print TEXT in a \214xed-width font.)185.163 184 Q
+(@var{MET)36 192.4 Q(A-V)-.56 E 70(AR} F)-.903 F
+(Highlight a metasyntactic variable)185.163 192.4 Q 144.448 205.84 140.448
+205.84 DL 146 205.84 142 205.84 DL 150 205.84 146 205.84 DL 154 205.84 150
+205.84 DL 158 205.84 154 205.84 DL 162 205.84 158 205.84 DL 166 205.84 162
+205.84 DL 170 205.84 166 205.84 DL 174 205.84 170 205.84 DL 178 205.84 174
+205.84 DL 182 205.84 178 205.84 DL 186 205.84 182 205.84 DL 190 205.84 186
+205.84 DL 194 205.84 190 205.84 DL 198 205.84 194 205.84 DL 202 205.84 198
+205.84 DL 206 205.84 202 205.84 DL 210 205.84 206 205.84 DL 214 205.84 210
+205.84 DL 218 205.84 214 205.84 DL 222 205.84 218 205.84 DL 226 205.84 222
+205.84 DL 230 205.84 226 205.84 DL 234 205.84 230 205.84 DL 238 205.84 234
+205.84 DL 242 205.84 238 205.84 DL 246 205.84 242 205.84 DL 250 205.84 246
+205.84 DL 254 205.84 250 205.84 DL 258 205.84 254 205.84 DL 262 205.84 258
+205.84 DL 266 205.84 262 205.84 DL 270 205.84 266 205.84 DL 274 205.84 270
+205.84 DL 278 205.84 274 205.84 DL 282 205.84 278 205.84 DL 286 205.84 282
+205.84 DL 290 205.84 286 205.84 DL 294 205.84 290 205.84 DL 298 205.84 294
+205.84 DL 302 205.84 298 205.84 DL 306 205.84 302 205.84 DL 310 205.84 306
+205.84 DL 314 205.84 310 205.84 DL 318 205.84 314 205.84 DL 322 205.84 318
+205.84 DL 326 205.84 322 205.84 DL 330 205.84 326 205.84 DL 334 205.84 330
+205.84 DL 338 205.84 334 205.84 DL 342 205.84 338 205.84 DL 346 205.84 342
+205.84 DL 350 205.84 346 205.84 DL 354 205.84 350 205.84 DL 358 205.84 354
+205.84 DL 362 205.84 358 205.84 DL 366 205.84 362 205.84 DL 370 205.84 366
+205.84 DL 374 205.84 370 205.84 DL 378 205.84 374 205.84 DL 382 205.84 378
+205.84 DL 386 205.84 382 205.84 DL F1(Glyphs, and special characters)36 205.84
+Q F0 139.216(@. Stands)36 214.24 R
+(for a period that really does end a sentence.)1.75 E 119.189(@: T)36 222.64 R
+(Preceding putuation does not end a sentence.)185.163 222.64 Q 134.519
+(@@ Stands)36 231.04 R(for `@'.)1.75 E 137.606(@{ Stands)36 239.44 R
+(for a left-hand brace, `{'.)1.75 E 137.606(@} Stands)36 247.84 R
+(for a right-hand brace, `}'.)1.75 E 98.469(@bullet{} F)36 256.24 R
+(Generate a lar)185.163 256.24 Q(ge round dot.)-.126 E 87.584(@copyright{} F)36
+264.64 R(Generate a copyright symbol.)185.163 264.64 Q 102.746(@dots{} F)36
+273.04 R(Insert an ellipsis: `...'.)185.163 273.04 Q 98.861(@equiv{} F)36
+281.44 R(Equivalence symbol)185.163 281.44 Q 100.814(@error{} F)36 289.84 R
+(Symbol for error messages.)185.163 289.84 Q 86.03(@expansion{} F)36 298.24 R
+(Expansion symbol.)185.163 298.24 Q 97.3(@minus{} F)36 306.64 R
+(Generate a minus sign.)185.163 306.64 Q 100.023(@point{} F)36 315.04 R
+(Generate a symbol which indicates a point in a buf)185.163 315.04 Q(fer)-.126
+E(.)-.385 E 101.192(@print{} F)36 323.44 R
+(Generate a symbol to indicate printed output)185.163 323.44 Q 98.861
+(@result{} F)36 331.84 R
+(Generate a symbol to indicate the result of an expression.)185.163 331.84 Q
+(@T)36 340.24 Q 102.466(eX{} F)-.49 F(Insert the logo T)185.163 340.24 Q(eX.)
+-.49 E 98.861(@today{} F)36 348.64 R
+(Insert the current date, in `1 Jan 1900' style.)185.163 348.64 Q 117.992
+362.08 113.992 362.08 DL 118 362.08 114 362.08 DL 122 362.08 118 362.08 DL 126
+362.08 122 362.08 DL 130 362.08 126 362.08 DL 134 362.08 130 362.08 DL 138
+362.08 134 362.08 DL 142 362.08 138 362.08 DL 146 362.08 142 362.08 DL 150
+362.08 146 362.08 DL 154 362.08 150 362.08 DL 158 362.08 154 362.08 DL 162
+362.08 158 362.08 DL 166 362.08 162 362.08 DL 170 362.08 166 362.08 DL 174
+362.08 170 362.08 DL 178 362.08 174 362.08 DL 182 362.08 178 362.08 DL 186
+362.08 182 362.08 DL 190 362.08 186 362.08 DL 194 362.08 190 362.08 DL 198
+362.08 194 362.08 DL 202 362.08 198 362.08 DL 206 362.08 202 362.08 DL 210
+362.08 206 362.08 DL 214 362.08 210 362.08 DL 218 362.08 214 362.08 DL 222
+362.08 218 362.08 DL 226 362.08 222 362.08 DL 230 362.08 226 362.08 DL 234
+362.08 230 362.08 DL 238 362.08 234 362.08 DL 242 362.08 238 362.08 DL 246
+362.08 242 362.08 DL 250 362.08 246 362.08 DL 254 362.08 250 362.08 DL 258
+362.08 254 362.08 DL 262 362.08 258 362.08 DL 266 362.08 262 362.08 DL 270
+362.08 266 362.08 DL 274 362.08 270 362.08 DL 278 362.08 274 362.08 DL 282
+362.08 278 362.08 DL 286 362.08 282 362.08 DL 290 362.08 286 362.08 DL 294
+362.08 290 362.08 DL 298 362.08 294 362.08 DL 302 362.08 298 362.08 DL 306
+362.08 302 362.08 DL 310 362.08 306 362.08 DL 314 362.08 310 362.08 DL 318
+362.08 314 362.08 DL 322 362.08 318 362.08 DL 326 362.08 322 362.08 DL 330
+362.08 326 362.08 DL 334 362.08 330 362.08 DL 338 362.08 334 362.08 DL 342
+362.08 338 362.08 DL 346 362.08 342 362.08 DL 350 362.08 346 362.08 DL 354
+362.08 350 362.08 DL 358 362.08 354 362.08 DL 362 362.08 358 362.08 DL 366
+362.08 362 362.08 DL 370 362.08 366 362.08 DL 374 362.08 370 362.08 DL 378
+362.08 374 362.08 DL 382 362.08 378 362.08 DL 386 362.08 382 362.08 DL F1
+(Formatting commands)36 362.08 Q F0 137.466(@* Force)36 370.48 R 1.75(al)1.75 G
+(ine break.)-1.75 E(@center LINE-OF-TEXT)36 378.88 Q 15.554(LC)165.332 378.88 S
+(enter the line of text following the command.)189.832 378.88 Q
+(@exdent LINE-OF-TEXT)36 387.28 Q 15.554(LR)165.332 387.28 S
+(emove any indentation a line might have.)189.832 387.28 Q 104.804(@group TLE)
+36 395.68 R(Hold text together that must appear on one printed page.)7 E
+(@paragraphindent INDENT)36 404.08 Q 15.554(LI)165.332 404.08 S
+(ndent paragraphs by INDENT number of spaces.)187.494 404.08 Q 107.912
+(@re\214ll I)36 412.48 R(Re\214ll and indent the paragraph.)185.163 412.48 Q
+(@sp N)36 420.88 Q 15.554(LS)165.332 420.88 S(kip N blank lines.)189.055 420.88
+Q 98.189(@\215ushleft LE)36 429.28 R
+(Left justify every line but leave the right end ragged.)185.163 429.28 Q
+94.297(@\215ushright LE)36 437.68 R
+(Right justify every line but leave the left end ragged.)185.163 437.68 Q
+(@vskip AMOUNT)36 446.08 Q -.644(LT)165.332 446.08 S .614
+(Insert whitespace so as to push text on the remainder of the page to-)185.163
+446.08 R(wards the bottom of the page.)185.163 454.48 Q 91.476(@w{TEXT} F)36
+462.88 R(Prevent TEXT from being split across two lines.)185.163 462.88 Q
+107.919(@page L)36 471.28 R 11.921(TS)-.644 G
+(tart a new page in a printed manual.)189.055 471.28 Q(@need N)36 479.68 Q
+-.644(LT)165.332 479.68 S(Need N mils \(start new page if necessary\).)185.163
+479.68 Q 96.635(@noindent L)36 488.08 R
+(Prevent text from being indented as if it were a new paragraph.)185.163 488.08
+Q F1 -.736(Ta)36 501.52 S 61.936 501.52 57.936 501.52 DL 62 501.52 58 501.52 DL
+66 501.52 62 501.52 DL 70 501.52 66 501.52 DL 74 501.52 70 501.52 DL 78 501.52
+74 501.52 DL 82 501.52 78 501.52 DL 86 501.52 82 501.52 DL 90 501.52 86 501.52
+DL 94 501.52 90 501.52 DL 98 501.52 94 501.52 DL 102 501.52 98 501.52 DL 106
+501.52 102 501.52 DL 110 501.52 106 501.52 DL 114 501.52 110 501.52 DL 118
+501.52 114 501.52 DL 122 501.52 118 501.52 DL 126 501.52 122 501.52 DL 130
+501.52 126 501.52 DL 134 501.52 130 501.52 DL 138 501.52 134 501.52 DL 142
+501.52 138 501.52 DL 146 501.52 142 501.52 DL 150 501.52 146 501.52 DL 154
+501.52 150 501.52 DL 158 501.52 154 501.52 DL 162 501.52 158 501.52 DL 166
+501.52 162 501.52 DL 170 501.52 166 501.52 DL 174 501.52 170 501.52 DL 178
+501.52 174 501.52 DL 182 501.52 178 501.52 DL 186 501.52 182 501.52 DL 190
+501.52 186 501.52 DL 194 501.52 190 501.52 DL 198 501.52 194 501.52 DL 202
+501.52 198 501.52 DL 206 501.52 202 501.52 DL 210 501.52 206 501.52 DL 214
+501.52 210 501.52 DL 218 501.52 214 501.52 DL 222 501.52 218 501.52 DL 226
+501.52 222 501.52 DL 230 501.52 226 501.52 DL 234 501.52 230 501.52 DL 238
+501.52 234 501.52 DL 242 501.52 238 501.52 DL 246 501.52 242 501.52 DL 250
+501.52 246 501.52 DL 254 501.52 250 501.52 DL 258 501.52 254 501.52 DL 262
+501.52 258 501.52 DL 266 501.52 262 501.52 DL 270 501.52 266 501.52 DL 274
+501.52 270 501.52 DL 278 501.52 274 501.52 DL 282 501.52 278 501.52 DL 286
+501.52 282 501.52 DL 290 501.52 286 501.52 DL 294 501.52 290 501.52 DL 298
+501.52 294 501.52 DL 302 501.52 298 501.52 DL 306 501.52 302 501.52 DL 310
+501.52 306 501.52 DL 314 501.52 310 501.52 DL 318 501.52 314 501.52 DL 322
+501.52 318 501.52 DL 326 501.52 322 501.52 DL 330 501.52 326 501.52 DL 334
+501.52 330 501.52 DL 338 501.52 334 501.52 DL 342 501.52 338 501.52 DL 346
+501.52 342 501.52 DL 350 501.52 346 501.52 DL 354 501.52 350 501.52 DL 358
+501.52 354 501.52 DL 362 501.52 358 501.52 DL 366 501.52 362 501.52 DL 370
+501.52 366 501.52 DL 374 501.52 370 501.52 DL 378 501.52 374 501.52 DL 382
+501.52 378 501.52 DL 386 501.52 382 501.52 DL(bles)44.6 501.52 Q F0
+(@itemize MARK)36 509.92 Q 9.527(LE Mark)165.332 509.92 R
+(future `@item' with MARK.)1.75 E 91.98(@enumerate LE)36 518.32 R
+(Begin a numbered list)185.163 518.32 Q(@table COMMAND)36 526.72 Q 15.554(LB)
+165.332 526.72 S(egin a two column table, using COMMAND for each entry)189.832
+526.72 Q(.)-.455 E(@ftable COMMAND)36 535.12 Q 9.527(LE Begin)165.332 535.12 R
+1.75(at)1.75 G(wo-column table.)-1.75 E 108.689(@item L)36 543.52 R
+(Indicate the beginning of a marked paragraph)185.163 543.52 Q 105.189
+(@itemx L)36 551.92 R(Like `@item' but without extra vertical space.)185.163
+551.92 Q 110.635(@asis L)36 560.32 R
+(Do not highlight \214rst column of previous table.)185.163 560.32 Q/F2 11
+/Times-Bold@0 SF -1.012(Te)406 34 S .44 LW 476.18 34 470.68 34 DL 481 34 475.5
+34 DL 486.5 34 481 34 DL 492 34 486.5 34 DL 497.5 34 492 34 DL 503 34 497.5 34
+DL 508.5 34 503 34 DL 514 34 508.5 34 DL 519.5 34 514 34 DL 525 34 519.5 34 DL
+530.5 34 525 34 DL 536 34 530.5 34 DL 541.5 34 536 34 DL 547 34 541.5 34 DL
+552.5 34 547 34 DL 558 34 552.5 34 DL 563.5 34 558 34 DL 569 34 563.5 34 DL
+574.5 34 569 34 DL 580 34 574.5 34 DL 585.5 34 580 34 DL 591 34 585.5 34 DL
+596.5 34 591 34 DL 602 34 596.5 34 DL 607.5 34 602 34 DL 613 34 607.5 34 DL
+618.5 34 613 34 DL 624 34 618.5 34 DL 629.5 34 624 34 DL 635 34 629.5 34 DL
+640.5 34 635 34 DL 646 34 640.5 34 DL 651.5 34 646 34 DL 657 34 651.5 34 DL
+662.5 34 657 34 DL 668 34 662.5 34 DL 673.5 34 668 34 DL 679 34 673.5 34 DL
+684.5 34 679 34 DL 690 34 684.5 34 DL 695.5 34 690 34 DL 701 34 695.5 34 DL
+706.5 34 701 34 DL 712 34 706.5 34 DL 717.5 34 712 34 DL 723 34 717.5 34 DL
+728.5 34 723 34 DL 734 34 728.5 34 DL 739.5 34 734 34 DL 745 34 739.5 34 DL
+750.5 34 745 34 DL 756 34 750.5 34 DL(xinfo Mode)417.209 34 Q F0 126.581
+(Command Description)406 46.6 R .28 LW 409.5 49 406 49 DL 413 49 409.5 49 DL
+416.5 49 413 49 DL 420 49 416.5 49 DL 423.5 49 420 49 DL 427 49 423.5 49 DL
+430.5 49 427 49 DL 434 49 430.5 49 DL 437.5 49 434 49 DL 441 49 437.5 49 DL
+444.5 49 441 49 DL 448 49 444.5 49 DL 451.5 49 448 49 DL 455 49 451.5 49 DL
+458.5 49 455 49 DL 462 49 458.5 49 DL 465.5 49 462 49 DL 469 49 465.5 49 DL
+472.5 49 469 49 DL 476 49 472.5 49 DL 479.5 49 476 49 DL 483 49 479.5 49 DL
+486.5 49 483 49 DL 490 49 486.5 49 DL 493.5 49 490 49 DL 497 49 493.5 49 DL
+500.5 49 497 49 DL 504 49 500.5 49 DL 507.5 49 504 49 DL 511 49 507.5 49 DL
+514.5 49 511 49 DL 518 49 514.5 49 DL 521.5 49 518 49 DL 525 49 521.5 49 DL
+528.5 49 525 49 DL 532 49 528.5 49 DL 535.5 49 532 49 DL 539 49 535.5 49 DL
+542.5 49 539 49 DL 546 49 542.5 49 DL 549.5 49 546 49 DL 553 49 549.5 49 DL
+556.5 49 553 49 DL 560 49 556.5 49 DL 563.5 49 560 49 DL 567 49 563.5 49 DL
+570.5 49 567 49 DL 574 49 570.5 49 DL 577.5 49 574 49 DL 581 49 577.5 49 DL
+584.5 49 581 49 DL 588 49 584.5 49 DL 591.5 49 588 49 DL 595 49 591.5 49 DL
+598.5 49 595 49 DL 602 49 598.5 49 DL 605.5 49 602 49 DL 609 49 605.5 49 DL
+612.5 49 609 49 DL 616 49 612.5 49 DL 619.5 49 616 49 DL 623 49 619.5 49 DL
+626.5 49 623 49 DL 630 49 626.5 49 DL 633.5 49 630 49 DL 637 49 633.5 49 DL
+640.5 49 637 49 DL 644 49 640.5 49 DL 647.5 49 644 49 DL 651 49 647.5 49 DL
+654.5 49 651 49 DL 658 49 654.5 49 DL 661.5 49 658 49 DL 665 49 661.5 49 DL
+668.5 49 665 49 DL 672 49 668.5 49 DL 675.5 49 672 49 DL 679 49 675.5 49 DL
+682.5 49 679 49 DL 686 49 682.5 49 DL 689.5 49 686 49 DL 693 49 689.5 49 DL
+696.5 49 693 49 DL 700 49 696.5 49 DL 703.5 49 700 49 DL 707 49 703.5 49 DL
+710.5 49 707 49 DL 714 49 710.5 49 DL 717.5 49 714 49 DL 721 49 717.5 49 DL
+724.5 49 721 49 DL 728 49 724.5 49 DL 731.5 49 728 49 DL 735 49 731.5 49 DL
+738.5 49 735 49 DL 742 49 738.5 49 DL 745.5 49 742 49 DL 749 49 745.5 49 DL
+752.5 49 749 49 DL 756 49 752.5 49 DL .32 LW 471.552 62.44 467.552 62.44 DL 472
+62.44 468 62.44 DL 476 62.44 472 62.44 DL 480 62.44 476 62.44 DL 484 62.44 480
+62.44 DL 488 62.44 484 62.44 DL 492 62.44 488 62.44 DL 496 62.44 492 62.44 DL
+500 62.44 496 62.44 DL 504 62.44 500 62.44 DL 508 62.44 504 62.44 DL 512 62.44
+508 62.44 DL 516 62.44 512 62.44 DL 520 62.44 516 62.44 DL 524 62.44 520 62.44
+DL 528 62.44 524 62.44 DL 532 62.44 528 62.44 DL 536 62.44 532 62.44 DL 540
+62.44 536 62.44 DL 544 62.44 540 62.44 DL 548 62.44 544 62.44 DL 552 62.44 548
+62.44 DL 556 62.44 552 62.44 DL 560 62.44 556 62.44 DL 564 62.44 560 62.44 DL
+568 62.44 564 62.44 DL 572 62.44 568 62.44 DL 576 62.44 572 62.44 DL 580 62.44
+576 62.44 DL 584 62.44 580 62.44 DL 588 62.44 584 62.44 DL 592 62.44 588 62.44
+DL 596 62.44 592 62.44 DL 600 62.44 596 62.44 DL 604 62.44 600 62.44 DL 608
+62.44 604 62.44 DL 612 62.44 608 62.44 DL 616 62.44 612 62.44 DL 620 62.44 616
+62.44 DL 624 62.44 620 62.44 DL 628 62.44 624 62.44 DL 632 62.44 628 62.44 DL
+636 62.44 632 62.44 DL 640 62.44 636 62.44 DL 644 62.44 640 62.44 DL 648 62.44
+644 62.44 DL 652 62.44 648 62.44 DL 656 62.44 652 62.44 DL 660 62.44 656 62.44
+DL 664 62.44 660 62.44 DL 668 62.44 664 62.44 DL 672 62.44 668 62.44 DL 676
+62.44 672 62.44 DL 680 62.44 676 62.44 DL 684 62.44 680 62.44 DL 688 62.44 684
+62.44 DL 692 62.44 688 62.44 DL 696 62.44 692 62.44 DL 700 62.44 696 62.44 DL
+704 62.44 700 62.44 DL 708 62.44 704 62.44 DL 712 62.44 708 62.44 DL 716 62.44
+712 62.44 DL 720 62.44 716 62.44 DL 724 62.44 720 62.44 DL 728 62.44 724 62.44
+DL 732 62.44 728 62.44 DL 736 62.44 732 62.44 DL 740 62.44 736 62.44 DL 744
+62.44 740 62.44 DL 748 62.44 744 62.44 DL 752 62.44 748 62.44 DL 756 62.44 752
+62.44 DL F1(Insert Commands)406 62.44 Q/F3 7/Courier@0 SF(C-c C-c c)406 70.84 Q
+F0(Insert `@code'.)563.5 70.84 Q F3(C-c C-c d)406 79.24 Q F0(Insert `@dfn'.)
+563.5 79.24 Q F3(C-c C-c e)406 87.64 Q F0(Insert `@end'.)563.5 87.64 Q F3
+(C-c C-c i)406 96.04 Q F0(Insert `@item'.)563.5 96.04 Q F3(C-c C-c n)406 104.44
+Q F0(Insert `@node'.)563.5 104.44 Q F3(C-c C-c s)406 112.84 Q F0
+(Insert `@samp'.)563.5 112.84 Q F3(C-c C-c v)406 121.24 Q F0(Insert `@var)563.5
+121.24 Q('.).259 E F3(C-c C-c {)406 129.64 Q F0(Insert braces.)563.5 129.64 Q
+F3(C-c C-c })406 138.04 Q F0(Move out of enclosing braces.)563.5 138.04 Q F1
+(Show Structur)406 151.48 Q 463.408 151.48 459.408 151.48 DL 464 151.48 460
+151.48 DL 468 151.48 464 151.48 DL 472 151.48 468 151.48 DL 476 151.48 472
+151.48 DL 480 151.48 476 151.48 DL 484 151.48 480 151.48 DL 488 151.48 484
+151.48 DL 492 151.48 488 151.48 DL 496 151.48 492 151.48 DL 500 151.48 496
+151.48 DL 504 151.48 500 151.48 DL 508 151.48 504 151.48 DL 512 151.48 508
+151.48 DL 516 151.48 512 151.48 DL 520 151.48 516 151.48 DL 524 151.48 520
+151.48 DL 528 151.48 524 151.48 DL 532 151.48 528 151.48 DL 536 151.48 532
+151.48 DL 540 151.48 536 151.48 DL 544 151.48 540 151.48 DL 548 151.48 544
+151.48 DL 552 151.48 548 151.48 DL 556 151.48 552 151.48 DL 560 151.48 556
+151.48 DL 564 151.48 560 151.48 DL 568 151.48 564 151.48 DL 572 151.48 568
+151.48 DL 576 151.48 572 151.48 DL 580 151.48 576 151.48 DL 584 151.48 580
+151.48 DL 588 151.48 584 151.48 DL 592 151.48 588 151.48 DL 596 151.48 592
+151.48 DL 600 151.48 596 151.48 DL 604 151.48 600 151.48 DL 608 151.48 604
+151.48 DL 612 151.48 608 151.48 DL 616 151.48 612 151.48 DL 620 151.48 616
+151.48 DL 624 151.48 620 151.48 DL 628 151.48 624 151.48 DL 632 151.48 628
+151.48 DL 636 151.48 632 151.48 DL 640 151.48 636 151.48 DL 644 151.48 640
+151.48 DL 648 151.48 644 151.48 DL 652 151.48 648 151.48 DL 656 151.48 652
+151.48 DL 660 151.48 656 151.48 DL 664 151.48 660 151.48 DL 668 151.48 664
+151.48 DL 672 151.48 668 151.48 DL 676 151.48 672 151.48 DL 680 151.48 676
+151.48 DL 684 151.48 680 151.48 DL 688 151.48 684 151.48 DL 692 151.48 688
+151.48 DL 696 151.48 692 151.48 DL 700 151.48 696 151.48 DL 704 151.48 700
+151.48 DL 708 151.48 704 151.48 DL 712 151.48 708 151.48 DL 716 151.48 712
+151.48 DL 720 151.48 716 151.48 DL 724 151.48 720 151.48 DL 728 151.48 724
+151.48 DL 732 151.48 728 151.48 DL 736 151.48 732 151.48 DL 740 151.48 736
+151.48 DL 744 151.48 740 151.48 DL 748 151.48 744 151.48 DL 752 151.48 748
+151.48 DL 756 151.48 752 151.48 DL(e)455.856 151.48 Q F3(C-c C-s)406 159.88 Q
+F0(List all the headings.)563.5 159.88 Q 514.656 173.32 510.656 173.32 DL 516
+173.32 512 173.32 DL 520 173.32 516 173.32 DL 524 173.32 520 173.32 DL 528
+173.32 524 173.32 DL 532 173.32 528 173.32 DL 536 173.32 532 173.32 DL 540
+173.32 536 173.32 DL 544 173.32 540 173.32 DL 548 173.32 544 173.32 DL 552
+173.32 548 173.32 DL 556 173.32 552 173.32 DL 560 173.32 556 173.32 DL 564
+173.32 560 173.32 DL 568 173.32 564 173.32 DL 572 173.32 568 173.32 DL 576
+173.32 572 173.32 DL 580 173.32 576 173.32 DL 584 173.32 580 173.32 DL 588
+173.32 584 173.32 DL 592 173.32 588 173.32 DL 596 173.32 592 173.32 DL 600
+173.32 596 173.32 DL 604 173.32 600 173.32 DL 608 173.32 604 173.32 DL 612
+173.32 608 173.32 DL 616 173.32 612 173.32 DL 620 173.32 616 173.32 DL 624
+173.32 620 173.32 DL 628 173.32 624 173.32 DL 632 173.32 628 173.32 DL 636
+173.32 632 173.32 DL 640 173.32 636 173.32 DL 644 173.32 640 173.32 DL 648
+173.32 644 173.32 DL 652 173.32 648 173.32 DL 656 173.32 652 173.32 DL 660
+173.32 656 173.32 DL 664 173.32 660 173.32 DL 668 173.32 664 173.32 DL 672
+173.32 668 173.32 DL 676 173.32 672 173.32 DL 680 173.32 676 173.32 DL 684
+173.32 680 173.32 DL 688 173.32 684 173.32 DL 692 173.32 688 173.32 DL 696
+173.32 692 173.32 DL 700 173.32 696 173.32 DL 704 173.32 700 173.32 DL 708
+173.32 704 173.32 DL 712 173.32 708 173.32 DL 716 173.32 712 173.32 DL 720
+173.32 716 173.32 DL 724 173.32 720 173.32 DL 728 173.32 724 173.32 DL 732
+173.32 728 173.32 DL 736 173.32 732 173.32 DL 740 173.32 736 173.32 DL 744
+173.32 740 173.32 DL 748 173.32 744 173.32 DL 752 173.32 748 173.32 DL 756
+173.32 752 173.32 DL F1(The Master Update Command)406 173.32 Q F3(C-c C-u m)406
+181.72 Q(M-x texinfo-master-menu)406 190.12 Q F0 1.305
+(Create or update a master menu.)563.5 181.72 R -.28(Wi)4.805 G 1.305(th an).28
+F(ar)563.5 190.12 Q 1.885(gument, \214rst create or update all nodes)-.126 F
+(and regular menus.)563.5 198.52 Q 465.328 211.96 461.328 211.96 DL 468 211.96
+464 211.96 DL 472 211.96 468 211.96 DL 476 211.96 472 211.96 DL 480 211.96 476
+211.96 DL 484 211.96 480 211.96 DL 488 211.96 484 211.96 DL 492 211.96 488
+211.96 DL 496 211.96 492 211.96 DL 500 211.96 496 211.96 DL 504 211.96 500
+211.96 DL 508 211.96 504 211.96 DL 512 211.96 508 211.96 DL 516 211.96 512
+211.96 DL 520 211.96 516 211.96 DL 524 211.96 520 211.96 DL 528 211.96 524
+211.96 DL 532 211.96 528 211.96 DL 536 211.96 532 211.96 DL 540 211.96 536
+211.96 DL 544 211.96 540 211.96 DL 548 211.96 544 211.96 DL 552 211.96 548
+211.96 DL 556 211.96 552 211.96 DL 560 211.96 556 211.96 DL 564 211.96 560
+211.96 DL 568 211.96 564 211.96 DL 572 211.96 568 211.96 DL 576 211.96 572
+211.96 DL 580 211.96 576 211.96 DL 584 211.96 580 211.96 DL 588 211.96 584
+211.96 DL 592 211.96 588 211.96 DL 596 211.96 592 211.96 DL 600 211.96 596
+211.96 DL 604 211.96 600 211.96 DL 608 211.96 604 211.96 DL 612 211.96 608
+211.96 DL 616 211.96 612 211.96 DL 620 211.96 616 211.96 DL 624 211.96 620
+211.96 DL 628 211.96 624 211.96 DL 632 211.96 628 211.96 DL 636 211.96 632
+211.96 DL 640 211.96 636 211.96 DL 644 211.96 640 211.96 DL 648 211.96 644
+211.96 DL 652 211.96 648 211.96 DL 656 211.96 652 211.96 DL 660 211.96 656
+211.96 DL 664 211.96 660 211.96 DL 668 211.96 664 211.96 DL 672 211.96 668
+211.96 DL 676 211.96 672 211.96 DL 680 211.96 676 211.96 DL 684 211.96 680
+211.96 DL 688 211.96 684 211.96 DL 692 211.96 688 211.96 DL 696 211.96 692
+211.96 DL 700 211.96 696 211.96 DL 704 211.96 700 211.96 DL 708 211.96 704
+211.96 DL 712 211.96 708 211.96 DL 716 211.96 712 211.96 DL 720 211.96 716
+211.96 DL 724 211.96 720 211.96 DL 728 211.96 724 211.96 DL 732 211.96 728
+211.96 DL 736 211.96 732 211.96 DL 740 211.96 736 211.96 DL 744 211.96 740
+211.96 DL 748 211.96 744 211.96 DL 752 211.96 748 211.96 DL 756 211.96 752
+211.96 DL F1(Update Pointers)406 211.96 Q F3(C-c C-u C-n)406 220.36 Q F0
+(Update a node.)563.5 220.36 Q F3(C-c C-u C-e)406 228.76 Q F0
+(Update every node in the buf)563.5 228.76 Q(fer)-.126 E(.)-.385 E 460 242.2
+456 242.2 DL 464 242.2 460 242.2 DL 468 242.2 464 242.2 DL 472 242.2 468 242.2
+DL 476 242.2 472 242.2 DL 480 242.2 476 242.2 DL 484 242.2 480 242.2 DL 488
+242.2 484 242.2 DL 492 242.2 488 242.2 DL 496 242.2 492 242.2 DL 500 242.2 496
+242.2 DL 504 242.2 500 242.2 DL 508 242.2 504 242.2 DL 512 242.2 508 242.2 DL
+516 242.2 512 242.2 DL 520 242.2 516 242.2 DL 524 242.2 520 242.2 DL 528 242.2
+524 242.2 DL 532 242.2 528 242.2 DL 536 242.2 532 242.2 DL 540 242.2 536 242.2
+DL 544 242.2 540 242.2 DL 548 242.2 544 242.2 DL 552 242.2 548 242.2 DL 556
+242.2 552 242.2 DL 560 242.2 556 242.2 DL 564 242.2 560 242.2 DL 568 242.2 564
+242.2 DL 572 242.2 568 242.2 DL 576 242.2 572 242.2 DL 580 242.2 576 242.2 DL
+584 242.2 580 242.2 DL 588 242.2 584 242.2 DL 592 242.2 588 242.2 DL 596 242.2
+592 242.2 DL 600 242.2 596 242.2 DL 604 242.2 600 242.2 DL 608 242.2 604 242.2
+DL 612 242.2 608 242.2 DL 616 242.2 612 242.2 DL 620 242.2 616 242.2 DL 624
+242.2 620 242.2 DL 628 242.2 624 242.2 DL 632 242.2 628 242.2 DL 636 242.2 632
+242.2 DL 640 242.2 636 242.2 DL 644 242.2 640 242.2 DL 648 242.2 644 242.2 DL
+652 242.2 648 242.2 DL 656 242.2 652 242.2 DL 660 242.2 656 242.2 DL 664 242.2
+660 242.2 DL 668 242.2 664 242.2 DL 672 242.2 668 242.2 DL 676 242.2 672 242.2
+DL 680 242.2 676 242.2 DL 684 242.2 680 242.2 DL 688 242.2 684 242.2 DL 692
+242.2 688 242.2 DL 696 242.2 692 242.2 DL 700 242.2 696 242.2 DL 704 242.2 700
+242.2 DL 708 242.2 704 242.2 DL 712 242.2 708 242.2 DL 716 242.2 712 242.2 DL
+720 242.2 716 242.2 DL 724 242.2 720 242.2 DL 728 242.2 724 242.2 DL 732 242.2
+728 242.2 DL 736 242.2 732 242.2 DL 740 242.2 736 242.2 DL 744 242.2 740 242.2
+DL 748 242.2 744 242.2 DL 752 242.2 748 242.2 DL 756 242.2 752 242.2 DL F1
+(Update Menus)406 242.2 Q F3(C-c C-u C-m)406 250.6 Q F0(Make or update a menu.)
+563.5 250.6 Q F3(C-c C-u C-a)406 259 Q F0 1.195
+(Make or update all the menus in a buf)563.5 259 R(fer;)-.126 E .392
+(with an ar)563.5 267.4 R .392(gument, \214rst update all the nodes.)-.126 F
+527.296 280.84 523.296 280.84 DL 528 280.84 524 280.84 DL 532 280.84 528 280.84
+DL 536 280.84 532 280.84 DL 540 280.84 536 280.84 DL 544 280.84 540 280.84 DL
+548 280.84 544 280.84 DL 552 280.84 548 280.84 DL 556 280.84 552 280.84 DL 560
+280.84 556 280.84 DL 564 280.84 560 280.84 DL 568 280.84 564 280.84 DL 572
+280.84 568 280.84 DL 576 280.84 572 280.84 DL 580 280.84 576 280.84 DL 584
+280.84 580 280.84 DL 588 280.84 584 280.84 DL 592 280.84 588 280.84 DL 596
+280.84 592 280.84 DL 600 280.84 596 280.84 DL 604 280.84 600 280.84 DL 608
+280.84 604 280.84 DL 612 280.84 608 280.84 DL 616 280.84 612 280.84 DL 620
+280.84 616 280.84 DL 624 280.84 620 280.84 DL 628 280.84 624 280.84 DL 632
+280.84 628 280.84 DL 636 280.84 632 280.84 DL 640 280.84 636 280.84 DL 644
+280.84 640 280.84 DL 648 280.84 644 280.84 DL 652 280.84 648 280.84 DL 656
+280.84 652 280.84 DL 660 280.84 656 280.84 DL 664 280.84 660 280.84 DL 668
+280.84 664 280.84 DL 672 280.84 668 280.84 DL 676 280.84 672 280.84 DL 680
+280.84 676 280.84 DL 684 280.84 680 280.84 DL 688 280.84 684 280.84 DL 692
+280.84 688 280.84 DL 696 280.84 692 280.84 DL 700 280.84 696 280.84 DL 704
+280.84 700 280.84 DL 708 280.84 704 280.84 DL 712 280.84 708 280.84 DL 716
+280.84 712 280.84 DL 720 280.84 716 280.84 DL 724 280.84 720 280.84 DL 728
+280.84 724 280.84 DL 732 280.84 728 280.84 DL 736 280.84 732 280.84 DL 740
+280.84 736 280.84 DL 744 280.84 740 280.84 DL 748 280.84 744 280.84 DL 752
+280.84 748 280.84 DL 756 280.84 752 280.84 DL F1
+(Format for Info \(texinfo-format...\))406 280.84 Q F3(C-c C-e C-r)406 289.24 Q
+F0(Format the region.)563.5 289.24 Q F3(C-c C-e C-b)406 297.64 Q F0
+(Format the buf)563.5 297.64 Q(fer)-.126 E(.)-.385 E 503.536 311.08 499.536
+311.08 DL 504 311.08 500 311.08 DL 508 311.08 504 311.08 DL 512 311.08 508
+311.08 DL 516 311.08 512 311.08 DL 520 311.08 516 311.08 DL 524 311.08 520
+311.08 DL 528 311.08 524 311.08 DL 532 311.08 528 311.08 DL 536 311.08 532
+311.08 DL 540 311.08 536 311.08 DL 544 311.08 540 311.08 DL 548 311.08 544
+311.08 DL 552 311.08 548 311.08 DL 556 311.08 552 311.08 DL 560 311.08 556
+311.08 DL 564 311.08 560 311.08 DL 568 311.08 564 311.08 DL 572 311.08 568
+311.08 DL 576 311.08 572 311.08 DL 580 311.08 576 311.08 DL 584 311.08 580
+311.08 DL 588 311.08 584 311.08 DL 592 311.08 588 311.08 DL 596 311.08 592
+311.08 DL 600 311.08 596 311.08 DL 604 311.08 600 311.08 DL 608 311.08 604
+311.08 DL 612 311.08 608 311.08 DL 616 311.08 612 311.08 DL 620 311.08 616
+311.08 DL 624 311.08 620 311.08 DL 628 311.08 624 311.08 DL 632 311.08 628
+311.08 DL 636 311.08 632 311.08 DL 640 311.08 636 311.08 DL 644 311.08 640
+311.08 DL 648 311.08 644 311.08 DL 652 311.08 648 311.08 DL 656 311.08 652
+311.08 DL 660 311.08 656 311.08 DL 664 311.08 660 311.08 DL 668 311.08 664
+311.08 DL 672 311.08 668 311.08 DL 676 311.08 672 311.08 DL 680 311.08 676
+311.08 DL 684 311.08 680 311.08 DL 688 311.08 684 311.08 DL 692 311.08 688
+311.08 DL 696 311.08 692 311.08 DL 700 311.08 696 311.08 DL 704 311.08 700
+311.08 DL 708 311.08 704 311.08 DL 712 311.08 708 311.08 DL 716 311.08 712
+311.08 DL 720 311.08 716 311.08 DL 724 311.08 720 311.08 DL 728 311.08 724
+311.08 DL 732 311.08 728 311.08 DL 736 311.08 732 311.08 DL 740 311.08 736
+311.08 DL 744 311.08 740 311.08 DL 748 311.08 744 311.08 DL 752 311.08 748
+311.08 DL 756 311.08 752 311.08 DL F1(Format for Info \(makeinfo\))406 311.08 Q
+F3(C-c C-m C-r)406 319.48 Q F0(Format the region.)563.5 319.48 Q F3
+(C-c C-m C-b)406 327.88 Q F0(Format the buf)563.5 327.88 Q(fer)-.126 E(.)-.385
+E F3(C-c C-m C-l)406 336.28 Q F0(Recenter the `makeinfo' output buf)563.5
+336.28 Q(fer)-.126 E(.)-.385 E F3(C-c C-m C-k)406 344.68 Q F0
+(Kill the `makeinfo' formatting job.)563.5 344.68 Q F1 -.592(Ty)406 358.12 S
+470.744 358.12 466.744 358.12 DL 472 358.12 468 358.12 DL 476 358.12 472 358.12
+DL 480 358.12 476 358.12 DL 484 358.12 480 358.12 DL 488 358.12 484 358.12 DL
+492 358.12 488 358.12 DL 496 358.12 492 358.12 DL 500 358.12 496 358.12 DL 504
+358.12 500 358.12 DL 508 358.12 504 358.12 DL 512 358.12 508 358.12 DL 516
+358.12 512 358.12 DL 520 358.12 516 358.12 DL 524 358.12 520 358.12 DL 528
+358.12 524 358.12 DL 532 358.12 528 358.12 DL 536 358.12 532 358.12 DL 540
+358.12 536 358.12 DL 544 358.12 540 358.12 DL 548 358.12 544 358.12 DL 552
+358.12 548 358.12 DL 556 358.12 552 358.12 DL 560 358.12 556 358.12 DL 564
+358.12 560 358.12 DL 568 358.12 564 358.12 DL 572 358.12 568 358.12 DL 576
+358.12 572 358.12 DL 580 358.12 576 358.12 DL 584 358.12 580 358.12 DL 588
+358.12 584 358.12 DL 592 358.12 588 358.12 DL 596 358.12 592 358.12 DL 600
+358.12 596 358.12 DL 604 358.12 600 358.12 DL 608 358.12 604 358.12 DL 612
+358.12 608 358.12 DL 616 358.12 612 358.12 DL 620 358.12 616 358.12 DL 624
+358.12 620 358.12 DL 628 358.12 624 358.12 DL 632 358.12 628 358.12 DL 636
+358.12 632 358.12 DL 640 358.12 636 358.12 DL 644 358.12 640 358.12 DL 648
+358.12 644 358.12 DL 652 358.12 648 358.12 DL 656 358.12 652 358.12 DL 660
+358.12 656 358.12 DL 664 358.12 660 358.12 DL 668 358.12 664 358.12 DL 672
+358.12 668 358.12 DL 676 358.12 672 358.12 DL 680 358.12 676 358.12 DL 684
+358.12 680 358.12 DL 688 358.12 684 358.12 DL 692 358.12 688 358.12 DL 696
+358.12 692 358.12 DL 700 358.12 696 358.12 DL 704 358.12 700 358.12 DL 708
+358.12 704 358.12 DL 712 358.12 708 358.12 DL 716 358.12 712 358.12 DL 720
+358.12 716 358.12 DL 724 358.12 720 358.12 DL 728 358.12 724 358.12 DL 732
+358.12 728 358.12 DL 736 358.12 732 358.12 DL 740 358.12 736 358.12 DL 744
+358.12 740 358.12 DL 748 358.12 744 358.12 DL 752 358.12 748 358.12 DL 756
+358.12 752 358.12 DL(peset and Print)414.744 358.12 Q F3(C-c C-t C-r)406 366.52
+Q F0(Run T)563.5 366.52 Q(eX on the region.)-.49 E F3(C-c C-t C-b)406 374.92 Q
+F0(Run T)563.5 374.92 Q(eX on the buf)-.49 E(fer)-.126 E(.)-.385 E F3
+(C-c C-t C-i)406 383.32 Q F0(Run `texindex'.)563.5 383.32 Q F3(C-c C-t C-p)406
+391.72 Q F0(Print the DVI \214le.)563.5 391.72 Q F3(C-c C-t C-q)406 400.12 Q F0
+(Show the print queue.)563.5 400.12 Q F3(C-c C-t C-d)406 408.52 Q F0
+(Delete a job from the print queue.)563.5 408.52 Q F3(C-c C-t C-k)406 416.92 Q
+F0(Kill the current T)563.5 416.92 Q(eX formatting job.)-.49 E F3(C-c C-t C-x)
+406 425.32 Q F0(Quit a currently stopped T)563.5 425.32 Q(eX formatting job.)
+-.49 E F3(C-c C-t C-l)406 433.72 Q F0(Recenter the output buf)563.5 433.72 Q
+(fer)-.126 E(.)-.385 E 505.56 447.16 501.56 447.16 DL 508 447.16 504 447.16 DL
+512 447.16 508 447.16 DL 516 447.16 512 447.16 DL 520 447.16 516 447.16 DL 524
+447.16 520 447.16 DL 528 447.16 524 447.16 DL 532 447.16 528 447.16 DL 536
+447.16 532 447.16 DL 540 447.16 536 447.16 DL 544 447.16 540 447.16 DL 548
+447.16 544 447.16 DL 552 447.16 548 447.16 DL 556 447.16 552 447.16 DL 560
+447.16 556 447.16 DL 564 447.16 560 447.16 DL 568 447.16 564 447.16 DL 572
+447.16 568 447.16 DL 576 447.16 572 447.16 DL 580 447.16 576 447.16 DL 584
+447.16 580 447.16 DL 588 447.16 584 447.16 DL 592 447.16 588 447.16 DL 596
+447.16 592 447.16 DL 600 447.16 596 447.16 DL 604 447.16 600 447.16 DL 608
+447.16 604 447.16 DL 612 447.16 608 447.16 DL 616 447.16 612 447.16 DL 620
+447.16 616 447.16 DL 624 447.16 620 447.16 DL 628 447.16 624 447.16 DL 632
+447.16 628 447.16 DL 636 447.16 632 447.16 DL 640 447.16 636 447.16 DL 644
+447.16 640 447.16 DL 648 447.16 644 447.16 DL 652 447.16 648 447.16 DL 656
+447.16 652 447.16 DL 660 447.16 656 447.16 DL 664 447.16 660 447.16 DL 668
+447.16 664 447.16 DL 672 447.16 668 447.16 DL 676 447.16 672 447.16 DL 680
+447.16 676 447.16 DL 684 447.16 680 447.16 DL 688 447.16 684 447.16 DL 692
+447.16 688 447.16 DL 696 447.16 692 447.16 DL 700 447.16 696 447.16 DL 704
+447.16 700 447.16 DL 708 447.16 704 447.16 DL 712 447.16 708 447.16 DL 716
+447.16 712 447.16 DL 720 447.16 716 447.16 DL 724 447.16 720 447.16 DL 728
+447.16 724 447.16 DL 732 447.16 728 447.16 DL 736 447.16 732 447.16 DL 740
+447.16 736 447.16 DL 744 447.16 740 447.16 DL 748 447.16 744 447.16 DL 752
+447.16 748 447.16 DL 756 447.16 752 447.16 DL F1(Other Updating Commands)406
+447.16 Q F3(M-x texinfo-insert-node-lines)406 455.56 Q F0 .272
+(Insert missing node lines using section titles)563.5 455.56 R(as node names.)
+563.5 463.96 Q F3(M-x texinfo-multiple-files-update)406 472.36 Q F0
+(Update a multi-\214le document.)563.5 472.36 Q F3
+(M-x texinfo-indent-menu-description)406 480.76 Q F0(Indent descriptions.)563.5
+480.76 Q F3(M-x texinfo-sequential-node-update)406 489.16 Q F0
+(Insert node pointers in strict sequence.)563.5 489.16 Q 429.104 506.8 425.104
+506.8 DL 432 506.8 428 506.8 DL 436 506.8 432 506.8 DL 440 506.8 436 506.8 DL
+444 506.8 440 506.8 DL 448 506.8 444 506.8 DL 452 506.8 448 506.8 DL 456 506.8
+452 506.8 DL 460 506.8 456 506.8 DL 464 506.8 460 506.8 DL 468 506.8 464 506.8
+DL 472 506.8 468 506.8 DL 476 506.8 472 506.8 DL 480 506.8 476 506.8 DL 484
+506.8 480 506.8 DL 488 506.8 484 506.8 DL 492 506.8 488 506.8 DL 496 506.8 492
+506.8 DL 500 506.8 496 506.8 DL 504 506.8 500 506.8 DL 508 506.8 504 506.8 DL
+512 506.8 508 506.8 DL 516 506.8 512 506.8 DL 520 506.8 516 506.8 DL 524 506.8
+520 506.8 DL 528 506.8 524 506.8 DL 532 506.8 528 506.8 DL 536 506.8 532 506.8
+DL 540 506.8 536 506.8 DL 544 506.8 540 506.8 DL 548 506.8 544 506.8 DL 552
+506.8 548 506.8 DL 556 506.8 552 506.8 DL 560 506.8 556 506.8 DL 564 506.8 560
+506.8 DL 568 506.8 564 506.8 DL 572 506.8 568 506.8 DL 576 506.8 572 506.8 DL
+580 506.8 576 506.8 DL 584 506.8 580 506.8 DL 588 506.8 584 506.8 DL 592 506.8
+588 506.8 DL 596 506.8 592 506.8 DL 600 506.8 596 506.8 DL 604 506.8 600 506.8
+DL 608 506.8 604 506.8 DL 612 506.8 608 506.8 DL 616 506.8 612 506.8 DL 620
+506.8 616 506.8 DL 624 506.8 620 506.8 DL 628 506.8 624 506.8 DL 632 506.8 628
+506.8 DL 636 506.8 632 506.8 DL 640 506.8 636 506.8 DL 644 506.8 640 506.8 DL
+648 506.8 644 506.8 DL 652 506.8 648 506.8 DL 656 506.8 652 506.8 DL 660 506.8
+656 506.8 DL 664 506.8 660 506.8 DL 668 506.8 664 506.8 DL 672 506.8 668 506.8
+DL 676 506.8 672 506.8 DL 680 506.8 676 506.8 DL 684 506.8 680 506.8 DL 688
+506.8 684 506.8 DL 692 506.8 688 506.8 DL 696 506.8 692 506.8 DL 700 506.8 696
+506.8 DL 704 506.8 700 506.8 DL 708 506.8 704 506.8 DL 712 506.8 708 506.8 DL
+716 506.8 712 506.8 DL 720 506.8 716 506.8 DL 724 506.8 720 506.8 DL 728 506.8
+724 506.8 DL 732 506.8 728 506.8 DL 736 506.8 732 506.8 DL 740 506.8 736 506.8
+DL 744 506.8 740 506.8 DL 748 506.8 744 506.8 DL 752 506.8 748 506.8 DL 756
+506.8 752 506.8 DL F1(Notes)406 506.8 Q F0 1.75(L=T)406 515.2 S
+(his command begins a line)-1.75 E 1.75(I=A)550 515.2 S -.126(ff)-1.75 G
+(ects only info).126 E 1.75(E=C)406 523.6 S(ommand needs a matching @end)-1.75
+E 1.75(T=A)550 523.6 S -.126(ff)-1.75 G(ects only T).126 E(eX)-.49 E 1.75(F=M)
+406 532 S(ay be used as a function)-1.75 E 1.75(H=T)550 532 S
+(his heading put into table of contents)-1.75 E -.49(Te)406 548.8 S
+(xinfo Reference Card, V).49 E(ersion 1.5, 92/02/08.)-.777 E(By T)406 557.2 Q
+(rent A. Fisher \(trent@cs.pdx.edu\), taken from the)-.245 E/F4 7
+/Times-Italic@0 SF -.644(Te)1.75 G(xinfo Manual).644 E F0
+(by Robert Chassell and Richard Stallman.)1.75 E EP
+%%Trailer
+end
+%%EOF

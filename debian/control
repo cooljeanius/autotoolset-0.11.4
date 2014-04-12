@@ -1,0 +1,11 @@
+Source: autotools
+Section: unknown
+Priority: optional
+Maintainer: Thierry MICHEL <thierry@nekhem.com>
+Standards-Version: 3.0.1
+
+Package: autotools
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: <insert up to 60 chars description>
+ <insert long description, indented with spaces>

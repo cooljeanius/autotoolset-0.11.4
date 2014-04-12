@@ -1,0 +1,1218 @@
+This is toolsmanual.info, produced by makeinfo version 4.2 from
+toolsmanual.texi.
+
+INFO-DIR-SECTION Development
+START-INFO-DIR-ENTRY
+* toolsmanual: (toolsmanual).      Developing software with GNU
+END-INFO-DIR-ENTRY
+
+
+File: toolsmanual.info,  Node: Hello world with acmkdir,  Prev: Handling version numbers,  Up: The GNU build system
+
+Hello world with acmkdir
+========================
+
+   Whenever you start out a new programming project, there is quite a
+bit of overhead setup that you need to do in order to use the GNU build
+system.  You need to install the documentation files described in *Note
+Maintaining the documentation files::, and set up the directory
+structure described in *Note Organizing your project in
+subdirectories::. In the quest for never-ending automation, you can do
+these tasks automatically with the `acmkdir' utility.
+
+   Start by typing the following command on the shell:
+     % ackdir hello
+
+`acmkdir' will ask you to enter the name of your program, your name and
+your email address. When you are done, `acmkdir' will ask you if you
+really want to go for it. Say `y'. Then, `acmkdir' will do the
+following routine work for you:
+   * Create the `hello-0.1' directory and the `doc', `m4' and `src'
+     subdirectories.
+
+   * Generate the following `configure.in':
+          AC_INIT
+          AM_CONFIG_HEADER(config.h)
+          AM_INIT_AUTOMAKE(test,0.1)
+          AC_PROG_CC
+          AC_PROG_CXX
+          AC_PROG_RANLIB
+          AC_OUTPUT(Makefile doc/Makefile m4/Makefile src/Makefile)
+
+     By default, both the C and C++ compilers are initialized, but you
+     can take out `AC_PROG_CXX' if you don't plan to use C++. You can
+     edit and customize this file to your needs. More specifically, you
+     will need to update the version number in `AM_INIT_AUTOMAKE'
+     everytime you cut a new distribution (*note Handling version
+     numbers::).  You should also make sure to list all the
+     subdirectories that have a `Makefile.am' in `AC_OUTPUT'.
+
+   * Place boilerplate `Makefile.am' files on the toplevel directory as
+     well as the `doc', `m4' and `src' subdirectories. The toplevel
+     `Makefile.am' contains:
+          EXTRA_DIST = reconf configure
+          SUBDIRS = m4 doc src
+
+     The ones in the `src' and `doc' subdirectories are empty. The one
+     in `m4' contains a template `Makefile.am' which you should edit if
+     you want to add new Autoconf macros.  (_FIXME: Crossreference_)
+
+   * Create the files `COPYING', `INSTALL', `AUTHORS', `NEWS',
+     `README', `THANKS' and `ChangeLog' and generate their default
+     contents which you should edit further as you develop your
+     package. (*note Maintaining the documentation files::)
+
+   * Create a `reconf' script for reconfiguring your package every time
+     you make a change in `configure.in'. Running `reconf' is
+     equivalent to running the following commands on the shell from the
+     top-level directory:
+          % rm -f config.cache
+          % rm -f acconfig.h
+          % aclocal -I m4
+          % autoconf
+          % acconfig
+          % autoheader
+          % automake -a
+
+     Before `acmkdir' exits, it will call the `reconf' script for you
+     once to set things up.
+
+At this point, you can run
+     % ./configure
+     % make
+
+but nothing interesting will happen because the package is still empty.
+
+   To add a simple hello world program, all you need to do is create the
+following two files:
+`src/Makefile.am'
+          bin_PROGRAMS = hello
+          hello_SOURCES = hello.c
+
+`src/hello.c'
+          #if HAVE_CONFIG_H
+          # include <config.h>
+          #endif
+          #include <stdio.h>
+          
+          int
+          main ()
+          {
+            printf ("Hello world\n");
+          }
+
+and type the following commands from the toplevel directory:
+     % ./reconf
+     % ./configure
+     % make
+     % make distcheck
+
+to compile the hello world program and build a distribution. It's that
+simple!
+
+   In general, to develop simple programs with the GNU build system you
+setup the project directory tree with `acmkdir', you write your source
+code, you put together the necessary `Makefile.am' and update
+`configure.in' and you are set to go. In fact, at this point you
+practically know all you need to know to develop source code
+distributions that compile and install simple C programs. All you need
+to do is write the source code and list the source files in `*_SOURCES'.
+
+   In the following chapters we will explain in more detail how to use
+the GNU build system to develop software that conforms to the GNU
+coding standards.
+
+
+File: toolsmanual.info,  Node: Using Automake,  Next: Using Libtool,  Prev: The GNU build system,  Up: Top
+
+Using Automake
+**************
+
+* Menu:
+
+* Simple use of Automake::
+* General Automake principles::
+* Installation standard directories::
+* Libraries with Automake::
+* Applications with Automake::
+* Dealing with built sources::
+* Embedded text with Automake::
+* Scripts with Automake::
+* Emacs Lisp with Automake::
+* Guile with Automake::
+* Data files with Automake::
+
+
+File: toolsmanual.info,  Node: Simple use of Automake,  Next: General Automake principles,  Prev: Using Automake,  Up: Using Automake
+
+Simple use of Automake
+======================
+
+   When you develop an extensive software package, you should write all
+the source code under the `src' directory (*note Organizing your
+project in subdirectories::).  Every library should be placed in a
+separate subdirectory under `src' named after the library, as we
+explained in *Note Dealing with header files::. It is okey for
+applications to share a directory, especially if they need to share
+source code. Sometimes, it may be more practical if each applications
+has its own directory.  Every one of these directories needs a
+`Makefile.am' file and all of these directories must be mentioned at
+the end of `configure.in' in the `AC_OUTPUT' invocation.
+
+   A typical `Makefile.am' is a list of assigments of the form:
+     VARIABLE = VALUE
+
+`Makefile.am' can also contain target definitions, using the same
+syntax as with ordinary makefiles and abstract rules.
+
+   Most `Makefile.am' files begin with assigning values to the following
+variables:
+`INCLUDES = -I/DIR1 -I/DIR2 ...'
+     Insert the `-I' flags that you want to pass to your compiler when
+     it builds object files. Automake will automatically insert for you
+     flags that point to the current source directory, its parent
+     directory and the top-level source code directory.  Please use
+     `$(top_srcdir)' to build a path to a directory within your source
+     code distribution. For example, to make the contents of
+     `src/foo/bar' available use:
+          INCLUDES = -I$(top_srcdir)/src/foo/bar
+
+     If you want to refer to directories outside your source code
+     distribution's hierarchy, please use absolute pathnames.
+
+`LDFLAGS = -L/DIR1 -L/DIR2 ...'
+     Insert the `-L' flags that you want to pass to your compiler when
+     it builds executables.  Please don't use this flag to make
+     directories within the source code distribution accessible. Please
+     refer to uninstalled libraries that interest you with absolute
+     pathnames instead.
+
+`LDADD = FOO.O ... $(top_builddir)/dir1/libfoo.a ... -lFOO ...'
+     List a set of object files, uninstalled libraries and installed
+     libraries that you want to link in with all of your executables.
+     Please refer to uninstalled libraries with absolute pathnames.
+     Because uninstalled libraries are built files, you should start
+     your path with `$(top_builddir)'. For example, to refer to the
+     library `libfoo.a' under `src/foo' write:
+          $(top_builddir)/src/foo/libfoo.a
+
+     The difference between `$(top_srcdir)' and `$(top_builddir)' is
+     explained in _FIXME: Where?_.
+
+Next we list the targets that we want to build in this directory level:
+`EXTRA_DIST = FILE1 FILE2 ...'
+     List any files that you want to include into your source code
+     distribution.  *Note Scripts with Automake::, for an example that
+     uses this assignment.
+
+`SUBDIRS = DIR1 DIR2 ...'
+     List all the subdirectories that we want to build before building
+     this directory. `make' will recursively invoke itself in each
+     subdirectory before doing anything on the current directory.  For
+     example, this is particularly useful when writing the `Makefile.am'
+     for the `src' directory itself. In that file you should list all
+     the subdirectories that you have created under `src'.  If you
+     mention the current directory `.' in `SUBDIRS' then the current
+     directory will be built first, and the subdirectories will be
+     build afterwords.
+
+`bin_PROGRAMS = PROG1 PROG2 ....'
+     Lists the executable files that will be compiled with `make' and
+     installed with `make install' under `/prefix/bin', where `prefix'
+     is usually `/usr/local'.
+
+`lib_LIBRARIES = LIBFOO1.A LIBFOO2.A ...'
+     Lists all the library files that will be compiled with `make' and
+     installed with `make install' under `/prefix/lib'.
+
+`check_PROGRAMS = PROG1 PROG2 ...'
+     Lists the executable files that are *not* compiled with a simple
+     `make' but only when you type `make check'. These programs are
+     usually test programs that you use to verify pieces of your code.
+     Mentioning a program in `check_PROGRAMS' will not cause the program
+     to be automatically executed during `make check'.
+
+`TESTS = PROG1 PROG2 ....'
+     Lists executable files that should be executed when you run `make
+     check'.  In order for these files to be compiled in the first
+     place, you must also mention them in `check_PROGRAMS'.  It is
+     common to set
+          TESTS = $(check_PROGRAMS)
+
+     This way by commenting the line in and out, you can modify the
+     behaviour of `make check'. While debugging your test suite, you
+     will want to comment out this line so that `make check' doesn't
+     run the entire test suite all the time. However, in the end
+     product, you will want to comment it back in.  For more about
+     using test suites for debugging see *Note Libraries with
+     Automake::.
+
+`include_HEADERS = FOO1.H FOO2.H ....'
+     List all the public header files in this directory that you want to
+     install to `/prefix/include'.
+
+For every program and library we must state information that will allow
+Automake and Make to infer the building process.
+
+   * *For each Program*: You need to declare the set of files that are
+     sources of the program, the set of libraries that must be linked
+     with the program and (optionally) a set of dependencies that need
+     to be built before the program is built. To do this, you need to
+     write in the `Makefile.am' the following assignments:
+    `prog_SOURCES = FOO1.c FOO2.c ... HEADER1.h HEADER2.h ....'
+          List all the files that compose the source code of the
+          program, including header files. The presense of a header
+          file here does not cause the filke to be installed at
+          `/prefix/include' but it does cause it to be added to the
+          distribution when you do `make dist'. To cause public files
+          to be installed you must mention them in `include_HEADERS'.
+          Automake will generate abstract rules for building C, C++ and
+          Fortran files. For any other programming languages, you must
+          provide your own abstract rules.  (_FIXME: Crossreference_)
+
+    `prog_LDADD = $(top_builddir)/DIR1/LIBFOO.A -lBAR1 -lBAR2 ...'
+          List the libraries that need to be linked with your source
+          code. Installed libraries should be mentioned using `-l'
+          flags. Uninstalled libraries must be mentioned using absolute
+          pathnames, just like with the global LDADD mentioned earlier.
+
+    `prog_LDFLAGS = -L/DIR1 -L/DIR2 -L/DIR3 ...'
+          Add the `-L' flags that are needed to find the installed
+          libraries that you want to link in `prog_LDADD'.
+
+    `prog_DEPENDENCIES = DEP1 DEP2 DEP3 ...'
+          List any targets that you want to build before building this
+          program.  In each one of these assignments substitute PROG
+     with the name of the program that you are building as it appeared
+     in `bin_PROGRAMS' or `check_PROGRAMS'.
+
+     This is all you need to do. There is no need to write an extended
+     Makefile with all the targets, dependencies and rules for building
+     the program.  All of these are computed for you by Automake. Also,
+     the targets `dist', `distcheck', `install', `uninstall', `clean',
+     `distclean' are setup to handle the program.
+
+   * *For each library:* You need to make the following four
+     assignments:
+    `libfoo_a_SOURCES = FOO1.c FOO2.c FOO.h ...'
+          List all the source files that compose the library, including
+          the *private* header files. You can list the public header
+          files as well, if you like, and perhaps you should for
+          documentation, but you don't have to. Public header files are
+          required to be listed only in `include_HEADERS' so that
+          Automake knows that it must get them installed in
+          `/prefix/include'.
+
+    `libfoo_a_LIBADD = OBJ1.o OBJ2.o OBJ3.o ...'
+          List any other object files that you want to include in the
+          library.  This feature is rarely used in cases where an
+          object file is obtained through an explicitly stated makefile
+          rule.  Note that if the name of the library is `libfoo.a' the
+     prefix that appears in the above variables that are related with
+     the library is `libfoo_a_'
+
+
+File: toolsmanual.info,  Node: General Automake principles,  Next: Installation standard directories,  Prev: Simple use of Automake,  Up: Using Automake
+
+General Automake principles
+===========================
+
+   In the previous section we described how to use Automake to compile
+programs, libraries and test suites. To exploit the full power of
+Automake however, it is important to understand the fundamental ideas
+behind it.
+
+   The simplest way to look at a `Makefile.am' is as a collection of
+assignments which infer a set of Makefile rules, which in turn infer the
+building process. There are three types of such assignments:
+   * "Global" assignments modify the behaviour of the entire Makefile
+     for the given subdirectory. Examples of such assignments are
+     `INCLUDES', `LDADD', `LDFLAGS', `TESTS'. These assignments affect
+     the behaviour of the Makefile in the given directory indepedent of
+     what gets built. In order for an assignment to be "global", the
+     name of the variable to which you are assigning must have a
+     special meaning to Automake.  If it does not, then the assignment
+     has no effect, but it may be used as a variable in other
+     assignments.
+
+   * "Primitive" assignments declare the primitives that we want to
+     build.  Such assignments are `bin_PROGRAMS', `lib_LIBRARIES', and
+     others.  The general pattern of these assignments is two words
+     seperated by an underscore. The second word is always in all-caps,
+     it is the type of the primitive being built, and it affects what
+     Makefile rules are generated for building the primitive.  The
+     first word contains information about where to install the
+     primitive once its built, so it affects the Makefile rules that
+     handle the `install' and `uninstall' targets. The way this works
+     is that for `bin' there corresponds a global assignment for
+     `bindir' containing the installation directory. For example the
+     symbols `bin', `lib', `include' have the following default
+     assignments:
+          bindir     = $(prefix)/bin
+          libdir     = $(prefix)/lib
+          includedir = $(prefix)/include
+
+     These are the directories where you install executables, libraries
+     and public header files. You can override the defaults by
+     inserting different assignments in your `Makefile.am', but please
+     don't do that. Instead define new assignments. For example, if you
+     do
+          foodir = $(prefix)/foo
+
+     then you can use `foo_PROGRAMS', `foo_LIBRARIES', etc. to list
+     programs and libraries that you want installed in `/prefix/foo'.
+     The symbols `check' and `noinst' have special meanings and you
+     should not ever try to assign to `checkdir' and `noinstdir'.
+        - The `check' symbol, suggests that the primitive should only be
+          built when the user invokes `make check' and it should not be
+          installed.  It is only meant to be executed as part of a test
+          suite and then get scrapped.
+
+        - The `noinst' symbol, suggests that the primitive should not be
+          installed. It will be built however normally, when you invoke
+          `make'.  You could use this to build convenience libraries
+          which you intend to link in statically to executables which
+          you do plan to install.  You could also use this to build
+          executables which will generate source code that will
+          subsequently be used to build something installable.
+     Usually, you should install executables in `/prefix/bin', libraries
+     in `/prefix/lib' and public header files in `/prefix/include'.  In
+     general however, the GNU coding standards suggest a dozen of
+     different places on which you may want to install files. For more
+     details *Note Installation standard directories::.
+
+   * "Property" assignments define the properties for every primitive
+     that you declare. A property is also made of two words that are
+     seperated by an underscore. The first word names the primitive to
+     which the property refers to. The second word names the name of
+     the property itself. For example when you define
+          bin_PROGRAMS = hello
+
+     this means that you can then say:
+          hello_SOURCES = ...
+          hello_LDADD   = ...
+
+     and so on. The `SOURCES' and `LDADD' are properties of `hello'
+     which is a `PROGRAMS' primitive.
+
+   In addition to assignments, it is also possible to include ordinary
+targets and abstract targets in a `Makefile.am' just as you would in an
+ordinary `Makefile.am'.  This can be particularly useful in situations
+like the following:
+
+   * You may want to have some of your C, C++ or Fortran source code
+     written by another program. *Note Dealing with built sources::.
+
+   * You may want to generate object files from an obscure kind of
+     source file. For example, see *Note Embedded text with Automake::.
+
+   * You may want to write programs as shell scripts in Bash, Perl or
+     in Guile.  *Note Scripts with Automake::, and *Note Guile with
+     Automake::.
+
+   * You may want to install data files that are generated during
+     compile-time from a program distributed with your software package.
+     *Note Data files with Automake::.
+
+   Ordinary rules simply build things. Abstract rules however have a
+special meaning to Automake. If you define an abstract rule that
+compiles files with an arbitrary suffix into `*.o' an object file, then
+files with such a suffix can appear in the `*_SOURCES' of programs and
+libraries. You must however write the abstract rule early enough in
+your `Makefile.am' for Automake to parse it before encountering a
+sources assignment in which such files appear.  You must also mention
+all the additional suffixes by assigning the variable `SUFFIXES'.
+Automake will use the value of that variable to put together the
+`.SUFFIXES' construct (*note More about Makefiles::).
+
+   If you need to write your own rules or abstract rules, then check at
+some point that your distribution builds properly with `make distcheck'.
+It is very important, when you define your own rules, to follow the
+following guidelines:
+
+   * Prepend all the files that _you_ wrote, both in the dependencies
+     and the rules, with `$(srcdir)'. This variable points to the
+     directory where your source code is located during the current
+     building.  Note that this may not be necessarily the same
+     directory as the one returned by ``pwd`' if you are doing a "VPATH
+     build" (*note Doing a VPATH build::). During a build, the current
+     working directory is the directory in which files are _written_,
+     not the directory from which files are _read_.  If you mess this
+     up, then you will know when `make distcheck' fails, which attempts
+     to do a VPATH build.
+
+   * Files that in an ordinary build are _written_ by a program in the
+     same directory as the corresponding `Makefile.am', in general, are
+     written in the current working directory during a VPATH build.
+     Therefore, you can refer to such files in the same `Makefile.am' as
+     `./filename'.
+
+   * If you need to refer to any files under the top-level directory of
+     your project, use `$(top_srcdir)' for files which _you_ write (and
+     your compiler tools _read_) and `$(top_builddir)' for files which
+     _the compiler tools write_.
+
+   * The symbols `$<', `$@', `$^' don't need to prepended with
+     anything, unlike ordinary filenames. GNU make will handle these
+     symbols correctly during a VPATH build.  Also see *Note More about
+     Makefiles::.
+
+   * For your rules use only the following commands directory:
+          ar cat chmod cmp cp diff echo egrep expr false grep ls
+          mkdir mv pwd rm rmdir sed sleep sort tar test touch true
+
+     Any other programs that you want to use, you must use them through
+     make variables. That includes programs such as these:
+          awk bash bison cc flex install latex ld ldconfig lex ln make
+          makeinfo perl ranlib shar texi2dvi yacc
+
+     The make variables can be defined through Autoconf in your
+     `configure.in'.  For special-purpose tools, use the AC_PATH_PROGS
+     macro. For example:
+          AC_PATH_PROGS(BASH, bash)
+          AC_PATH_PROGS(PERL, perl perl5)
+
+     Some special tools have their own autoconf macros:
+          AC_PROG_MAKE_SET ==> $(MAKE)   ==> make
+          AC_PROG_RANLIB   ==> $(RANLIB) ==> ranlib | (do-nothing)
+          AC_PROG_AWK      ==> $(AWK)    ==> mawk | gawk | nawk | awk
+          AC_PROG_LEX      ==> $(LEX)    ==> flex | lex
+          AC_PROG_YACC     ==> $(YACC)   ==> 'bison -y' | byacc | yacc
+          AC_PROG_LN_S     ==> $(LN_S)   ==> ln -s
+
+     See the `Autoconf manual' for more information.
+
+
+File: toolsmanual.info,  Node: Installation standard directories,  Next: Libraries with Automake,  Prev: General Automake principles,  Up: Using Automake
+
+Installation standard directories
+=================================
+
+   Previously, we mentioned that the symbols `bin', `lib' and `include'
+refer to installation locations that are defined respectively by the
+variables `bindir', `libdir' and `includedir'.  For completeness, we
+will now list the installation locations available by default by
+Automake and describe their purpose.
+
+   All installation locations are placed under one of the following
+directories:
+`prefix'
+     The default value of `$(prefix)' is `/usr/local' and it is used to
+     construct installation locations for machine-indepedent files. The
+     actual value is specified at configure-time with the `--prefix'
+     argument.  For example:
+          configure --prefix=/home/lf
+
+`exec_prefix'
+     The default value of `$(exec_prefix)' is `$(prefix)' and it used
+     to construct installation location for machine-dependent files.
+     The actual value is specified at configure-time with the
+     `--exec-prefix' argument. For example:
+          configure --prefix=/home/lf --exec-prefix=/home/lf/gnulinux
+
+     The purpose of using a seperate location for machine-dependent
+     files is because then it makes it possible to install the software
+     on a networked file server and make that available to machines
+     with different architectures. To do that there must be seperate
+     copies of all the machine-dependent files for each architecture in
+     use.
+
+   The GNU coding standards describe in detail the standard directories
+in which you should install your files. All of these standard locations
+are supported by Automake. So, for example, you can write things like
+     sbin_PROGRAMS = PROG ...
+     sharedstate_DATA = FOO ...
+     ....
+
+without having to define the variables `sbindir', `sharedstatedir' and
+so on.
+
+  1. Program-related files are installed in one of the following
+     locations:
+    `bindir = $(exec_prefix)/bin'
+          The directory for installing executable programs that users
+          can run.  The default value for this directory is
+          `/usr/local/bin'.
+
+    `sbindir = $(exec_prefix)/sbin'
+          The directory for installing executable programs that can be
+          run from the shell, but are only generally useful to system
+          administrators.  The default value for this directory is
+          `/usr/local/sbin'.
+
+    `libexecdir = $(exec_prefix)/libexec'
+          The directory for installing executable programs to be run by
+          other programs rather than by users. The default value for
+          this directory is `/usr/local/libexec'.
+
+    `libdir = $(exec_prefix)/lib'
+          The directory for installing libraries to be linked by other
+          programs.  The default value for this directory is
+          `/usr/local/lib'.  Please don't use this directory to install
+          data files.
+
+    `includedir = $(prefix)/include'
+          The directory for installing public header files that declare
+          the symbols of installed libraries.
+
+  2. Data files should be installed in one of the following directories:
+    `datadir = $(prefix)/share'
+          The directory for installing read-only architecture
+          independent data files.  The default value for this directory
+          is `/usr/local/share'.  Usually, most data files that you
+          would like to install will have to go under this directory.
+          These files are part of the program implementation and should
+          not be modified.
+
+    `sysconfdir = $(prefix)/etc'
+          The directory for installing read-only data files that
+          pertain to a single machine's configuration. Even though
+          applications should only read, and not modify, these files,
+          the user may have to modify these files to configure the
+          application. Examples of files that belong in this directory
+          are mailer and network configuration files, password files
+          and so on. Do not install files that are modified in the
+          normal course of their use (programs whose purpose is to
+          change the configuration of the system excluded). Those
+          probably belond in `localstatedir'.
+
+    `sharedstatedir = $(prefix)/com'
+          The directory for installing architecture-independent data
+          files which the programs modify while they run. The default
+          value for this directory is `/usr/local/com'.
+
+    `localstatedir = $(prefix)/var'
+          The directory for installing data files which the programs
+          modify while they run, and that pertain to one specific
+          machine. Users should never have to modify the files in this
+          directory to configure the package's operation. The default
+          value for this directory is `/usr/local/var'. System logs and
+          mail spools are examples of data files that belong in this
+          directory.
+
+  3. Then there are some directories for developing various eccentric
+     types of files:
+    `lispdir = $(datadir)/emacs/site-lisp'
+          The directory for installing Emacs Lisp files. The default
+          value of this directory is
+               `/usr/local/share/emacs/site-lisp'.
+
+          This directory is not automatically defined by Automake. To
+          define it, you must invoke
+               AM_PATH_LISPDIR
+
+          from Autoconf. *Note Emacs Lisp with Automake::.
+
+    `m4dir = $(datadir)/aclocal'
+          The directory for installing Autoconf macros. This directory
+          is not automatically defined by Automake so you will have to
+          add a line in `Makefile.am':
+               m4dir = $(datadir)/aclocal
+
+          to define it yourself. *Note Writing Autoconf macros::.
+
+  4. Documentation should be installed in the following directories:
+    `infodir = $(prefix)/info'
+          The directory for installing the Info files for this package.
+          The default value for this directory is `/usr/local/info'.
+          *Note Introduction to Texinfo::.
+
+    `mandir = $(prefix)/man'
+          The top-level directory for installing the man pages (if any)
+          for this package. The default value for this directory is
+          `/usr/local/man'.  *Note Writing man pages::.
+
+    `man1dir = $(prefix)/man1'
+          The top-level directory for installing section 1 man pages.
+
+    `man2dir = $(prefix)/man2'
+          The top-level directory for installing section 2 man pages.
+
+Automake also defines the following subdirectories for your convenience:
+     pkglibdir     = $(libdir)/@PACKAGE@
+     pkgincludedir = $(includedir)/@PACKAGE@
+     pkgdatadir    = $(datadir)/@PACKAGE@
+
+These subdirectories are useful for segregating the files of your
+package from other packages. Of these three, you are most likely to
+want to use `pkgincludedir' to segragate public header files, as we
+discussed in *Note Dealing with header files::. For similar reasons you
+might like to segregate your data files.  The only reason for using
+`pkglibdir' is to install dynamic libraries that are meant to be loaded
+only at run-time while an application is running.  You should not use a
+subdirectory for libraries that are linked to programs, even
+dynamically, while the programs are being compiled, because that will
+make it more difficult to compile your programs. However, things like
+plug-ins, widget themes and so on should have their own directory.
+
+
+File: toolsmanual.info,  Node: Libraries with Automake,  Next: Applications with Automake,  Prev: Installation standard directories,  Up: Using Automake
+
+Libraries with Automake
+=======================
+
+   A good example, and all about how libraries should be tested and
+documented.  Needs thinking.
+
+
+File: toolsmanual.info,  Node: Applications with Automake,  Next: Dealing with built sources,  Prev: Libraries with Automake,  Up: Using Automake
+
+Applications with Automake
+==========================
+
+   Needs thinking.
+
+
+File: toolsmanual.info,  Node: Dealing with built sources,  Next: Embedded text with Automake,  Prev: Applications with Automake,  Up: Using Automake
+
+Dealing with built sources
+==========================
+
+   In some complicated packages, you want to generate part of their
+source code by executing a program at compile time. For example, in one
+of the packages that I wrote for an assignment, I had to generate a file
+`incidence.out' that contained a lot of hairy matrix definitions that
+were too ugly to just compute and write by hand. That file was then
+included by `fem.cc' which was part of a library that I wrote to solve
+simple finite element problems, with a preprocessor statement:
+     #include "incidence.out"
+
+All source code files that are to be generated during compile time
+should be listed in the global definition of `BUILT_SOURCES'. This will
+make sure that these files get compiled before anything else. In our
+example, the file `incidence.out' is computed by running a program
+called `incidence' which of course also needs to be compiled before it
+is run. So the `Makefile.am' that we used looked like this:
+     noinst_PROGRAMS = incidence
+     lib_LIBRARIES = libpmf.a
+     
+     incidence_SOURCES = incidence.cc mathutil.h
+     incidence_LDADD = -lm
+     
+     incidence.out: incidence
+           ./incidence > incidence.out
+     
+     BUILT_SOURCES = incidence.out
+     libpmf_a_SOURCES = laplace.cc laplace.h fem.cc fem.h mathutil.h
+     
+     check_PROGRAMS = test1 test2
+     TESTS = $(check_PROGRAMS)
+     
+     test1_SOURCES = test1.cc
+     test1_LDADD = libpmf.a -lm
+     
+     test2_SOURCES = test2.cc
+     test2_LDADD = libpmf.a -lm
+
+Note that because the executable `incidence' has been created at
+compile time, the correct path is `./incidence'. Always keep in mind,
+that the correct path to source files, such as `incidence.cc' is
+`$(srcdir)/incidence.cc'. Because the `incidence' program is used
+temporarily only for the purposes of building the `libpmf.a' library,
+there is no reason to install it. So, we use the `noinst' prefix to
+instruct Automake not to install it.
+
+
+File: toolsmanual.info,  Node: Embedded text with Automake,  Next: Scripts with Automake,  Prev: Dealing with built sources,  Up: Using Automake
+
+Embedded text with Automake
+===========================
+
+   In some cases, we want to embed text to the executable file of an
+application.  This may be on-line help pages, or it may be a script of
+some sort that we intend to execute by an interpreter library that we
+are linking with, like Guile or Tcl. Whatever the reason, if we want to
+compile the application as a stand-alone executable, it is necessary to
+embed the text in the source code. Autotools provides with the build
+tools necessary to do this painlessly.
+
+   As a tutorial example, we will write a simple program that prints
+the contents of the GNU General Public License. First create the
+directory tree for the program:
+     % acmkdir foo
+
+Enter the directory and create a copy of the `txtc' compiler:
+     % cd foo-0.1
+     % mktxtc
+
+Then edit the file `configure.in' and add a call to the `LF_PROG_TXTC'
+macro. This macro depends on
+     AC_PROG_CC
+     AC_PROG_AWK
+
+so make sure that these are invoked also. Finally add `txtc.sh' to your
+`AC_OUTPUT'.  The end-result should look like this:
+     AC_INIT(reconf)
+     AM_CONFIG_HEADER(config.h)
+     AM_INIT_AUTOMAKE(foo,0.1)
+     AC_PROG_CC
+     AC_PROG_RANLIB
+     AC_PROG_AWK
+     LF_PROG_TXTC
+     AC_OUTPUT(Makefile txtc.sh doc/Makefile m4/Makefile src/Makefile)
+
+In the `src' directory use Emacs to create a file `src/text.txt'
+containing some random text.  The `text.txt' file is the text that we
+want to print. You can substitute it with any text you want. This file
+will be compiled into `text.o' during the build process. The `text.h'
+file is a header file that gives access to the symbols defined by
+`text.o'. The file `copyleft.cc' is where the `main' will be written.
+
+   Next, create the following files with Emacs:
+*text.h*
+          extern int text_txt_length;
+          extern char *text_txt[];
+
+*foo.c*
+          #if HAVE_CONFIG_H
+          # include <config.h>
+          #endif
+          
+          #include <stdio.h>
+          #include "text.h"
+          
+          main()
+          {
+            for (i = 1; i<= text_txt_length; i++)
+              printf ("%s\n", text_txt[i]);
+          }
+
+*Makefile.am*
+          SUFFIXES = .txt
+          .txt.o:
+                 $(TXTC) $<
+          
+          bin_PROGRAMS = foo
+          foo_SOURCES = foo.c text.h text.txt
+
+and now you're set to build. Go back to the toplevel directory and go
+for it:
+     $ cd ..
+     $ reconf
+     $ configure
+     $ make
+     $ src/foo | less
+
+To verify that this works properly, do the following:
+     $ cd src
+     $ foo > foo.out
+     $ diff text.txt foo.out
+
+The two files should be identical.  Finally, convince yourself that you
+can make a distribution:
+     $ make distcheck
+
+and there you are.
+
+   Note that in general the text file, as encoded by the text compiler,
+will not be always identical to the original. There is one and only one
+modification being made: If any line has any blank spaces at the end,
+they are trimmed off.  This feature was introduced to deal with a bug
+in the Tcl interpreter, and it is in general a good idea since it
+conserves a few bytes, it never hurts, and additional whitespace at the
+end of a line shouldn't really be there.
+
+   This magic is put together from many different directions. It begins
+with the `LF_PROG_TXTC' macro:
+
+ - Macro: LF_PROG_TXTC
+     This macro will define the variable `TXTC' to point to a Text-to-C
+     compiler. To create a copy of the compiler at the toplevel
+     directory of your source code, use the `mktxtc' command:
+          % mktxtc
+
+     The compiler is implemented as a shell script, and it depends on
+     `sed', `awk' and the C compiler, so you should call the following
+     two macros before invoking `AC_PROG_TXTC':
+          AC_PROG_CC
+          AC_PROG_AWK
+
+     The compiler is intended to be used as follows:
+          $(TXTC) text1.txt text2.txt text3.txt ...
+
+     such that given the files `text1.txt', `text2.txt', etc.  object
+     files `text1.o', `text2.o', etc, are generated that contains the
+     text from these files.
+
+From the Automake point of view, you need to add the following two lines
+to Automake:
+     SUFFIXES = .txt
+     .txt.o:
+             $(TXTC) $<
+
+assuming that your text files will end in the `.txt' suffix. The first
+line informs Automake that there exist source files using non-standard
+suffixes. Then we describe, in terms of an abstract Makefile rule, how
+to build an object file from these non-standard suffixes. Recall the
+use of the symbol `$<'. Also note that it is not necessary to use
+`$(srcdir)' on `$<' for VPATH builds.  If you embed more than one type
+of files, then you may want to use more than one suffixes. For example,
+you may have `.hlp' files containing online help and `.scm' files
+containing Guile code. Then you want to write a rule for each suffix as
+follows:
+     SUFFIXES = .hlp .scm
+     .hlp.o:
+             $(TXTC) $<
+     .scm.o:
+             $(TXTC) $<
+
+It is important to put these lines before mentioning any `SOURCES'
+assignments. Automake is smart enough to parse these abstract makefile
+rules and recognize that files ending in these suffixes are valid source
+code that can be built to object code. This allows you to simply list
+`gpl.txt' with the other source files in the `SOURCES' assignment:
+     foo_SOURCES = foo.c text.h text.txt
+
+In order for this to work however, Automake must be able to see your
+abstract rules first.
+
+   When you "compile" a text file `foo.txt' this makes an object file
+that defines the following two symbols:
+     int foo_txt_length;
+     char *foo_txt[];
+
+Note that the dot characters are converted into underscores. To make
+these symbols accessible, you need to define an appropriate header file
+with the following general form:
+     extern int foo_txt_length;
+     extern char *foo_txt[];
+
+When you include this header file into your other C or C++ files then:
+   * You can obtain the filename containing the original text from
+          foo_txt[0];
+
+     and use it to print diagnostic messages.
+
+   * You can obtain the text itself line by line:
+          char *foo_txt[1];   ==> first line
+          char *foo_txt[2];   ==> second line
+          ...
+
+   * The last line is set to NULL and `foo_txt_length' is defined such
+     that
+          char *foo_txt[foo_txt_length+1] == NULL
+
+     The last line of the text is:
+          char *foo_txt[foo_txt_length];
+
+     You can use a `for' loop (or the `loop' macro defined by
+     LF_CPP_PORTABILITY) together with `foo_txt_length' to loop over
+     the entire text, or you can exploit the fact that the last line
+     points to `NULL' and do a `while' loop.
+   and that's all there is to it.
+
+
+File: toolsmanual.info,  Node: Scripts with Automake,  Next: Emacs Lisp with Automake,  Prev: Embedded text with Automake,  Up: Using Automake
+
+Scripts with Automake
+=====================
+
+   Sometimes it is better to implement an application in a scripting
+language like Bash or Perl. Scripts don't need to be compiled. However,
+there are still issues with scripts such as:
+   * You want scripts to be installed with `make install', uninstalled
+     with `make uninstall' and distributed with `make dist'.
+
+   * You want scripts to get the path in the `#!' right.
+   To let Automake deal with all this, you need to use the `SCRIPTS'
+primitive. Listing a file under a `SCRIPTS' primitive assignment means
+that this file needs to be built, and must be allowed to be installed
+in a location where executable files are normally installed.  Automake
+by default will not clean scripts when you invoke the `clean' target.
+To force Automake to clean all the scripts, you need to add the
+following line in your `Makefile.am':
+     CLEANFILES = $(bin_SCRIPTS)
+
+You also need to write your own targets for building the script by hand.
+
+For example:
+`hello1.sh'
+          # -* bash *-
+          echo "Howdy, world!"
+          exit 0
+
+`hello2.pl'
+          # -* perl *-
+          print "Howdy, world!\n";
+          exit(0);
+
+`Makefile.am'
+          bin_SCRIPTS = hello1 hello2
+          CLEANFILES = $(bin_SCRIPTS)
+          EXTRA_DIST = hello1.sh hello2.pl
+          
+          hello1: $(srcdir)/hello1.sh
+                rm -f hello1
+                echo "#! " $(BASH) > hello1
+                cat $(srcdir)/hello1.sh >> hello1
+                chmod ugo+x hello1
+          
+          hello2: $(srcdir)/hello2.pl
+                $(PERL) -c hello2.pl
+                rm -f hello2
+                echo "#! " $(PERL) > hello2
+                cat $(srcdir)/hello2.pl >> hello2
+                chmod ugo+x hello2
+
+`configure.in'
+          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PATH_PROGS(BASH, bash)
+          AC_PATH_PROGS(PERL, perl)
+          AC_OUTPUT(Makefile)
+
+Note that in the "source" files `hello1.sh' and `hello2.pl' we do not
+include a line like
+     #!/bin/bash
+     #!/usr/bin/perl
+
+Instead we let Autoconf pick up the correct path, and then we insert it
+during `make'. Since we omit the `#!' line, we leave a comment instead
+that indicates what kind of file this is.
+
+   In the special case of `perl' we also invoke
+     perl -c hello2.pl
+
+This checks the perl script for correct syntax. If your scripting
+language supports this feature I suggest that you use it to catch
+errors at "compile" time.  The `AC_PATH_PROGS' macro looks for a
+specific utility and returns the full path.
+
+   If you wish to conform to the GNU coding standards, you may want
+your script to support the `--help' and `--version' flags, and you may
+want `--version' to pick up the version number from `AM_INIT_AUTOMAKE'.
+
+   Here's the enhanced hello world scripts:
+   * *version.sh.in*
+          VERSION=@VERSION@
+
+   * *version.pl.in*
+          $VERSION="@VERSION@";
+
+   * *hello1.sh*
+          # -* bash *-
+          function usage
+          {
+           cat << EOF
+          Usage:
+          % hello [OPTION]
+          
+          Options:
+            --help     Print this message
+            --version  Print version information
+          
+          Bug reports to: monica@whitehouse.gov
+          EOF
+          }
+          
+          function version
+          {
+           cat << EOF
+          hello $VERSION
+          EOF
+          }
+          
+          function invalid
+          {
+           echo "Invalid usage. For help:"
+           echo "% hello --help"
+          }
+          
+          # -------------------------
+          if test $# -ne 0
+          then
+            case $1 in
+            --help)
+              usage
+              exit
+              ;;
+            --version)
+              version
+              exit
+              ;;
+            *)
+              invalid
+              exit
+              ;;
+          fi
+          
+          # ------------------------
+          echo "Howdy world"
+          exit
+
+   * *hello2.pl*
+          # -* perl *-
+          sub usage
+          {
+           print <<"EOF";
+          Usage:
+          % hello [OPTION]
+          
+          Options:
+            --help     Print this message
+            --version  Print version information
+          
+          Bug reports to: monica@whitehouse.gov
+          EOF
+          exit(1);
+          }
+          
+          sub version
+          {
+           print <<"EOF";
+          hello $VERSION
+          EOF
+           exit(1);
+          }
+          
+          sub invalid
+          {
+           print "Invalid usage. For help:\n";
+           print "% hello --help\n";
+           exit(1);
+          }
+          
+          # --------------------------
+          if ($#ARGV == 0)
+          {
+           do version() if ($ARGV[0] eq "--version");
+           do usage()   if ($ARGV[0] eq "--help");
+           do invalid();
+          }
+          # --------------------------
+          print "Howdy world\n";
+          exit(0);
+
+   * *Makefile.am*
+          bin_SCRIPTS = hello1 hello2
+          CLEANFILES = $(bin_SCRIPTS)
+          EXTRA_DIST = hello1.sh hello2.pl
+          
+          hello1: $(srcdir)/hello1.sh $(srcdir)/version.sh
+                rm -f hello1
+                echo "#! " $(BASH) > hello1
+                cat $(srcdir)/version.sh $(srcdir)/hello1.sh >> hello1
+                chmod ugo+x hello1
+          
+          hello2: $(srcdir)/hello2.pl $(srcdir)/version.pl
+                $(PERL) -c hello2.pl
+                rm -f hello2
+                echo "#! " $(PERL) > hello2
+                cat $(srcdir)/version.pl $(srcdir)/hello2.pl >> hello2
+                chmod ugo+x hello2
+
+   * *configure.in*
+          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AC_PATH_PROGS(BASH, bash)
+          AC_PATH_PROGS(PERL, perl)
+          AC_OUTPUT(Makefile
+                    version.sh
+                    version.pl
+                   )
+
+
+   Basically the idea with this approach is that when `configure' calls
+`AC_OUTPUT' it will substitute the files `version.sh' and `version.pl'
+with the correct version information. Then, during building, the
+version files are merged with the scripts. The scripts themselves need
+some standard boilerplate code to handle the options.  I've included
+that code here as a sample implementation, which I hereby place in the
+public domain.
+
+
+File: toolsmanual.info,  Node: Emacs Lisp with Automake,  Next: Guile with Automake,  Prev: Scripts with Automake,  Up: Using Automake
+
+Emacs Lisp with Automake
+========================
+
+   If your package requires you to edit a certain type of files, you
+might wnat to write an Emacs editing mode for it. Emacs modes are
+written in Emacs LISP, and Emacs LISP source code is written in files
+that are suffixed with `*.el'. Automake can byte-compile and install
+Emacs LISP files using Emacs for you.
+
+   To handle Emacs LISP, you need to invoke the
+     AM_PATH_LISPDIR
+
+macro in your `configure.in'. In the directory containing the Emacs
+LISP files, you must add the following line in your `Makefile.am':
+     lisp_LISP = file1.el file2.el ...
+
+where `$(lispdir)' is initialized by `AM_PATH_LISPDIR'.  The `LISP'
+primitive also accepts the `noinst' location.
+
+   Most Emacs LISP files are meant to be simply compiled and installed.
+Then the user is supposd to add certain invocations in per `.emacs' to
+use the features that they provide. However, because Emacs LISP is a
+full programming language you might like to write full programs in
+Emacs LISP, just like you would in any other language, and have these
+programs be accessible from the shell. If the installed file is called
+`foo.el' and it defines a function `main' as an entry point, then you
+can run it with:
+     % emacs --batch -l foo -f main
+
+In that case, it may be useful to install a wrapper shell script
+containing
+     #!/bin/sh
+     emacs --batch -l foo -f main
+
+so that the user has a more natural interface to the program. For more
+details on handling shell scripts *Note Scripts with Automake::.  Note
+that it's not necessary for the wrapper program to be a shell script.
+You can have it be a C program, if it should be written in C for some
+reason.
+
+   Here's a tutorial example of how that's done. Start by creating a
+directory:
+     % mkdir hello-0.1
+     % cd hello-0.1
+
+Then create the following files:
+`configure.in'
+          AC_INIT
+          AM_INIT_AUTOMAKE(hello,0.1)
+          AM_PATH_LISPDIR
+          AC_OUTPUT(Makefile)
+
+`hello.el'
+          (defun main ()
+            "Hello world program"
+            (princ "Hello world\n"))
+
+`hello.sh'
+          #!/bin/sh
+          emacs --batch -l hello.el -f main
+          exit
+
+`Makefile.am'
+          lisp_LISP = hello.el
+          EXTRA_DIST = hello.el hello.sh
+          bin_SCRIPTS = hello
+          CLEANFILES = $(bin_SCRIPTS)
+          
+          hello: $(srcdir)/hello.sh
+          <TAB> rm -f hello
+          <TAB> cp $(srcdir)/hello.sh hello
+          <TAB> chmod ugo+x hello
+
+Then run the following commands:
+     % touch NEWS README AUTHORS ChangeLog
+     % aclocal
+     % autoconf
+     % automake -a
+     % ./configure
+     % make
+     % make distcheck
+     # make install
+
+_FIXME: Discussion_
+
+
+File: toolsmanual.info,  Node: Guile with Automake,  Next: Data files with Automake,  Prev: Emacs Lisp with Automake,  Up: Using Automake
+
+Guile with Automake
+===================
+
+   _FIXME: Do you want to volunteer for this section?_
+

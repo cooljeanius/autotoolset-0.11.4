@@ -1,0 +1,29 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node C++ and Autoconf, Fortran with Autoconf, Using Autotools, Top
+@chapter C++ and Autoconf
+
+In this chapter I will discuss in extreme detail the portability issues
+with C++. Most of this work will be based on @code{bzconfig} which I
+will adapt to include in Autotools eventually. I don't know the structure
+of this chapter yet.

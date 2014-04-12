@@ -1,0 +1,957 @@
+This is tutorial.info, produced by makeinfo version 4.3 from
+tutorial.texi.
+
+INFO-DIR-SECTION Miscellaneous
+START-INFO-DIR-ENTRY
+* Autotoolset Tutorial: (tutorial).        Autotools tutorial.
+END-INFO-DIR-ENTRY
+
+
+File: tutorial.info,  Node: Maintaining the documentation files,  Next: Organizing your project in subdirectories,  Prev: Using configuration headers,  Up: Introduction to the GNU build system
+
+Maintaining the documentation files
+===================================
+
+   Every software project must have its own directory. A minimal
+"project" is the example that we described in *Note Hello world
+example::. In general, even a minimal project must have the files:
+     README, INSTALL, AUTHORS, THANKS, NEWS, ChangeLog
+
+Before distributing your source code, it is important to write the real
+contents of these files.  In this section we give a summary overview on
+how these files should be maintained. For more details, please see the
+_GNU coding standards_ as published by the FSF.
+
+   * *The README file:* Every distribution must contain this file. This
+     is the file that the installer must read _fully_ after unpacking
+     the distribution and before configuring it. You should briefly
+     explain the purpose of the distribution, and reference all other
+     documentation available. Instructions for installing the package
+     normally belong in the `INSTALL' file.  However if you have
+     something that you feel the installer _should_ know then mention
+     it in this file.
+
+   * *The INSTALL file:* Because the GNU installation procedure is
+     streamlined, a standard `INSTALL' file will be created for you
+     automatically by `Automake'.  If you have something very important
+     to say, it may be best to say it in the `README' file instead. the
+     `INSTALL' file is mostly for the benefit of people who've never
+     installed a GNU package before.  However, if your package is very
+     unusual, you may decide that it is best to modify the standard
+     INSTALL file or write your own.
+
+   * *The AUTHORS file:* If you maintain a package for the Free
+     Software Foundation, then this file should collect a fairly exact
+     copy of the trace, normally kept in file `/gd/gnuorg/assignments'
+     on the FSF machines, for all legal paper exchanges between
+     contributors and the GNU project. The file might have an
+     introductor blurb similar to this one:
+          Authors of PACKAGE
+          
+          The following contributions warranted legal paper exchanges
+          with the Free Software Foundation. Also see files ChangeLog
+          and THANKS
+
+     If you do not maintain the project, then you should do the legal
+     paperwork yourself and record it here. If you choose not to do the
+     paperwork, then you should still list who the contributors are and
+     what files they have worked on. When you list the files, indicate
+     whether they created the file or whether they modified it. For
+     example:
+          Random J. Hacker:
+            entire files  -> foo1.c , foo2.c , foo3.c
+            modifications -> foo4.c , foo5.c
+
+   * *The THANKS file:* All distributions should contain a `THANKS'
+     file containing a two column list of the contributors, one per
+     line, alphabetically sorted. The left column gives the
+     contributor's name, while the right column gives the last known
+     good email address for this contributor.  This list should be
+     introduced with a wording similar to this one:
+          PACKAGE THANKS file
+          
+          PACKAGE has originally been written by ORIGINAL AUTHOR. Many
+          people further contributed to PACKAGE by reporting problems,
+          suggesting various improvements or submitting actual code.
+          Here is a list of these people. Help me keep it complete and
+          exempt of errors.
+
+     The easiest policy with this file is to thank everyone who
+     contributes to the project, without judging the value of the
+     contribution.
+
+     Unlike `AUTHORS', the `THANKS' file is not maintained for legal
+     reasons. It is maintained to thank all the contributors that
+     helped you out in your project. The `AUTHORS' file can not be used
+     for this purpose because certain contributions, like bug reports
+     or ideas and suggestions do not require legal paper exchanges.
+
+     You can also decide to send some kind of special greeting when you
+     initially add a name to your `THANKS' file. The mere presense of a
+     name in `THANKS' is then a flag to you that the initial greeting
+     has been sent.
+
+   * *The NEWS file:* This is where you tell the users about the major
+     features of this distribution. You needn't go into details, but
+     you do need to list all the major features. The GNU coding
+     standards explain in more detail how to structure this file.
+
+   * *The ChangeLog file*: Use this file to record all the changes that
+     you make to your source code.  If your source code is distributed
+     among many subdirectories, and there is reason enough to think of
+     the contents of the subdirectories as different subpackages,then
+     please maintain a separate `ChangeLog' file for each subdirectory.
+     For example, although there is usually no need to maintain a
+     `ChangeLog' for your documentation, if you do decide to maintain
+     one anyway, it should be separate from your sources `ChangeLog'.
+
+     The _GNU coding standards_ explain in a lot of detail how you
+     should structure a `ChangeLog', so you should read about it there.
+     The basic idea is to record _semi-permenant modifications_ you
+     make to your source code. It is not necessary to continuously
+     record changes that you make while you are experimenting with
+     something. But once you decide that you got a modification worked
+     out, then you should record Please do record version releases on
+     the central `ChangeLog' (*note Tracking version numbers::).  This
+     way, it will be possible to tell what changes happened between
+     versions.
+
+     You can automate `ChangeLog' maintance with Emacs using the `M-x
+     add-change-log-entry-other-window'. It may be easier to bind a key
+     (for example `f8') to this command by adding:
+          (global-set-key [f8] 'add-change-log-entry-other-window)
+
+     to your `.emacs' file. Then, after having made a modification and
+     _while_ the cursor is still at the place where you made the
+     modification, press `f8' and record your entry.  Recently Emacs
+     has decided to use the ISO 8601 standard for dates which is:
+     `YYYY-MM-DD' (year-month-date).  A typical `ChangeLog' entry looks
+     like this:
+          1998-05-17  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+          
+           * src/acmkdir.sh: Now acmkdir will put better default content
+             to the files README, NEWS, AUTHORS, THANKS
+
+     Every entry contains all the changes you made within the period of
+     a day.  The most recent changes are listed at the top, the older
+     changes slowly scroll to the bottom.
+
+   * *COPYING* This file contains the copyright permissions for your
+     distribution, in particular the General Public License.  This file
+     will be generated for you automatically.  Copyright is a very
+     important concern in the free software community.  For the legal
+     aspects of copyright see *Note Understanding Copyright::.  For the
+     philosophical aspects of copyright see *Note Philosophical
+     issues::.  *FIXME: CROSSREFERENCE DISCUSSION OF COPYRIGHT IN NEXT
+     CHAPTER*
+
+   The `acmkdir' utility will automatically create templates for these
+files that you can start from.
+
+
+File: tutorial.info,  Node: Organizing your project in subdirectories,  Next: Hello world with an attitude,  Prev: Maintaining the documentation files,  Up: Introduction to the GNU build system
+
+Organizing your project in subdirectories
+=========================================
+
+   If your program is very small, you can place all your files in the
+top-level directory, like we did in the Hello World example (*note
+Hello world example::). Such packages are called "shallow".
+
+   In general, it is prefered to organize your package as a "deep
+package".  In a deep package, the documentation files
+     README, INSTALL, AUTHORS, THANKS, ChangeLog, COPYING
+
+as well as the build cruft are placed at the top-level directory, and
+the rest of the files are placed in subdirectories. It is standard
+practice to use the following subdirectories:
+`src'
+     The actual source code that gets compiled. Every library should
+     have it's own subdirectory. Executables should get their own
+     directory as well. If each executable corresponds only to one or
+     two files then it is sensible to put them all under the same
+     directory. If your executables need more source files, or they can
+     be seperated in distinct classes of functionalities you may like
+     to regroup them under multiple directories. Feel free to use your
+     judgement on how to do this best.  It is easiest to place the
+     library test suites on the same directory with the library source
+     code. If that does not sit well with you however, you should put
+     the test suite for each library in subdirectories _under_ that
+     library's directory. It is a massively bad idea to put the test
+     suites for different libraries under the same directory.
+
+`lib'
+     An optional directory where you put portability-related source
+     code.  This is mainly replacement implementation for system calls
+     that are unavailable on some systems. You can also put tools here
+     that you commonly use accross many different packages, tools that
+     are tool simple to just make libraries out of every one of them.
+     Common files encountered here are files that replace system calls
+     to the GNU C library that are not available in proprietary C
+     libraries.
+
+`doc'
+     A directory containing the documentation for your package.  You
+     have the creative freedom to present the documentation in any way
+     that is effective. However the prefered way to document software
+     is by using Texinfo. Texinfo has the advantage that you can
+     produce both on-line help as well as nice printed books from the
+     same source. Documentation is discussed in more detail in *Note
+     Maintaining Documentation::.
+
+`m4'
+     A directory containing `m4' files that you package may need to
+     _install_.  These files define new `autoconf' macros that you
+     should make available to other developers who want to use your
+     libraries.  This is discussed in more detail in *FIXME:
+     crossreference*.
+
+`intl'
+     A directory containing boilerplate portability source code that
+     allows your program to speak in many human languages. The contents
+     of this directory are automatically maintained by `gettext'.
+     (*FIXME: crossreference*)
+
+`po'
+     A directory containing message catalogs for your software package.
+     This is where the maintainer places the translations of his
+     software in multiple human languages.  (*FIXME: crossreference*)
+Automake makes it very easy to maintain multidirectory source code
+packages, so you shouldn't shy away from taking advantage of it.
+Multidirectory packages are more convenient for most projects.
+
+
+File: tutorial.info,  Node: Hello world with an attitude,  Next: Tracking version numbers,  Prev: Organizing your project in subdirectories,  Up: Introduction to the GNU build system
+
+Hello world with an attitude - How to do it with acmkdir
+========================================================
+
+   In the package autotoolset, we provide an utility called `acmkdir'
+that will automatically perform most of the required steps for you.
+
+   With the package installed in your system, run `acmkdir' with the
+last argument equal to the directory name you want to create. The
+script will ask you some questions as follows:
+
+     % acmkdir -t traditional hello3
+     Ready to create a new distribution skeleton directory.
+     The current working directory is:
+      --> /home/mroberto/programs/autotoolset
+     If you make a mistake and need to abort, press ctrl-C.
+     
+     Name of distribution: hello
+     Your full name:       Marcelo Roberto Jimenez
+     Your email address:   mroberto@nospan.cetuc.puc-rio.br
+     
+     Do you want to proceed? (y/n) y
+     + Mode is traditional
+     + Making directory hello3
+     + Making src directory
+     + Making doc directory
+     + Making m4 directory
+     + Making config directory
+     + Making default text files
+     + Making INSTALL file link
+     + Running reconf
+     - aclocal.
+     - autoconf.
+     - autoheader.
+     - automake.
+     configure.ac: installing `config/install-sh'
+     configure.ac: installing `config/mkinstalldirs'
+     configure.ac: installing `config/missing'
+     Makefile.am: installing `./INSTALL'
+     Makefile.am: installing `./COPYING'
+     
+     Distribution directory is ready.
+     Please make sure to keep the files AUTHORS, NEWS, README, THANKS up to
+     date before cutting a distribution.
+
+   Now create the file `hello.c' in the directory `src', using your
+favorite text editor, e.g. `emacs'. Also edit `src/Makefile.am' to
+include the lines
+     bin_PROGRAMS = hello
+     hello_SOURCES = hello.c
+   and run `automake -a' to create the file `config/depmod'.  Now the
+project is ready and you can run `./configure' and `make'.
+
+     % cd hello3/src
+     % emacs hello.c
+     % emacs Makefile.am
+     % cd ..
+     % automake -a
+     src/Makefile.am: installing `config/depcomp'
+     % ./configure
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking whether build environment is sane... yes
+     checking for gawk... gawk
+     checking whether make sets $(MAKE)... yes
+     checking for gcc... gcc
+     checking for C compiler default output... a.out
+     checking whether the C compiler works... yes
+     checking whether we are cross compiling... no
+     checking for suffix of executables...
+     checking for suffix of object files... o
+     checking whether we are using the GNU C compiler... yes
+     checking whether gcc accepts -g... yes
+     checking for gcc option to accept ANSI C... none needed
+     checking for style of include used by make... GNU
+     checking dependency style of gcc... gcc3
+     checking for a BSD-compatible install... /usr/bin/install -c
+     checking how to run the C preprocessor... gcc -E
+     checking for egrep... grep -E
+     checking for AIX... no
+     checking for strerror in -lcposix... no
+     checking for ANSI C header files... yes
+     checking for sys/types.h... yes
+     checking for sys/stat.h... yes
+     checking for stdlib.h... yes
+     checking for string.h... yes
+     checking for memory.h... yes
+     checking for strings.h... yes
+     checking for inttypes.h... yes
+     checking for stdint.h... yes
+     checking for unistd.h... yes
+     checking minix/config.h usability... no
+     checking minix/config.h presence... no
+     checking for minix/config.h... no
+     checking for ANSI C header files... (cached) yes
+     checking for ranlib... ranlib
+     configure: creating ./config.status
+     config.status: creating Makefile
+     config.status: creating README
+     config.status: creating doc/Makefile
+     config.status: creating m4/Makefile
+     config.status: creating src/Makefile
+     config.status: creating config.h
+     config.status: executing depfiles commands
+     % make
+     make  all-recursive
+     make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
+     Making all in m4
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/m4'
+     make[2]: Nothing to be done for `all'.
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/m4'
+     Making all in src
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/src'
+     source='hello.c' object='hello.o' libtool=no \
+     depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+     depmode=gcc3 /bin/sh ../config/depcomp \
+     gcc -DHAVE_CONFIG_H -I. -I. -I..     -g -O2 -c `test -f 'hello.c' || echo './'`hello.c
+     gcc  -g -O2   -o hello  hello.o
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/src'
+     Making all in doc
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/doc'
+     make[2]: Nothing to be done for `all'.
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/doc'
+     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
+     make[2]: Nothing to be done for `all-am'.
+     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
+     make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
+
+
+File: tutorial.info,  Node: Tracking version numbers,  Prev: Hello world with an attitude,  Up: Introduction to the GNU build system
+
+Tracking version numbers
+========================
+
+   Common sense requires that you identify the various releases of your
+software package with a _version number_. If you use the GNU build
+system, then you indicate the name of the package and the version
+number in `configure.ac' in the line that invokes the `AC_INIT' macro.
+In the hello world example (*note Hello world example::) we used the
+following line to set the version number equal to 1.0:
+
+     AC_INIT([Hello Program],[1.0],
+             [Author Of The Program <aotp@zxcv.com>],
+             [hello])
+
+You must increase your version number every time you publically release
+a new version of your program. Just before the release, it is a very
+good idea to update your `ChangeLog' and note the release of a new
+version. This way, when someone inspects your `ChangeLog', person will
+be able to determine what changes happened between two specific
+versions.  We suggest that when you are about to make a release, that
+you use
+
+     % make distcheck
+
+to build a distribution and apply the test suite to validate it. Once
+you get this to work, change your version number in `configure.ac',
+record an entry in `ChangeLog' saying that you are cutting the new
+version, and without making any other changes do
+
+     % make dist
+
+to rebuild the distribution without having to wait for the test suite to
+run all over again.
+
+   Most packages declare their version with two integers: a "major
+number" and a "minor number" that are separated by a dot in the middle.
+In our example above, the major number is 0 and the minor number is 1.
+The minor number should be updated when you release a version that
+contains new features and improvements over the old version.  The major
+number should be updated when the incremental improvements bring your
+program into a new level of maturity and stability. Some of your users
+may not want to follow every release that comes out, but they would
+like to upgrade when there's a significant amount of features to warrant
+such an upgrade. You should increase the major number when, in your
+judgement, you believe that it is time for these users to upgrade along
+with everyone else.
+
+   When beginning a new project, you should start counting your major
+number from 0, and your minor number from 1. Please exercise good
+judgement on when to increment your major number to 1. In general
+versions 0.x mean that the software is still under development and may
+not be stable. When you release version 1.0, you are telling people
+that your software has developed to the point that you recommend it for
+general use. In some cases, releasing version 2.0 means that your
+software has significantly _matured_ from user feedback.
+
+   Sometimes, it is useful to use a third integer for writing version
+numbers for "unofficial" releases.  This third integer is usually used
+with bleeding-edge "prereleases" of the software that contain the most
+recent bug fixes and features but are not as well tested and reviewed
+as the most recent official release. Possible version successions can
+look like:
+
+     1.0, 1.1, 1.2, 1.2.1, 1.2.2, 1.2.3, 1.3, ...
+
+Please use only two integers for official releases so that it is easy
+to distinguish them from prereleases.
+
+
+File: tutorial.info,  Node: Writing Good Programs,  Next: Using GNU Emacs,  Prev: Introduction to the GNU build system,  Up: Top
+
+Writing Good Programs
+*********************
+
+* Menu:
+
+* Why good code is important::
+* Choosing a good programming language::
+* Developing libraries::
+* Developing applications::
+* Free software is good software::
+* Invoking the gpl utility::
+* Inserting notices with Emacs::
+
+
+File: tutorial.info,  Node: Why good code is important,  Next: Choosing a good programming language,  Prev: Writing Good Programs,  Up: Writing Good Programs
+
+Why good code is important
+==========================
+
+   When you work on a software project, one of your short-term goals is
+to solve a problem at hand. If you are doing this because someone asked
+you to solve the problem, then all you need to do to look good in per
+eyes is to deliver a program that works. Nevetheless, regardless of how
+little person may appreciate this, doing just that is not good enough.
+Once you have code that gives the right answer to a specific set of
+problems, you will want to make improvements to it. As you make these
+improvements, you would like to have proof that your code's known
+reliability hasn't regressed. Also, tomorrow you will want to move on
+to a different set of related problems by repeating as little work as
+possible. Finally, one day you may want to pass the project on to
+someone else or recruit another developer to help you out with certain
+parts. You need to make it possible for the other person to get up to
+speed without reinventing your efforts.  To accomplish these equally
+important goals you need to write _good_ code.
+
+
+File: tutorial.info,  Node: Choosing a good programming language,  Next: Developing libraries,  Prev: Why good code is important,  Up: Writing Good Programs
+
+Choosing a good programming language
+====================================
+
+   To write a good software, you must use the appropriate programming
+language and use it well. To make your software free, it should be
+possible to compile it with free tools on a free operating system.
+Therefore, you should avoid using programming languages that do not
+have a free compiler.
+
+   The C programming language is the native language of GNU, and the
+GNU coding standards encourage you to program in C. The main advantages
+of C are that it can be compiled with the system's native compiler,
+many people know C, and it is easy to learn. Nevertheless, C has
+weaknesses: it forces you to manually manage memory allocation, and any
+mistakes you might make can lead to very difficult bugs. Also C forces
+you to program at a low level. Sometimes it is desirable to program at
+a low level, but there are also cases where you want to build on a
+higher level.
+
+   For projects where you would like a higher-level _compiled_ language,
+the recommended choice is to use C++.  The GNU project distributes a
+free C++ compiler and nowadays most GNU systems that have a C compiler
+also have the free C++ compiler. The main advantage of C++ is that it
+will automatically manage dynamic memory allocation for you.  C++ also
+has a lot of powerful features that allow you to program at a higher
+level than C, bringing you closer to the algorithms and the concepts
+involved, and making it easier to write robust programs. At the same
+time, C++ does not hide low-level details from you and you have the
+freedom to do the same low-level hacks that you had in C, if you choose
+to.  In fact C++ is 99% backwards compatible with C and it is very easy
+to mix C and C++ code. Finally, C++ is an industry standard. As a
+result, it has been used to solve a variety of real-world problems and
+its specification has evolved for many years to make it a powerful and
+mature language that can tackle such problems effectively. The C++
+specification was frozen and became an ANSI standard in 1998.
+
+   One of the disadvantages of C++ is that C++ object files compiled by
+different C++ compilers can not be linked together.  In order to
+compile C++ to machine language, a lot of compilation issues need to be
+defered to the linking stage. Because object file formats are not
+traditionally sophisticated enough to handle these issues, C++
+compilers do various ugly kludges. The problem is that different
+compilers do these kludges differently, making object files accross
+compilers incompatible. This is not a terrible problem, since object
+files are incompatible accross different platforms anyways. It is only
+a problem when you want to use more than one compiler on the same
+platform.  Another disadvantage of C++ is that it is harder to
+interface a C++ library to another language, than it is to interface a
+C library. Finally not as many people know C++ as well as they know C,
+and C++ is a very extensive and difficult language to master.  However
+these disadvantages must be weighted against the advantages.  There is
+a price to using C++ but the price comes with a reward.
+
+   If you need a higher-level _interpreted_ language, then the
+recommended choice is to use Guile. Guile is the GNU variant of Scheme,
+a LISP-like programming language. Guile is an interpreted language, and
+you can write full programs in Guile, or use the Guile interpreter
+interactively.  Guile is compatible with the R4RS standard but provides
+a lot of GNU extensions. The GNU extensions are so extensive that it is
+possible to write entire applications in Guile. Most of the low-level
+facilities that are available in C, are also available in Guile.
+
+   What makes the Guile implementation of Scheme special is not the
+extensions themselves, but the fact that it it is very easy for any
+developer to add their own extensions to Guile, by implementing them in
+C.  By combining C and Guile you leverage the advantages of both
+compiled and interpreted languages.  Performance critical functionality
+can be implemented in C and higher-level software development can be
+done in Guile.  Also, because Guile is interpreted, when you make your
+C code available through an extended Guile interpreter, then the user
+can also use the functionality of that code interactively through the
+interpreter.
+
+   The idea of extensible interpreted languages is not new.  Other
+examples of extensible interpreted languages are Perl, Python and Tcl.
+What sets Guile apart from these languages is the elegance of Scheme.
+Scheme is the holy grail in the quest for a programming language that
+can be extended to support any programming paradigm by using the least
+amount of syntax. Scheme has natural support for both arbitrary
+precision integer arithmetic and floating point arithmetic. The
+simplicity of Scheme syntax, and the completeness of Guile, make it
+very easy to implement specialized scripting languages simply by
+translating them to Scheme. In Scheme algorithms and data are
+interchangable. As a result, it is easy to write Scheme programs that
+manipulate Scheme source code.  This makes Scheme an ideal language for
+writing programs that manipulate algorithms instead of data, such as
+programs that do symbolic algebra.  Because Scheme can manipulate its
+own source code, a Scheme program can save its state by writing Scheme
+source code into a file, and by parsing it later to load it back up
+again. This feature alone is one reason why engineers should use Guile
+to configure and drive numerical simulations.
+
+   Some people like to use Fortran 77.  This is in many ways a good
+language for developing the computational core of scientific
+applications. We do have free compilers for Fortran 77, so using it
+does not restrict our freedom.  (*note Fortran with Autoconf::) Also,
+Fortran 77 is an aggresively optimizable language, and this makes it
+very attractive to engineers that want to write code optimized for
+speed.  Unfortunately, Fortran 77 can not do well _anything_ except
+array-oriented numerical computations.  Managing input/output is
+unnecessarily difficult with Fortran, and there's even computational
+areas, such as infinite precision integer arithmetic and symbolic
+computation that are not supported.
+
+   There are many variants of Fortran like Fortran 90, and HPF.
+Fortran 90 attempts, quite miserably, to make Fortran 77 more like C++.
+HPF allows engineers to write numerical code that runs on parallel
+computers. These variants should be avoided for two reasons:
+  1. There are no free compilers for Fortran 90 or HPF.  If you happen
+     to use a proprietary operating system, you might as well make use
+     of proprietary compilers if they generate highly optimized code
+     and that is important to you.  Nevertheless, in order for your
+     software to be freed, it should be possible to compile it with
+     free tools on a free operating system.  Because it is possible to
+     make parallel computers using GNU/Linux (see the Beowulf project),
+     parallelized software can also be free.  Therefore both Fortran 90
+     and HPF should be avoided.
+
+  2. Another problem with these variants is that they are ad hoc
+     languages that have been invented to enable Fortran to do things
+     that it can not do by design. Eventually, when engineers will like
+     to do things that Fortran 90 can't do either, it will be necessary
+     to extend Fortran again, rewrite the compilers and produce yet
+     another variant. What engineers need is a programming language
+     that has the ability to self extend itself by writing software in
+     the same programming language. The C++ programming language can do
+     this without loss of performance. The departmentalization of
+     disciplines in academia has made it very difficult for such a
+     project to take off. Despite that, there is ongoing research in
+     this area.  (for example, see the Blitz++ project)
+
+It is almost impossible to write good programs entirely in Fortran, so
+please use Fortran only for the numerical core of your application and
+do the bookeeping tasks, including input/output using a more appropriate
+language.
+
+   If you have written a program entirely in Fortran, please do not ask
+anyone else to maintain your code, unless person is like you and also
+knows only Fortran. If Fortran is the only language that you know, then
+please learn at least C and C++ and use Fortran only when necessary.
+Please do not hold the opinion that contributions in science and
+engineering are "true" contributions and software development is just a
+"tool".  This bigotted attitude is behind the thousands of lines of
+ugly unmaintainable code that goes around in many places. Good software
+development can be an important contribution in its own right, and
+regardless of what your goals are, please appreciate it and encourage
+it. To maximize the benefits of good software, please make your
+software free.  (*FIXME: Crossreference copyright section in this
+chapter*)
+
+
+File: tutorial.info,  Node: Developing libraries,  Next: Developing applications,  Prev: Choosing a good programming language,  Up: Writing Good Programs
+
+Developing libraries
+====================
+
+   The key to better code is to focus away from developing monolithic
+throw-away hacks that do only one job, and focus on developing
+"libraries" (*FIXME: crossreference*). Break down the original problem
+to parts, and the parts to smaller parts, until you get down to simple
+subproblems that can be easily tested, and from which you can construct
+solutions for both the original problem and future variants. Every
+library that you write is a legacy that you can share with other
+developers, that want to solve similar problems. Each library will
+allow these other developers to focus on their problem and not have to
+reinvent the parts that are common with your work from scratch. You
+should definetely make libraries out of subproblems that are likely to
+be broadly useful.  Please be very liberal in what you consider
+"broadly useful".  Please program in a defensive way that renders
+reusable as much code as possible, regardless of whether or not you
+plan to reuse it in the near future.  The final application should
+merely have to assemble all the libraries together and make their
+functionality accessible to the user through a good interface.
+
+   It is very important for each of your libraries to have a complete
+"test suite". The purpose of the test suite is to detect bugs in the
+library and to prove to you or convince you, the developer, that the
+library works. A test suite is composed of a collection of test programs
+that link with your libraries and experiment with the features provided
+by the library. These test programs should return with
+     exit(0);
+
+if they do not detect anything wrong with the library and with
+     exit(1);
+
+if they detect problems. The test programs should not be installed with
+the rest of the package. They are meant to be run after your software
+is compiled and before it is installed. Therefore, they should be
+written so that they can run using the compiled but uninstalled files
+of the library.  Test programs should not output messages by default.
+They should run completely quietly and communicate with the environment
+in a yes or no fashion using the `exit' code. However, it is useful for
+test programs to output debugging information when they fail during
+development. Statements that output such information should be
+surrounded by conditional directives like this:
+     #if INSPECT_ERRORS
+      printf("Division by zero: %d / %d\n",a,b);
+     #endif
+
+This way it becomes easy to switch them on or off upon demand. The
+prefered way to manipulate a macro like this `INSPECT_ERRORS' is by
+adding a switch to your `configure' script. You can do this by adding
+the following lines to `configure.in':
+     AC_ARG_WITH(inspect,
+       [  --with-inspect           Inspect test suite errors],
+       [ AC_DEFINE(INSPECT_ERRORS, 1, "Inspect test suite errors")],
+       [ AC_DEFINE(INSPECT_ERRORS, 0, "Inspect test suite errors")])
+
+After the library is debugged, the debug statements should not be
+removed. If a future version of the library regresses and an old test
+begins to fail again, it will be useful to be able to reactivate the
+same error messages that were useful in debugging the test when it was
+first put together, and it may be necessary to add a few new ones.
+
+   The best time to write each test program is _as soon as it is
+possible!_.  You should not be lazy, and you should not just keep
+throwing in code after code after code. The minute there is enough code
+in there to put together some kind of test program, _just do it!_ When
+you write new code, it is easy to think that you are producing work
+with every new line of code that is written. The reality is that you
+_know_ you have produced new work everytime you write working a test
+program for new features, and _not a minute before_.  Another time when
+you should definetely write a test program is when you find a bug while
+ordinarily using the library. Then, write a test program that triggers
+the bug, fix the bug, and keep the test in your test suite.  This way,
+if a future modification reintroduces the same bug it will be detected.
+
+   Please document your library as you go. The best time to update your
+documentation is immediately after you get new test programs checking
+out new futures. You might feel that you are too busy to write
+documentation, but the truth of the matter is that you will _always_ be
+too busy.  In fact, if you are a busy person, you are likely to have
+many other obligations bugging you around for your attention. There may
+be times that you have to stay away from a project for a large amount
+of time.  If you have consistently been maintaining documentation, it
+will help you refocus on your project even after many months of absense.
+
+
+File: tutorial.info,  Node: Developing applications,  Next: Free software is good software,  Prev: Developing libraries,  Up: Writing Good Programs
+
+Developing applications
+=======================
+
+   "Applications" are complete executable programs that can be run by
+the end-user. With library-oriented development the actual functionality
+is developed by writing libraries and debugged by developing test-suites
+for each library. With command-line oriented applications, the
+application source code parses the arguments that are passed to it by
+the user, and calls up the right functions in the library to carry out
+the user's requests. With GUI (1) applications, the application source
+code creates the "widgets" that compose the interface, binds them to
+"actions", and then enters an event loop. Each action is implemented in
+terms of the functionality provided by the appropriate library.
+
+   It should be possible to implement applications by using relatively
+few application-specific source files, since most of the functionality
+is actually done in libraries. In some cases, the application is simple
+enough that it would be an overkill to package its functionality as a
+library. Nevertheless, in such cases please separate the source code
+that handles actual functionality from the source code that handles the
+user interface. Also, please always separate the code that handles
+input/output with the code that does actual computations.  If these
+aspects of your source code are sufficiently separated then you make it
+easier for other people to reuse parts of your code in their
+applications.  You also make it easier of yourself to switch to
+library-oriented development when your application grows and is no
+longer "simple enough".
+
+   Library-oriented development allows you to write good and robust
+applications.  In return it requires discipline. Sometimes you may need
+to add experimental functionality that is not available through your
+libraries.  The right thing to do is to extend the appropriate library.
+The easy thing to do is to implement it as part of your
+application-specific source code. If the feature is experimental and
+undergoing many changes, it may be best to go with the easy approach at
+first. Still, when the feature matures, please migrate it to the
+appropriate library, document it, and take it out of the application
+source code. What we mean by discipline is doing these migrations, when
+the time is right, despite pressures from "real life", such as
+deadlines, pointy-haired bosses, and nuclear terrorism. A rule of thumb
+for deciding when to migrate code to a library is when you find
+yourself cut-n-pasting chunks of code from application to application.
+If you do not do the right thing, your code will become increasingly
+harder to debug, harder to maintain, and less reliable.
+
+   Applications should also be documented, especially the ones that are
+command-line oriented. Application documentation should be thorough in
+explaining to the user all the things that he needs to know to use the
+application effectively and should be distributed separately from the
+application itself. Nevertheless, applications should recognize the
+`--help' switch and output a synopsis of how the application is used.
+Applications should also recognize the `--version' switch and state
+their version number. The easiest way to make applications understand
+these two switches is to use the GNU Argp library (_FIXME:
+crossreference_).
+
+   ---------- Footnotes ----------
+
+   (1) GUI is an abbreviation for "graphical user interface"
+
+
+File: tutorial.info,  Node: Free software is good software,  Next: Invoking the gpl utility,  Prev: Developing applications,  Up: Writing Good Programs
+
+Free software is good software
+==============================
+
+   One of the reasons why you should write good code is because it
+allows you to make your code robust, reliable and most useful to your
+needs.  Another reason is to make it useful to other people too, and
+make it easier for them to work with your code and reuse it for their
+own work.  In order for this to be possible, you need to give worry
+about a few obnoxious legal issues.
+
+
+File: tutorial.info,  Node: Invoking the gpl utility,  Next: Inserting notices with Emacs,  Prev: Free software is good software,  Up: Writing Good Programs
+
+Invoking the `gpl' utility
+==========================
+
+   Maintaining these legalese notices can be quite painful after some
+time.  To ease the burden, Autotools distributes a utility called `gpl'.
+This utility will conveniently generate for you all the legal wording
+you will ever want to use. It is important to know that this
+application is not approved in any way by the Free Software Foundation.
+By this I mean that I haven't asked their opinion of it yet.
+
+   To create the file `COPYING' type:
+     % gpl -l COPYING
+
+If you want to include a copy of the GPL in your documentation, you can
+generate a copy in texinfo format like this:
+     % gpl -lt gpl.texi
+
+Also, every time you want to create a new file, use the `gpl' to
+generate the copyright notice. If you want it covered by the GPL use the
+"standard notice". If you want to invoke the Guile-like permissions,
+then also use the "library notice". If you want to grant unlimited
+permissions, meaning no copyleft, use the "special notice".  The `gpl'
+utility takes many different flags to take into account the different
+commenting conventions.
+   * For a C file, create the standard notice with
+          % gpl -c file.c
+
+     the library notice with
+          % gpl -cL file.c
+
+     and the special notice with
+          % gpl -cS file.c
+
+   * For a C++ file, create the standard notice with
+          % gpl -cc file.cc
+
+     the library notice with
+          % gpl -ccL file.cc
+
+     and the special notice with
+          % gpl -ccS file.cc
+
+   * For a shells script (bash, perl) that uses hash marks for
+     commenting, create the standard notice with
+          % gpl -sh foo.pl
+
+     the library notice with
+          % gpl -shL foo.tcl
+
+     and the special notice with
+          % gpl -shS foo.pl
+
+     It does not make sense to use the library notice, if no executable
+     is being formed from this file. If however, you parse that file
+     into C code that is then compiled into object code, then you may
+     consider using the library notice on it instead of the special
+     notice. One of the features provided by Autotools allows you to
+     embed text, such as Tcl scripts, into the executable. In that
+     case, you can use the library notice to license the original text.
+
+   * For files that define autoconf macros:
+          % gpl -m4 file.m4
+
+     In general, we exempt autoconf macro files from the GNU GPL
+     because the terms of autoconf also exclude its output, the
+     `configure' script, from the GPL.
+
+   * For `Makefile.am', or files that describe targets:
+          % gpl -am Makefile.am
+
+     For these we also exempt them from the GPL because they are so
+     trivial that it makes no sense to add copyleft protection.
+
+
+File: tutorial.info,  Node: Inserting notices with Emacs,  Prev: Invoking the gpl utility,  Up: Writing Good Programs
+
+Inserting notices with Emacs
+============================
+
+   If you are using _GNU Emacs_, then you can insert these copyright
+notices on-demand while you're editing your source code. Autotools
+bundles two Emacs packages: `gpl' and `gpl-copying' which provide you
+with equivalents of the `gpl' command that can be run under Emacs. These
+packages will be byte-compiled and installed automatically for you while
+installing Autotools.
+
+   To use these packages, in your `.emacs' you must declare your
+identity by adding the following commands:
+     (setq user-mail-address "me@here.com")
+     (setq user-full-name "My Name")
+
+Then you must require the packages to be loaded:
+     (require 'gpl)
+     (require 'gpl-copying)
+
+These packages introduce a set of Emacs commands all of which are
+prefixed as `gpl-'. To invoke any of these commands press `M-x', type
+the name of the command and press enter.
+
+   The following commands will generate notices for your source code:
+`gpl-c'
+     Insert the standard GPL copyright notice using C commenting.
+
+`gpl-cL'
+     lnsert the standard GPL copyright notice using C commenting,
+     followed by a Guile-like library exception. This notice is used by
+     the Guile library. You may want to use it for libraries that you
+     write that implement some type of a standard that you wish to
+     encourage.  You will be prompted for the name of your package.
+
+`gpl-cc'
+     Insert the standard GPL copyright notice using C++ commenting.
+
+`gpl-ccL'
+     Insert the standard GPL copyright notice using C++ commenting,
+     followed by a Guile-like library exception. You will be prompted
+     for the name of your package
+
+`gpl-sh'
+     Insert the standard GPL copyright notice using shell commenting
+     (i.e. has marks).
+
+`gpl-shL'
+     Insert the standard GPL copyright notice using shell commenting,
+     followed by a Guile-like library exception. This can be useful for
+     source files, like Tcl files, which are executable code that gets
+     linked in to form an executable, and which use hash marks for
+     commenting.
+
+`gpl-shS'
+     Insert the standard GPL notice using shell commenting, followed by
+     the special Autoconf exception. This is useful for small shell
+     scripts that are distributed as part of a build system.
+
+`gpl-m4'
+     Insert the standard GPL copyright notice using m4 commenting (i.e.
+     dnl) and the special Autoconf exception. This is the prefered
+     notice for new Autoconf macros.
+
+`gpl-el'
+     Insert the standard GPL copyright notice using Elisp commenting.
+     This is useful for writing Emacs extension files in Elisp.  The
+following commands will generate notices for your source code:
+`gpl-insert-copying-texinfo'
+     Insert a set of paragraphs very similar to the ones appearing at
+     the Copying section of this manual. It is a good idea to include
+     this notice in an `unnumbered' chapter titled "Copying" in the
+     Texinfo documentation of your source code. You will be prompted
+     for the title of your package. That title will substitute the word
+     _Autotools_ as it appears in the corresponding section in this
+     manual.
+
+`gpl-insert-license-texinfo'
+     Insert the full text of the GNU General Public License in Texinfo
+     format.  If your documentation is very extensive, it may be a good
+     idea to include this notice either at the very beginning of your
+     manual, or at the end.  You should include the full license, if
+     you plan to distribute the manual separately from the package as a
+     printed book.
+
+
+File: tutorial.info,  Node: Using GNU Emacs,  Next: Compiling with Makefiles,  Prev: Writing Good Programs,  Up: Top
+
+Using GNU Emacs
+***************
+
+* Menu:
+
+* Introduction to Emacs::
+* Installing GNU Emacs::
+* Configuring GNU Emacs::
+* Using vi emulation::
+* Using Emacs as an IDE::
+* Inserting copyright notices with Emacs::
+* Using Emacs as an email client::
+* Handling patches::
+* Further reading on Emacs::
+

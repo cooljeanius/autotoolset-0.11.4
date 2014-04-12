@@ -1,0 +1,13 @@
+CLEANFILES = *~
+DISTCLEANFILES = Makefile.in
+
+pkgdatadir = @ZOPEPRODUCTSDIR@/@PACKAGE_NAME@/dtml
+pkgdata_DATA =
+
+EXTRA_DIST = $(DATA) Makefile.am Makefile.in
+
+
+
+
+
+

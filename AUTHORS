@@ -1,0 +1,26 @@
+Authors of Autotools.
+See also the files THANKS and ChangeLog
+
+Eleftherios Gkioulekas designed and implemented Autotools, with the 
+following exceptions:
+
+* Francois Pinard (and the Gnit-picker gang)
+  - Wrote the GNITS coding standards under doc/gnits/*
+
+* Richard Stallman 
+  - Wrote the GNU coding standards under doc/gnu/*
+
+* Trent Fisher
+  - Wrote the Texinfo reference card that appears in doc/texinfo
+
+* John Eaton
+  - Wrote the original version of the Autoconf macros for Fortran
+    support as they appear in m4/lf_fortran.m4
+
+* dmg@bell-labs.com (name?)
+  - Wrote the f2c compiler which is bundled as a self-extracting shell
+    script in src/mkfortran.sh
+
+* Lionel Cons 
+  - Wrote texi2html which is distributed in src/texi2html.pl
+    See: http://wwwcn1.cern.ch/dci/texi2html/texi2htm

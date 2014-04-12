@@ -1,0 +1,11 @@
+CLEANFILES = *~
+DISTCLEANFILES = Makefile.in
+
+pkgdatadir = @ZOPEPRODUCTSDIR@/@PACKAGE_NAME@/www
+pkgdata_DATA =
+
+EXTRA_DIST = $(DATA) Makefile.am Makefile.in
+
+
+
+

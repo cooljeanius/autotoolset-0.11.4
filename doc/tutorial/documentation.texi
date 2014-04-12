@@ -1,0 +1,63 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Maintaining Documentation, Legal issues with Free Software, Fortran with Autoconf, Top
+@chapter Maintaining Documentation
+
+@menu
+* Writing proper manuals::      
+* Introduction to Texinfo::     
+* Markup in Texinfo::           
+* GNU Emacs support for Texinfo::  
+* Writing documentation with LaTeX::  
+* Creating a LaTeX package::    
+* Further reading about LaTeX::  
+@end menu
+
+@node Writing proper manuals, Introduction to Texinfo, Maintaining Documentation, Maintaining Documentation
+@section Writing proper manuals
+
+@emph{FIXME: Advice on how to write a good manual}
+@emph{General stuff. Reference manual vs user manual.}
+@emph{When to write a manual.}
+@emph{How to structure a manual.}
+@emph{Texinfo vs. Latex}
+@emph{Copyright issues.}
+
+@node Introduction to Texinfo, Markup in Texinfo, Writing proper manuals, Maintaining Documentation
+@section Introduction to Texinfo
+
+@node Markup in Texinfo, GNU Emacs support for Texinfo, Introduction to Texinfo, Maintaining Documentation
+@section Markup in Texinfo
+
+@node GNU Emacs support for Texinfo, Writing documentation with LaTeX, Markup in Texinfo, Maintaining Documentation
+@section GNU Emacs support for Texinfo
+
+@node Writing documentation with LaTeX, Creating a LaTeX package, GNU Emacs support for Texinfo, Maintaining Documentation
+@section Writing documentation with LaTeX
+
+@node Creating a LaTeX package, Further reading about LaTeX, Writing documentation with LaTeX, Maintaining Documentation
+@section Creating a LaTeX package
+
+@node Further reading about LaTeX,  , Creating a LaTeX package, Maintaining Documentation
+@section Further reading about LaTeX
+

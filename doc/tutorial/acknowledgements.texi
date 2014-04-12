@@ -1,0 +1,49 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Acknowledgements, Copying, Preface, Top
+@unnumbered Acknowledgements
+
+
+@noindent
+This document and the Autotools package have originally been written by
+Eleftherios Gkioulekas. Many people have further contributed to this
+effort, directly or indirectly, in various way. Here is a list of these 
+people. Please help me keep it complete and exempt of errors.
+
+@itemize @bullet
+@item
+The appendix @emph{Philosophical issues} 
+has been written by Richard Stallman. 
+(@pxref{Philosophical issues})
+@item
+The chapter on Fortran, and the Autotools support for developing software
+that is partly written in Fortran is derived from the work of John Eaton
+on GNU Octave, which I mainly generalized for use in other programs.
+(@pxref{Fortran with Autoconf}).
+@item
+Mark Galassi was the first person, to the best of my knowledge, who tried to
+write an Autoconf tutorial. It is thanks to his work that I was inspired to
+begin this work.
+@end itemize
+
+FIXME: @emph{I need to start keeping track of acknowledgements here}

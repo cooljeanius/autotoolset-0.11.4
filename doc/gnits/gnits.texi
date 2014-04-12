@@ -1,0 +1,1693 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename gnits.info
+@settitle Gnits Standards
+@c UPDATE THIS DATE WHENEVER YOU MAKE CHANGES!
+@set lastupdate 1996-09-15
+@c %**end of header
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* Gnits: (gnits).                Gnits Standards.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@c @setchapternewpage odd
+@setchapternewpage off
+
+@iftex
+@set CHAPTER chapter
+@end iftex
+@ifinfo
+@set CHAPTER node
+@end ifinfo
+
+@ifinfo
+Gnits Standards
+Copyright (C) 1996 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Free Software Foundation.
+@end ifinfo
+
+@titlepage
+@title Gnits Standards
+@author The Gnit-picker gang
+@author last updated @value{lastupdate}
+@page
+
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1996 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Free Software Foundation.
+@end titlepage
+
+@set automake Automake complies with this part of Gnits Standards
+@set noxref There is no parallel node in GNU Standards
+
+@ifinfo
+@node Top, Preface, (dir), (dir)
+@top Version
+
+Last updated @value{lastupdate}.
+@end ifinfo
+
+@menu
+* Preface::                     About the GNU Coding Standards
+* Intellectual Property::       Keeping Free Software Free
+* Design Advice::               General Program Design
+* Program Behavior::            Program Behavior for All Programs
+* Writing C::                   Making The Best Use of C
+* Documentation::               Documenting Programs
+* Managing Releases::           The Release Process
+
+ --- The Detailed Node Listing ---
+
+Keeping Free Software Free
+
+* Reading Non-Free Code::       Referring to Proprietary Programs
+* Contributions::               Accepting Contributions
+* Copyright Notices::           Inserting Copyright Notices
+
+Program Behavior for All Programs
+
+* Semantics::                   Writing robust programs
+* Libraries::                   Library behavior
+* Errors::                      Formatting error messages
+* User Interfaces::             Standards for command line interfaces
+* Option Table::                Table of Long Options
+* Memory Usage::                When and how to care about memory needs
+
+Standards for Command Line Interfaces
+
+* File Arguments::              File Arguments
+* Version Output::              Output of @samp{--version}
+* Help Output::                 Output of @samp{--help}
+
+Making The Best Use of C
+
+* Formatting::                  Formatting Your Source Code
+* Comments::                    Commenting Your Work
+* Syntactic Conventions::       Clean Use of C Constructs
+* Names::                       Naming Variables and Functions
+* System Portability::          Portability between different operating systems
+* CPU Portability::             Supporting the range of CPU types
+* System Functions::            Portability and ``standard'' library functions
+* Internationalization::        Techniques for internationalization
+
+Documenting Programs
+
+* GNU Manuals::                 Writing proper manuals.
+* Manual Structure Details::    Specific structure conventions.
+* NEWS File::                   NEWS files supplement manuals.
+* Change Logs::                 Recording Changes
+* Man Pages::                   Man pages are secondary.
+* Reading other Manuals::       How far you can go in learning
+                                from other manuals.
+* README file::                 The README File
+* AUTHORS file::                The AUTHORS File
+* THANKS file::                 The THANKS File
+
+The Release Process
+
+* Configuration::               How Configuration Should Work
+* Makefile Conventions::        Makefile Conventions
+* Releases::                    Making Releases
+
+Makefile Conventions
+
+* Makefile Basics::             General Conventions for Makefiles
+* Utilities in Makefiles::      Utilities in Makefiles
+* Command Variables::           Variables for Specifying Commands
+* Directory Variables::         Variables for Installation Directories
+* Standard Targets::            Standard Targets for Users
+* Install Command Categories::  Install Command Categories
+@end menu
+
+@node Preface, Intellectual Property, Top, Top
+@chapter About the Gnits Standards
+
+@xref{Preface, , , standards, GNU Standards}.
+
+The Gnits Standards are a collection of habits, and their descriptions,
+willfully chosen by a small group of maintainers calling themselves
+the GNU nit-picker gang.  The word @samp{Gnits} refer to the gang, not
+the standards they decided to use, even if this little confusion is quite
+understandable, and excusable.
+
+More than a standard, Gnits is a small group of maintainers interested at
+nit-picking at others, or being nit-picked by them.  In fact, it evolved
+out of a kind and relaxed friendship between a few maintainers.  We use our
+little group to let the steam or frustrations get out, once in a while,
+and might discuss of many unexpected things, really, yet usually related
+to our maintenance work.  The level of discussion is frank to the point
+many things would be hardly publishable@dots{} In fact, Gnits is a small
+group of people having really @emph{done} a lot of work together for years.
+The mailing list quoted below exists only as a convenience between us.
+
+The point behind Gnits Standards is that the GNU Standards don't actually
+specify @emph{enough} detail.  In a way, Gnits Standards start where
+the GNU Standards leave off.  Since Gnits Standards are only meant to
+supplement GNU Standards themselves, sometimes to an excruciating level of
+detail, we decided to lay out this manual exactly using the same structure
+GNU Standards have, just for easing cross referencing from here to there.
+Many sections here are left empty, so the numbering stays identical in
+both printed manuals.  When new sections are needed here, they are added
+at the end of chapters instead of a place that might be more logical,
+only to preserve the numbering correspondence between sections.
+
+Let us insist on the fact that Gnits Standards are in no way normative
+in GNU.  Only real, genuine GNU Standards are.  GNU maintainers do not
+have to follow Gnits Standards if they do not feel like it.  Nevertheless,
+they might find in Gnits Standards good ideas on the way to @emph{follow}
+GNU Standards themselves, as well as tentative, non-official explanations
+about why some GNU Standards were decided the way they are.
+
+There are very few discrepancies between Gnits Standards and GNU Standards,
+and they are always well noted as such.  So there is very little chance
+that, by reading this manual, you would be inadvertently induced into
+disobeying GNU Standards.  Moreover, it would be sad if GNU Standards were
+massively importing Gnits Standards, and this might turn off contributors
+by what they deem to be excessive requirements in GNU.
+
+Besides C programming, Gnits Standards want to address problems in writing
+shell scripts, @code{m4} code and Perl scripts.  And many other things!
+
+Opinions or suggestions regarding this document may be sent to
+@code{gnits@@prep.ai.mit.edu}.  However, please keep in mind this manual
+just represents the common choice of a few people only, and is not
+normative in the GNU project.  So, there is no real point in trying to
+deeply debate Gnits Standards.  Moreover, the @code{gnits} address is kind
+of private, the goal of Gnits Standards is a mean for us to work faster
+and nevertheless feel satisfied with the results of our work.  If we were
+induced in great debates, or if the @code{gnits} list was becoming public,
+I fear the whole thing would slow us down far more than it helps.
+
+If you really feel like contributing to GNU, you might jump in, and do
+things yourself.  Consider the GNU tasks list, available for @code{ftp}
+on @file{prep.ai.mit.edu} in @file{pub/gnu/standards/} and see if some
+project would interest you enough for raising your commitment to it.
+Most projects require a lot of time to achieve successfully.  Write to
+@file{gnu@@prep.ai.mit.edu} for involving yourself.
+
+This release of the Gnits Standards was last updated @value{lastupdate}.
+
+@node Intellectual Property, Design Advice, Preface, Top
+@chapter Keeping Free Software Free
+
+@xref{Intellectual Property, , , standards, GNU Standards}.
+
+@menu
+* Reading Non-Free Code::       Referring to Proprietary Programs
+* Contributions::               Accepting Contributions
+* Copyright Notices::           Inserting Copyright Notices
+@end menu
+
+@node Reading Non-Free Code, Contributions, Intellectual Property, Intellectual Property
+@section Referring to Proprietary Programs
+
+@xref{Reading Non-Free Code, , , standards, GNU Standards}.
+
+GNU should nevertheless keep an eye on what is going on around.
+In general, the GNU project refuses to endorse the use or development or
+distribution of non-free software.  We don't do anything to encourage use
+of non-free software.  However, this does not mean we don't care about the
+languages and data formats used by non-free software.  Interoperation with
+popular non-free software is an important design goal for GNU software.
+In general, when a non-free program is more popular than the GNU software,
+it is very important to make the GNU software interoperate with the
+non-free program, so that people who already use it can more easily
+switch to GNU.  This is the reason why the GNU system as a whole is
+upward-compatible with Unix (letter from Richard, 1996-06-14).
+
+@node Contributions, Copyright Notices, Reading Non-Free Code, Intellectual Property
+@section Accepting Contributions
+
+@xref{Contributions, , , standards, GNU Standards}.
+
+All GNU packages need to install smoothly and work solidly.  Writing the
+installation code and other accoutrements of a package is part of the job
+it, just like ``writing the program.''  It is a matter of whether the
+whole job is done.  Offering to contribute a program, but not offering
+to follow through by setting up the installation, is not really a useful
+way of helping.  If a contributor does part of the job, and expects to
+dump the rest of the job on the maintainer, naturally the maintainer
+will be annoyed.  And he may well say @cite{I don't have time for that.}
+(letter from Richard, 1996-06-14.)
+
+One argument that is recurrent, when time comes to request and obtains
+assignments from contributors, is that since the code is GPLed to start
+with, the GPL wording could be used in court to prove that additions
+or derived code is itself GPLed, and as such, does not need explicit
+assignment.  We are all harrased with legalese, and try finding ways to
+escape it, this is normal.
+
+In case of an hypothetical court suit against the FSF for copyright
+matters, the strength of the copyright, as well as the strength of your
+defense, depends on how you were provably interested in defending it in
+a day-to-day manner.  If the FSF can prove it always took the copyright
+matters seriously, and not only once at the beginning for a package,
+it is in a quite better position for defending itself.@footnote{This may
+be contrasted with patents, which never loose their strength, whatever
+the holder does or does not to protect them.  You may get a patent,
+let everybody offend for 15 years, and then begin to whirl your axe and
+reclaim for retroactive damages.  Offenders do not get stronger to defend
+themselves, with time.}
+
+You should never try to adapt legal wording yourself.  If you come to
+a situation which isn't exactly one where you know what to do, please
+ask Richard, who may have to ask the FSF lawyer what to do (letter from
+Richard, 1995-09-19).
+
+@node Copyright Notices,  , Contributions, Intellectual Property
+@section Inserting Copyright Notices
+
+@value{noxref}.
+
+Almost all files in a distribution should bear copyright notices at
+their beginning, using the appropriate commenting device for that file.  For
+example, a shell script might begin that way:
+
+@example
+#! /bin/sh
+# @var{one-line description of the script}
+# Copyright (C) @var{years} Free Software Foundation, Inc.
+# @var{author name} <@var{email address}>, @var{initial year}.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software Foundation,
+# Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+@end example
+
+@noindent
+In this example, the very first line (the zeroth line) is mandatory only
+because of the shell script nature of the file.  Most files do not need
+such a line.
+
+The first line is a quick description of the purpose of the file, with
+maybe some indication for the package this file pertains to.
+
+@c FIXME: Comment on @var{years} --- Richard sent a lot on this.
+
+The third line might be nearly the only place where you identify yourself
+as the author of this file, telling how to reach you, and when you did
+start writing this file initially.
+
+You should put such copylefts on, unless the files are small (letter from
+Richard, 1990-04-10).
+
+@node Design Advice, Program Behavior, Intellectual Property, Top
+@chapter General Program Design
+
+@xref{Design Advice, , , standards, GNU Standards}.
+
+@c @menu
+@c * Compatibility::		Compatibility with other implementations
+@c * Using Extensions::		Using non-standard features
+@c * ANSI C::                      Using ANSI C features
+@c * Source Language::		Using languages other than C
+@c @end menu
+@c
+@c @node Compatibility
+@c @section Compatibility with Other Implementations
+@c
+@c @xref{Compatibility, , , standards, GNU Standards}.
+@c
+@c @node Using Extensions
+@c @section Using Non-standard Features
+@c
+@c @xref{Using Extensions, , , standards, GNU Standards}.
+@c
+@c @node ANSI C
+@c @section @sc{ansi} C and pre-@sc{ansi} C
+@c
+@c @xref{ANSI C, , , standards, GNU Standards}.
+@c
+@c @node Source Language
+@c @section Using Languages Other Than C
+@c
+@c @xref{Source Language, , , standards, GNU Standards}.
+
+@node Program Behavior, Writing C, Design Advice, Top
+@chapter Program Behavior for All Programs
+
+@xref{Program Behavior, , , standards, GNU Standards}.
+
+@menu
+* Semantics::                   Writing robust programs
+* Libraries::                   Library behavior
+* Errors::                      Formatting error messages
+* User Interfaces::             Standards for command line interfaces
+* Option Table::                Table of Long Options
+* Memory Usage::                When and how to care about memory needs
+@end menu
+
+@node Semantics, Libraries, Program Behavior, Program Behavior
+@section Writing Robust Programs
+
+@xref{Semantics, , , standards, GNU Standards}.
+
+@node Libraries, Errors, Semantics, Program Behavior
+@section Library Behavior
+
+@xref{Libraries, , , standards, GNU Standards}.
+
+@node Errors, User Interfaces, Libraries, Program Behavior
+@section Formatting Error Messages
+
+@xref{Errors, , , standards, GNU Standards}.
+
+Capitalization of error messages is a difficult point.  The trend seems
+to be that a complete sentence, ending with a period, should also start
+with a capital.  When an error message has a telegraphic style, is not a
+complete sentence ending with a period, it might better start with a lower
+case letter.
+
+GNU standards seem to a little fuzzy on this topic, and the justification
+for what it suggests is hard to guess.
+
+@node User Interfaces, Option Table, Errors, Program Behavior
+@section Standards for Command Line Interfaces
+
+@xref{User Interfaces, , , standards, GNU Standards}.
+
+@menu
+* File Arguments::              File Arguments
+* Version Output::              Output of @samp{--version}
+* Help Output::                 Output of @samp{--help}
+@end menu
+
+@node File Arguments, Version Output, User Interfaces, User Interfaces
+@subsection File Arguments
+
+About the generic command format:
+
+@example
+@var{command} [@var{option}]@dots{} [@var{file}]@dots{}
+@end example
+
+@noindent
+all @var{file} arguments should all be input files as far as possible,
+never output.  Output files should usually be introduced by options.
+This is in GNU standards.  But also, @var{file} should be the complete
+file name.  Extension may be added as a facility for when @var{file}
+is not found as written.  But if @var{file} exists as shown, it should
+be taken without adding extensions to it.
+
+@node Version Output, Help Output, File Arguments, User Interfaces
+@subsection Output of @samp{--version}
+
+The @samp{--version} output is meant not only to give the program name,
+but to give a precise reference to where the actual sources for the
+program can be found.  One asset of GNU is that all sources are available.
+It should never be difficult to discover and grab the proper sources for
+any given executable program or script.
+
+A few maintenance scripts may depend of a rather precise format for
+@samp{--version} output, which is now detailed.  The output should consist
+of only one line containing many fields separated with a single space.
+From left to right, these fields are:
+
+@itemize @bullet
+@item
+The program name, at least when it is different from the package name,
+or when specific program version numbers follow.  When a single package
+distributes many programs, the program name is always given.
+
+@item
+The program version numbers, but only if they differ from the version
+numbers of the whole package.  This happens, rather unfrequently, when
+a single package distributes programs which are maintained by different
+people, each using his own version scheme (e.g. the Texinfo distribution).
+
+@item
+A single dash @samp{-} character, surrounded by one space on each side,
+of course.  This string is used in case both the program name and the
+package name are given.  When only the package and package version
+numbers are given, it is assumed that the program name is identical to
+the package name, and that program version numbers are the same as the
+package version numbers.  In this case, this single dash is omitted.
+
+@item
+The optional word @samp{GNU}, all in capitals.
+
+@item
+The mandatory package name.
+
+@item
+The mandatory version numbers for the package name.
+
+@end itemize
+
+If @var{package} is the package name and @var{version} are the package
+version numbers, then @file{@var{package}-@var{version}.tar.gz} should
+be the exact name of the archive file containing the distribution, exact
+even to the capitalization.
+
+Here are some examples:
+
+@example
+cat - GNU textutils 1.19c
+msgfmt - GNU gettext 0.10.24
+GNU recode 3.4.2
+@end example
+
+We use @samp{-} instead of words like @samp{from}, and avoid using the
+word @samp{version} between names and numbers, in hope to escape the need
+of internationalising @samp{--version} output.
+
+@node Help Output,  , Version Output, User Interfaces
+@subsection Output of @samp{--help}
+
+The output of the @samp{--help} option is meant to be a meaningful
+reminder of the more comprehensive documentation available for any
+single program.  It should be @emph{meaningful} enough to go beyond a
+crude list of unexplained option letters.  Even long option names are
+not really helpful when completely bare.  It should also be only meant
+as a clear, concise, yet complete @emph{reminder}, not trying in any
+way to replace the comprehensive documentation or make it unnecessary.
+However, users having already read the manual, or having a good level
+of familiarity with the program itself, should be usually satisfied with
+only the @samp{--help} output, for day to day usage.
+
+Some programs necessarily have an extensive @samp{--help} output, because
+they have really many options, @code{ls} and @code{stty} come to mind.
+Others have very few options, like @code{true}.  Despite these differences,
+all GNU programs respecting Gnits Standards have similar behaviour.
+The @samp{--help} output is produced @emph{only} through an explicit usage
+of the @samp{--help} option, and is @emph{never} produced as a side-effect
+of detecting bad usage, or missing arguments.  The proper behaviour for
+usage errors is producing a possible diagnostic on standard error, followed
+by a one-line message, still on standard error, saying something like:
+
+@example
+Try `@var{program} --help' for more information.
+@end example
+
+@noindent
+with @var{program} replaced by the program name, of course.  The diagnostic
+line preceding the @samp{Try...} line should ideally mention the offending
+argument.  It doesn't matter so much interactively, but when debugging
+shell scripts, where the arguments might be specified through several
+layers of variables and nested calls, it can really help pinpoint the
+culprit (letter from Karl, 1994-09-10).
+
+The @samp{--help} output from various programs should share a similar
+structure, which may contain the following items, usually in the order
+given:
+
+@itemize @bullet
+@item
+A synopsis of the program call, telling the overall syntax of the command.
+Suggestions for writing the synopsis are detailed below.
+
+@item
+A short reminder of the purpose of the program, explaining what it
+basically does, in very few lines.  A single line is best.  The synopsis
+comes first because the explanation may refer to variables in the synopsis
+(letter from Karl, 1995-05-11).  If there are many synopsis, they may be
+referred to by expression like @samp{the first form}, @samp{the second
+form}, etc.
+
+@item
+A tabular presentation of all program options.  This is usually the bulk
+of the @samp{--help} output, and is also detailed further down.
+
+@item
+One or more paragraphs succintly describing default or implied values
+for various options, if not already stated above.  This is also where is
+explained the meaning of missing files, or files being @samp{-}.
+
+@item
+A quick sentence should introduce the main bug reporting address for this
+program, usually a generic bug reporting list, more than the individual
+address of the current maintainer.  Like:
+
+@example
+Report bugs to <bug-gnu-utils@@prep.ai.mit.edu>.
+@end example
+
+@noindent
+Only for translated versions of this @samp{--help} output, a second
+sentence might tell where to report linguistic problems for this
+translation, usually pointing to a whole translation team rather than to
+the precise author of the translation.
+
+@end itemize
+
+Here are some more rules applying to the whole @samp{--help} output:
+
+@itemize @bullet
+@item
+There is a difficult equilibrium between concision and clarity, to the
+point writing proper @samp{--help} output is a little art in itself.
+In favor of concision, keep in mind that @samp{--help} output is no more
+than a @emph{reminder}, and never aims to free users from reading the full
+documentation for the program.  Users should feel @samp{--help} output is
+concentrated information, with no verbiage ever in them.  Clarity should
+be attained through very careful wording and illuminating disposition of
+the graphical output masses, more than through extended explanations.
+
+@item
+All text is left-justified.  Avoid any centering.  Never ever use double
+left-right justification for avoiding ragged right: with fixed width
+fonts as those use for @samp{--help} output, this is known to decrease
+readability.  Use only single spaces between words in sentences, and use
+exactly two spaces for a full stop, separating sentences in a paragraph.
+In a word, concision should never go as far as squeezing out spaces that
+are usual in writing text, as appropriate for the language being used.
+
+@item
+The @samp{--help} output should not contain @samp{--version} output
+(but it states the existence and purpose of the @samp{--version} option).
+Since @samp{--help} is usually called interactively, it is not useful to
+overly insist in the output about which program is being documented.
+
+@item
+Logical parts of the @samp{--help} output should be separated with a
+single white line.  Single white lines should also be used whenever it
+is felt their presence would subtantially increase readability.
+
+@item
+Feel comfortable using a tabular presentation for options or explanations,
+and assume that all program output may ask for a fixed width font display.
+That is, do not care about varying width fonts.  However, for moving
+from one tabular margin to another, use only spaces and never @key{TAB}s,
+since tabulations are not always set the same way on all terminals.
+
+Also assume user displays have at least 79 characters, by having no line
+in your @samp{--help} output which uses more than 79 characters.
+
+@item
+Tabulated material should always be introduced by one (or more) complete
+lines, would it be by a single word, like @samp{Options:}.  Most of
+non-tabulated text, as well as introduction to tables, should use no
+margin (and start all in column 0).  Tabulated material should use an
+overall sub-margin of two spaces of margin (and start in column 2).
+
+@item
+For tabulated material using two columns, two margins are necessary.
+The first margin is set after two spaces from the far left, as stated
+above.  The second margin should ideally be set exactly three spaces to
+the right of the rightmost character of the left column, yielding the
+visual impact that both columns are solid rectangular blocks separated
+by a white vertical line having three characters of thickness.
+
+A global table often have many subtables of two columns each, each
+subtable having its short introductory line.  Each subtable should be
+set independantly, with no attempt to line up the second margin of all
+subtables.  Having each subtable having its own second margin has the
+global effect of bolding the overall structure for the reader.
+
+@item
+In tabulated enumerations, use the comma as meaning alternative writings,
+rather than @samp{|} or just spaces.  It's better let the user feel that
+the comma systematically means alternation in all our @samp{--help}.  For
+example:
+
+@example
+The backup suffix is ~, unless set with SIMPLE_BACKUP_SUFFIX.  The
+version control may be set with VERSION_CONTROL, values are:
+
+  t, numbered     make numbered backups
+  nil, existing   numbered if numbered backups exist, simple otherwise
+  never, simple   always make simple backups
+@end example
+
+@end itemize
+
+Here are some rules for the synopsis:
+
+@itemize @bullet
+@item
+Begin with @samp{Usage: }, with a mandatory capital, and a space after the
+colon.  If there are several alternative syntaxes, begin the other lines
+with exactly @samp{ or: }.
+
+@item
+The program name as extracted from @code{argv[0]}.  Maybe we should
+consider systematically removing the path.
+
+The GNU standards dictate that most programs should not consider
+@code{argv[0]} for deciding their behavior.  So it seems also reasonable
+that the name of a program be fixed, whatever its installed name.
+However, using @code{argv[0]} could help a little users on sites where
+@code{binprefix} is defined non empty, because a fixed name could be a
+little misleading on these sites.
+
+@item
+Keep the synopsis simple.  Options will be detailed later, so do not
+detail right away all possible option letters or long names.  Do not
+even stress that options start with an hyphen.  Use nothing more than
+@samp{[OPTION]...}, after the program name, for announcing all options.
+
+@item
+In the synopsis, use capital letters for representing meta-variables
+and @emph{exact} case for representing the rest.  Do not use meta angle
+brackets for meta-variable.  Do not just cluster meta-variables made of
+many words, as this often make them difficult to read.  Use hyphens,
+rather than underlines, for separating words in meta-variable names
+(prefer @samp{FROM-FILE} over @samp{FROM_FILE} or @samp{FROMFILE}).
+The context is such that there is almost no risk of ambiguity, as in
+practice, the hyphen never stands for itself.
+
+Using hyphens rather than underlines in this context has another free
+advantage: it eases separating between meta-variables and environment
+variables, later down in the @samp{--help} output.
+
+@item
+Use square brackets for indicating that a parameter is optional, use
+ellipsis (three consecutive dots) after a symbol for indicating that it
+may be repeated one or more time.  For indicating it may be repeated zero,
+one or many times, use brackets first, than ellipsis, as in:
+
+@example
+Usage: m4 [OPTION]... [FILE]...
+@end example
+
+@item
+Avoid braces, asterisks, plusses, or vertical bars if you can.
+
+@end itemize
+
+The detailed list of options follow many principles, given here.
+
+@itemize @bullet
+@item
+Every option listed, long or short, must be listed with its argument if
+any (letter from Richard, 1994-03-31).  In fact, the description should
+make clear whether options accept arguments or not.  It might not be
+that useful repeating argument options both for short and long forms.
+79 characters is often tight, and the problems we would create ourselves
+by spoiling the horizontal space needed for repetition is not reasonable.
+We could of course divert horizontal space into vertical space, somewhat
+loosing density and concision, but this is not a good choice.
+
+We want to really keep the @samp{--help} output as concise as possible,
+yet being useful.  In practice, this constraint can be a bit alleviated by
+an initial statement to the effect @cite{Mandatory or optional arguments to
+long options are mandatory or optional for short options too.} The precise
+formulation has been much debated, yet it is difficult to keep it short.
+It really wants to mean that @cite{For any long option having a mandatory
+argument, the corresponding short option has a mandatory argument.  For any
+long option allowing an optional argument, the corresponding short option
+allows an optional argument.} Another good sentence would be: @cite{If
+an argument to a long option is mandatory, it's also mandatory for the
+corresponding short option; the same is true for optional arguments.}
+(letter from Karl, 1995-02-15).
+
+@item
+When a program has many options, try regrouping options logically, instead
+of listing them all alphabetically (say), as the mere regrouping is a
+succint way to convey much information.  Present each group of options in
+its own subtable, suitably introduced by some few words.  Separate groups
+by white lines for making the overall structure more easy to grasp by
+the reader.  Here is an excerpt from a relatively big @samp{--help} output:
+
+@example
+Main operation mode:
+  -t, --list              list the contents of an archive
+  -x, --extract, --get    extract files from an archive
+  -c, --create            create a new archive
+  -d, --diff, --compare   find differences between archive and file system
+  -r, --append            append files to the end of an archive
+  -u, --update            only append files newer than copy in archive
+  -A, --catenate          append tar files to an archive
+      --concatenate       same as -A
+      --delete            delete from the archive (not on mag tapes!)
+
+Device blocking:
+  -b, --blocking-factor=BLOCKS   BLOCKS x 512 bytes per record
+      --record-size=SIZE         SIZE bytes per record, multiple of 512
+  -i, --ignore-zeros             ignore zeroed blocks in archive (means EOF)
+  -B, --read-full-records        reblock as we read (for 4.2BSD pipes)
+@end example
+
+@item
+Some options have a value.  Put @samp{=} followed by a metavariable for the
+value, after the long option.  If you have to document a short option with
+a value, do not use use such @samp{=}, prefer a space for the value to be
+a separate, or nothing if you prefer the value clustered with the option.
+
+@item
+When possible, use imperative sentences to document options' effects.
+
+@item
+Do not describe options that are deprecated, ignored, or useless.
+
+@end itemize
+
+@node Option Table, Memory Usage, User Interfaces, Program Behavior
+@section Table of Long Options
+
+@xref{Option Table, , , standards, GNU Standards}.
+
+@node Memory Usage,  , Option Table, Program Behavior
+@section Memory Usage
+
+@xref{Memory Usage, , , standards, GNU Standards}.
+
+@node Writing C, Documentation, Program Behavior, Top
+@chapter Making The Best Use of C
+
+@xref{Writing C, , , standards, GNU Standards}.
+
+@menu
+* Formatting::                  Formatting Your Source Code
+* Comments::                    Commenting Your Work
+* Syntactic Conventions::       Clean Use of C Constructs
+* Names::                       Naming Variables and Functions
+* System Portability::          Portability between different operating systems
+* CPU Portability::             Supporting the range of CPU types
+* System Functions::            Portability and ``standard'' library functions
+* Internationalization::        Techniques for internationalization
+@end menu
+
+@node Formatting, Comments, Writing C, Writing C
+@section Formatting Your Source Code
+
+@xref{Formatting, , , standards, GNU Standards}.
+
+@node Comments, Syntactic Conventions, Formatting, Writing C
+@section Commenting Your Work
+
+@xref{Comments, , , standards, GNU Standards}.
+
+Sometimes, code is published while it is known to be suboptimal in one
+way or the other.  Maintainers use various ways for leaving a trace that
+will later bring their attention to such code sections, usually in form of
+some special string they can search for, and which is generally included
+in comments.  The @samp{/* FIXME:@dots{} */} comment habit comes from some
+other GNU package (maybe @code{gcc} or @code{gdb}?), using this precise
+string (@samp{FIXME} written in capitals, and immediately followed by
+a colon) uniformly among Gnits packages makes it more easy to interpret
+such comments in our code, or write tools retrieving or recognizing such
+comments.  Moreover, using @samp{FIXME:} strings is not limited to C code.
+This should be extended to shell or @code{m4} scripts, @file{Makefile}s,
+and even documentation, using for each the commenting device which is
+appropriate.
+
+In a word, not only should we use such @samp{FIXME:} strings to introduce
+comments about suboptimal code, but we should be careful at saving such
+comments in the code when they come to our mind, for the benefit of those
+reading the code and willing to further contribute to code maintenance.
+An alternative is maintaining one or more @file{TODO} files, which may be
+good for generic or global points in maintenance.  For specific points in
+code, @samp{FIXME:} strings kept right where they belong, are more useful.
+
+@node Syntactic Conventions, Names, Comments, Writing C
+@section Clean Use of C Constructs
+
+@xref{Syntactic Conventions, , , standards, GNU Standards}.
+
+Do not attempt to put more than 509 bytes into a single string in your
+printf calls.  The @samp{509} is taken from the ANSI C standard, and
+reflects unfortunate limits in old-fashioned implementations.  The actual
+portable limit is considerably larger these days, but it's wise not
+to go overboard.  In particular, PDP-11 V7 Unix, MS-DOS and Xenix MSC,
+Bruker X32 SYSV3.0 compilers have this problem.
+
+This is a stringent condition, as many wouldn't trust themselves to
+remember to count the characters in the long strings every time an option
+is added, the grammar changed, or a typo fixed in a @samp{--help} message.
+I think there are enough long @samp{--help} messages to merit an automated
+approach to keeping string lenghts under that limit.  If avoiding strings
+longer than 509 characters is that important, perhaps @code{gcc} should
+be able to warn about it (letter from Jim, 1994-03-31).
+
+@node Names, System Portability, Syntactic Conventions, Writing C
+@section Naming Variables and Functions
+
+@xref{Names, , , standards, GNU Standards}.
+
+@node System Portability, CPU Portability, Names, Writing C
+@section Portability between System Types
+
+@xref{System Portability, , , standards, GNU Standards}.
+
+@node CPU Portability, System Functions, System Portability, Writing C
+@section Portability between @sc{cpu}s
+
+@xref{CPU Portability, , , standards, GNU Standards}.
+
+@node System Functions, Internationalization, CPU Portability, Writing C
+@section Calling System Functions
+
+@xref{System Functions, , , standards, GNU Standards}.
+
+@node Internationalization,  , System Functions, Writing C
+@section Internationalization
+
+@xref{Internationalization, , , standards, GNU Standards}.
+
+GNU standards (and GNU in general) make fairly simplistic assumptions
+about other languages.  For example, it is said that the plural form is
+decided by the number of objects being greater than one, and assume this
+@cite{can handle any language, no matter how it forms the plural of the
+word@dots{}}.  In fact, this is true only for English and a small subset
+of all other languages.  A few of us are trying to consider this problem
+with broader eyes and mind.
+
+@node Documentation, Managing Releases, Writing C, Top
+@chapter Documenting Programs
+
+@xref{Documentation, , , standards, GNU Standards}.
+
+The main documentation for a package is ideally available in Texinfo
+files, expressed either by nicely printed manuals, or by hypertextual
+interactive documents.  Parts of this documentation is concentrating on
+usage or invocation for every a program of a package, such documentation
+should be available through the command @samp{info @var{name}}, given
+any program @var{name}.  A summary of usage may also be requested from
+the program by @samp{@var{name} --help}.  Such usage summaries are also
+available translated for various languages.
+
+This scheme covers most documentation needs, as far as the information
+itself is concerned.  However, @code{man} pages may also be available for
+people praising this particular interface.  In @emph{no} circumstance,
+@code{man} pages may convey information which is not also found in the
+Texinfo manual.  Texinfo files should always be updated first, @code{man}
+pages second.  Some @code{man} pages still exist only because they predated
+the Texinfo manual, it is usual to just not update them anymore.
+
+@menu
+* GNU Manuals::                 Writing proper manuals.
+* Manual Structure Details::    Specific structure conventions.
+* NEWS File::                   NEWS files supplement manuals.
+* Change Logs::                 Recording Changes
+* Man Pages::                   Man pages are secondary.
+* Reading other Manuals::       How far you can go in learning
+                                from other manuals.
+* README file::                 The README File
+* AUTHORS file::                The AUTHORS File
+* THANKS file::                 The THANKS File
+@end menu
+
+@node GNU Manuals, Manual Structure Details, Documentation, Documentation
+@section GNU Manuals
+
+@xref{GNU Manuals, , , standards, GNU Standards}.
+
+The Texinfo manual for a package also has the purpose of explain how
+and where bugs should be reported.
+
+@node Manual Structure Details, NEWS File, GNU Manuals, Documentation
+@section Manual Structure Details
+
+@xref{Manual Structure Details, , , standards, GNU Standards}.
+
+Avoid using @key{TAB}s in a Texinfo manual, as they later cause various
+problems on the output disposition.  Is alignment of comments in menu
+guaranteed using spaces only by now?  If not, it should be considered a
+bug: not everybody is using @samp{(setq-default tab-width 8)} in Emacs.
+
+About node names, we need precise rules about which characters are allowed,
+and exactly why characters were forbidden.  Special characters, like
+@samp{.} or @samp{+}, have been reported to create various problems
+to Info readers, rendering nodes inaccessible.  The macro package
+@file{texinfo.tex} also has its limitations, which we should inventory.
+
+@node NEWS File, Change Logs, Manual Structure Details, Documentation
+@section The NEWS File
+
+@xref{NEWS File, , , standards, GNU Standards}.
+
+@node Change Logs, Man Pages, NEWS File, Documentation
+@section Change Logs
+
+@xref{Change Logs, , , standards, GNU Standards}.
+
+@c @menu
+@c * Change Log Concepts::
+@c * Style of Change Logs::
+@c * Simple Changes::
+@c * Conditional Changes::
+@c @end menu
+@c
+@c @node Change Log Concepts
+@c @subsection Change Log Concepts
+@c
+@c @xref{Change Log Concepts, , , standards, GNU Standards}.
+@c
+@c @node Style of Change Logs
+@c @subsection Style of Change Logs
+@c
+@c @xref{Style of Change Logs, , , standards, GNU Standards}.
+@c
+@c @node Simple Changes
+@c @subsection Simple Changes
+@c
+@c @xref{Simple Changes, , , standards, GNU Standards}.
+@c
+@c @node Conditional Changes
+@c @subsection Conditional Changes
+@c
+@c @xref{Conditional Changes, , , standards, GNU Standards}.
+
+@node Man Pages, Reading other Manuals, Change Logs, Documentation
+@section Man Pages
+
+@xref{Man Pages, , , standards, GNU Standards}.
+
+If a @code{man} page is being kept only because it once existed, and is
+not being updated anymore, this @code{man} page should display a warning to
+that effect.  Here is a possible text:
+
+@quotation
+This documentation is no longer being maintained and may be inaccurate
+or incomplete.  The Texinfo documentation is now the authoritative source.
+@end quotation
+
+Some packages install man pages by default.  Other packages require an
+explicit @samp{make install-man} for getting them installed.  Maybe that
+a correct attitude might be to install @code{man} page by default
+(that is, through @samp{make install}), only if they are guaranteed to
+be up-to-date.  If @code{man} pages are not up-to-date, there might be
+no point in installing them with any @file{Makefile} target (letter from
+Karl, 1995-04-24).
+
+@node Reading other Manuals, README file, Man Pages, Documentation
+@section Reading other Manuals
+
+@xref{Reading other Manuals, , , standards, GNU Standards}.
+
+@node README file, AUTHORS file, Reading other Manuals, Documentation
+@section The README File
+
+@value{noxref}.
+
+Each distribution ought to contain a @file{README} file.  This is the
+first file an installer should look at and fully read after unpacking a
+distribution and prior to configuring it.  All other documentation files
+should be referred to, directly or indirectly, from the @file{README} file.
+
+If you have something you think the installer of your package @emph{should}
+know, make sure the @file{README} of your package states it.  Assume this
+file is being read.  Do not try, in particular, to make the configuration
+process more verbose, or to otherwise make your your installation more
+complex, because you fear installers will not read @file{README} files.
+
+If installers decide to @emph{not} read the @file{README} file and proceed
+directly with installation, this is their own choice and their own risk,
+which they shall assume.  Do not take the responsibility of their choice
+on your shoulders, nor feel otherwise guilty about it.  Maybe installing
+GNU packages had just become far too easy :-).
+
+For pretest releases @emph{only}, you might also decide to distribute
+a file @file{README-alpha} containing special comments for your friendly
+pretesters.  If you decide to follow the version numbering scheme suggested
+elsewhere in this document (@pxref{Releases}), you might automate its
+distribution by using the following code in your @file{configure.in}:
+
+@example
+changequote(,)dnl
+case $VERSION in
+  [0-9]*.[0-9]*[a-z]) DIST_ALPHA="README-alpha";;
+  [0-9]*.[0-9]*.[0-9]*) DIST_ALPHA="README-alpha";;
+  *) DIST_ALPHA=;;
+esac
+changequote([, ])dnl
+AC_SUBST(DIST_ALPHA)
+@end example
+
+@noindent
+So whenever the version has three parts, or has two parts suffixed
+by a single letter, @code{DIST_ALPHA} would be substituted with
+@samp{README-alpha}, otherwise left empty.  In your top-level
+@file{Makefile.am}, just ensure you have something like:
+
+@example
+EXTRA_DIST = @@DIST_ALPHA@@
+@end example
+
+@node AUTHORS file, THANKS file, README file, Documentation
+@section The AUTHORS File
+
+@value{noxref}.
+
+The AUTHORS file should collect a fairly exact copy of the trace, normally
+kept in file @file{/gd/gnuorg/assignments} on the FSF machines, for all
+legal paper exchanges between contributors and the GNU project for your
+particular package.  The file might have an introductory blurb similar to
+this one:
+
+@quotation
+Authors of GNU @var{package}.
+
+The following contributions warranted legal paper exchanges with the
+Free Software Foundation.  Also see files ChangeLog and THANKS.
+@end quotation
+
+@node THANKS file,  , AUTHORS file, Documentation
+@section The THANKS File
+
+@value{noxref}.
+
+In Emacs, thanks are not published for the people who just send bug fixes.
+There are too many of them.  The only people thanked are those who do
+larger amounts of work.  However, if you find it is OK to thank them all,
+that is OK (letter from Richard, 1995-09-20).
+
+All distributions should contain a @file{THANKS} file, starting with a
+wording similar to this one:
+
+@quotation
+GNU @var{package} THANKS file
+
+GNU @var{package} has originally been written by @var{original author}.
+Many people further contributed to GNU @var{package} by reporting problems,
+suggesting various improvements or submitting actual code.  Here is a
+list of these people.  Help me keep it complete and exempt of errors.
+@end quotation
+
+followed by a two column lists of contributors, one per line,
+alphabetically sorted.  The left column gives the contributor's name,
+while the right column gives the last known good electronic address for
+this contributor.
+
+You can also decide to send some kind of special greeting@footnote{An
+initial greeting might, for example, invite the person to become a
+pretester, and might explain how to do so.  Some dedicated pretesters of
+today started with a minor contribution.} when you initially add a name
+to your @file{THANKS} file.  The mere presence of a name in @file{THANKS}
+is then a flag to you that the initial greeting has been sent.
+
+Another good habit is to never put an electronic address in
+@file{ChangeLog}, only in @file{THANKS}.  So, when someone requests that
+his email address be updated, this only has to be done in one place.
+@file{ChangeLog} always quotes the full name@footnote{Full names usually
+never change.  This happened only once to our knowledge, when Michael
+Innis Bushnell became Thomas Bushnell.} of all contributors for each
+change, introduced by the expression @samp{From} or @samp{Reported by}.
+Those two files combined are very useful when you need to revise an area
+you do not know well, but which some users do.  You can then construct
+special purpose mailing lists of provably interested people, for solving
+together some specific problems.  This has been useful more than once.
+
+@node Managing Releases,  , Documentation, Top
+@chapter The Release Process
+
+@xref{Managing Releases, , , standards, GNU Standards}.
+
+@menu
+* Configuration::               How Configuration Should Work
+* Makefile Conventions::        Makefile Conventions
+* Releases::                    Making Releases
+@end menu
+
+@node Configuration, Makefile Conventions, Managing Releases, Managing Releases
+@section How Configuration Should Work
+
+@xref{Configuration, , , standards, GNU Standards}.
+
+@node Makefile Conventions, Releases, Configuration, Managing Releases
+@section Makefile Conventions
+
+@xref{Makefile Conventions, , , standards, GNU Standards}.
+
+@menu
+* Makefile Basics::             General Conventions for Makefiles
+* Utilities in Makefiles::      Utilities in Makefiles
+* Command Variables::           Variables for Specifying Commands
+* Directory Variables::         Variables for Installation Directories
+* Standard Targets::            Standard Targets for Users
+* Install Command Categories::  Install Command Categories
+@end menu
+
+@node Makefile Basics, Utilities in Makefiles, Makefile Conventions, Makefile Conventions
+@subsection General Conventions for Makefiles
+
+@xref{Makefile Basics, , , standards, GNU Standards}.
+
+@node Utilities in Makefiles, Command Variables, Makefile Basics, Makefile Conventions
+@subsection Utilities in Makefiles
+
+@xref{Utilities in Makefiles, , , standards, GNU Standards}.
+
+We have to segregate between @emph{installer} goals and @emph{maintainer}
+goals in @file{Makefile}s.  The same division applies to shell
+scripts.  I think GNU maintainers should make every effort so
+@code{all}, @code{install} and @code{uninstall} be fully portable.
+Those @file{Makefile} rules representing an installer goal, as well as
+@file{configure} files or subsidiary scripts, may not use non-@code{sh}
+commands, nor programs outside a specific set.  @dfn{Installer
+goals} and @dfn{installer scripts} satisfy the needs of any straight
+@emph{out-of-the-box} configuration, compilation, checking and installation
+of a GNU package.  We should also try making honest efforts so installers
+be able to do modify genuine C sources, or other simple source files,
+and complete a reinstallation by using nothing else than installer goals.
+
+However, some other goals require special tools.  For example, @code{dvi}
+requires @code{TeX} and @code{texi2dvi}.  Goals meant specifically
+meant for maintainers, like @code{dist}, may rely on many GNU programs,
+like GNU @code{tar}, GNU @code{date}, GNU @code{make} maybe, who knows,
+and surely, a proper shell.  The maintainer has a lot of freedom, here.
+If your shell is improper while @code{dist} works for the maintainer using
+GNU @code{bash}, this should not be perceived as a bug.  Installers may
+have to acquire and install proper tools.  @code{dist} is surely not a goal
+meant for usual installers of GNU packages, and does not need to show the
+same level of portability as usual goals, it does not have to take care
+for all and every broken situation out there.  If a script or rule uses
+commands or programs outside the prescribed set, it has to be related to a
+maintainer goal.  @dfn{Maintainer goals} and @dfn{maintainer scripts} allow
+for modification of a Texinfo source, a Bison grammar, @file{configure.in},
+any @file{Makefile.am}, or in fact, any other kind of genuine source from
+which distributed files were derived by the maintainer.  Installers may
+not just modify @emph{anything} in a GNU distribution, and still expect
+a reinstallation without any special tools pre-installed first.
+
+GNU packages might show unequal complexity in the source dependencies.
+It would be preferrable that all goals be available to all installer,
+of course, yet maintainer goals should not be redesigned as installer
+goals at the expense of the maintainability of the package.
+@c FIXME: to be expanded.
+
+A few shell constructs call for further comments, given a bit randomly,
+here.
+
+@table @code
+@item echo
+@itemx false
+@itemx true
+These may be processed especially by some shells, and also available as
+separate programs.  We consider the later hypothesis, and rather discuss
+these in the table following this one, below.
+
+@end table
+
+The allowable set of programs is repeated in full below, as most of these
+programs call for further comments.
+
+@table @code
+@item cat
+No options allowed.
+
+@item cmp
+Always use with option @samp{-s} and depend on the return status, not on the
+fact output was produced or not.
+
+@item cp
+@itemx mv
+No options allowed.
+
+@item diff
+@c FIXME:
+
+@item echo
+No options allowed.  Do not depend on special escape sequences, which
+are not equally supported in all @code{echo}s.  In particuler, never use
+@samp{\c} for preventing the new line at the end of echoed text.
+
+There is a feature by which, when @code{echo} has many arguments,
+they are all echoed one after the other, separated by a single space.
+It looks neater to us when this feature is not abused.  Prefer using a
+single argument with the proper spacing included, even if this means
+using surrouding quotes.  It also better prepares scripts for later
+internationalization.  For example, the second line below should be
+preferred:
+
+@example
+echo Some famous last words:
+echo 'Some famous last words:'
+@end example
+
+If you really need to control suppression new lines, you might have to
+configure out explicitly how @code{echo} behaves.  This surely requires
+some doing, so it might often be simple to just avoid the need if you can.
+Here is how @code{shar} does it in its generated archive scripts (the
+trick originated in Autoconf):
+
+@example
+if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
+  if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
+    shar_n= shar_c='
+'
+  else
+    shar_n=-n shar_c=
+  fi
+else
+  shar_n= shar_c='\c'
+fi
+@end example
+
+@noindent
+and usage of @code{echo}, once configuration done, looks like:
+
+@example
+echo $shar_n 'Question [no, yes] (no)?' $shar_c
+@end example
+
+Internationalization of shell scripts is closely related to usage of
+@code{echo}.
+@c FIXME: Discuss a little more lenghtly.
+
+@item expr
+You should not use the pattern matching facilities of @code{expr},
+which are not as universal as its arithmetic capabilities.  If you
+need matching only for recognizing patterns, without any substitution,
+merely base your code on the @code{case} construct of Bourne shells.
+If you need pattern matching with substitution, rather use @code{sed}.
+
+@item grep
+@itemx egrep
+The only allowable option is @samp{-v}.
+
+@item install-info
+@c FIXME:
+
+@item ln
+No options allowed.
+
+@item ls
+@c FIXME:
+
+@item mkdir
+@itemx rmdir
+No options allowed.
+
+@item pwd
+No options allowed.
+
+@item rm
+The only allowable option are @samp{-f} and @samp{-r}.  The @samp{-f}
+option should be preferred over using a @samp{-} before the @code{rm}
+call in a @file{Makefile} action (for suppressing the examination of the
+return code).
+
+@item sed
+Usage of semi-colons in @code{sed} scripts for separating successive
+@code{sed} commands is explicitely allowed.  Autoconf already use this
+feature, bearing the experience that this is portable.
+
+@item sleep
+@c FIXME:
+
+@item sort
+@c FIXME:
+
+@item tar
+@c FIXME:
+
+@item test
+Never, ever use the @code{[} form of the @code{test} program or shell
+construct in portable scripts or @file{Makefile}s.
+
+Allowable options for testing strings are @samp{-n}, @samp{-z}, @samp{!=}
+and @samp{=}.  It is not allowable to have @samp{-n} implied by the
+mere presence of a string, the @samp{-n} has to be explicitly written.
+Allowable options for testing files are @samp{-f}, @samp{-r} and @samp{-w}.
+
+Option @samp{-x}, for checking if a file is executable, is not available
+on all systems; use @samp{-f} instead and not @samp{-r}, as executable
+files are not even necessarily readable.
+
+Options @samp{-a} and @samp{-o}, implementing logical connectives, are
+not universally available either, and not always implemented the same
+way respective to priorities.  Use shell logical connectives instead.
+For example, the two following lines are usually equivalent, yet the
+second form should always be preferred:
+
+@example
+if test -f README -a -f NEWS; then
+if test -f README && test -f NEWS; then
+@end example
+
+@item touch
+No options allowed.
+
+@item true
+@itemx false
+The program @code{true} is not really needed, and the @code{sh} construct
+@samp{:} does just as well, so @code{true} is to be avoided in practice.
+@value{automake}.
+
+We also think that @code{false} can be completely avoided.  Please try
+avoiding it.
+
+@end table
+
+@node Command Variables, Directory Variables, Utilities in Makefiles, Makefile Conventions
+@subsection Variables for Specifying Commands
+
+@xref{Command Variables, , , standards, GNU Standards}.
+
+@node Directory Variables, Standard Targets, Command Variables, Makefile Conventions
+@subsection Variables for Installation Directories
+
+@xref{Directories Variables, , , standards, GNU Standards}.
+
+Some standards installation directories are worth more comments.
+
+@table @file
+@item bindir
+There is seemingly no standard directory for specifying
+architecture-independent programs, like @samp{$(prefix)/bin)} would
+(letter from Tom, 1996-04-24).  Further discussion on the Gnits list
+indicates that architecture-independent programs are rare enough that
+this omission is not really a problem.
+
+@item includedir
+Very few packages contain machine-specific header files, so it is not
+sure whether we need a convention for them.  @samp{$(prefix)/includes}
+is for all header files.  There is no convention for any other place to
+install them (letter from Richard, 1996-02-14).
+
+@end table
+
+@node Standard Targets, Install Command Categories, Directory Variables, Makefile Conventions
+@subsection Standard Targets for Users
+
+@xref{Standard Targets, , , standards, GNU Standards}.
+
+A few standard @file{Makefile} goals are worth more comments.
+
+@table @code
+@item all
+Despite what GNU standards say, many maintainers are quite attentive
+to @emph{not} use @samp{-g} while linking.  On a few systems (Linux in
+particular), this creates binaries unable to take advantage of shared
+libraries when later installed, yielding unacceptably big binaries.
+Also see @code{install-strip} below.
+
+@item install
+This goal should be further subdivided in @code{install-exec}
+and @code{install-data}.  On sites having mixed CPU architectures,
+@code{install-exec} should install everything which is architecture
+specific, while @code{install-data} should install files common to all
+architectures.  When installing on multiple architectures after the first,
+this would avoid having to rewrite all the @file{.info} files, etc.,
+on arches after the first (letter from Karl, 1995-05-13).  Of course,
+making @code{install} is equivalent to installing everything at once.
+@value{automake}.
+
+For installing Info files, GNU standards mandate using:
+
+@example
+-if test -f foo.info; then d=.; \
+else d=$(srcdir); fi; \
+@end example
+
+@noindent
+which is only useless complexity.  Info file are always generated in
+the source directories because they are meant to be later distributed
+all prepared: they @emph{ought} to be, per GNU standards.  These lines
+were introduced as an half-hearted attempt to handle hypothetical cases
+of read-only distributions (thinking about CD-ROMs).  These two lines
+have been confusing to many maintainers, who tried generalising them,
+introducing various other bugs and contradictions on the way.  Richard
+Stallman more or less agrees it was an error to have this trickery in
+GNU standards, but is reluctant to remove it, because he says it hurts
+nothing and he has more urgent things to do (yet he easily spent, arguing,
+many hundred times the energy it would have taken to kill the lines).
+
+Info files installation per GNU standards has another huge ugliness: it
+asks us to write rules relying on an unexisting, or at least unavailable,
+@code{install-info} program.  Such programs are being written by people,
+and later rejected by the FSF for various reasons (wrong specifications,
+wrong implementation language, wrong legalese, etc.)  While this is being
+done and undone, demands to maintainers through GNU standards are changing,
+and we kept updating our @file{Makefile.in}s and Texinfo files for no real
+purpose.  Some of us are loosing time at conformance, while the matter is
+not even set.  But by now, it seems that members of Gnits just does not
+call @code{install-info}, and provide, near the beginning of each Texinfo
+file, the image of the suggested @file{dir} menu items like this:
+
+@example
+@@ifinfo
+@@format
+START-INFO-DIR-ENTRY
+* @var{direntry-1}
+* @var{direntry-2}
+@dots{}
+END-INFO-DIR-ENTRY
+@@end format
+@@end ifinfo
+@end example
+
+@noindent
+The @var{direntry} lines, which really are menu items, ideally give easy
+pointers for the whole package, as well as one per program the package
+installs (so the command @samp{info @var{name}} works).
+
+Richard Stallman has supposedly been writing a new @code{install-info}
+program, accompanied by changes to Texinfo so we might write instead:
+
+@example
+@@dircategory <whatever> (we'll have to dream up a list of categories)
+@@direntry
+* @var{direntry-1}
+* @var{direntry-2}
+@dots{}
+@@end direntry
+@end example
+
+@noindent
+(letter from Karl, 1996-09-09).
+
+In the meantime, we do not bracket @file{dir} entries in support of an
+always evanescent @code{install-info} program.  We are just not interested
+at working right away at improving the functionality of hurded software.
+Let it become available first!
+
+However, just consider that it is a good idea that every maintainer
+use some brackets as a uniform way to @emph{document} the set of
+@file{dir} entries they want to suggest for their package.  This
+purpose is acceptable.  Let's stick to @samp{START-INFO-DIR-ENTRY} and
+@samp{END-INFO-DIR-ENTRY}, until a working solution gets @emph{fully}
+available to the GNU community.  In this particular case, it seems that
+the mere statement in GNU standards brought us nowhere, and slowly.
+
+@item install-strip
+This goal should of course supported for mere compliance, yet it is not
+very useful as designed.  GNU standards speak of @cite{Users who don't
+mind being helpless} and @cite{Devil-may-care users}, and this biased
+wording and thinking let us guess that GNU standards did not overly try
+being helpful at it.  Nearly everybody prefer @emph{all} their binaries
+installed stripped by default, so there is an alternative mechanism in
+Gnits that installers might like.
+
+In their environment, they may permanently setup at login time some
+definitions, using code similar to this one (@code{sh} syntax):
+@example
+export INSTALL_DATA; INSTALL_DATA='install -m 644'
+export INSTALL_PROGRAM; INSTALL_PROGRAM='install -m 755 -s'
+export INSTALL_SCRIPT; INSTALL_SCRIPT='install -m 755'
+@end example
+
+@noindent
+so the default behaviour they want is enforced automatically, and without
+ugly diagnostics while installing scripts.  @value{automake}.
+
+@item clean
+@itemx distclean
+@itemx maintainer-clean
+It seems that many of us have difficulty understanding exactly where a
+particular derived file should be removed.  Here are some practical rules
+which would help taking such decisions.
+
+@itemize @bullet
+@item
+If @samp{make all} did it, @samp{make clean} removes it.
+@item
+If @samp{./configure} did it, @samp{make distclean} removes it.
+@item
+If @emph{you} did it, @samp{make maintainer-clean} removes it :-).
+@end itemize
+
+The @code{distclean} goal, in spirit, is for bringing a distribution
+back to distribution state.  This is a useful goal people should use
+before reconfiguring a directory for a different architecture, but it
+is less useful when people are using different build directories, one
+per architecture, when their @code{make} permits of course.  As for the
+@code{maintainer-clean} goal, it is @emph{not} for users and installers,
+generally.  You may need fairly special tools to reshape a distribution
+after a @code{maintainer-clean}.  Some installers stubbornly insist for
+using it, and submit reports about it.  Please, let it plainly be their
+problem.  By considering their reports, you are encouraging the abuse.
+
+As parallel @code{make} goes, we want all the @code{mostlyclean}s from done
+before all the @code{clean}s, themselves before all the @code{distclean}s.
+Dependencies over some configuration files like @file{config.status}
+force us to be very careful at removing them only last, especially when
+recursive @code{make} is involved.  @value{automake}.
+
+GNU Standards require a bit of interpretation, here.  If Richard put that
+(@file{ID} and) @file{TAGS} should be removed in @code{maintainer-clean},
+this is only because he traditionally packaged a ready @file{TAGS}
+in his own distributions, so it would not make sense removing these in
+@code{distclean} if this goal should merely bring back the package to
+distribution state.
+
+However, if @file{ID} and @file{TAGS} are @emph{not} being distributed,
+as it seems to be the current trend, these have to be built after the
+unpacking, so removing them within @code{distclean} makes perfect sense,
+and the GNU Standards are just a bit oldish on these things.
+
+I wonder how difficult it would be for Automake to know somewhat whether
+@file{ID} or @file{TAGS} are meant to be distributed in a package, or not,
+and decide where to remove these, accordingly.
+
+@item check
+Programs which are only used by the @code{check} goal should only be built
+when actually checking (letter from Tom, 1996-01-24).  Automake offers
+the @code{check_PROGRAMS} macro for making this easy.
+
+One possibility for @samp{make check} is to use DejaGNU.  Properly written
+DejaGNU test suites can be run even when the program is cross-compiled, by
+copying the program to an appropriate host and running there (letter from
+Tom, 1996-01-24).  But DejaGNU requires TCL, so checking through DejaGNU
+is fairly demanding, and put @samp{make check} more among the maintainer
+goals than among the installer goals.  Automake offers alternate means
+so it is possible to write checks available to all installers.  We should
+prefer, and by far, offering @samp{make check} as an installer goal.
+
+@item id
+@itemx tags
+@itemx ID
+@itemx TAGS
+A goal named @code{id} should have @code{ID} as its sole dependency, so
+the command @samp{make id} will regenerate the project's @file{ID} file.
+A goal named @code{tags} should have @code{TAGS} as its sole dependency,
+so the command @samp{make tags} will regenerate the project's @file{TAGS}
+file.
+
+In a distribution having a shallow or deep directory structure, @file{ID}
+and @file{TAGS} files may be generated in more than one subdirectory.
+At the top-level, a global @file{TAGS} should be generated which
+uses the @dfn{include} feature for making all tags available at once.
+Automake currently implements this solution, which is satisfying so far.
+
+GNU Standards do not speak of @file{ID} at all.  GNU Standards are
+unclear, or at least fuzzy, about the fact @file{TAGS} should be part of
+distributions or not.  Gnits members do not read GNU Standards all the
+same way on this particular aspect.
+
+It seems that the current trend is to @emph{not} distribute @file{ID}
+and @file{TAGS} files, but leave goals so the installer can rebuild them
+easily, if needed.  Whether a package distributes @file{TAGS}, it should
+also distribute @file{ID}.  If it does not distribute @file{TAGS}, it
+should not distribute @file{ID} either.
+
+We may question the utility of distributing pre-made @file{ID} or
+@file{TAGS} files.  People using them will be programmers.  Programmers who
+know what to do with an @file{ID} file will have @code{mkid} installed---in
+fact, one can't even use an @file{ID} file unless @code{mkid} (and
+therefore @code{lid}) is installed.  People who use @file{TAGS} will
+be @code{emacs}-users, and will therefore have @code{etags} installed,
+and they'll know how to type @samp{make TAGS}.  So, in the interest of
+fighting distribution bloat, we don't think either @file{ID} or @file{TAGS}
+files should be in the distribution (letter from Greg, 1996-02-20).
+
+@end table
+
+@node Install Command Categories,  , Standard Targets, Makefile Conventions
+@subsection Install Command Categories
+
+@xref{Install Command Categories, , , standards, GNU Standards}.
+
+@node Releases,  , Makefile Conventions, Managing Releases
+@section Making Releases
+
+@xref{Releases, , , standards, GNU Standards}.
+
+Various releases of a given packages are distinguished by their version
+numbers.  Versions are usually made up by two or three decimal numbers,
+separated by periods.  An officially released package ideally has
+two numbers, a pretest release often have either three numbers or two
+numbers immediately suffixed with a small case letter.  Versions should
+be @emph{increasing} as time goes, for example, acceptable successions
+might be:
+
+@example
+1.0
+1.1
+1.2
+1.2.1
+1.2.2
+1.2.3
+1.2.4
+1.3
+1.3.1
+1.4
+@end example
+
+@noindent
+or maybe:
+
+@example
+@dots{}
+3.17
+3.17a
+3.17b
+3.17c
+3.18
+@end example
+
+A much simplified statement of the overall goal is that the following
+recipe should usually work, when one wants to install any GNU package on
+his Unix systems.
+
+@example
+% ftp prep.ai.mit.edu
+ftp> anonymous
+ftp> @var{user}@@@var{fully.qualified.domain}
+ftp> binary
+ftp> cd pub/gnu
+ftp> get @var{package}-@var{version}.tar.gz
+ftp> bye
+% tar xfz @var{package}-@var{version}.tar.gz
+% cd @var{package}-@var{version}
+% cat README
+% ./configure
+% make check install
+@end example
+
+Of course, variations are endless for both maintainers and installers,
+but a nice goal is trying to prepare things so that the recipe above does
+something sensible, as stated.
+
+@contents
+
+@bye

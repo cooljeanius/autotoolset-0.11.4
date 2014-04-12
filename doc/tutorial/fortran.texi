@@ -1,0 +1,853 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Fortran with Autoconf, Maintaining Documentation, C++ and Autoconf, Top
+@chapter Fortran with Autoconf
+
+@menu
+* Introduction to Fortran support::  
+* Fortran compilers and linkage::  
+* Walkthrough a simple example::  
+* The gory details::            
+* Portability problems with Fortran::  
+@end menu
+
+@node Introduction to Fortran support, Fortran compilers and linkage, Fortran with Autoconf, Fortran with Autoconf
+@section Introduction to Fortran support
+
+This chapter is devoted to Fortran. We will show you how to build programs
+that combine Fortran and C or C++ code in a portable manner. The main reason
+for wanting to do this is because there is a lot of free software written
+in Fortran. If you browse @samp{http://www.netlib.org/} you will find a 
+repository of lots of old, archaic, but very reliable free sources. 
+These programs encapsulate a lot of experience in numerical analysis research
+over the last couple of decades, which is crucial to getting work done.
+All of these sources
+have been written in Fortran. As a developer today, if you know other 
+programming languages, it is unlikely that you
+will want to write original code in Fortran. You may need, however, to use
+legacy Fortran code, or the code of a neighbour who still writes in Fortran. 
+
+The most portable way to mix Fortran with your C/C++ programs is to translate
+the Fortran code to C with the @samp{f2c} compiler and compile everything with 
+a C/C++ compiler. The @samp{f2c} compiler is available at 
+@samp{http://www.netlib.org/} but as we will soon explain, it is also 
+distributed with the @samp{autotools} package. Another alternative is to use
+the GNU Fortran compiler @samp{g77} with @samp{g++} and @samp{gcc}. This
+compiler is portable among many platforms, so if you want to use a native
+Fortran compiler without sacrificing portability, this is one way to do it.
+Another way is to use your OS's native Fortran compiler, which is usually
+called @samp{f77}, @strong{if} it is compatible with @samp{g77} and @samp{f77}.
+Because performance is also very important in numerical codes, a good  
+strategy is to prefer to use the native compiler if it is compatible,
+and support @samp{g77} as a fall-back option. Because many sysadmins don't
+install @samp{g77} supporting @samp{f2c} as a third fall-back is also
+a good idea. 
+
+Autotools provides support for configuring and building source code written
+in part or in whole in Fortran. The implementation is based on the build
+system used by GNU Octave, which has been generalized for use by any program.
+
+@c =========================================================================
+
+@node Fortran compilers and linkage, Walkthrough a simple example, Introduction to Fortran support, Fortran with Autoconf
+@section Fortran compilers and linkage
+
+The traditional Hello world program in Fortran looks like this:
+@example
+c....:++++++++++++++=
+      PROGRAM MAIN
+      PRINT*,'Hello World!'
+      END
+@end example
+@noindent
+All lines that begin with @samp{c} are comments. The first line is the
+equivalent of @code{main()} in C. The second line says hello, and the 
+third line indicates the end of the code. It is important that all command
+lines are indented by 7 spaces, otherwise the compiler will issue a syntax 
+error. Also, if you want to be ANSI compliant, you must write your code all
+in caps. Nowadays most compilers don't care, but some may still do. 
+
+To compile this with @samp{g77} (or @samp{f77}) you do something like:
+@example
+% g77 -o hello hello.f
+% hello
+@end example
+@noindent
+To compile it with the f2c translator:
+@example
+% f2c hello.f
+% gcc -o hello hello.c -lf2c -lm
+@end example
+@noindent
+where @samp{-lf2c} links in the translator's system library.
+In order for this to work, you will have to make sure that the header file
+@code{f2c.h} is present since the translated code in @file{hello.c} includes
+it with a statement like 
+@example
+#include "f2c.h"
+@end example
+@noindent
+which explicitly requires it to be present in the current working directory.
+
+In this case, the @samp{main} is written in Fortran. However most of the
+Fortran you will be using will actually be subroutines and functions. 
+A subroutine looks like this:
+@example
+c....:++++++++++++++
+      SUBROUTINE FHELLO (C)
+      CHARACTER *(*) C
+      PRINT*,'From Fortran: ',C
+      RETURN
+      END
+@end example
+@noindent
+This is the analog of a @samp{void} function in C, because it takes
+arguments but doesn't return anything. The prototype declaration is
+@dfn{K&R} style: you list all the arguments in parenthesis, seperated with
+commas, and you declare the types of the variables in the subsequent lines.
+
+Suppose that this subroutine is saved as @file{fhello.f}. To call it from
+C you need to know what it looks like from the point of the C compiler. 
+To find out type:
+@example
+% f2c -P fhello.f
+% cat fhello.P
+@end example
+@noindent
+You will find that this subroutine has the following prototype declaration:
+@example
+extern int fhello_(char *c__, ftnlen c_len);
+@end example
+@noindent
+It may come as a surprise, and this is a moment of revelation, but although
+in Fortran it appears that the subroutine is taking @emph{one} argument, in
+C it appears that it takes @strong{two}! And this is what makes
+it difficult to link code in a portable manner between C and Fortran. In
+C, everything is what it appears to be. If a function takes two arguments,
+then this means that down to the machine language level, there is two 
+arguments that are being passed around. In Fortran, things are being hidden
+from you and done in a magic fashion. The Fortran programmer thinks that he
+is passing one argument, but the compiler compiles code that actually passes
+two arguments around. In this particular case, the reason for this is that
+the argument you are passing is a string. In Fortran, strings are not
+null-terminated, so the @samp{f2c} compiler passes the length of the string
+as an extra hidden argument. This is called the @dfn{linkage method} of the
+compiler. Unfortunately, linkage in Fortran is not standard, and there
+exist compilers that handle strings differently. For example, some compilers
+will prepend the string with a few bytes containing the length and pass
+a pointer to the whole thing. This problem is not limitted to strings.
+It happens in many other instances. 
+The @samp{f2c} and @samp{g77} compilers follow compatible linkage, and
+we will use this linkage as the @emph{ad-hoc standard}. A few proprietary
+Fortran compilers like the Dec Alpha @samp{f77} and the Irix @samp{f77}
+are also @samp{f2c}-compatible. The reason for this is because most of
+the compiler developers derived their code from @samp{f2c}. So although
+a standard was not really intended, there we have one anyway.
+
+A few things to note about the above prototype declaration is that the 
+symbol @samp{fhello} is in lower-case, even though in Fortran we write
+everything uppercase, and it is appended with an underscore. On some platforms,
+the proprietary Fortran compiler deviates from the @samp{f2c} standard either 
+by forcing
+the name to be in upper-case or by omitting the underscore. Fortunately,
+these cases can be detected with Autoconf and can be worked around with
+conditional compilation. However, beyond this, other portability problems,
+such as the strings issue, are too involved to deal with and it is best
+in these cases that you fall back to @samp{f2c} or @samp{g77}. 
+A final thing to note is that although @samp{fhello} doesn't return anything,
+it has return type @samp{int} and not @samp{void}. The reason for this is
+that @samp{int} is the default return type for functions that are not
+declared. Therefore, to prevent compilation problems, in case the user forgets
+to declare a Fortran function, @samp{f2c} uses @samp{int} as the return
+type for subroutines.
+
+In Fortran parlance, a @dfn{subroutine} is what we'd call a @samp{void} 
+function. To Fortran programmers in order for something to be a 
+@dfn{function} it has to return something back. This reflects on the syntax.
+For example, here's a function that adds two numbers and returns the
+result:
+@example
+c....:++++++++++++++++
+      DOUBLE PRECISION FUNCTION ADD(A,B)
+      DOUBLE PRECISION A,B
+      ADD = A + B
+      RETURN
+      END
+@end example
+@noindent
+The name of the function is also the name of the return variable. 
+If you run this one through @samp{f2c -P} you will find that the C prototype 
+is:
+@example
+extern doublereal add_(doublereal *a, doublereal *b);
+@end example
+@noindent
+There's plenty of things to note here:
+@itemize @bullet
+@item
+The typenames being used are funny. @samp{doublereal}? what's that!?
+These are all defined in a header file called @samp{f2c.h} which you are 
+supposed to include in your source code before declaring any prototypes.
+We will show you how this is all done in the next section. The following
+table showes the types that are most likely to interest you. For more info,
+take a look at the @samp{f2c.h} file itself:
+@example
+  integer         -> int
+  real            -> float
+  doublereal      -> double
+  complex         -> struct @{ real r,i; @};
+  doublecomplex   -> struct @{ doublereal r,i; @};
+@end example
+@noindent
+@item
+The arguments are passed by pointer. In Fortran all arguments are passed
+by reference. The @samp{f2c} compiler implements this by passing the 
+arguments by pointer. On the C/C++ level you may want to wrap the fortran
+routine with another routine so that you don't have to directly deal with 
+pointers all of the time.
+@item
+The value returned now is not an @samp{int} but @samp{doublereal}.
+Of course, the name of the function is lower-case, as always, and 
+there is an underscore at the end.
+@end itemize
+
+A more interesting case is when we deal with complex numbers. Consider 
+a function that multiplies two complex numbers:
+@example
+c....:++++++++++++++++++++++++++++++
+      COMPLEX*16 FUNCTION MULT(A,B)
+      COMPLEX*16 A,B
+      MULT = A*B
+      RETURN
+      END
+@end example
+@noindent
+As it turns out, the prototype for this function is:
+@example
+extern Z_f mult_(doublecomplex *ret_val, doublecomplex *a, doublecomplex *b);
+@end example
+@noindent
+Because complex numbers are not a native type in C, they can not be returned
+efficiently without going through at least one copy. Therefore, for this
+special case the return value is placed as the first argument in the prototype!
+Actually despite many people's feelings that Fortran must die, it is still
+the best tool to use to write optimized functions that are heavy on complex
+arithmetic.
+
+@c ==========================================================================
+
+@node Walkthrough a simple example, The gory details, Fortran compilers and linkage, Fortran with Autoconf
+@section Walkthrough a simple example
+
+Now that we have brought up some of the issues about Fortran linkage, let's
+show you how to work around them. We will write a simple Fortran function,
+and a C program that calls it, and then show you how to turn these two into
+a GNU-like package, enhanced with a configure script and the works.
+This discussion assumes that you have installed the utilities in 
+@samp{autotools}, the package with which this tutorial is being distributed. 
+
+First, begin by building a directory for your new package. Because this project
+will involve Fortran, you need to pass the @samp{-f} flag to @samp{acmkdir}:
+@example
+% acmkdir -t fortran foo
+@end example
+@noindent
+The @samp{-t} flag directs @samp{acmkdir} to unpack a copy of the @samp{f2c}
+translator and to build proper toplevel @samp{configure.in} and 
+@samp{Makefile.am} files. This will take a while, so relax and stretch a 
+little bit.
+
+Now enter the @file{foo-0.1} directory and look around:
+@example
+% cd foo-0.1
+% cat configure.in
+AC_INIT
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(hello,0.1)
+LF_CONFIGURE_CC
+LF_CONFIGURE_CXX
+AC_PROG_RANLIB
+LF_HOST_TYPE
+LF_PROG_F77_PREFER_F2C_COMPATIBILITY
+dnl LF_PROG_F77_PREFER_NATIVE_VERSION
+LF_PROG_F77
+LF_SET_WARNINGS
+AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+AC_OUTPUT([Makefile fortran/Makefile f2c_comp
+        doc/Makefile m4/Makefile src/Makefile ])
+   
+% cat Makefile.am
+EXTRA_DIST = reconf configure
+SUBDIRS = fortran m4 doc src
+@end example
+@noindent
+There are some new macros in @file{configure.in} and a new subdirectory:
+@file{fortran}. There is also a file that looks like a shell script
+called @file{f2c_comp.in}.
+We will discuss the gory details about all this in the
+next section. 
+Now let's write the code. Enter the @file{src} directory and type:
+@example
+$ cd src
+$ mkf2c
+@end example
+@noindent
+This creates the following files:
+@table @file
+@item f2c.h
+This is the header file that we alluded to in the previous section. It 
+needs to be present on all directory levels that contain Fortran code.
+It defines all the funny typenames that appear in @file{f2c} compatible
+prototype declarations.
+@item f2c-main.c
+This file contains some silly definitions. You need to link it in whenever
+you link together a program, but don't add it to various libraries, because
+then, when you link some of the libraries together you will get error
+messages for duplicate symbols.
+The contents of this file are:
+@example
+#ifdef __cplusplus
+extern "C" @{
+#endif
+
+#if defined (sun)
+int MAIN_ () @{ return 0; @}
+#elif defined (linux) && defined(__ELF__)
+int MAIN__ () @{ return 0; @}
+#endif
+
+#ifdef __cplusplus
+@}
+#endif
+@end example
+@noindent
+@end table
+@noindent
+Now, time to write some code:
+@example
+$ vi fhello.f
+$ vi hello.cc
+@end example
+@noindent
+with
+@table @file
+@item fhello.f
+@example
+c....:++++++++++++++++++++++++++++++
+      SUBROUTINE FHELLO (C)
+      CHARACTER *(*) C
+      PRINT*,'From Fortran: ',C
+      RETURN
+      END
+@end example
+@noindent
+@item hello.cc
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+#include <string.h>
+#include "f2c.h"
+#include "f77-fcn.h"
+
+extern "C"
+@{
+ extern int f77func(fhello,FHELLO)(char *c__, ftnlen c_len);
+@}
+
+main()
+@{
+ char s[30];
+ strcpy(s,"Hello world!");
+ f77func(fhello,FHELLO)(s,ftnlen(strlen(s)));
+@}
+@end example
+@noindent
+@end table
+@noindent
+The definition of the @code{f77func} macro is included in @file{acconfig.h}
+automatically for you if the @code{LF_CONFIGURE_FORTRAN} macro is included
+in your @file{configure.in}. The definition is as follows:
+@example
+#ifndef f77func
+#if defined (F77_APPEND_UNDERSCORE)
+#  if defined (F77_UPPERCASE_NAMES)
+#    define f77func(f, F) F##_
+#  else
+#    define f77func(f, F) f##_
+#  endif
+#else
+#  if defined (F77_UPPERCASE_NAMES)
+#    define f77func(f, F) F
+#  else
+#    define f77func(f, F) f
+#  endif
+#endif
+#endif
+@end example
+@noindent
+Recall that we said that the issue of whether to add an underscore and
+whether to capitalize the name of the routine can be dealt with conditional
+compilation. This macro is where this conditional compilation happens.
+The @code{LF_PROG_F77} macro will define 
+@example
+F77_APPEND_UNDERSCORE
+F77_UPPERCASE_NAMES
+@end example
+@noindent
+appropriately so that @code{f77func} does the right thing.
+
+To compile this, create a @file{Makefile.am} as follows:
+@example
+SUFFIXES = .f
+.f.o:
+        $(F77) -c $<
+         
+bin_PROGRAMS = hello
+hello_SOURCES = hello.cc fhello.f f2c.h f2c-main.c
+hello_LDADD = $(FLIBS)
+@end example
+@noindent
+Note that the above @file{Makefile.am} is only compatible with version
+1.3 of Automake, or newer versions. The previous versions don't grok
+Fortran filenames on the @file{hello_SOURCES} so you may want to upgrade.
+
+Now you can compile and run the program:
+@example
+$ cd ..
+$ reconf
+$ configure
+$ make
+$ src/hello
+ From Fortran: Hello world!
+@end example
+@noindent
+If you have a native @samp{f77} compiler that was used, or the portable
+@samp{g77} compiler you missed out the coolness of using @samp{f2c}. 
+In order to check @emph{that} out do:
+@example
+$ make distclean
+$ configure --with-f2c
+$ make
+@end example
+@noindent
+and witness the beauty! The package will begin by building an @file{f2c}
+binary for your system. Then it will build the Fortran libraries. And finally,
+it will build the hello world program which you can run as before:
+@example
+$ src/hello
+@end example
+@noindent
+It may seem an overkill to carry around a Fortran compiler. On the other hand
+you will find it very convenient, and the @samp{f2c} compiler isn't really
+that big. If you are spoiled on a system that is well equiped and with a good
+system administrator, you may find it a nasty surprise one day when you 
+discover that the rest of the world is not necessarily like that. 
+
+If you download a real Fortran package from Netlib you might find it very
+annoying having to enter the filenames for all the Fortran files in
+@samp{*_SOURCES}. A work-around is to put all these files in their own
+directory and then do this @code{awk} trick:
+@example
+% ls *.f | awk '@{ printf("%s ", $1) @}' > tmp
+@end example
+@noindent
+The awk filter will line-up the output of @code{ls} in one line. You can use
+your editor to insert its contents to your @file{Makefile.am}. Eventually
+I may come around to write a utility for doing this automagically.
+
+@c =========================================================================
+
+@node The gory details, Portability problems with Fortran, Walkthrough a simple example, Fortran with Autoconf
+@section The gory details
+
+The best way to get started is by building the initial directory tree with
+@samp{acmkdir} like this:
+@example
+% acmkdir -t fortran <directory-filename>
+@end example
+@noindent
+This will install all the standard stuff. It will also install a directory
+called @file{fortran} containing a copy of the f2c compiler and 
+@file{f2c_comp}, a shell script invoking the compiler in a way that it
+looks the same as invoking a real compiler
+
+The file @file{configure.in} uses the following special macros:
+@table @strong
+@item LF_PROG_F77_PREFER_F2C_COMPATIBILITY
+This macro directs Autoconf that the user prefers @code{f2c} compatibility
+over performance. In general Fortran programmers are willing to sacrifice
+everything for the sake of performance. However, if you want to use 
+Fortran code with C and C++ code, you will have many reasons to also
+give importance to @code{f2c} compatibility. Use this macro to state this
+preference. The effect is that if the installer's platform has a native
+Fortran compiler installed, it will be used only if it is @code{f2c}
+compatible. This macro must be invoked before invoking 
+@code{LF_PROG_F77}.
+@item LF_PROG_F77_PREFER_NATIVE_VERSION
+This macro directs Autoconf that the user prefers performance and 
+doesn't care about @code{f2c} compatibility. You may want to invoke this
+instead if your entire program is written in Fortran. 
+This macro must be invoked before invoking @code{LF_PROG_F77}.
+@item LF_PROG_F77
+This macro probes the installer platform for an appropriate Fortran
+compiler. It exports the following variables to Automake:
+@table @samp
+@item F77
+The name of the Fortran compiler
+@item FFLAGS
+Flags for the Fortran compiler
+@item FLIBS
+The link sequence for the compiler runtime libraries
+@end table
+It also checks whether the compiler appends underscores to the symbols
+and whether the symbols are written in lowercase or uppercase characters
+and defines the following preprocessor macros:
+@table @code
+@item F77_APPEND_UNDERSCORE
+Define if the compiler appends an underscore to the symbol names.
+@item F77_UPPERCASE_NAMES
+Define if the compiler uses uppercase for symbol names.
+@end table
+These macros are used to define @samp{f77func} macro which takes two arguments;
+the name of the Fortan subroutine or function in lower case, and then in 
+upper case, and returns the correct symbol name to use for invoking it from
+C or C++. To obtain the calling sequence for the symbol do:
+@example
+% f2c -P foo.f
+@end example
+@noindent
+on the file containing the subroutine and examine the file @file{foo.P}.
+In order for this macro to work properly you must precede it with calls
+to
+@example
+AC_PROG_CC
+AC_PROG_RANLIB
+LF_HOST_TYPE
+@end example
+@noindent
+You also need to call one of the two @code{*_PREFER_*} macros. The default
+is to prefer @code{f2c} compatibility.
+@end table
+In addition to invoking all of the above, you need to make provision for
+the bundled fortran compiler by adding the following lines at the end of
+your @file{configure.in}:
+@example
+AC_CONFIG_SUBDIRS(fortran/f2c fortran/libf2c)
+AC_OUTPUT([Makefile fortran/Makefile f2c_comp
+           doc/Makefile m4/Makefile src/Makefile])
+@end example
+@noindent
+The @code{AC_CONFIG_SUBDIRS} macro directs @file{configure} to execute the
+configure scripts in @file{fortran/f2c} and @file{fortran/libf2c}. 
+The stuff in @code{AC_OUTPUT} that are important to Fortran support are
+building @file{fortran/Makefile} and @file{f2c_comp}. Because, 
+@file{f2c_comp} is mention in @code{AC_OUTPUT}, Automake will automagically
+bundle it when you build a source code distribution.
+
+If you have originally set up your directory tree for a C or C++ only 
+project and later you realize that you need to also use Fortran, you can
+upgrade your directory tree to Fortran as follows:
+@itemize @bullet
+@item
+Create the @file{fortran} directory by invoking
+@example
+% mkfortran
+@end example
+@noindent
+and the @file{f2c_oomp} by invoking
+@example
+% mkf2c_comp
+@end example
+@noindent
+both on the toplevel directory level.
+@item
+Add the following macro invokations in the middle of @file{configure.in}, in
+this order:
+@example
+AC_PROG_CC
+AC_PROG_RANLIB
+LF_HOST_TYPE
+LF_PROG_F77_PREFER_F2C_COMPATIBILITY
+LF_PROG_F77
+@end example
+@noindent
+If you have invoked @code{LF_CONFIGURE_CC} then there is no need to 
+invoke @code{AC_PROG_CC} again.
+@item
+Add the following invokation just before @code{AC_OUTPUT}:
+@example
+AC_CONFIG_SUBDIRS([fortran/f2c fortran/libf2c])
+@end example
+@noindent
+and add the following files to @code{AC_OUTPUT}:
+@example
+fortran/Makefile f2c_comp
+@end example
+@noindent
+@item
+Rebuild with
+@example
+% make distclean
+% ./reconf
+% ./configure
+% make
+@end example
+@noindent
+It is important to call @file{reconf} for the changes to take effect.
+@end itemize
+
+If a directory level contains Fortran source code, then it is important
+to let Automake know about it by adding the following lines in the 
+beginning.
+@example
+SUFFIXES = .f
+.f.o:
+        $(F77) -c $<
+@end example
+@noindent
+This is pretty much the same idea with the embedded text compiler. 
+You can list the Fortran source code filenames in the @code{SOURCES}
+assignments together with your C and C++ code. To link executables,
+you must add @code{$(FLIBS)} to @code{LDADD} and link against 
+@file{f2c-main.c} just as in the hello world example. Please do
+not include @file{f2c-main.c} in any libraries however.
+
+Now consider the file @file{hello.cc} line by line. 
+First we include the standard configuration stuff:
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+#include <string.h>
+@end example
+@noindent
+Then we include the Fortran related header files:
+@example
+#include "f2c.h"
+@end example
+@noindent
+Then we declare the prototypes for the Fortran subroutine:
+@example
+extern "C"
+@{
+ extern int f77func(fhello,FHELLO)(char *c__, ftnlen c_len);
+@}
+@end example
+@noindent
+There is a few things to note here:
+@itemize @bullet
+@item
+You should never ever declare Fortran prototypes in header files. The 
+definition of prototypes is dependent on the @samp{f77func} macro,
+which is dependent on a correct definition of the 
+@samp{F77_APPEND_UNDERSCORE} and @samp{F77_UPPERCASE_NAMES} C preprocessor
+macros. You should be nice and not force people who don't want to use Fortran
+to have to get these macros defined in order to use your header files. 
+If you want to export functionality written in Fortran to C users, then wrap 
+the Fortran subroutines and functions with corresponding C subroutines and
+functions and export these instead on your header file. 
+@item
+You should never use the actual name of the Fortran routine in C, because
+doing so is not portable. Instead you should use the @samp{f77func} macro,
+which takes two arguments: the name of the routine in small letters, and
+the name of the routine in all-caps. The right name of the two is chosen,
+and the underscore is appended if necessary. 
+@item
+If the source file in which you are writing down the Fortran declarations
+is compiled with a C++ compiler, as is true in this case, then you must
+surround the declarations with:
+@example
+extern "C"
+@{
+@}
+@end example
+@noindent
+The C++ language uses @dfn{name mangling} to support function overloading.
+This means that if you have two C++ functions called:
+@example
+int foo(double x);
+int foo(double x,double y);
+@end example
+@noindent
+the C++ compiler internally assigns them different names in an intelligent
+fashion to avoid conflict. Just like the Fortran compiler does things 
+behind your back, so does the C++ compiler to support some of its special
+features. Any code written between @samp{extern "C"} is compiled with name
+mangling disabled. This is necessary for the Fortran declarations because
+we don't want the names of the Fortran subroutines to be mangled. 
+@item
+When we actually invoke the Fortran subroutine in the @samp{main} we 
+make sure to type-cast all the types to what appears on the prototype
+above. In this case we do:
+@example
+f77func(fhello,FHELLO)(s,ftnlen(strlen(s)));
+@end example
+@noindent
+This may seem pedantic but it is necessary for the C++ compiler,
+and it is a good habit even for C programmers. Since Fortran routines
+are supposed to be wrapped, this is not too much to ask.
+@item
+You need to be very careful with integers. On some systems @samp{long int}
+is 64 bit and @samp{int} is 32 bit. This means that you should avoid 
+@samp{long int} like the plague! The safest way to deal with integers is to 
+make sure that you always cast your integer stuff to @code{integer}
+explicitly. Unfortunately the standard header file distributed with
+@code{f2c} defines @code{integer} as @code{long int} to account for 16-bit
+machines. That's a bad idea, and on the 64-bit Dec Alpha it is a bug. The 
+header file distributed with
+@file{mkf2c} does the right thing.
+@item
+Make sure to list both @file{f2c.h} and @file{f2c-main.c} in 
+@code{SOURCES} assignments on your @file{Makefile.am} to make sure that
+they are included in the source code distribution.
+@end itemize
+
+@node Portability problems with Fortran,  , The gory details, Fortran with Autoconf
+@section Portability problems with Fortran
+
+Fortran is infested with portability problems. There exist two important
+Fortran standards: one that was written in 1966 and one that was written
+in 1977. The 1977 standard is considered to be @emph{the} standard Fortran.
+Most of the Fortran code is written by scientists who have never had any
+formal training in computer programming. As a result, they often write
+code that is dependent on vendor-extensions to the standard, and not 
+necessarily easy to port. The standard itself is to blame as well, since
+it is sorely lacking in many aspects. For example, even though standard
+Fortran has both @code{REAL} and @code{DOUBLE PRECISION} data types
+(corresponding to @code{float} and @code{double}) the standard only
+supports single precision complex numbers (@code{COMPLEX}). Since many
+people will also want double precision complex numbers, many vendors provided
+extensions. Most commonly, the double precision complex number is called
+@code{COMPLEX*16} but you might also see it called @code{DOUBLE COMPLEX}.
+Other such vendors extensions include providing a @code{flush} operation
+of some sort for file I/O, and other such esoteric things. 
+
+To make things
+worse (or better) now there are two more standards out there: the 1990
+standard and the 1995 standard. A 2000 standard is also at work. 
+Fortran 90 and its successors try to make Fortran more like C and C++, and
+even though @emph{there are no free compilers} for both variants,
+they are becoming alarmingly popular with the scientific community.
+In fact, I think that the main reason why these variants of Fortran are
+being developed is to make more bussiness for proprietary compiler 
+developers. So far as I know, Fortran 90 does not provide any features
+that C++ can not  support with a class library extension. Moreover
+Fortran 90 does not have the comprehensive foundation that allows C++ to be
+a self-extensible language. This makes it less worthwhile to invest effort
+on Fortran 90, because it means that eventually people will want features that
+can only be implemented by redefining the language and rewriting the 
+compilers for it. Instead, in C++, you can add features to the language
+simply by writing C++ code, because it has enough core features to allow
+virtually unlimited self-extensibility. 
+
+If your primary interest is portability and free software, you should stay 
+away from Fortran
+90 as well as Fortran 95, until someone writes a free compiler for them. 
+You will be better off developing in @code{C++} and only migrating to
+Fortran 77 the parts that are performance critical. This way you get the
+best of both worlds.
+
+On the flip side, if you limit your Fortran code just to number-crunching, 
+then it becomes much easier to write portable code. There are still a few
+things you should take into account however.
+Some Fortran code has been written in the archaic 1966 style. An example
+of such code is the @code{fftpack} package from @code{netlib}. The main
+problems with such code are the following:
+@itemize @bullet
+@item
+@strong{Implicit types}:
+In Fortran 66, programmers were too lazy to define the types of their variables.
+The idea was that the type was inferred by the first letter of the variable
+name. That's horror for you! The convention then is that all variables with
+initial @code{I,J,...,N} are type @code{INTEGER}. All others are @code{REAL}
+To compile this code with
+modern compilers it is necessary to add the following line to every source
+file:
+@example
+IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+@end example
+@noindent
+This instructs the compiler to do the right thing, which is to implicitly
+assume that all variables starting with @code{A-H} and @code{O-Z} are
+double precision and all other variables are integers. Alternatively you can
+say
+@example
+IMPLICIT REAL (A-H,O-Z)
+@end example
+@noindent
+but it is very rarely that you will ever want to go with single precision.
+Occasionally, you may find that the programmer breaks the rules. For example,
+in @code{fftpack} the array @code{IFAC} is supposed to be a @code{double}
+even though implicitly it is suggested to be an @code{int}. Such inconstances
+will probably show up in compiler errors. To fix them, declare the type
+of these variables explicitly. If it's an array then you do it like this:
+@example
+DOUBLE PRECISION IFAC(*)
+@end example
+@noindent
+If the variable also appears in a @code{DIMENSION} declaration, then you
+should remove it from the declaration since the two can't coexist in
+@emph{some} compilers.
+@item
+@strong{Pseudo-pointers}:
+In archaic Fortran, a dimension declaration of the form:
+@example
+DIMENSION C(1)
+@end example
+@noindent
+means that @code{C} has an unknown length, instead of meaning that it has 
+length 1. In modern Fortran, this is an unacceptable notation and modern 
+compilers do get confused over it. So all such instances must be replaced
+with the correct form which is:
+@example
+DIMENSION C(*)
+@end example
+@noindent
+Such ``arrays'' in reality are just pointers. The user can reference the
+array as far as he likes, but of course, if he takes it too far, the
+program will either do the Wrong Thing or crash with a segmentation fault.
+@item
+@strong{Constants}:
+A most insidious problem has to do with constants and it is confined, to
+the best of my knowledge, to the GNU Fortran compiler, but it could
+very well be a problem in other compilers to which I have no access to.
+Constants tend to appear in @samp{DATA} statements or variable assignments.
+The problem is that whenever a constant is in use, the context is never
+a determining factor for the @dfn{type} of the constant, unlike C which
+does automatic casting. Examples: @samp{1} is always type @code{INTEGER},
+@samp{9.435784839284958} is always type @code{REAL} 
+(even if the additional precision specified is lost, and even when used in
+a @samp{DOUBLE PRECISION} context such as being assigned to a 
+@samp{DOUBLE PRECISION} variable!). On the other hand, @code{1E0} is
+always @code{REAL} and @code{1D0} is always @samp{DOUBLE PRECISION}.
+If you want your code to be exclusively double precision, then you should
+scan the entire source for constants, and make sure that they all have the
+@code{D0} suffix at the end. Many compilers will tolerate this omission while
+others will not and go ahead and introduce single precision error to your
+computations leading to hard to find bugs.
+@end itemize
+
+In general the code in @code{http://www.netlib.org/} is very reliable and
+portable, but you do need to keep your eyes open for little problems like
+the above. 

@@ -1,0 +1,1 @@
+rpmbuild --sign -ta @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.bz2

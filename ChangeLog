@@ -1,0 +1,678 @@
+2003-06-09  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* doc/tutorial/basic_concepts.texi: written the section
+	``Hello world with an attitude''. 
+
+	* src/acmkdir/acmkdir.sh: up to date with current automake
+
+2003-04-03  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* doc/Makefile.am (SUBDIRS): removed gnu coding standards, because
+	it is now distributed with binutils
+	
+	* removed texi2html, because it conflicts with tetex
+	
+	* merged with Elef's updates
+
+2003-03-07  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* misc/autotoolset.spec.in (Packager): Changed package name to put
+	it in SourceForge
+
+2003-02-21  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* misc/autotools.spec.in (Packager): updated 'source:' to use .bz2 
+	compression
+
+	* misc/finalize: remove tar.gz, we no longer need it. Unfortunately
+	that can't be done from within the root Makefile.am.
+
+	* configure.ac: using bz2 compression in distribution
+
+	* doc/tutorial/tutorial.texi: Missing @direntry/@dircategory, the 
+	tutorial wasn't liseted in the dir file
+
+	* src/acmkdir/python/configure.ac.zope: updated deprecated macros
+
+	* src/acmkdir/python/Makefile.am: renamed configure.in.zope to 
+	configure.ac.zope
+
+2003-02-20  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* src/acmkdir/acmkdir.sh (SUBDIRS): updated deprecated macros to current
+	autoconf/automake usage (AC_INIT, AM_INIT_AUTOMAKE, AC_CONFIG_FILES, 
+	AC_OUTPUT)
+
+	* Makefile.am: rpm targets to create rpms. No longer needs scripts to
+	do that. The possible targets are 
+	- rpm: build source and binary
+	- rpm-bin: build only binary
+	- rpm-src: build only source
+	- rpm-sig or rpm-sign: build source and binary and sign
+
+	* configure.ac: Created config dir to put autoconf stuff and unclutter
+	the root directory.
+
+2003-02-19  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* autotools.spec.in (Packager): Created rpm support. Now you can 
+	create rpms by doing: rpmbuild -ta autotools-0.11.0.tar.gz.
+
+	* configure.ac: renamed configure.in to configure.ac.
+
+	* src/acmkdir/python/Makefile.am (dist_autotoolspython_DATA): put a
+	dist_ prefix to include the files in the distribution
+
+	* reconf: removed -v flag from automake
+
+	* configure.in: updated AC_INIT, AM_INIT_AUTOMAKE, AC_CONFIG_FILES
+	and AC_OUTPUT
+
+	* doc/gnu/Makefile.am (mostlyclean-local): I don't know why, but 
+	automake isn't generating rm -f standards.cps in mostlyclean-aminfo,
+	so I have put a mostlyclean-local here to do the job.
+
+2003-02-18  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* src/acmkdir/acmkdir.sh 
+	(distclean): removed tag distclean 
+	(SUBDIRS): added doc
+
+2003-02-17  Marcelo Roberto Jimenez  <mroberto@cetuc.puc-rio.br>
+
+	* src/acmkdir/Makefile.am
+	(mkf2c_comp): rm -f f2c_comp.in in the end.
+
+	* Makefile.am: Updated to include debian directory in the distribution.
+
+2002-01-22  Thierry MICHEL  <thierry@nekhem.com>
+
+	* Changed some basic operations, now more Automake/Autoconf like stuff.
+	* Optimized the Zope development tree, "-t zope" switch!
+
+2001-10-26  Thierry MICHEL  <thierry@nekhem.com>
+
+	* Modified the top directory Makefile.am file. Now disctclean
+	operation does its work!
+
+2001-10-10  Thierry MICHEL  <thierry@nekhem.com>
+
+	* Added interfaces directory for ZOPE products.
+
+	* src/acmkdir/acmkdir.sh: Added features and files to handle zope 
+	products creation. Some bugs for python/pythondist/zopedist fixed.
+
+2001-07-08  Thierry MICHEL  <thierry@nekhem.com>
+
+	* src/acmkdir/acmkdir.sh: Added dtml and img directories creation
+	during zopedist process
+	* added __init__.py in the setupext directory to fix an import error
+
+2001-07-07  Thierry MICHEL  <thierry@nekhem.com>
+
+	* src/acmkdir/python/Makefile.am: Removed __init__.py file in
+	the python directory and from the install process
+
+	* src/acmkdir/acmkdir.sh:  Added missing __init__.py file during 
+	zopedist process.
+
+2001-07-05  Thierry MICHEL  <thierry@nekhem.com>
+
+	* configure.in: Added controls on *needed* packages and stop configure
+	process if none found.
+
+2001-07-04  Thierry MICHEL  <thierry@nekhem.com>
+
+	* Added dynamic informations to setup.py file
+	* pythondist mode bugs and rules fixed 
+	* Automake rules fixed for acmkdir and python/zope options
+
+2001-07-01  Thierry MICHEL  <thierry@nekhem.com>
+
+	* src/gpl/gpl.sh: Added support for python (-py -pyS -pyL)
+
+	* src/emacs/gpl.el: Added support for python in (x)emacs with the
+	command:
+		M-x gpl-python and M-x gpl-pythonL
+
+1998-10-30  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_cxx.m4: Modernized macros for C++ portability tests.
+
+	* m4/Makefile.am (m4macros): New file lf_assert.m4
+
+1998-10-24  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/acmkdir: New versions for bookdoc.sty, pagestyle.sty
+	
+	* src/mkconfig/: New program.
+
+1998-10-21  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_cxx.m4: Fixed the definition of the 'for' workaround 
+	to #define for if(0) ; else for
+	Previous definition can't do "dangling else" correctly
+	(Reported by Nathan Myers)
+	
+1998-09-01  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* Version 0.10: Released
+	
+	* src/acmkdir: New files `bookdoc.sty', `pagestyle.doc',
+	`latex_makefile.am'
+	
+	* src/acmkdir/acmkdir.sh: Added support for -latex
+	
+	* src/acmkdir/new_install.txt: Corrected various obsolete instructions
+	and brought it up to date. 
+
+	* src: Moved all the Emacs lisp files under the same directory.
+	It is likely that more are coming in future versions
+
+	* src/texitools: Renamed to texi2html since only that programs
+	is and will be distributed under that directory
+
+	* src/old: Removed a directory with obsolete programs. Also
+	removed support for that monster texidoc.
+
+1998-08-20  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/acconfig/acconfig.pl: Read in also configure.in looking for
+	acconfig directives.
+
+1998-08-03  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_cxx.m4: Bug fix at ACCONFIG BOTTOM. The 'pi' definition must
+	be surrounded with conditional inclusion so that if the config.h
+	file is included twice I don't get errors about redefinitions. 
+	Removed the assert support in acconfig. The macro now will handle
+	assert by defining NDEBUG.
+
+1998-07-29  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_bash.m4: New file.
+
+	* src/txtc/txtc.sh: Fixed bug triggered by non-GNU sed.
+	Another bug due to quoting mistake also fixed.
+
+	* src/acmkdir/f2c_comp.sh: Fixed bug triggered by non-GNU sed 
+
+1998-07-21  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/texitools: Removed texidoc and texirm. Retained texi2html.
+	New file: texinfo-xtra.el
+	
+1998-07-20    <lf@amath.washington.edu>
+
+	* m4/lf_lisp.m4: New file. Replacement macro for AM_PATH_LISPDIR
+
+	* m4/: New files: lf_cc.m4, lf_cxx.m4, lf_warnings.m4, lf_host_type.m4
+	The files lf_cpp.m4, lf_cpp_port.m4 are now obsolete.
+	Renamed lf_newfortran.m4 to lf_fortran.m4 and 
+	renamed lf_fortran.m4 to lf_oldfortran.m4
+	Corresponding changes in Makefile.am
+
+1998-07-15    <lf@amath.washington.edu>
+
+	* src/texitools/texidoc.pl: Added call to @shorttitlepage which
+	is way cool!
+
+	* src/acmkdir/acmkdir.sh (create_doc_directory): Install texirm.sh
+	in the texidoc directory as well.
+
+	* m4/lf_texidoc.m4: New file
+
+	* src/acmkdir/doc_makefile.am: Made changes such that documentation
+	is built only when the 'dvi' target is invoked. 
+
+	* Version 0.8: Released
+
+1998-07-14    <lf@amath.washington.edu>
+
+	* src/txtc/txtc.sh: Modified copyright notice.
+
+	* src/acmkdir/f2c_comp.sh: Modified copyright notice.
+
+	* src/acconfig/acconfig.pl: Modified copyright notice.
+
+	* m4/lf_local.m4: Modified copyright notice.
+
+	* m4/lf_cpp_port.m4: Modified copyright notice.
+
+	* m4/lf_cpp.m4: Modified copyright notice.
+
+	* m4/lf_x11.m4: Removed the Tcl/Tk macros. They are now improved and
+	available through the Modular Tcl package.
+
+	* m4/lf_local.m4: Removed the old local installation macros.
+
+	* m4/lf_txtc.m4: New macro for the new implementation
+	
+	* src/txtc: New implementation of the txtc compiler
+	
+	* src/: Reorganized the directory structure quite a bit
+	
+1998-07-13    <lf@amath.washington.edu>
+
+	* src/acmkdir/acmkdir.sh (make_m4_makefile): Removed support for mkm4.
+	It's not really a good idea.
+
+	* src/Makefile.am: Successfully reorganized the source directory
+	tree to subdirectories.
+
+1998-07-07    <lf@amath.washington.edu>
+
+	* Version 0.7: Cutting
+	
+	* src/Makefile.am: Handle f2c_comp.sh
+
+	* src/f2c_comp.sh: New file. 
+
+	* m4/lf_newfortran.m4: This file will now replace lf_fortran.m4
+
+	* m4/Makefile.am: Added new file lf_nm.m4 from libtool.m4
+
+1998-07-06    <lf@amath.washington.edu>
+
+	* m4/lf_newfortran.m4: New file. To replace eventually lf_fortran.m4
+
+	* src/acmkdir.sh (make_toplevel_makefile_default): Take into account 
+	the new implementation of the LF_CONFIGURE_[CC|CXX] macros.
+	(make_toplevel_makefile_fortran): Take into account the new 
+	implementation of LF_PROG_F77.
+
+	* m4/lf_cpp.m4 (LF_CONFIGURE_CC): New implementation
+	(LF_CONFIGURE_CXX): New implementation
+
+	* src/gpl.sh (m4_header): Changed the header used for m4 files.
+
+1998-07-04    <lf@amath.washington.edu>
+
+	* m4/lf_cpp.m4 (LF_CONFIGURE_CC): Removed the AC_PROVIDE statement.
+	I don't quite understand why this is so right now, but it seems to
+	be a bug. 
+
+1998-07-01  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_local.m4 (LF_SET_INCLUDES): Significant change.
+	Now the @default_includes@ symbol is not substituted into the
+	full INCLUDES assignment. Now the user must say
+	INCLUDES = $(default_includes)
+	instead.
+
+1998-06-30  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_local.m4 (LF_SET_INCLUDES): Forgot to quote the assignments
+	like lf_dirs="`echo $1`". Fixed it. 
+
+1998-06-29  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_cpp_port.m4 (ACCONFIG_BOTTOM): Replaced segmentation fault
+	with abort(); 
+
+	* m4/lf_cpp.m4 (LF_CONFIGURE_CC): 
+	Added call to AC_PROVIDE for AC_PROG_CC, since this call is
+	a replacement for AC_PROG_CC. Also added a call to AC_HEADER_STDC.
+
+1998-06-26  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/acmkdir.sh (create_toplevel_directory): 
+	Fixed spelling error. Also, current working directory is now
+	printed on its own line.
+
+1998-06-19  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* Version 0.6.1: Cutting
+	* doc/tutorial/1_basic_concepts.doc: Fixed an error in the hello
+	world example. Autoconf must be called before Automake. 
+	Reported by Karl Dalley. 
+
+1998-06-18  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/doc_makefile.am (TEXIDOC): Bug fix. Forgot to assign TEXI2DVI. 
+	Reported by Karl Dalley.
+
+1998-05-31  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/texidoc.pl: Now it works only as a filter.
+
+	* src/acmkdir.sh: Complete overhaul.
+
+1998-05-24  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* m4/lf_local.m4: Fixed bug in LF_SET_INCLUDES that
+	triggered on the Dec Alpha.
+
+1998-05-18  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/Makefile.am (EXTRA_DIST): The changelog utility will no
+	longer be distributed. Use Emacs instead.
+
+1998-05-17  Eleftherios Gkioulekas  <lf@amath.washington.edu>
+
+	* src/acmkdir.sh: Now acmkdir will put better default content
+	  to the files README, NEWS, AUTHORS, THANKS
+
+Fri Apr 17 10:35:41 PDT 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  f2c_target.am, lf_fortran.m4:
+      Instead of setting F2C, we plug in a relative
+      pathname at f2c_target.am.
+      This looks a little better at make-time.
+ 
+ 
+Mon Apr 13 15:39:51 PDT 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cutting version 0.5.0
+ 
+   *  mkm4 is a completely different application from what it used to be.
+ 
+   *  The gpl utility has some new options
+ 
+   *  mkpkgdir has been renamed to acmkdir
+      acconfig is a new utility
+ 
+   *  Numerous changes that I've been too lazy to catalog.
+      Basically now the macros use $(datadir)/aclocal instead of
+      being distributed with the directory tree of each application.
+ 
+ 
+Tue Mar 24 18:18:31 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cutting version 0.4.0
+ 
+ 
+Thu Mar 12 18:44:47 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  local.m4, local_include.am, local_lib.am:
+      Lots of bug fixes and testing.
+ 
+ 
+Wed Mar 11 20:00:47 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  local.m4: New file
+      local_include.am: New file
+      local_lib.am: New file
+      These files implement the local-install-as-you-build scheme
+      It's pretty cool.
+ 
+ 
+Tue Mar 10 20:34:37 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  mkpkgdir.bash:
+      Now the 'reconf' script does
+      rm -f config.cache
+      to clean the cache.
+ 
+   *  cpp.m4:
+      Deleted LF_CHECK_MATH_LIBRARY and LF_CXX_LIFETIME_OF_TEMPORARIES
+      and another silly macro.
+      Also deleted references to LF_CHECK_MATH_LIBRARY from other macros
+     
+ 
+ 
+Tue Mar 10 18:05:08 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cutting version 0.3.0
+ 
+ 
+Tue Mar 10 18:00:47 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Now the distribution passes the `make distcheck` test.
+ 
+   *  mkpkgdir.bash
+      Modified the 'reconf' script to account for *bot and *top files
+      and deal with config.h
+      Also modified the generated Makefile.am
+ 
+   *  cpp.h.bot: New file.
+      This file will replace cpp.h
+ 
+   *  cpp.m4: [LF_USE_CPP_H]
+      Has been renamed to LF_CPP_PORTABILITY. Now it does not generate a cpp.h
+      It only gets the macros defined.
+ 
+ 
+Mon Mar 9 23:34:26 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cut release 0.2.0
+ 
+ 
+Mon Mar 9 20:00:44 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  f2c_target.am: New file
+      f77_target.am: New file
+ 
+   *  fortran.m4: [LF_CONFIGURE_FORTRAN]
+      Now it defines @fortran_target@ to include the appropriate targets
+      in the Makefile.am. You no longer have to explicitly deal with
+      the Fortran targets yourself.
+ 
+   *  mkpkgdir.bash:
+      Now takes into account *.h and Makefile.am files.
+ 
+   *  txtc.am: new file
+ 
+   *  txtc.m4:
+      Bug fixes. Make it work with distcheck.
+      Also use AC_SUBST_FILE to deal with the Makefile.am target.
+ 
+   *  cpp.m4 [LF_USE_CPP_H]:
+      Fixed bug. Macro USE_MATHUTIL_ASSERT has been changed to USE_ASSERT.
+      Doh.
+ 
+   *  f2c.h:
+      Now INTEGER is int, not 'long int'. I guess they used 'long int'
+      for the sake of Windoze where 'int' is 16bit. Yuck.
+ 
+ 
+Fri Mar 6 20:35:14 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cut version 0.1.0
+ 
+   *  Using new versioning system, described in README.versions
+ 
+ 
+Fri Mar 6 19:57:48 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Now the tutorial explains how autoconf configure files
+      work. That's quite an improvement. There is also a hello-world
+      revisited chapter illustrating the gnustd tools. As a consequence
+      I removed that silly chapter on mkpkgdir.
+ 
+   *  mkpkgdir.bash:
+      Now including LF_HOST_TYPE in all configure.in files, regardless of whether
+      or not you are using Fortran is the default.
+ 
+   *  mkpkgdir.bash:
+      Fixed a bug with -f mode. Now sets the correct package name
+      in call to AM_INIT_AUTOMAKE in the automatically generated
+      configure.in file.
+ 
+   *  mkpkgdir.bash:
+      Take into account the previous modifications in cpp.m4
+ 
+   *  cpp.m4: [LF_CONFIGURE_CXX]
+      Removed the call to AC_RANLIB. You must now explicitly make that call.
+ 
+   *  cpp.m4: Portability tests in LF_CONFIGURE_CXX have been moved to
+      LF_INSTALL_CPP_H which has been renamed to LF_USE_CPP_H
+ 
+   *  fortran.m4: [LF_CONFIGURE_FORTRAN]
+      Now pass to f2c the following flags: -f -g -A
+ 
+ 
+Thu Mar 5 12:58:16 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  cpp.m4: [LF_CONFIGURE_FORTRAN]
+      Removed some silly stuff about -mieee-fp and -mieee and -fpe1
+      I am not so sure I want these to be the defaults.
+ 
+   *  cpp.m4: [LF_CONFIGURE_CC]
+      Forgot to AC_SUBST CC and CFLAGS. Ooops.
+ 
+   *  mkf2c.sh: The targets provided for f2c don't use ${CFLAGS} when calling
+      the C compiler. Bad. Now they do.
+ 
+   *  fortran.m4: [LF_CONFIGURE_FORTRAN]
+      Don't set optimization here. It will be set by the
+      LF_SET_OPTIMIZATION macro
+ 
+   *  mkpkgdir.bash: Make it aware of the new macros:
+      LF_SET_OPTIMIZATION and LF_SET_WARNINGS
+ 
+   *  cpp.m4: New macros: LF_CHECK_F77_FLAG, LF_SET_OPTIMIZATION,
+                          LF_SET_WARNINGS
+ 
+   *  cpp.m4: New macro: LF_CHECK_CC_FLAG
+ 
+ 
+Thu Feb 26 17:53:30 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  mkfortran: New script to create a copy of the f2c compiler in the
+      directory tree
+      mkf2c: New script to create header files that are good to have around
+      when integrating Fortran code with C/C++ code, such as f2c.h
+ 
+   *  Renamed: LF_CHECK_COMPILER_FLAGS -> LF_CHECK_CXX_FLAGS
+ 
+   *  New file: fortran.m4
+      Implements macros for configuring Fortran compilers
+ 
+   *  Cutting distribution 1.3
+ 
+ 
+Tue Feb 24 15:34:23 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  cpp.m4:
+      Added support for --with-warnings as is claimed in the tutorial.
+      Also prints a message when checking for optimization.
+ 
+   *  texirm:
+      Now it also deletes the files with suffixes: cps, cv, op, tr
+      Argh, how many more of these damn suffixes are out there?
+ 
+   *  Improvements in the tutorial.
+      Also now there is a set of subdirectories in doc/ for
+      every document.
+ 
+   *  mkpkgdir.bash:
+      Now the toplevel Makefile.am that gets created will
+      include "configure" in the EXTRA_DIST.
+      Probably not necessary, but paranoia is good.
+ 
+ 
+Fri Feb 20 14:50:40 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  More improvements on the Autoconf tutorial
+ 
+ 
+Thu Feb 19 04:56:29 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  cpp.m4:
+      Took out AC_PROG_INSTALL and AC_PROG_MAKE_SET from LF_CONFIGURE_CXX
+      They are not needed since they are called by AM_INIT_AUTOMAKE
+ 
+   *  Minor other improvements all over the tutorial.
+ 
+   *  Improved my blurb on copyrights even more. Now it makes better
+      sense. Phew!
+ 
+ 
+Thu Feb 12 18:24:19 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cutting version 1.2
+ 
+   *  Reorganized the tutorial again. The copyright propaganda and the info
+      file maintance stuff was moved to Chapter 1. Chapter 2 now is
+      about Makefiles, and Chapter 3 goes ahead with Automake.
+      This, I believe, makes the tutorial more coherent.
+ 
+ 
+Thu Feb 12 04:56:53 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Did some major restructuring of Chapter 1 and took out all the
+      propaganda stuff which really belongs to Chapter 3. The next
+      step is to restructure Chapter 3 :-)
+ 
+ 
+Sun Feb 8 09:51:17 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Fixed cpp.h as generated by cpp.m4. Added the standard
+      #ifndef #define #endif sequence to make sure that cpp.h is
+      included only once for every postprocessed source file.
+ 
+ 
+Sat Feb 7 13:14:22 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Cutting version 1.1
+ 
+   *  Fixed bugs at tutorial.doc
+ 
+   *  Now changelog supports the -view option
+ 
+ 
+Fri Feb 6 22:46:11 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  The texidoc utility now also generates the appropriate
+      @ifinfo ... @end ifinfo code with the copyright notice allowing
+      it to also appear in the text file.
+ 
+   *  Now the texidoc utility can generate appropriate copyright notice
+      for manuals that include a copy of the GNU General Public License
+ 
+   *  Removed a @setfilename line from gpl.texi as produced by the
+      gpl utility. Let the user decide whether he wants it or not.
+ 
+   *  Added texi2html version 1.52 to the distribution
+ 
+ 
+Fri Feb 6 13:16:57 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Added texinfo-refcard.ps to our documentation.
+ 
+ 
+Fri Feb 6 13:09:17 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Version 1.0 has been cut. Now onto version 1.1
+ 
+ 
+Wed Feb 4 05:22:21 PST 1998
+Eleftherios Gkioulekas <lf@amath.washington.edu>
+ 
+   *  Eliminated the #! thing from the *.bash and *.pl files under
+      src. This was a bug.
+ 
+   *  Added content to README and customized INSTALL
+ 
+   *  Added the files autoconf.texi, automake.texi, standards.texi
+      and my tutorial tutorial.doc to the doc/ directory
+ 
+   *  Started keeping a ChangeLog
+      Most of the package has been constructed at the moment
+ 
+ 

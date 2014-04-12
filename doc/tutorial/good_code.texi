@@ -1,0 +1,564 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Writing Good Programs, Using GNU Emacs, Introduction to the GNU build system, Top
+@chapter Writing Good Programs
+
+@menu
+* Why good code is important::  
+* Choosing a good programming language::  
+* Developing libraries::        
+* Developing applications::     
+* Free software is good software::  
+* Invoking the gpl utility::    
+* Inserting notices with Emacs::  
+@end menu
+
+@node Why good code is important, Choosing a good programming language, Writing Good Programs, Writing Good Programs
+@section Why good code is important
+
+When you work on a software project, one of your short-term goals is to 
+solve a problem at hand. If you are doing this because someone asked you
+to solve the problem, then all you need to do to look good in per eyes is to
+deliver a program that works. Nevetheless, regardless of how little
+person may appreciate this, doing just that is not good enough. 
+Once you have code that gives the right answer to a specific set of problems,
+you will want to make improvements to it. As you make these improvements,
+you would like to have proof that your code's known reliability hasn't
+regressed. Also, tomorrow you will want to move on to a different
+set of related problems by repeating as little work as possible. Finally,
+one day you may want to 
+pass the project on to someone else or recruit another developer to help you
+out with certain parts. You need to make it possible for the
+other person to get up to speed without reinventing your efforts. 
+To accomplish these equally important goals you need to write
+@emph{good} code.
+
+@c -------------------------------------------------------------------------
+
+@node Choosing a good programming language, Developing libraries, Why good code is important, Writing Good Programs
+@section Choosing a good programming language
+
+To write a good software, you must use the appropriate programming language
+and use it well. To make your software free, it should be possible to
+compile it with free tools on a free operating system. Therefore, you
+should avoid using programming languages that do not have a free compiler.
+
+The C programming language is the native language of GNU, and the GNU coding 
+standards
+encourage you to program in C. The main advantages of C are that it can be
+compiled with the system's native compiler, many people know C, and it is
+easy to learn. Nevertheless, C has weaknesses: it forces you to manually manage
+memory allocation, and any mistakes you might make can lead to very 
+difficult bugs. Also C forces you to program at a low level. Sometimes it is 
+desirable to program at a low level, but there are also cases where you want
+to build on a higher level. 
+
+For projects where you would like a higher-level @emph{compiled} language,
+the recommended choice is to use C++.
+The GNU project distributes a free C++ compiler and nowadays most GNU systems 
+that have a C compiler also have the free C++ compiler. The main advantage of 
+C++ is that it will automatically manage dynamic memory allocation for you. 
+C++ also has a lot of powerful features that allow you to program at a
+higher level than C, bringing you closer to the algorithms and the concepts
+involved, and making it easier to write robust programs. At the same time,
+C++ does not hide low-level details from you and you have the freedom to
+do the same low-level hacks that you had in C, if you choose to.
+In fact C++ is 99% backwards compatible with C and it is very easy 
+to mix C and C++ code. Finally, C++ is
+an industry standard. As a result, it has been used to solve a variety of
+real-world problems and its specification has evolved 
+for many years to make it a powerful and mature
+language that can tackle such problems effectively. The C++ specification
+was frozen and became an ANSI standard in 1998. 
+
+One of the disadvantages of C++ is that C++ object files compiled by
+different C++ compilers can not be linked together. 
+In order to compile C++ to machine language, a lot of compilation issues
+need to be defered to the linking stage. Because object file formats
+are not traditionally sophisticated enough to handle these issues, C++
+compilers do various ugly kludges. The problem is that different compilers
+do these kludges differently, making object files accross compilers
+incompatible. This is not a terrible problem, since object files are
+incompatible accross different platforms anyways. It is only a problem
+when you want to use more than one compiler on the same platform.
+Another disadvantage of C++ is that it is harder
+to interface a C++ library to another language, than it is to interface
+a C library. Finally not as many people know C++ as well as they know C,
+and C++ is a very extensive and difficult language to master. 
+However these disadvantages must be weighted against the advantages. 
+There is a price to using C++ but the price comes with a reward.
+
+If you need a higher-level @emph{interpreted} language, then the recommended
+choice is to use Guile. Guile is the GNU variant of Scheme, a LISP-like
+programming language. Guile is an interpreted language, and you can write
+full programs in Guile, or use the Guile interpreter interactively.
+Guile is compatible with the R4RS standard but 
+provides a lot of GNU extensions. The GNU extensions are so extensive that
+it is possible to write entire applications in Guile. Most of the low-level
+facilities that are available in C, are also available in Guile.
+
+What makes the Guile implementation of 
+Scheme special is not the extensions themselves, but the fact that it 
+it is very easy for any developer to add their own extensions to Guile, by 
+implementing them in C. 
+By combining C and Guile you
+leverage the advantages of both compiled and interpreted languages. 
+Performance critical functionality can be implemented in C and 
+higher-level software development can be done in Guile.
+Also, because Guile is interpreted, when you make your C code available
+through an extended Guile interpreter, then the user can also use the 
+functionality of that code interactively through the interpreter.
+
+The idea of extensible interpreted languages is not new. 
+Other examples of extensible interpreted languages are Perl, Python and Tcl.
+What sets Guile apart from these languages is the elegance of Scheme.
+Scheme is the holy grail in the quest for a programming language that
+can be extended to support any programming paradigm by using the least
+amount of syntax. Scheme has natural support for both arbitrary precision
+integer arithmetic and floating point arithmetic. The simplicity of
+Scheme syntax, and the completeness of Guile, make it very easy to
+implement specialized scripting languages simply by translating them to
+Scheme. In Scheme algorithms and data are interchangable. As a result,
+it is easy to write Scheme programs that manipulate Scheme source code.
+This makes Scheme an ideal language for writing programs that manipulate
+algorithms instead of data, such as programs that do symbolic algebra.
+Because Scheme can manipulate its own source code, a Scheme program can
+save its state by writing Scheme source code into a file, and by parsing
+it later to load it back up again. This feature alone is one reason why
+engineers should use Guile to configure and drive numerical simulations. 
+
+Some people like to use Fortran 77. 
+This is in many ways a good language for developing the 
+computational core of scientific applications. We do have free compilers
+for Fortran 77, so using it does not restrict our freedom.
+(@pxref{Fortran with Autoconf})
+Also, Fortran 77 is an aggresively optimizable language, and this makes it
+very attractive to engineers that want to write code optimized for speed.
+Unfortunately,
+Fortran 77 can not do well @emph{anything} except array-oriented
+numerical computations.
+Managing input/output is unnecessarily difficult with Fortran,
+and there's even computational areas, such as infinite precision integer
+arithmetic and symbolic computation that are not supported. 
+
+There are many variants of Fortran like Fortran 90, and HPF.
+Fortran 90 attempts, quite miserably, to make Fortran 77 more like
+C++. HPF allows engineers to write numerical code that runs on parallel
+computers. These variants should be avoided for two reasons: 
+@enumerate
+@item
+There are no free compilers for Fortran 90 or HPF.
+If you happen to use a proprietary 
+operating system, you might as well make use of proprietary compilers
+if they generate highly optimized code and that is important to you. 
+Nevertheless, in order for your software to be freed, it should be 
+possible to compile it with free tools on a free operating system. 
+Because it is possible to make parallel computers using GNU/Linux
+(see the Beowulf project), parallelized software can also be free.
+Therefore both Fortran 90 and HPF should be avoided.
+@item
+Another problem with these variants is that they are ad hoc languages
+that have been invented to enable Fortran to do things that it can not
+do by design. Eventually, when engineers will like to do things that Fortran 
+90 can't do either, it will be necessary to extend Fortran again, rewrite the
+compilers and produce yet another variant. What engineers need is a
+programming language that has the ability to self extend itself by writing
+software in the same programming language. The C++ programming language
+can do this without loss of performance. The departmentalization of
+disciplines in academia has made it very difficult for such a project
+to take off. Despite that, there is ongoing research in this area.
+(for example, see the Blitz++ project)
+@end enumerate
+@noindent
+It is almost impossible to write good programs entirely in Fortran, so
+please use Fortran only for the numerical core of your application
+and do the bookeeping tasks, including input/output using a more appropriate
+language.
+
+If you have written a program entirely in Fortran, please do not ask anyone
+else to maintain your code, unless person is like you and also knows only
+Fortran. If Fortran is the only language that you know, then please learn
+at least C and C++ and use Fortran only when necessary. Please do not
+hold the opinion that contributions in science and engineering
+are ``true'' contributions and software development is just a ``tool''.
+This bigotted attitude is behind the thousands of lines of ugly unmaintainable
+code that goes around in many places. Good software development can be
+an important contribution in its own right, and regardless of what your
+goals are, please appreciate it and encourage it. To maximize the benefits
+of good software, please make your software free.
+(@strong{FIXME: Crossreference copyright section in this chapter})
+
+@c --------------------------------------------------------------------------
+
+@node Developing libraries, Developing applications, Choosing a good programming language, Writing Good Programs
+@section Developing libraries
+
+The key to better code is to focus away from developing
+monolithic throw-away hacks that do only one job, and focus on developing
+@dfn{libraries} (@strong{FIXME: crossreference}). Break down the original
+problem to parts, and the parts to smaller parts, until you get down to simple 
+subproblems that can be easily tested, and from which you can construct 
+solutions for both the original problem and future variants. Every library
+that you write is a legacy that you can share with other developers, that
+want to solve similar problems. Each library will allow these other developers
+to focus on their problem and not have to reinvent the parts that are common 
+with your work from scratch. You should definetely make libraries out of
+subproblems that are likely to be broadly useful. 
+Please be very liberal in what you consider ``broadly useful''.
+Please program in a defensive way that renders reusable as much code as
+possible, regardless of whether or not you plan to reuse it in the near future.
+The final application should merely have to assemble all the libraries 
+together and make their functionality accessible to the user through a 
+good interface. 
+
+It is very important for each of your libraries to have a complete 
+@dfn{test suite}. The purpose of the test suite is to detect bugs
+in the library and to prove to you or convince you, the developer, that the 
+library works. A test suite is composed of a collection of test programs
+that link with your libraries and experiment with the features 
+provided by the library. These test programs should return with
+@example
+exit(0);
+@end example
+@noindent
+if they do not detect anything wrong with the library and with
+@example
+exit(1);
+@end example
+@noindent
+if they detect problems. The test programs should not be installed with
+the rest of the package. They are meant to be run after your software
+is compiled and before it is installed. Therefore, they should be written
+so that they can run using the compiled but uninstalled files of the library.
+Test programs should not output messages by default. They should run
+completely quietly and communicate with the environment in a yes or no
+fashion using the @code{exit} code. However, it is useful for test programs
+to output debugging information when they fail during development. Statements 
+that output such information should be surrounded by conditional
+directives like this:
+@example
+#if INSPECT_ERRORS
+ printf("Division by zero: %d / %d\n",a,b);
+#endif
+@end example
+@noindent
+This way it becomes easy to switch them on or off upon demand. The prefered
+way to manipulate a macro like this @code{INSPECT_ERRORS} is by adding
+a switch to your @file{configure} script. You can do this by adding the
+following lines to @file{configure.in}:
+@example
+AC_ARG_WITH(inspect,
+  [  --with-inspect           Inspect test suite errors],
+  [ AC_DEFINE(INSPECT_ERRORS, 1, "Inspect test suite errors")],
+  [ AC_DEFINE(INSPECT_ERRORS, 0, "Inspect test suite errors")])
+@end example
+@noindent
+After the
+library is debugged, the debug statements should not be removed. If a
+future version of the library regresses and an old test begins to fail
+again, it will be useful to be able to reactivate the same error messages
+that were useful in debugging the test when it was first put together,
+and it may be necessary to add a few new ones.
+
+The best time to write each test program is @emph{as soon as it is possible!}.
+You should not be lazy, and you should not just keep throwing in code after
+code after code. The minute there is enough code in there to put together some
+kind of test program, @emph{just do it!} When you write new code,
+it is easy to think that you are producing work with every new line of code
+that is written. The reality is that you @emph{know} you have produced new 
+work
+everytime you write working a test program for new features, and
+@emph{not a minute before}. 
+Another time when you should definetely write a test program is when you
+find a bug while ordinarily using the library. Then, write a test program
+that triggers the bug, fix the bug, and keep the test in your test suite.
+This way, if a future modification reintroduces the same bug it will be
+detected. 
+
+Please document your library as you go. The best time to update your
+documentation is immediately after you get new test programs checking out new 
+futures. You might feel that you are too busy to write documentation, but
+the truth of the matter is that you will @emph{always} be too busy. 
+In fact, if you are a busy person, you are likely to have many other 
+obligations bugging you around for your attention. There may be times that
+you have to stay away from a project for a large amount of time.
+If you have consistently been maintaining documentation, it will help you
+refocus on your project even after many months of absense.
+
+@node Developing applications, Free software is good software, Developing libraries, Writing Good Programs
+@section Developing applications
+
+@dfn{Applications} are complete executable programs that can be run by the 
+end-user. With library-oriented development the actual functionality 
+is developed by writing libraries and debugged by developing test-suites
+for each library. With command-line oriented applications, the application
+source code parses the arguments that are passed to it by the user,
+and calls up the right functions in the library to carry out the user's  
+requests. With GUI 
+@footnote{GUI is an abbreviation for @dfn{graphical user interface}}
+applications, the application source code creates the @dfn{widgets} that
+compose the interface, binds them to @dfn{actions}, and then enters an 
+event loop. Each action is implemented in terms of the functionality
+provided by the appropriate library. 
+
+It should be possible to implement applications by using relatively few
+application-specific source files, since most of the functionality is
+actually done in libraries. In some cases, the application is simple
+enough that it would be an overkill to package its functionality as 
+a library. Nevertheless, in such cases please separate the source code
+that handles actual functionality from the source code that handles
+the user interface. Also, please always separate the code that handles 
+input/output with the code that does actual computations. 
+If these aspects of your source code are sufficiently separated then you make 
+it easier for other people to reuse parts of your code in their applications.
+You also make it easier of yourself to switch to library-oriented 
+development when your application grows and is no longer ``simple enough''.
+
+Library-oriented development allows you to write good and robust applications.
+In return it requires discipline. Sometimes you may need to add 
+experimental functionality that is not available through your libraries.
+The right thing to do is to extend the appropriate library.
+The easy thing to do is to implement it as part of your application-specific
+source code. If the feature is experimental and undergoing many changes,
+it may be best to go with the easy approach at first. Still, when 
+the feature matures, please migrate it to the appropriate library, document
+it, and take it out of the application source code. What we mean by
+discipline is doing these migrations, when the time is right, despite
+pressures from ``real life'', such as deadlines, pointy-haired bosses,
+and nuclear terrorism. A rule of thumb for deciding
+when to migrate code to a library is when you find yourself cut-n-pasting
+chunks of code from application to application. If you do not do the right
+thing, your code will become increasingly harder to debug, harder to
+maintain, and less reliable.
+
+Applications should also be documented, especially the ones that are
+command-line oriented. Application documentation should be thorough in
+explaining to the user all the things that he needs to know to use
+the application effectively and should be distributed separately
+from the application itself. Nevertheless, applications should recognize
+the @code{--help} switch and output a synopsis of how 
+the application is used. Applications should also recognize the
+@code{--version} switch and state their version number. The easiest
+way to make applications understand these two switches is to use the
+GNU Argp library (@emph{FIXME: crossreference}). 
+
+@c --------------------------------------------------------------------------
+
+@node Free software is good software, Invoking the gpl utility, Developing applications, Writing Good Programs
+@section Free software is good software
+
+One of the reasons why you should write good code is because it allows
+you to make your code robust, reliable and most useful to your needs. 
+Another reason is to make it useful to other people too, and make it
+easier for them to work with your code and reuse it for their own work.
+In order for this to be possible, you need to give worry about a few
+obnoxious legal issues.
+
+@c --------------------------------------------------------------------------
+
+
+@node Invoking the gpl utility, Inserting notices with Emacs, Free software is good software, Writing Good Programs
+@section Invoking the @samp{gpl} utility
+
+Maintaining these legalese notices can be quite painful after some time.
+To ease the burden, Autotools distributes a utility called @samp{gpl}. 
+This utility will conveniently generate for you all the legal wording you
+will ever want to use. It is important to know that this application is
+not approved in any way by the Free Software Foundation. By this I mean
+that I haven't asked their opinion of it yet. 
+
+To create the file @file{COPYING} type:
+@example
+% gpl -l COPYING
+@end example
+@noindent
+If you want to include a copy of the GPL in your documentation, you can
+generate a copy in texinfo format like this:
+@example
+% gpl -lt gpl.texi
+@end example
+@noindent
+Also, every time you want to create a new file, use the @samp{gpl} to
+generate the copyright notice. If you want it covered by the GPL use the
+@dfn{standard notice}. If you want to invoke the Guile-like permissions, then
+also use the @dfn{library notice}. If you want to grant unlimited permissions,
+meaning no copyleft, use the @dfn{special notice}.
+The @samp{gpl} utility takes many different flags to take into account
+the different commenting conventions. 
+@itemize @bullet
+@item
+For a C file, create the standard notice with
+@example
+% gpl -c file.c
+@end example
+@noindent
+the library notice with
+@example
+% gpl -cL file.c
+@end example
+@noindent
+and the special notice with
+@example
+% gpl -cS file.c
+@end example
+@noindent
+@item
+For a C++ file, create the standard notice with
+@example
+% gpl -cc file.cc
+@end example
+@noindent
+the library notice with
+@example
+% gpl -ccL file.cc
+@end example
+@noindent
+and the special notice with
+@example
+% gpl -ccS file.cc
+@end example
+@noindent
+@item
+For a shells script (bash, perl) that uses hash marks for commenting,
+create the standard notice with
+@example
+% gpl -sh foo.pl
+@end example
+@noindent
+the library notice with
+@example
+% gpl -shL foo.tcl
+@end example
+@noindent
+and the special notice with
+@example
+% gpl -shS foo.pl
+@end example
+@noindent
+It does not make sense to use the library notice, if no executable is being
+formed from this file. If however, you parse that file into C code that is
+then compiled into object code, then you may consider using the library
+notice on it instead of the special notice. One of the features provided
+by Autotools allows you to embed text, such as Tcl scripts, into the
+executable. In that case, you can use the library notice to license the
+original text. 
+@item
+For files that define autoconf macros:
+@example
+% gpl -m4 file.m4
+@end example
+@noindent
+In general, we exempt autoconf macro files from the GNU GPL because the terms
+of autoconf also exclude its output, the @samp{configure} script, from the
+GPL.
+@item
+For @file{Makefile.am}, or files that describe targets:
+@example
+% gpl -am Makefile.am
+@end example
+@noindent
+For these we also exempt them from the GPL because they are so trivial
+that it makes no sense to add copyleft protection.
+@end itemize
+
+@c -------------------------------------------------------------------------
+
+@node Inserting notices with Emacs,  , Invoking the gpl utility, Writing Good Programs
+@section Inserting notices with Emacs
+
+If you are using @emph{GNU Emacs}, then you can insert these copyright notices
+on-demand while you're editing your source code. Autotools bundles two
+Emacs packages: @code{gpl} and @code{gpl-copying} which provide you with
+equivalents of the @samp{gpl} command that can be run under Emacs. These
+packages will be byte-compiled and installed automatically for you while
+installing Autotools.
+
+To use these packages, in your @file{.emacs} you must declare your identity
+by adding the following commands:
+@example
+(setq user-mail-address "me@@here.com")
+(setq user-full-name "My Name")
+@end example
+@noindent
+Then you must require the packages to be loaded:
+@example
+(require 'gpl)
+(require 'gpl-copying)
+@end example
+@noindent
+These packages introduce a set of Emacs commands all of which are prefixed
+as @code{gpl-}. To invoke any of these commands press @code{M-x}, type
+the name of the command and press enter. 
+
+The following commands will generate notices for your source code:
+@table @samp
+@item gpl-c
+Insert the standard GPL copyright notice using C commenting.
+@item gpl-cL
+lnsert the standard GPL copyright notice using C commenting,
+followed by a Guile-like library exception. This notice is used by
+the Guile library. You may want to use it for libraries that you write 
+that implement some type of a standard that you wish to encourage. 
+You will be prompted for the name of your package.
+@item gpl-cc
+Insert the standard GPL copyright notice using C++ commenting.
+@item gpl-ccL
+Insert the standard GPL copyright notice using C++ commenting,
+followed by a Guile-like library exception. You will be prompted for the
+name of your package
+@item gpl-sh
+Insert the standard GPL copyright notice using shell commenting
+(i.e. has marks).
+@item gpl-shL
+Insert the standard GPL copyright notice using shell commenting, 
+followed by a Guile-like library exception. This can be useful for
+source files, like Tcl files, which are executable code that gets linked
+in to form an executable, and which use hash marks for commenting.
+@item gpl-shS
+Insert the standard GPL notice using shell commenting, followed by the
+special Autoconf exception. This is useful for small shell scripts that
+are distributed as part of a build system.
+@item gpl-m4
+Insert the standard GPL copyright notice using m4 commenting (i.e. dnl)
+and the special Autoconf exception. This is the prefered notice for new
+Autoconf macros.
+@item gpl-el
+Insert the standard GPL copyright notice using Elisp commenting. This
+is useful for writing Emacs extension files in Elisp.
+@end table
+The following commands will generate notices for your source code:
+@table @samp
+@item gpl-insert-copying-texinfo
+Insert a set of paragraphs very similar to the ones appearing
+at the Copying section of this manual. It is a good idea to include
+this notice in an @code{unnumbered} chapter titled ``Copying'' in the
+Texinfo documentation of your source code. You will be prompted for the
+title of your package. That title will substitute the word @emph{Autotools}
+as it appears in the corresponding section in this manual.
+@item gpl-insert-license-texinfo
+Insert the full text of the GNU General Public License in Texinfo format.
+If your documentation is very extensive, it may be a good idea to include
+this notice either at the very beginning of your manual, or at the end.
+You should include the full license, if you plan to distribute the manual
+separately from the package as a printed book.
+@end table

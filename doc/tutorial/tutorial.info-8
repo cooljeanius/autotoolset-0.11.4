@@ -1,0 +1,457 @@
+This is tutorial.info, produced by makeinfo version 4.3 from
+tutorial.texi.
+
+INFO-DIR-SECTION Miscellaneous
+START-INFO-DIR-ENTRY
+* Autotoolset Tutorial: (tutorial).        Autotools tutorial.
+END-INFO-DIR-ENTRY
+
+
+File: tutorial.info,  Node: The X Windows Trap,  Next: Categories of software,  Prev: Copyleft; Pragmatic Idealism,  Up: Philosophical issues
+
+The X Windows Trap
+==================
+
+   To copyleft or not to copyleft?  That is one of the major
+controversies in the free software community.  The idea of copyleft is
+that we should fight fire with fire-that we should use copyright to
+make sure our code stays free.  The GNU GPL is one example of a
+copyleft license.
+
+   Some free software developers prefer non-copyleft distribution.
+Non-copyleft licenses such as the XFree86 and BSD licenses are based on
+the idea of never saying no to anyone-not even to someone who seeks to
+use your work as the basis for restricting other people.  Non-copyleft
+licensing does nothing wrong, but it misses the opportunity to actively
+protect our freedom to change and redistribute software.  For that, we
+need copyleft.
+
+   For many years, the X Consortium was the chief opponent of copyleft.
+It exerted both moral suasion and pressure to discourage free software
+developers from copylefting their programs.  It used moral suasion by
+suggesting that it is not nice to say no.  It used pressure through its
+rule that copylefted software could not be in the X Distribution.
+
+   Why did the X Consortium adopt this policy?  It had to do with their
+definition of success.  The X Consortium defined success as
+popularity-specifically, getting computer companies to use X Windows.
+This definition put the computer companies in the driver's seat.
+Whatever they wanted, the X Consortium had to help them get it.
+
+   Computer companies normally distribute proprietary software.  They
+wanted free software developers to donate their work for such use.  If
+they had asked for this directly, people would have laughed.  But the X
+Consortium, fronting for them, could present this request as an
+unselfish one.  "Join us in donating our work to proprietary software
+developers," they said, suggesting that this is a noble form of
+self-sacrifice.  "Join us in achieving popularity", they said,
+suggesting that it was not even a sacrifice.
+
+   But self-sacrifice is not the issue: tossing away the defenses of
+copyleft, which protect the freedom of everyone in the community, is
+sacrificing more than yourself.  Those who granted the X Consortium's
+request entrusted the community's future to the good will of the X
+Consortium.
+
+   This trust was misplaced.  In its last year, the X Consortium made a
+plan to restrict the forthcoming X11R6.4 release so that it will not be
+free software.  They decided to start saying no, not only to
+proprietary software developers, but to our community as well.
+
+   There is an irony here.  If you said yes when the X Consortium asked
+you not to use copyleft, you put the X Consortium in a position to
+license and restrict its version of your program, along with its own
+code.
+
+   Te X Consortium did not carry out this plan.  Instead it closed down
+and transferred X development to the Open Group, whose staff are now
+carrying out a similar plan.  To give them credit, when I asked them to
+release X11R6.4 under the GNU GPL in parallel with their planned
+restrictive license, they were willing to consider the idea.  (They
+were firmly against staying with the old X11 distribution terms.)
+Before they said yes or no to this proposal, it had already failed for
+another reason: the XFree86 group follows the X Consortium's old
+policy, and will not accept copylefted software.
+
+   Even if the X Consortium and the Open Group had never planned to
+restrict X, someone else could have done it.  Non-copylefted software
+is vulnerable from all directions; it lets anyone make a non-free
+version dominant, if he will invest sufficient resources to add some
+important feature using proprietary code.  Users who choose software
+based on technical characteristics, rather than on freedom, could
+easily be lured to the non-free version for short term convenience.
+
+   The X Consortium and Open Group can no longer exert moral suasion by
+saying that it is wrong to say no.  This will make it easier to decide
+to copyleft your X-related software.
+
+   When you work on the core of X, on programs such as the X server,
+Xlib, and Xt, there is a practical reason not to use copyleft.  The
+XFree86 group does an important job for the community in maintaining
+these programs, and the benefit of copylefting our changes would be
+less than the harm done by a fork in development.  So it is better to
+work with the XFree86 group and not copyleft our changes on these
+programs.  Likewise for utilities such as xset and xrdb, which are
+close to the core of X, and which do not need major improvements.  At
+least we know that the XFree86 group has a firm commitment to
+developing these programs as free software.
+
+   The issue is different for programs outside the core of X:
+applications, window managers, and additional libraries and widgets.
+There is no reason not to copyleft them, and we should copyleft them.
+
+   In case anyone feels the pressure exerted by the criteria for
+inclusion in X Distributions, the GNU project will undertake to
+publicize copylefted packages that work with X.  If you would like to
+copyleft something, and you worry that its omission from X
+Distributions will impede its popularity, please ask us to help.
+
+   At the same time, it is better if we do not feel too much need for
+popularity.  When a businessman tempts you with "more popularity", he
+may try to convince you that his use of your program is crucial to its
+success.  Don't believe it!  If your program is good, it will find many
+users anyway; you don't need to feel desperate for any particular
+users, and you will be stronger if you do not.  You can get an
+indescribable sense of joy and freedom by responding, "Take it or leave
+it-that's no skin off my back."  Often the businessman will turn around
+and accept the program with copyleft, once you call the bluff.
+
+   Friends, free software developers, don't repeat a mistake.  If we do
+not copyleft our software, we put its future at the mercy of anyone
+equipped with more resources than scruples.  With copyleft, we can
+defend freedom, not just for ourselves, but for our whole community.
+
+
+File: tutorial.info,  Node: Categories of software,  Next: Confusing words,  Prev: The X Windows Trap,  Up: Philosophical issues
+
+Categories of software
+======================
+
+   Here is a glossary of various categories of software that are often
+mentioned in discussions of free software. It explains which categories
+overlap or are part of other categories.
+
+   * *Free software*: Free software is software that comes with
+     permission for anyone to use, copy, and distribute, either
+     verbatim or with modifications, either gratis or for a fee. In
+     particular, this means that source code must be available. "If
+     it's not source, it's not software."
+
+     If a program is free, then it can potentially be included in a free
+     operating system such as GNU, or free GNU/Linux systems .
+
+     There are many different ways to make a program free--many
+     questions of detail, which could be decided in more than one way
+     and still make the program free. Some of the possible variations
+     are described below.
+
+     Free software is a matter of freedom, not price. But proprietary
+     software companies sometimes use the term "free software" to refer
+     to price. Sometimes they mean that you can obtain a binary copy at
+     no charge; sometimes they mean that a copy is included on a
+     computer that you are buying. This has nothing to do with what we
+     mean by free software in the GNU project.
+
+     Because of this potential confusion, when a software company says
+     its product is free software, always check the actual distribution
+     terms to see whether users really have all the freedoms that free
+     software implies. Sometimes it really is free software; sometimes
+     it isn't.
+
+     Many languages have two separate words for "free" as in freedom
+     and "free" as in zero price. For example, French has "libre" and
+     "gratuit". English has a word "gratis" that refers unambiguously
+     to price, but no common adjective that refers unambiguously to
+     freedom. This is unfortunate, because such a word would be useful
+     here.
+
+     Free software is often more reliable than non-free software.
+
+   * *Open Source software*: The term "open source" software is used by
+     some people to mean more or less the same thing as free software.
+
+   * *Public domain software*: Public domain software is software that
+     is not copyrighted. It is a special case of non-copylefted free
+     software, which means that some copies or modified versions may
+     not be free at all.
+
+     Sometimes people use the term "public domain" in a loose fashion
+     to mean "free" or "available gratis." However, "public domain" is
+     a legal term and means, precisely, "not copyrighted". For clarity,
+     we recommend using "public domain" for that meaning only, and
+     using other terms to convey the other meanings.
+
+   * *Copylefted software*: Copylefted software is free software whose
+     distribution terms do not let redistributors add any additional
+     restrictions when they redistribute or modify the software. This
+     means that every copy of the software, even if it has been
+     modified, must be free software.
+
+     In the GNU Project, we copyleft almost all the software we write,
+     because our goal is to give every user the freedoms implied by the
+     term "free software." See Copylefted for more explanation of how
+     copyleft works and why we use it.
+
+     Copyleft is a general concept; to actually copyleft a program, you
+     need to use a specific set of distribution terms. There are many
+     possible ways to write copyleft distribution terms.
+
+   * *Non-copylefted free software*: Non-copylefted free software comes
+     from the author with permission to redistribute and modify, and
+     also to add additional restrictions to it.
+
+     If a program is free but not copylefted, then some copies or
+     modified versions may not be free at all. A software company can
+     compile the program, with or without modifications, and distribute
+     the executable file as a proprietary software product.
+
+     The X Window System illustrates this. The X Consortium releases
+     X11 with distribution terms that make it non-copylefted free
+     software. If you wish, you can get a copy which has those
+     distribution terms and is free. However, there are non-free
+     versions as well, and there are popular workstations and PC
+     graphics boards for which non-free versions are the only ones that
+     work. If you are using this hardware, X11 is not free software for
+     you.
+
+   * *GPL-covered software*: The GNU GPL is one specific set of
+     distribution terms for copylefting a program. The GNU Project uses
+     it as the distribution terms for most GNU software.
+
+   * *The GNU system*: The GNU system is a complete free Unix-like
+     operating system.
+
+     A Unix-like operating system consists of many programs. We have
+     been accumulating components for this system since 1984; the first
+     test release of a "complete GNU system" was in 1996.  We hope that
+     in a year or so this system will be mature enough to recommend it
+     for ordinary users.
+
+     The GNU system includes all the GNU software, as well as many
+     other packages such as the X Window System and TeX which are not
+     GNU software.
+
+     Since the purpose of GNU is to be free, every single component in
+     the GNU system has to be free software. They don't all have to be
+     copylefted, however; any kind of free software is legally suitable
+     to include if it helps meet technical goals. We can and do use
+     non-copylefted free software such as the X Window System.
+
+   * *GNU software*: GNU software is software that is released under
+     the auspices of the GNU Project. Most GNU software is copylefted,
+     but not all; however, all GNU software must be free software.
+
+     Some GNU software is written by staff of the Free Software
+     Foundation, but most GNU software is contributed by volunteers.
+     Some contributed software is copyrighted by the Free Software
+     Foundation; some is copyrighted by the contributors who wrote it.
+
+   * *Semi-free software*: Semi-free software is software that is not
+     free, but comes with permission for individuals to use, copy,
+     distribute, and modify (including distribution of modified
+     versions) for non-profit purposes. PGP is an example of a
+     semi-free program.
+
+     Semi-free software is much better than proprietary software, but
+     it still poses problems, and we cannot use it in a free operating
+     system.
+
+     The restrictions of copyleft are designed to protect the essential
+     freedoms for all users. For us, the only justification for any
+     substantive restriction on using a program is to prevent other
+     people from adding other restrictions. Semi-free programs have
+     additional restrictions, motivated by purely selfish goals.
+
+     It is impossible to include semi-free software in a free operating
+     system. This is because the distribution terms for the operating
+     system as a whole are the conjunction of the distribution terms
+     for all the programs in it. Adding one semi-free program to the
+     system would make the system as a whole just semi-free. There are
+     two reasons we do not want that to happen:
+        * We believe that free software should be for
+          everyone-including businesses, not just schools and
+          hobbyists. We want to invite business to use the whole GNU
+          system, and therefore we must not include a semi-free program
+          in it.
+
+        * Commercial distribution of free operating systems, including
+          Linux-based GNU systems, is very important, and users
+          appreciate being able to buy commercial CD-ROM distributions.
+          Including one semi-free program in an operating system would
+          cut off commercial CD-ROM distribution for it.
+     The Free Software Foundation itself is non-commercial, and
+     therefore we would be legally permitted to use a semi-free program
+     "internally". But we don't do that, because that would undermine
+     our efforts to obtain a program which we could also include in GNU.
+
+     If there is a job that needs doing with software, then until we
+     have a free program to do the job, the GNU system has a gap.  We
+     have to tell volunteers, "We don't have a program yet to do this
+     job in GNU, so we hope you will write one." If we ourselves used a
+     semi-free program to do the job, that would undermine what we say;
+     it would take away the impetus (on us, and on others who might
+     listen to our views) to write a free replacement. So we don't do
+     that.
+
+   * *Proprietary software*: Proprietary software is software that is
+     not free or semi-free.  Its use, redistribution or modification is
+     prohibited, or requires you to ask for permission, or is
+     restricted so much that you effectively can't do it freely.
+
+     The Free Software Foundation follows the rule that we cannot
+     install any proprietary program on our computers except
+     temporarily for the specific purpose of writing a free replacement
+     for that very program. Aside from that, we feel there is no
+     possible excuse for installing a proprietary program.
+
+     For example, we felt justified in installing Unix on our computer
+     in the 1980s, because we were using it to write a free replacement
+     for Unix. Nowadays, since free operating systems are available,
+     the excuse is no longer applicable; we have eliminated all our
+     non-free operating systems, and any new computer we install must
+     run a completely free operating system.
+
+     We don't insist that users of GNU, or contributors to GNU, have to
+     live by this rule. It is a rule we made for ourselves. But we hope
+     you will decide to follow it too.
+
+   * *Freeware*: The term "freeware" has no clear accepted definition,
+     but it is commonly used for packages which permit redistribution
+     but not modification (and their source code is not available).
+     These packages are not free software, so please don't use
+     "freeware" to refer to free software.
+
+   * *Shareware*: Shareware is software which comes with permission for
+     people to redistribute copies, but says that anyone who continues
+     to use a copy is required to pay a license fee.
+
+     Shareware is not free software, or even semi-free. There are two
+     reasons it is not:
+        * For most shareware, source code is not available; thus you
+          cannot modiy the program at all.
+
+        * Shareware does not come with permission to make a copy and
+          install it without paying a license fee, not even for
+          individuals engaging in nonprofit activity. (In practice,
+          people often disregard the distribution terms and do this
+          anyway, but the terms don't permit it.)
+
+   * *Commercial Software*: Commercial software is software being
+     developed by a business which aims to make money from the use of
+     the software.  "Commercial" and "proprietary" are not the same
+     thing! Most commercial software is proprietary , but there is
+     commercial free software, and there is non-commercial non-free
+     software.
+
+     For example, GNU Ada is always distributed under the terms of the
+     GNU GPL, and every copy is free software; but its developers sell
+     support contracts. When their salesmen speak to prospective
+     customers, sometimes the customers say, "We would feel safer with
+     a commercial compiler." The salesmen reply, "GNU Ada is a
+     commercial compiler; it happens to be free software."
+
+     For the GNU Project, the emphasis is in the other order: the
+     important thing is that GNU Ada is free software; whether it is
+     commercial is not a crucial question. However, the additional
+     development of GNU Ada that results from the business that
+     supports it is definitely beneficial.
+
+
+File: tutorial.info,  Node: Confusing words,  Prev: Categories of software,  Up: Philosophical issues
+
+Confusing words
+===============
+
+   There are a number of words and phrases which we recommend avoiding,
+either because they are ambiguous or because they imply an opinion that
+we hope you may not entirely agree with.
+
+   * *For free*: If you want to say that a program is free software,
+     please don't say that it is available "for free." That term
+     specifically means "for zero price."  Free software is a matter of
+     freedom, not price.
+
+     Free software is often available for free-for example, on many FTP
+     servers. But free software copies are also available for a price on
+     CD-ROMs, and proprietary software copies may occasionally be
+     available for free.
+
+   * *Freeware*: Please don't use the term "freeware" as a synonym for
+     "free software." The term "freeware" was used often in the 1980s
+     for programs released only as executables, with source code not
+     available.  Today it has no clear definition.
+
+   * *Give away software*: It's misleading to use the term "give away"
+     to mean "distribute a program as free software." It has the same
+     problem as "for free": it implies the issue is price, not freedom.
+
+   * *Intellectual property*: Publishers and lawyers like to describe
+     copyright as "intellectual property." This term carries a hidden
+     assumption--that the most natural way to think about the issue of
+     copying is based on an analogy with physical objects, and our
+     ideas of them as property.
+
+     But this analogy overlooks the crucial difference between material
+     objects and information: information can be copied and shared
+     almost effortlessly, while material objects can't be. Basing your
+     thinking on this analogy is tantamount to ignoring that difference.
+
+     Even the US legal system does not entirely accept this analogy,
+     since it does not treat copyrights just like physical object
+     property rights.
+
+     If you don't want to limit yourself to this way of thinking, it is
+     best to avoid using the term "intellectual property" in your words
+     and thoughts.
+
+     A suggestion has been made to use the term "intellectual policy"
+     instead of `intellectual property."
+
+   * *Piracy*: Publishers often refer to prohibited copying as
+     "piracy." In this way, they imply that illegal copying is
+     ethically equivalent to attacking ships on the high seas,
+     kidnaping and murdering the people on them.
+
+     If you don't believe that illegal copying is just like kidnaping
+     and murder, you might prefer not to use the word "piracy" to
+     describe it. Neutral terms such as "prohibited copying" or
+     "illegal copying" are available for use instead. Some of us might
+     even prefer to use a positive term such as "sharing information
+     with your neighbor."
+
+   * *Protection*: Publishers' lawyers love to use the term
+     "protection" to describe copyright. This word carries the
+     implication of preventing destruction or suffering; therefore, it
+     encourages people to identify with the owner and publisher who
+     benefit from copyright, rather than with the users who are
+     restricted by it.
+
+     It is easy to avoid "protection" and use neutral terms instead. For
+     example, instead of "Copyright protection lasts a very long time,"
+     you can say, "Copyright lasts a very long time."
+
+   * *Sell software*: The term "sell software" is ambiguous. Strictly
+     speaking, exchanging a copy of a free program for a sum of money
+     is "selling"; but people usually associate the term "sell" with
+     proprietary restrictions on the subsequent use of the software.
+     You can be more precise, and prevent confusion, by saying either
+     "distributing copies of a program for a fee" or "imposing
+     proprietary restrictions on the use of a program," depending on
+     what you mean.
+
+   * *Theft*: Copyright apologists often use words like "stolen" and
+     "theft" to describe copyright infringement. At the same time, they
+     ask us to treat the legal system as an authority on ethics: if
+     copying is forbidden, it must be wrong.
+
+     So it is pertinent to mention that the legal system-at least in the
+     US-rejects the idea that copyright infringement is "theft".
+     Copyright advocates who use terms like "stolen" are
+     misrepresenting the authority that they appeal to.
+
+     The idea that laws decide what is right or wrong is mistaken in
+     general.  Laws are, at their best, an attempt to achieve justice;
+     to say that laws define justice or ethical conduct is turning
+     things upside down.
+
+

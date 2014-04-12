@@ -1,0 +1,641 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Using GNU Emacs, Compiling with Makefiles, Writing Good Programs, Top
+@chapter Using GNU Emacs
+
+@menu
+* Introduction to Emacs::       
+* Installing GNU Emacs::        
+* Configuring GNU Emacs::       
+* Using vi emulation::          
+* Using Emacs as an IDE::       
+* Inserting copyright notices with Emacs::  
+* Using Emacs as an email client::  
+* Handling patches::            
+* Further reading on Emacs::    
+@end menu
+
+@node Introduction to Emacs, Installing GNU Emacs, Using GNU Emacs, Using GNU Emacs
+@section Introduction to Emacs
+
+Emacs is an environment for running Lisp programs that manipulate text
+interactively. Because Emacs is completely programmable, it can be used to 
+implement not only editors, but a full 
+@dfn{integrated development environment} for software development. Emacs can 
+also browse info documentation, run email clients, a newsgroup reader, 
+a sophisticated xterm, and an understanding psychotherapist. 
+
+Under the X window system, Emacs controls multiple x-windows
+called @dfn{frames}. Each frame has a menubar and the main editing area.
+The editing area is divided into @dfn{windows} with horizontal bars.
+You can grab these bars and move them around with the first mouse button.
+@footnote{Note that in Emacs parlance a @dfn{window} is not an X window.
+A frame is an X window. A @dfn{window} is a region within the frame.}
+Each window is bound to a @dfn{buffer}. A buffer is an Emacs data structure
+that contains text. Most editing commands operate on buffers, modifying
+their contents. When a buffer is bound to a window, then you can see its
+contents as they are being changed. It is possible for a buffer to be bound
+to two windows, on different frames or on the same frame. Then whenever
+a change is made to the buffer, it is reflected on both windows. It is
+not necessary for a buffer to be bound to a window, in order to operate on
+it. In a typical Emacs session you may be manipulating more buffers than 
+the windows that you have on your screen. 
+
+A buffer can be @dfn{visiting} files. In that case, the contents of the
+buffer reflect the contents of a file that is being editted. But buffers
+can be associated with anything you like, so long as you program
+it up. For example, under the Dired directory editor, a buffer is bound
+to a directory, showing you the contents of the directory. When you
+press @key{Enter} while the cursor is over a file name, Emacs creates
+a new buffer, visits the file, and rebinds the window with that buffer.
+From the user's perspective, by pressing @key{Enter} he ``opened'' the
+file for editing. If the file has already been ``opened'' then Emacs
+simply rebinds the existing buffer for that file. 
+
+Emacs uses a variant of LISP, called Emacs LISP, as its programming language.
+Everytime you press a key, click the mouse, or select an entry from the
+menubar, an Emacs LISP function is evaluated. The @dfn{mode} of the
+buffer determines, among many other things, what function to evaluate.
+This way, every buffer can be associated with functionality that defines
+what you do in that buffer. For example you can program your buffer to edit
+text, to edit source code, to read news, and so on. You can also run
+LISP functions directly on the current buffer by typing @code{M-x} and
+the name of the function that you want to run.
+@footnote{M-x means @kbd{@key{ALT}-x}. If you do not have an @key{ALT} key,
+then use @kbd{@key{ESC} x} instead.}
+
+What is known as the ``Emacs editor'' is the default implementation of
+an editor under the Emacs system. If you prefer the vi editor, then you
+can instead run a vi clone, Viper (@pxref{Using vi emulation}).
+The main reason why you should use Emacs, is not the particular editor,
+but the way Emacs integrates editing with all the other functions that
+you like to do as a software developer. For example:
+@itemize @bullet
+@item
+You can edit multiple files under one program. From the user
+perspective, you can edit two different parts of a file under two different
+x-windows. And when you revisit a file, the cursor is placed where it was
+the last time you were editing the file.
+@item
+You can quickly browse a directory and navigate from file to file.
+You can also do simple operations on files, without needing to go to
+a shell.
+@item
+You can transparently edit files over FTP. This is extremely valuable
+if you are editing source code on a remote computer and you are connected
+through a modem link. 
+@item
+You can have a running shell for typing unix commands, and access the same
+shell from any Emacs frame.
+You can use that shell to run @samp{reconf}, @samp{configure} and 
+@samp{make}. You can also save the contents of your session to a file.
+@item
+Color is used to highlight syntactic information about the text.
+This makes browsing more pleasing to the eye, and it can also help you
+catch syntactic mistakes. Emacs understands the syntax of most types
+of files you are likely to edit and will color them up for you accordingly.
+@item
+When you edit source code under Emacs, it will automatically be formatted
+for you to conform to the GNU coding standards. At your request, 
+appropriate copyright notices can be inserted.
+(@pxref{Inserting notices with Emacs})
+@item
+When you make changes to a file, Emacs can automatically warp you to the 
+appropriate @file{ChangeLog} file to record your changes. It will
+handle formatting details for you allowing you to focus on content.
+(@pxref{Maintaining the documentation files})
+@item
+Emacs is invaluably helpful for writing Texinfo documentation. In fact,
+it is excruciatingly painful to maintain Texinfo documentation without
+using Emacs. 
+(@pxref{GNU Emacs support for Texinfo})
+@item
+You can run the @file{gdb} debugger under Emacs and use it to step
+through your code. As you do that, Emacs will show you on a separate buffer
+the code that is currently being stepped through.
+@item
+You can read email and newsgroups. If you are connected over a modem, 
+all your editing is done locally, so you do not get bogged down by the
+speed of your connection. 
+You can apply patches that you get through email or news
+to your source code directly, without needing to save the message to a file.
+@item
+Emacs currently supports almost every international language, even
+languages that do not use the Roman alphabet, like Greek, Chinese, Hebrew,
+Tibetan,etc.
+@end itemize
+
+All of these features make Emacs a very powerful, albeit unusual, 
+integrated development environment. 
+Many users of proprietary operating
+systems, like Lose95
+@footnote{Many individuals refer to @dfn{Microsoft Windows 95} as Win95.
+In hacker terminology, a @dfn{win} is something that is good. We do not
+believe that Microsoft Windows 95 is a good operating system, therefore
+we call it Lose95},
+complain that GNU (and Unix) does not have an integrated development 
+environment. As a matter of fact it does. All of the above features make Emacs
+a very powerful IDE. 
+
+Emacs has its own very extensive documentation 
+(@pxref{Further reading on Emacs}). In this manual we will only go over
+the fundamentals for using Emacs effectively 
+as an integrated development environment.
+
+@node Installing GNU Emacs, Configuring GNU Emacs, Introduction to Emacs, Using GNU Emacs
+@section Installing GNU Emacs
+
+If Emacs is not installed on your system, you will need to get a source
+code distribution and compile it yourself. Installing Emacs is not 
+difficult. If Emacs is already installed on your GNU/Linux system, 
+make sure that you do indeed have Emacs and not the Xemacs variant.
+Also, make sure that you have version 20.3 or newer. Finally, there
+are some variations in how Emacs can be installed. The installer can
+choose whether or not they want to install support for multiple languages
+and reading email over a POP server. It can be very useful to support both.
+If the preinstalled version does not support either, then uninstall it and
+reinstall Emacs from a source code distribution.
+
+The emacs source code is distributed in three separate files:
+@table @file
+@item emacs-20.3.tar.gz
+This is the main Emacs distribution. If you do not care about 
+international language support, you can install this by itself.
+@item leim-20.3.tar.gz
+This supplements the Emacs distribution with support for multiple languages.
+If you develop internationalized software, it is likely that you will need
+this.
+@item intlfonts-1.1.tar.gz
+This file contains the fonts that Emacs uses to support international
+languages. If you want international language support, you will 
+definetely need this.
+@end table
+Get a copy of these files, place them under the same directory
+and unpack them with the following commands:
+@example
+% gunzip emacs-20.3.tar.gz
+% tar xf emacs-20.3.tar
+% gunzip leim-20.3.tar.gz
+% tar xf leim-20.3.tar
+@end example
+@noindent
+Both tarballs will unpack under the @file{emacs-20.3} directory. When
+this is finished, go in and compile the source code:
+@example
+% cd emasc-20.3
+% ./configure --with-pop
+% make
+@end example
+@noindent
+This will take quite a while. When done, install Emacs with
+@example
+# make install
+@end example
+@noindent
+To install @file{intlfonts-1.1.tar.gz} unpack it, and follow the instructions
+in the @file{README} file.
+
+@node Configuring GNU Emacs, Using vi emulation, Installing GNU Emacs, Using GNU Emacs
+@section Configuring GNU Emacs
+
+To use Emacs effectively for software development you need to configure it.
+Part of the configuration needs to be done in your X-resources file.
+On a Debian GNU/Linux system, the X-resources can be configured by editing 
+@example
+/etc/X11/Xresources
+@end example
+@noindent
+In many systems, you can configure X-resources by editing a file called
+@file{.Xresources} or @file{.Xdefaults} on your home directory, but
+that is system-dependent. The configuration that I use on my system
+is:
+@example
+! Emacs defaults
+emacs*Background: Black
+emacs*Foreground: White
+emacs*pointerColor: White
+emacs*cursorColor: White
+emacs*bitmapIcon: on
+emacs*font: fixed
+emacs*geometry: 80x40
+@end example
+@noindent
+In general I favor dark backgrounds and @samp{fixed} fonts. Dark backgrounds
+make it easier to sit in front of the monitor for a prolonged period of
+time. @samp{fixed} fonts looks nice and it's small enough to make efficient
+use of your screenspace. Some people might prefer larger fonts however.
+
+The bulk of Emacs configuration is done by editing or creating an 
+@file{.emacs} file
+in your home directory. If you feel comfortable editing this file with the 
+unconfigured Emacs editor, go for it. Alternatively, you can use the vanilla 
+vi editor. (@pxref{Using vi emulation}). Here are some things that you
+might want to add to your @file{.emacs} file:
+@itemize @bullet
+@item
+You can override your X-default background and foreground color in your
+@file{.emacs} file. For the sake of redundancy, if nothing else, 
+add the following lines to your @file{.emacs}:
+@example
+(set-background-color "black")
+(set-foreground-color "white")
+@end example
+@noindent
+You can change the colors to your liking.
+@item
+In many circumstances, Emacs needs to know your name and email address.
+For example, when you update a @file{ChangeLog}, Emacs needs to know
+these two pieces of information to create a time-stamp. This information
+is also needed when you use Emacs to browse the newsgroups or send email.
+Usually, Emacs can guess this information from your password file and
+if it can deduce your hostname and domain-name it can put together an
+email address. Home systems, that connect to the internet over modem,
+may not have a valid email address, and since we have root on these
+systems, we like to call ourselves things like ``Skeletor'' or ``Dude'',
+when people finger us, but not on our @file{ChangeLog} files or in our
+emails to our boss. To give Emacs your official name and email address,
+add the following two lines in your @file{.emacs} file:
+@example
+(setq user-mail-address "dude@@whitehouse.com")
+(setq user-full-name "Karl Marx")
+@end example
+@noindent
+Make sure the name is your real name, and the email address that you
+include can receive email 24 hours per day.
+@item
+You can tell Emacs to display a little clock on each frame by adding
+the following line in your @file{.emacs}:
+@example
+(display-time)
+@end example
+@noindent
+You can also tell Emacs to show you the line and column number of your
+cursor's position at all times by adding the following lines in your
+@file{.emacs}
+@example
+(line-number-mode 1)
+(column-number-mode 1)
+@end example
+@noindent
+All of these features can be very convenient. 
+@item
+To cut and paste text from frame to frame, you can use the mouse.
+Mouse button 1 will select text and mouse button 2 will paste the text.
+Unfortunately, when you click mouse button 2, emacs will first move the
+cursor at the location of the mouse, and insert the text in that location.
+If you are used to editing with vi under xterms, you won't like this behaviour.
+Instead, you will prefer to position the cursor yourself, and you will
+want mouse button 2 to simply cause the text to be pasted without
+changing the position of the cursor. If you prefer this behaviour,
+add the following line to your @file{.emacs}:
+@example
+(global-set-key [mouse-2] 'yank)
+@end example
+By default, selected text in Emacs buffers is highlighted with blue color.
+However, you can also select and paste into an Emacs buffer text that
+you select from other applications, like your web browser, or your xterm.
+@item
+You may like to use @dfn{font-lock}.
+Emacs understands to a great extent the syntax of your text, especially when
+your text is source code, and it can mark differents parts of your text
+with different colors depending on what the text means syntactically. 
+For example, with C source code, comments are marked red, stuff in quotes
+are marked brown and certain keywords are marked green, blue, etc.
+To activate font-lock, add the following lines to your @file{.emacs}:
+@example
+(global-font-lock-mode t)
+(setq font-lock-maximum-size nil)
+@end example
+@noindent
+At first, fontlock might appear disconcerting to you. It only takes about
+a day to get used to it, and then you won't be able to do without it. 
+Not only does font-lock make your text look prettier. It can also help you
+catch common mistakes like run-away C comments, stray quote marks and so on.
+@item
+If you have installed Emacs packages in non-standard directories,
+you need to add them to the @samp{load-path} variable. For example,
+here's how to add a couple of directories:
+@example
+(setq load-path
+      (append "/usr/share/emacs/site-lisp"
+              "/usr/local/share/emacs/site-site"
+              (expand-file-name "~lf/lisp")
+              load-path))
+@end example
+@noindent
+Note the use of @samp{expand-file-name} for dealing with non-absolute
+directories. If you are a user in an account where you don't have root
+priviledge, you are very likely to need to install your Emacs packages
+in a non-standard directory.
+@item
+@emph{FIXME: Explain how to get rid of the scrollbar}
+@item
+If you are a vi user, and you would like to run a vi editor under the
+Emacs system, then read 
+@ref{Using vi emulation} for more details. 
+@item
+To use Emacs effectively, we recommend that you configure Dired and
+bind certain function keys so that you can go in and out of Dired 
+effectively. Read @ref{Using Emacs as an IDE} for more configuration 
+details.
+@item
+Autotools distributes two Emacs packages. One for handling copyright notices
+and another one for handling Texinfo documentation. 
+To set these packages up read
+@ref{Inserting copyright notices with Emacs} and 
+@ref{GNU Emacs support for Texinfo}
+@item
+If you would like to use Emacs to read your email, 
+@xref{Using Emacs as an email client} for more configuration information.
+@end itemize
+
+@node Using vi emulation, Using Emacs as an IDE, Configuring GNU Emacs, Using GNU Emacs
+@section Using vi emulation
+
+Many people prefer to use the @samp{vi} editor. The @samp{vi} editor is
+the standard editor on Unix. It is also always available on GNU/Linux.
+Many system administrators find it necessary to use vi, especially when they
+are in the middle of setting up a system in which Emacs has not been 
+installed yet. Besides that, there are many compelling reasons why people 
+like vi.
+@itemize @bullet
+@item
+Vi requires only two special keys: the @key{SHIFT} key and the @key{ESC}
+key. All the other keys that you need are standard on all keyboards. 
+You do not need @key{CTRL},@key{ALT},the cursor keys or any of the function
+keys. Some terminals that miss the escape key, usually have the control
+key and you can get escape with: 
+@kbd{@key{CTRL}-[} @c }
+@item
+Vi was designed to deal with terminals that connect to mainframes over
+a very slow line. So it has been optimized to allow you to do the most
+editing possible with the fewest keystrokes. This allows users to edit
+text very efficiently.
+@item
+Vi allows your fingers to stay at the center of the keyboard, with the
+occasional hop to the escape key. It does not require you to stretch your
+fingers in funny control combinations, which makes typing less tiring
+and more comfortable.
+@end itemize
+Because most rearrangements of finger habits are not as optimal as the
+vi finger habits, most vi users react very unpleasently to other editors.
+For the benefit of these users, in this section we describe how to 
+run a vi editor under the Emacs system. Similarly, users of other editors
+find the vi finger habits strange and unintuitive. For the benefit of 
+these users we describe briefly how to use the vi editor, so they can
+try it out if they like.
+
+The vi emulation package for the Emacs system is called @dfn{Viper}. 
+To use Viper, add the following lines in your @file{.emacs}:
+@file{.emacs}:
+@example
+(setq viper-mode t)
+(setq viper-inhibit-startup-message 't)
+(setq viper-expert-level '3)
+(require 'viper)
+@end example
+@noindent
+We recommend expert level 3, as the most balanced blend
+of the vi editor with the Emacs system. Most editing modes are aware of
+Viper, and when you begin editing the text you are immediately thrown into
+Viper. Some modes however do not do that. In some modes, like the Dired mode,
+this is very appropriate. In other modes however, especially custom modes
+that you have added to your system, Viper does not know about them, so
+it does not configure them to enter Viper mode by default. To tell a
+mode to enter Viper by default, add a line like the following to
+your @file{.emacs} file:
+@example
+(add-hook 'm4-mode 'viper-mode)
+@end example
+@noindent
+The modes that you are most likely to use during software development are
+@example
+c-mode  , c++-mode , texinfo-mode
+sh-mode , m4-mode  , makefile-mode
+@end example
+@noindent
+The Emacs distribution has a Viper manual. For more details on setting
+Viper up, you should read that manual.
+
+The vi editor has these things called @emph{editing modes}. An editing
+mode defines how the editor responds to your keystrokes. Vi has three
+editing modes: @dfn{insert mode}, @dfn{replace mode} and @dfn{command mode}. 
+If you run Viper, there is also the Emacs mode. Emacs indicates which
+mode you are in by showing one of
+@samp{<I>}, @samp{<R>}, @samp{<V>}, @samp{<E>} on the statusbar 
+correspondingly for the Insert, Replace, Command and Emacs modes.
+Emacs also shows you the mode by the color of the cursor. This makes it
+easy for you to keep track of which mode you are in.
+@itemize @bullet
+@item
+@dfn{Insert mode}:
+When you are in insert mode, the editor simply @dfn{inserts} the things that
+you type into the text that is being editted. If there are any characters
+in front of your cursor, these characters are pushed ahead and they are
+not overwritten. Under Viper, when you are in insert mode, the color
+of your cursor is green. The only key that has special meaning, while you
+are in insert mode is @key{ESC}. If you press the escape key, you are taken
+to @dfn{command mode}.
+@item
+@dfn{Replace mode}:
+When you are in replace mode, the editor replaces the text under the cursor
+with the text that is being typed. So, you want insert mode when you want
+to write over what's already written. Under Viper, when you are in 
+replace mode, the color of your cursor is red. The @key{ESC} will take you
+to @dfn{command mode.}
+@item
+@dfn{Command mode}:
+When you are in command mode, every letter key that you press is a command
+and has a special meaning. Some of these keys allow you to navigate the
+text. Other keys allow you to enter either insert or replace mode. 
+And other keys do various special things. Under Viper, when you are in
+command mode, the color of your cursor is white. 
+@item
+@dfn{Emacs mode}:
+When you are in Emacs mode, then Viper is turned off on the specific 
+buffer, and Emacs behaves as the default Emacs editor. 
+You can switch between Emacs mode and Command mode by pressing
+@kbd{@key{CTRL}-z}. So to go to Emacs mode, from Insert of Replace mode, you 
+need to go through Command mode. When you are dealing with a buffer that
+runs a special editing mode, like Dired (@pxref{Using Emacs as an IDE}),
+Emacs defines a specialized ``command mode'' for manipulating that buffer,
+that can be completely different from the canonical Viper command mode.
+You want to be in that mode to access the intended functionality. Occasionally
+however, you may like to hop to viper's command mode to navigate the buffer,
+do a search or save the buffer's contents. When you hop to one of the 
+other three modes, the buffer will suddendly be just text to your editor.
+@end itemize
+While you are in Command mode, you can prepend keystrokes with a number. 
+Then the subsequent keystroke will be executed as many times as the number.
+We now list the most important keystrokes that are available to you, 
+while you are in Viper's command mode:
+@itemize @bullet
+@item
+The following keystrokes allow you to navigate the cursor around your text
+without making any changes on the text itself
+@table @kbd
+@item h
+moves one character to the left
+@item j 
+moves down one line
+@item k
+moves up one line
+@item l
+moves one character to the left
+@item w
+moves forward one word
+@item 5w
+moves forward five words (get the idea?)
+@item b
+moves back one word
+@item 0
+moves to the beginning of the current line
+@item $
+moves to the end of the current line
+@item G
+moves to the last line in the file
+@item 1G
+moves to the first line in the file
+@item :10
+moves to line 10 in the file (get the idea?)
+@item @{
+moves up one paragraph
+@item @}
+moves down one paragraph
+@end table
+@item
+The following keystrokes allow you to delete text
+@table @kbd
+@item x
+Deletes the character under the cursor
+@item dd
+Deletes the current line
+@item 4dd
+Deletes four lines
+@item dw
+Deletes the current word
+@item 8dw
+Deletes the next eight words
+@end table
+@item
+The following keystrokes allow you to enter Insert mode
+@table @kbd
+@item a
+Append text after the cursor position
+@item i
+Insert text at the current cursor position
+@item o
+Insert text on a new line bellow the current line
+@item O
+Insert text on a new line above the current line
+@end table
+@item
+The following keystrokes allow you to enter Replace mode.
+@table @kbd
+@item R
+Replace text at the cursor position and stay in Replace mode.
+@item s
+Replace (substitute) only the character at the cursor position, and
+enter Insert mode for all subsequent characters.
+@end table
+@item
+The following commands handle file input/output. All of these commands
+are prepended by the @kbd{:} character. The @kbd{:} character is used 
+for commands that require many characters to be properly expressed. 
+The full text of these commands is entered in the minibuffer. Under viper,
+the minibuffer itself can run under insert, replace and command mode.
+By default you get insert mode, but you can switch to command mode 
+by pressing @key{ESC}.
+@table @kbd
+@item :w
+Save the file to the disk
+@item :w!
+Force the file to be saved to disk even when file permissions do not allow
+it but you have the power to overrule the permissions.
+@item :w@key{SPACE}@var{filename}
+Save the file to the disk under a specific filename. 
+When you press @key{SPACE} Emacs inserts the full pathname of the current
+directory for you, which you can edit if you like.
+@item :w!@key{SPACE}@var{filename}
+Force the file to be saved to the disk under a specific filename.
+@item :r@key{SPACE}@var{filename}
+Paste a file from the disk at the cursor's current position.
+@item :W
+Save all the files on all the Emacs buffers that correspond to open files.
+@item :q
+Kill the buffer. This does not quite the editor at expert level 3.
+@item :q!
+Kill the buffer even if the contents are not saved. Use with caution!
+@end table
+@item
+The following commands handle search and replace
+@table @kbd
+@item /@var{string}
+Search for @var{string}.
+@item n
+Go to the next occurance of @var{string}.
+@item N
+Go to the previous occurance of @var{string}.
+@item :%s/@var{string1}/@var{string2}/g
+Replace all occurances of @var{string1} with @var{string2}.
+Use this with extreme caution!
+@end table
+@item
+The following commands handle @dfn{undo}
+@table @kbd
+@item u
+Undo the previous change. Press again to undo the undo
+@item .
+Press this if you want to repeat the undo further.
+@end table
+@end itemize
+These are enough to get you started. Getting used to dealing with the modes
+and learning the commands is a matter of building finger habits. It may take
+you a week or two before you become comfortable with Viper. When Viper
+becomes second nature to you however, you won't want to tolerate what you
+used to use before.
+
+@node Using Emacs as an IDE, Inserting copyright notices with Emacs, Using vi emulation, Using GNU Emacs
+@section Using Emacs as an IDE
+
+To use the extended Dired, which we recommend, add the following line
+to your @file{.emacs}:
+@example
+(add-hook 'dired-load-hook
+   (function (lambda() (load "dired-x"))))
+@end example
+@noindent
+
+
+@node Inserting copyright notices with Emacs, Using Emacs as an email client, Using Emacs as an IDE, Using GNU Emacs
+@section Inserting copyright notices with Emacs
+
+@node Using Emacs as an email client, Handling patches, Inserting copyright notices with Emacs, Using GNU Emacs
+@section Using Emacs as an email client
+
+@node Handling patches, Further reading on Emacs, Using Emacs as an email client, Using GNU Emacs
+@section Handling patches
+
+@node Further reading on Emacs,  , Handling patches, Using GNU Emacs
+@section Further reading on Emacs
+

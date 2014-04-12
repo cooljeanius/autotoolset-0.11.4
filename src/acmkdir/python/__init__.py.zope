@@ -1,0 +1,17 @@
+# __init__.py file for package_name 
+  
+from import 
+
+def initialize(context):
+    """ docstring """
+    
+    context.registerClass(
+    your_class_name,
+    constructors = (
+    constructor1,
+    constructor2
+    ),
+    icon = 'www/product_icon.png'
+    )
+    
+				

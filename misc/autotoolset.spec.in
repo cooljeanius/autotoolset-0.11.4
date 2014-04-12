@@ -1,0 +1,122 @@
+# Copyright (C) 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
+#  
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#  
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#  
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+# @configure_input@
+#
+Name: @PACKAGE_TARNAME@
+Version: @PACKAGE_VERSION@
+Release: 1
+Source: http://www.cetuc.puc-rio.br/~mroberto/rpms/@PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.bz2
+URL: http://www.cetuc.puc-rio.br/~mroberto
+Summary: The @PACKAGE_NAME@ package complements the GNU build system by providing several additional features
+Copyright: GPL
+Group: Applications
+#Distribution:
+#Vendor:
+Prereq: /sbin/install-info
+BuildRoot: %{_tmppath}/%{name}-root
+Packager: @PACKAGE_BUGREPORT@
+
+%description
+The @PACKAGE_NAME@ package (former autotools package) complements the GNU build system by providing the
+following features:
+
+* Automatic generation of legal notices that are needed in order to
+  apply the GNU GPL license
+
+* Automatic generation of directory trees for new software packages, such that
+  they conform to the GNITS standard (more or less).
+
+* Some rudimentary portability framework for C++ programs. There is a lot
+  of room for improvement here, in the future. Also a framework for
+  embedding text into your executable and handling include files accross
+  multiple directories.
+
+* Support for writing portable software that uses both Fortran and C++.
+
+* Additional support for writing software documentation in Texinfo, but also 
+  in LaTeX.
+
+* A manual introducing both Autotools and the GNU build system in a 
+  unified task-oriented manner.
+
+@PACKAGE_NAME@ is free software. Please see the file COPYING for details.
+For documentation, please see the files in the doc subdirectory.
+For building and installation instructions please see the INSTALL file.
+
+%prep
+%setup -q
+
+%build
+%configure
+make %{_smp_mflags}
+
+%install
+rm -rf %{buildroot}
+%makeinstall
+pushd ${RPM_BUILD_ROOT}
+  #
+  # Info files may be gziped, that saves space
+  #
+  gzip -9nf .%{_infodir}/gnits.info*
+  gzip -9nf .%{_infodir}/toolsmanual.info*
+  gzip -9nf .%{_infodir}/tutorial.info*
+  #
+  # The dir file must be removed. It will be updated in %post and %preun
+  #
+  rm -f .%{_infodir}/dir
+  chmod ug-s .%{_bindir}/*
+popd
+
+%clean
+rm -rf %{buildroot}
+
+%post
+/sbin/install-info --info-dir=%{_infodir} %{_infodir}/gnits.info.gz
+/sbin/install-info --info-dir=%{_infodir} %{_infodir}/toolsmanual.info.gz
+/sbin/install-info --info-dir=%{_infodir} %{_infodir}/tutorial.info.gz
+
+%preun
+if [ $1 = 0 ]; then
+   /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/gnits.info.gz
+   /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/toolsmanual.info.gz
+   /sbin/install-info --delete --info-dir=%{_infodir} %{_infodir}/tutorial.info.gz
+fi
+
+%files
+%defattr(-, root, root)
+%doc AUTHORS ChangeLog COPYING INSTALL NEWS README THANKS TODO
+%{_bindir}/*
+#%{_libdir}/*.so.*
+%{_datadir}/%{name}
+%{_datadir}/aclocal
+%{_datadir}/emacs/site-lisp
+%{_infodir}/*.info*
+#%{_mandir}/man*/*
+
+%changelog
+* Thu Apr  3 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
+- correctly implemented info file instalation (Prereq: /sbin/install-info,
+  %install removes dir, %post, %preun)
+
+* Fri Mar 7 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
+- Changed the package name to autotoolset.
+
+* Mon Feb 19 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
+- Changed the packaging to bz2.
+
+* Mon Feb 19 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
+- Initial RPM release.

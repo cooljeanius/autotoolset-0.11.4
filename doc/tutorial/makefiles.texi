@@ -1,0 +1,778 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Compiling with Makefiles, Using Automake and Autoconf, Using GNU Emacs, Top
+@chapter Compiling with Makefiles
+
+@menu
+* Direct compilation::          
+* Enter Makefiles::             
+* Problems with Makefiles and workarounds::  
+* Building libraries::          
+@end menu
+
+@node Direct compilation, Enter Makefiles, Compiling with Makefiles, Compiling with Makefiles
+@section Direct compilation
+
+We begin at the beginning. If you recall, we showed to you that the hello
+world program can be compiled very simply with the following command:
+@example
+% gcc hello.c -o hello
+@end example
+@noindent
+@xref{Hello world example}.
+Even in this simple case you have quite a few options:
+@itemize @bullet
+@item
+The @samp{-g} flag causes the compiler to output debugging information
+to the executable. This way, you can step your program through a debugger
+if it crashes. 
+@item
+The @samp{-O}, @samp{-O2}, @samp{-O3} flags activate @dfn{optimization}.
+Some compilers can go as far as @samp{-O6}. These numbers are called
+@dfn{optimization levels}. When you compile your program with optimization
+enabled, the compiler applies certain algorithms to the machine code output
+to make it go faster. The cost is that your program compiles much more slowly
+and that although you can step it through a debugger if you used the @samp{-g}
+flag, things will be a little strange. During development the programmer 
+usually uses no optimization, and only activates it when he is about to
+run the program for a production run. A good advice: always test your code
+with optimization activated as well. 
+If optimization breaks your code, then this is telling you that you have
+a memory bug. Good luck finding it. 
+@item
+The @samp{-Wall} flag tells the compiler to issue warnings when it sees
+bad programming style. Some of these warning catch actual bugs, but 
+occasionally some of the warnings complain about something correct that you
+did on purpose. For this reason you control whether you want to see these
+warnings or not with this flag. 
+@end itemize
+Here are some variations of the above example:
+@example
+% gcc -g -O3 hello.c hello
+% gcc -g -Wall hello.c -o hello
+% gcc -g -Wall -O3 hello.c -o hello
+@end example
+@noindent
+Compilers have many more flags like that, and some of these flags are
+compiler dependent.
+
+Now let's consider the case where you have a much larger program.
+made of source files @file{foo1.c}, @file{foo2.c},
+@file{foo3.c} and header files @file{header1.h} and @file{header2.h}.
+One way to compile the program is like this:
+@example
+% gcc foo1.c foo2.c foo3.c -o foo
+@end example
+@noindent
+This is fine when you have only a few files to deal with. Eventually when
+you have more than a hundred files, this is very slow and inefficient, because
+everytime you change one of the @samp{foo} files, @strong{all} of them have
+to be recompiled. In large projects this can very well take a quite a few 
+minutes, and in very large projects hours. The solution is
+to compile each part seperately and put them all together at the end, like
+this:
+@example
+% gcc -c foo1.c
+% gcc -c foo2.c
+% gcc -c foo3.c
+% gcc foo1.o foo2.o foo3.o -o foo
+@end example
+@noindent
+The first three lines compile the three parts seperately and generate output
+in the files @file{foo1.o}, @file{foo2.o}, @file{foo3.o}. The fourth line
+puts it all back together. This way if you make a change only in @file{foo1.o}
+you just do:
+@example
+% gcc -c foo1.c
+% gcc foo1.o foo2.o foo3.o -o foo
+@end example
+@noindent
+This feature of the compiler offers a way out, but it's hardly a solution. 
+
+@itemize @bullet
+@item
+Writing out these commands everytime becomes annoying very soon. 
+@item
+When it is a @strong{header} file that you modified, you need to figure out
+@emph{which source files included it and rebuild all of them} for your
+change to take effect. If you forget to rebuild just one of the source files,
+this bug fix you just made may not work, and you will be all confused.
+@item
+@noindent
+Once you are done compiling you have all these @file{.o} files sitting around
+and you may want to have a safe way of getting rid of them. Typing
+@example
+rm -f *.o
+@end example
+@noindent
+is dangerous because you may misspell @samp{o} for @samp{c} or you may 
+do this:
+@example
+rm -f * .o
+@end example
+@noindent
+and become depressed.
+@end itemize
+
+The @samp{make} utility was written to address these problems. 
+
+@c ========================================================================
+
+@node Enter Makefiles, Problems with Makefiles and workarounds, Direct compilation, Compiling with Makefiles
+@section Enter Makefiles
+
+The @samp{make} utility takes its instructions from a file called 
+@samp{Makefile} in the directory in which it was invoked. 
+The @file{Makefile} involves four concepts:
+the @dfn{target}, 
+the @dfn{dependencies}, the @dfn{rules}, and the @dfn{source}.
+Before we illustrate these concepts with examples we will explain them
+in abstract terms for those who are mathematically minded:
+@itemize @bullet
+@item
+@dfn{Source} are the files that @emph{you} wrote and which are present
+when the distribution is unpacked. A source file has no dependencies, but
+itself it may be a dependency to a target.
+@item
+@dfn{Target} is a file that you wish to generate from the source, or
+an action that you wish to cause (called @dfn{phony} target since no
+file by the name of the target is generated).
+For example when you type @file{make install} you do not generate a
+file called @file{install}. What you generate is the action of moving 
+certain files in certain places. Generating the file or taking the action
+is called @dfn{building} the target. A target may have dependencies and
+it may itself be a dependency to another target.
+@item
+A @dfn{Dependency} can be either a source file or a target. Either way,
+a dependency is something that only targets @emph{have}. Source files 
+do not have dependencies. 
+
+If the dependency is 
+a source file, then we say that, as a dependency to a certain target,
+it is @dfn{up-to-date} if and only if the target's latest update happened
+after the dependency's latest update. We say that the dependency @dfn{changed}
+if and only if the target's latest update happened before the dependency's
+latest update. 
+
+If the dependency itself is a target, then we define recursively
+that as a dependency to a certain target, it has changed if and only if at
+least one of its own dependencies has changed. A @dfn{phony} target is never
+@dfn{up-to-date}. If a phony target is a dependency to another target, then
+it will always cause that other target to be rebuilt.
+Okey, take a big breath and think about this a bit.
+@item
+@dfn{Rules} is a set of instructions that detail how to build a target
+if the dependencies of that target have changed. These instructions
+need to be issued if and only if at least one of the dependencies 
+has changed, and they must be issued only after the corresponding rules
+for the dependencies that have changed are recursively invoked. 
+You may want to take a big breath here as well. Note that this recursion
+will be terminated only when it hits source files because they don't
+have any dependencies. Then it will wrap itself back up and work from
+bottom to top all the way to building the target at the top of the recursion.
+@end itemize
+
+The @file{Makefile} is essentially a collection of @dfn{logical statements} 
+about these four concepts. The content of each statement in English is:
+@quotation
+To build this @dfn{target}, first make sure that these @dfn{dependencies}
+are up to date. If not build them first in the order in which they
+are listed. Then execute these @dfn{rules} to build @emph{this} target.
+@end quotation
+@noindent
+Given a complete collection of such statements it is possible to infer
+what action needs to be taken to build a specific target, from the
+source files and the current state of the distribution. By action we
+mean passing commands to the shell. One reason why this is useful 
+is because if part of the building process does not need to be
+repeated, it will not be repeated. The @file{make} program will detect
+that certain dependencies have not changed and skip the action
+required for rebuilding their targets. Another reason why this approach is 
+useful is because it is intuitive in human terms. At least, it will
+be intuitive when we illustrate it to you.
+
+In make-speak each statement has the following form:
+@example
+target: dependency1 dependency2 ....
+       shell-command-1
+       shell-command-2
+       shell-command-3
+@end example
+@noindent
+where @code{target} is the name of the target and @code{dependency*} the
+name of the dependencies, which can be either source files or other targets. 
+The shell commands that follow are the commands
+that need to be passed to the shell to build the target after the dependencies
+have been built. To be compatible with most versions of make, you must
+seperate these statements with a blank line. Also, the @code{shell-command*}
+must be indented with the @kbd{tab} key. Don't forget your @kbd{tab} keys
+otherwise @code{make} will not work.
+
+When you run @code{make} you can pass the target that you want to build
+as an argument. If you omit arguments and call @code{make} by itself then
+the first target mentioned in the Makefile is the one that gets built.
+The makefiles that Automake generates have the phony target @code{all}
+be the default target. That target will compile your code but not install it.
+They also provide a few more phony targets such as @code{install},
+@code{check}, @code{dist}, @code{distcheck}, @code{clean}, @code{distclean}
+as we have discussed earlier. So Automake is saving you quite a lot of
+work because without it you would have to write a lot of repetitive code
+to provide all these phony targets.
+
+To illustrate these concepts with an example suppose that you have this 
+situation:
+@itemize @bullet
+@item
+Four source files: @file{foo1.c}, @file{foo2.c}, @file{foo3.c},@file{foo4.c}
+@item
+Three include files: @file{gleep1.h},@file{gleep2.h},@file{gleep3.h}
+@item
+@file{foo1.c} includes @file{gleep2.h} and @file{gleep3.h}
+@item
+@file{foo2.c} includes @file{gleep1.h}
+@item
+@file{foo3.c} includes @file{gleep1.h} and @file{gleep2.h}
+@item
+@file{foo4.c} includes @file{gleep3.h}
+@end itemize
+To build an executable @file{foo} you need to build object files and then
+link them together. We say that the executable depends on the object files
+and that each object file depends on a corresponding @file{*.c} file 
+@emph{and} the @file{*.h} files that it includes.
+Then to get to an executable @file{foo} you need to go through the following
+dependencies:
+@example
+foo: foo1.o foo2.o foo3.o foo4.o
+foo1.o: foo1.c gleep2.h gleep3.h
+foo2.o: foo2.c gleep1.h
+foo3.o: foo3.c gleep1.h gleep2.h
+foo4.o: foo4.c gleep3.h
+@end example
+@noindent
+The thing on the left-hand-side is the target, the thing on the right-hand-side
+is the dependencies. The logic is that to build the thing on the left, you
+need to build the things on the right first. So, if @file{foo1.c} changes,
+@file{foo1.o} must be rebuilt. If @file{gleep3.h} changes then 
+@file{foo1.o} and @file{foo4.o} must be rebuilt. That's the game.
+
+The way the @file{Makefile} actually looks like is like this:
+@example
+foo: foo1.o foo2.o foo3.o foo4.o
+        gcc foo1.o foo2.o foo3.o foo4.o -o foo
+ 
+foo1.o: foo1.c gleep2.h gleep3.h
+        gcc -c foo1.c
+
+foo2.o: foo2.c gleep1.h
+        gcc -c foo2.c
+
+foo3.o: foo3.c gleep1.h gleep2.h
+        gcc -c foo3.c
+
+foo4.o: foo4.c gleep3.h
+        gcc -c foo4.c
+@end example
+@noindent
+It's the same thing as before except that we have supplemented the @dfn{rules}
+by which the target is built from the dependencies. 
+Things to note about syntax:
+@itemize @bullet
+@item
+The rules must be indented with a @dfn{tab}. To get a tab you must press the
+@key{TAB} key on your keyboard. 
+@item
+Each statement must be separated from the next statement with a blank line.
+@item
+The first target is what gets built when you type simply
+@example
+% make
+@end example
+@noindent
+Therefore, the target for the executable must go at the beginning.
+@end itemize
+@noindent
+If you omit the tabs or the blank line, then the Makefile will not work.
+Some versions of @samp{make} have relaxed the blank line rule, since it's
+redundant, but to be portable, just put the damn blank line in.
+
+You may ask, "how does @samp{make} know what I changed?". It knows because
+@sc{unix} keeps track of the exact date and time in which every file and
+directory was modified. This is called the Unix @dfn{time-stamp}. What happens 
+then is that @samp{make} checks 
+whether any of the dependencies is newer than the main target. If so, then
+the target must be rebuilt. Cool. Now do the target's dependencies have
+to be rebuilt? Let's look at @emph{their} dependencies and find out!
+In this recursive fashion, the logic is untangled and @samp{make} does
+the Right Thing.
+
+The @samp{touch} command allows you to @emph{fake} time-stamps and make
+a file look as if it has been just modified. This way you can force make
+to rebuild everything by saying something like:
+@example
+% touch *.c *.h
+@end example
+@noindent
+If you are building more than one executable, then you may want to
+make a phony target @code{all} be the first target:
+@example
+all: foo1 foo2 foo3
+@end example
+@noindent
+Then calling @code{make} will attempt to build @code{all} and that will
+cause make to loop over @file{foo1}, @file{foo2}, @file{foo3} and
+get them built. Of course you can also tell make to build these individually
+by typing:
+@example
+% make foo1
+% make foo2
+% make foo3
+@end example
+@noindent
+Anything that is a target can be an argument. You might even say
+@example
+% make bar.o
+@end example
+@noindent
+if all you want is to build a certain object file and then stop.
+
+@c ========================================================================
+
+@node Problems with Makefiles and workarounds, Building libraries, Enter Makefiles, Compiling with Makefiles
+@section Problems with Makefiles and workarounds
+
+The main problem with maintaining Makefiles, in fact what we @emph{mean} when
+we complain about maintaining Makefiles, is keeping track of the dependencies.
+The @samp{make} utility will do its job if you tell it what the dependencies
+are, but it won't figure them out for you. There's a good reason for this
+of course, and herein lies the wisdom of Unix. To figure out the dependencies,
+you @emph{need to know something about the syntax of the files that you
+are working with!}. And @dfn{syntax} is the turf of the @dfn{compiler}, and
+not @samp{make}.
+The GNU compiler honors this responsibility and if you type:
+@example
+% gcc -MM foo1.c
+% gcc -MM foo2.c
+% gcc -MM foo3.c
+% gcc -MM foo4.c
+@end example
+@noindent
+it will compute the dependencies and put them out in standard output.
+Even so, it is clear that something @emph{else} is needed to take
+advantage of this feature, if available, to generate a correct @samp{Makefile}
+automatically. This is the main problem for which the only work-around is
+to use @emph{another} tool that generates Makefiles.
+
+The other big problem comes about with situations in which a software project
+spans many subdirectories. Each subdirectory needs to have a Makefile,
+and every Makefile must have a way to make sure that @samp{make} gets called
+recursively to handle the subdirectories. This can be done, but it is quite
+cumbersome and annoying. Some programmers may choose to do without the 
+advantages of a well-organized directory tree for this reason.
+
+There are a few other little problems, but they have for most part solutions
+within the realm of the @samp{make} utility. One such problem is that if
+you move to a system where the compiler is called @samp{cc} instead of 
+@samp{gcc} you need to edit the Makefile everywhere. Here's a solution:
+@example
+CC = gcc 
+
+#CFLAGS = -Wall -g -O3
+CFLAGS = -Wall -g
+
+foo: foo1.o foo2.o foo3.o foo4.o
+        $(CC) $(CFLAGS) foo1.o foo2.o foo3.o foo4.o -o foo
+
+foo1.o: foo1.c gleep2.h gleep3.h
+        $(CC) $(CFLAGS) -c foo1.c
+
+foo2.o: foo2.c gleep1.h
+        $(CC) $(CFLAGS) -c foo2.c
+
+foo3.o: foo3.c gleep1.h gleep2.h
+        $(CC) $(CFLAGS) -c foo3.c
+
+foo4.o: foo4.c gleep3.h
+        $(CC) $(CFLAGS) -c foo4.c
+@end example
+@noindent
+Now the user just has to modify the first line where he defines the
+@dfn{macro-variable} @samp{CC}, and whatever he puts there gets
+substituted in the rules bellow. The other macro variable, @samp{CFLAGS}
+can be used to turn optimization on and off. Putting a @samp{#} mark in the
+beginning of a line, makes the line a comment, and the line is ignored.
+
+Another problem is that there is a lot of redundancy in this makefile.
+@emph{Every object file is built from the source file the same way.}
+Clearly there should be a way to take advantage of that right?
+Here it is:
+@example
+CC = gcc 
+CFLAGS = -Wall -g
+
+.SUFFIXES: .c .o 
+
+.c.o:
+        $(CC) $(CFLAGS) -c $<
+
+.o:
+        $(CC) $(CFLAGS) $< -o $@@
+
+foo: foo1.o foo2.o foo3.o foo4.o
+foo1.o: foo1.c gleep2.h gleep3.h
+foo2.o: foo2.c gleep1.h
+foo3.o: foo3.c gleep1.h gleep2.h
+foo4.o: foo4.c gleep3.h
+@end example
+@noindent
+Now this is more abstract, and has some cool punctuation. The @samp{SUFFIXES}
+thing tells @samp{make} that files that are possible targets, fall under
+three categories: files that end in @samp{.c}, files that end in @samp{.o}
+and files that end in nothing.
+Now let's look at the next line:
+@example
+.c.o:
+        $(CC) $(CFLAGS) -c $<
+@end example
+@noindent
+This line is an @dfn{abstract} rule that tells @samp{make} how to make
+@samp{.o} files from @samp{.c} files. The punctuation marks have the
+following meanings:
+@table @samp
+@item $<
+are the dependencies that changed causing the target to need to be rebuilt
+@item $@@
+is the target
+@item $^
+are @emph{all} the dependencies for the current rule
+@end table
+@noindent
+In the same spirit, the next rule tells how to make the executable file from
+the @samp{.o} files. 
+@example
+.o:
+        $(CC) $(CFLAGS) $< -o $@@
+@end example
+@noindent
+All that has to follow the abstract rules is the dependencies,
+@emph{without} the specific rules! If you are using @samp{gcc} these 
+dependencies can be generated automatically and then you can @dfn{include} them
+from your Makefile. Unfortunately
+this approach doesn't work with all of the other compilers. And there is
+no standard way to include another file into Makefile source.
+@footnote{If this sounds surprising, don't forget that there is no ANSI 
+standard for Makefiles}
+Of course, what we will point out eventually is that @samp{automake} can take 
+care of the dependencies for you.
+
+The Makefile in our example can be enhanced in the following way:
+@example
+CC = gcc
+CFLAGS = -Wall -g
+OBJECTS = foo1.o foo2.o foo3.o foo4.o
+PREFIX = /usr/local
+
+.SUFFIXES: .c .o
+
+.c.o:
+        $(CC) $(CFLAGS) -c $<
+
+.o:
+        $(CC) $(CFLAGS) $< -o $@@
+
+foo: $(OBJECTS)
+foo1.o: foo1.c gleep2.h gleep3.h
+foo2.o: foo2.c gleep1.h
+foo3.o: foo3.c gleep1.h gleep2.h
+foo4.o: foo4.c gleep3.h
+
+clean:
+        rm -f $(OBJECTS)
+
+distclean:
+        rm -f $(OBJECTS) foo
+
+install:
+        rm -f $(PREFIX)/bin/foo
+        cp foo $(PREFIX)/bin/foo
+@end example
+@noindent
+We've added three fake targets called @samp{clean} and @samp{distclean},
+@samp{install} and introduced a few more macro-variables to control
+redundancy. I am sure some bells are ringing now. When you type:
+@example
+% make 
+@end example
+@noindent
+the first target (which is @samp{foo}) gets build, and your program compiles. 
+When you type
+@example
+% make install
+@end example
+@noindent
+since there is no file called @file{install} anywhere, the rule there
+is executed which has the effect of copying the executable over at
+@file{/usr/local/bin}. To get rid of the object files, 
+@example
+% make clean
+@end example
+@noindent
+and to get rid of the executable as well
+@example
+% make distclean
+@end example
+@noindent
+Such fake targets are called @dfn{phony targets} in makefile parlance.
+As you can see, the @samp{make} utility is quite powerful and there's a lot
+it can do. If you want to become a @samp{make} wizard, all you need to do
+is read the @emph{GNU Make Manual} and waste a lot of time spiffying up your
+makefiles, instead of getting your programs debugged, The GNU Make manual
+is extremely well written, and will make for enjoyable reading. It is also
+@dfn{free}, unlike ``published'' books. 
+
+The reason we went to the trouble to explain @samp{make} is because it is 
+important to understand what happens behind the hood, and because in many
+cases, @samp{make} is a fine thing to use. It works for simple programs.
+And it works for many other things such as formatting @TeX{} documents and
+so on. 
+
+As we evolve to more and more complicated projects, there's two things that
+we need. A more high-level way of specifying what you want to build, and
+a way of automatically determining the values that you want to put to
+things like @sc{cflags}, @sc{prefix} and so on. The first thing is what
+@samp{automake} does, the second thing is what @samp{autoconf} does.
+
+@c ==========================================================================
+
+@node Building libraries,  , Problems with Makefiles and workarounds, Compiling with Makefiles
+@section Building libraries
+
+There's one last thing that we need to mention before moving on, and that's
+@dfn{libraries}. As you recall, to put together an executable, we make
+a whole bunch of @samp{.o} files and then put them all together. It just
+so happens in many cases that a set of @samp{.o} files together forms a
+cohesive unit that can be reused in many applications, and you'd like
+to use them in other programs. To make things simpler, what you do is put
+the @samp{.o} files together and make a @dfn{library}. 
+
+A library is usually composed of many @samp{.c} files and hopefully only
+one or at most two @samp{.h} files. It's a good practice to minimize the
+use of header files and put all your gunk in one header file, because this
+way the user of your library won't have to be typing an endless stream
+of @samp{#include} directives for @emph{every} @samp{.c} file he writes that
+depends on the library. Be considerate. The user might be you! Header files
+fall under two categories: @dfn{public} and @dfn{private}. The public
+header files must be installed at @file{/prefix/include} whereas the private
+ones are only meant to be used internally. The public header files export
+documented library features to the user. The private header files export
+undocumented library features that are to be used only by the developer of
+the library and only for the purpose of developing the library.
+
+Suppose that we have a library called @samp{barf} that's made of the following
+files:
+@quotation
+@file{barf.h}, @file{barf1.c}, @file{barf2.c}, @file{barf3.c}
+@end quotation
+@noindent
+In real life, the names should be more meaningful than that, but we're being
+general here. To build it, you first make the @samp{.o} files:
+@example
+% gcc -c barf1.c
+% gcc -c barf2.c
+% gcc -c barf3.c
+@end example
+@noindent
+and then you do this magic:
+@example
+% rm -f libbarf.a
+% ar cru libbarf.a barf1.o barf2.o barf3.o
+@end example
+@noindent
+This will create a file @code{libbarf.a} from the object files
+@file{barf1.o}, @file{barf2.o}, @file{barf3.p}.
+On most Unix systems, the library won't work unless it's "blessed" by a
+program called @samp{ranlib}:
+@example
+% ranlib libbarf.a
+@end example
+@noindent
+On other Unix systems, you might find that @samp{ranlib} doesn't even exist
+because it's not needed. 
+
+The reason for this is historical. Originally @code{ar}
+was meant to be used merely for packaging files together. The more
+well known program @code{tar} is a descendent of @code{ar} that was designed
+to handle making such archives on a tape device. Now that tape devices are
+more or less obsolete, @code{tar} is playing the role that was originally
+meant for @code{ar}. As for @code{ar}, way back, some people thought to
+use it to package @code{*.o} files. However the linker wanted a symbol table
+to be passed along with the archive for the convenience of the people writing
+the code for the linker. Perhaps also for efficiency. So the @code{ranlib} 
+program was written to generate that table and add it to the @code{*.a} file.
+Then some Unix vendors thought that if they incorporated @code{ranlib}
+to @code{ar} then users wouldn't have to worry about forgetting to call
+@code{ranlib}. So they provided @code{ranlib} but it did nothing. Some
+of the more evil ones dropped it all-together breaking many people's
+makefiles that tried to run @code{ranlib}. In the next chapter we will
+show you that Autoconf and Automake will automatically determine for you
+how to deal with @code{ranlib} in a portable manner.
+
+Anyway, once you have a library, you put the header file @file{barf.h} under
+@file{/usr/local/include} and the @file{libbarf.a} file under 
+@file{/usr/local/lib}. If you are in development phase, you put them
+somewhere else, under a prefix different other than @file{/usr/local}.
+
+Now, how do we use libraries? Well, suppose that a program uses the
+@code{barf} function defined in the barf library. Then a typical program
+might look like:
+@example
+// -* main.c *-
+#include <stdio.h>
+#include <barf.h>
+main()
+@{
+ printf("This is barf!\n");
+ barf();
+ printf("Barf me!\n");
+@}
+@end example
+@noindent
+If the library was installed in @file{/usr/local} then you can compile like
+this:
+@example
+% gcc -c main.c
+% gcc main.o -o main -lbarf
+@end example
+@noindent
+Of course, if you did not install in @file{/prefix} instead of 
+@file{/usr/local} or @file{/usr}
+then you are in trouble. Now you have to do it this way:
+@example
+% gcc -I/prefix/include -c main.c
+% gcc main.o -o main -L/prefix/lib -lbarf
+@end example
+@noindent
+The @samp{-I} flag tells the compiler where to find any extra header files
+(like @file{barf.h}) and the @samp{-L} flag tells the compiler where to
+find any extra libraries (like @file{libbarf.a}). The @samp{-lbarf} flag
+tells the compiler to bring in the entire @file{libbarf.a} library with all 
+its enclosed
+@samp{.o} files and link it in with whathaveyou to produce the executable.
+
+If the library hasn't been installed yet, and is present in the same directory
+as the object file @file{main.o} then you can link them by passing its
+filename instead:
+@example
+% gcc main.o libbarf.a -o main
+@end example
+@noindent
+Please link libraries with their full names if they haven't yet been
+installed under the prefix directory and reserve using the @code{-l}
+flag only for libraries that have already been installed. This is very
+important. When you use Automake it helps it keep the dependencies straight.
+And when you use shared libraries, it is absolutely essential.
+
+Also, please pay attention to the order with which you link your libraries.
+When the linker links a library, it does not embed into the executable code 
+the entire library, but only the symbols that are needed from the library.
+In order for the linker to know what symbols are really needed from any
+given library, it must have already parsed all the other libraries and 
+object files that depend on that library! This implies that you
+first link your object files, then you link the higher-level libraries,
+then the lower-level libraries. If you are the author of the libraries,
+you must write your libraries in such a manner, that the dependency graph
+of your libraries is a tree. If two libraries depend on each other 
+bidirectionally, then you may have trouble linking them in. This suggests that
+they should be one library instead! 
+
+While we are at the topic, when you compile ordinary programs like the
+hello world program what really goes on behind the scenes is this:
+@example
+% gcc -c hello.c
+% gcc -o hello hello.o -lc
+@end example
+@noindent
+This links in the C system library @file{libc.a}.
+The standard include files
+that you use, such as @file{stdio.h}, @file{stdlib.h} and whathaveyou
+are all refering to various parts of these libraries. These libraries
+get linked in by default when the @samp{-o} flag is present. Note that 
+other C compilers may be calling their system libraries something else.
+For this reason the corresponding flags are assumed and you don't have to
+supply them.
+
+The catch is that there are many functions that you think of as standard
+that are not included in the @file{libc.a} library. For example all the
+math functions that are declared in @file{math.h} are defined in
+a library called @file{libm.a} which is not linked by default. So
+if the hello world program needed the math library you should be
+doing this instead:
+@example
+% gcc -c hello.c
+% gcc -o hello hello.o -lm
+@end example
+@noindent
+On some old Linux systems it used to be required that you also link
+a @file{libieee.a} library:
+@example
+% gcc -o hello hello.o -lieee -lm
+@end example
+@noindent
+More problems of this sort occur when you use more esoteric system
+calls like sockets. Some systems require you to link in additional
+system libraries such as @file{libbsd.a}, @file{libsocket.a},
+@file{libnsl.a}. Also if you are linking Fortran and C code together
+you must also link the Fortran run-time libraries. These libraries
+have non-standard names and depend on the Fortran compiler you use.
+Finally, a very common problem is encountered when you are writing
+X applications. The X libraries and header files like to be placed in
+non-standard locations so you must provide system-dependent @code{-I}
+and @code{-L} flags so that the compiler can find them. Also the most
+recent version of X requires you to link in some additional libraries
+on top of @code{libX11.a} and some rare systems require you to link
+some additional system libraries to access networking features 
+(recall that X is built on top of the sockets interface and it is essentially a
+communications protocol between the computer running the program and
+computer that controls the screen in which the X program is displayed.)
+Fortunately, Autoconf can help you deal with all of this. We will cover
+these issues in more detail in subsequent chapters.
+
+Because it is necessary to link system libraries to form an executable,
+under copyright law, the executable is derived work from the system libraries.
+This means that you must pay attention to the license terms of these libraries.
+The GNU @file{libc} library is under the LGPL license which allows you to
+link and distribute both free and proprietary executables. The @file{stdc++}
+library is also under terms that permit the distribution of proprietary
+executables. The @file{libg++} library however only permits you to build
+free executables. If you are on a GNU system, including Linux-based GNU
+systems, the legalese is pretty straightforward. If you are on a proprietary
+Unix system, you need to be more careful. The GNU GPL does not allow 
+GPLed code to be linked against proprietary library. Because on Unix systems,
+the system libraries are proprietary, their terms may not allow you to
+distribute executables derived from them. In practice, they do however,
+since proprietary Unix systems do want to attract proprietary applications. 
+In the same spirit, the GNU GPL also makes an exception and explicitly
+permits the linking of GPL code with proprietary system libraries, provided
+that said libraries @emph{are} system libraries. This includes 
+proprietary @file{libc.a} libraries, the @file{libdxml.a} library in
+Digital Unix, proprietary Fortran system libraries like @file{libUfor.a},
+and the X11 libraries.

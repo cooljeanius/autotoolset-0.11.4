@@ -1,0 +1,989 @@
+This is toolsmanual.info, produced by makeinfo version 4.2 from
+toolsmanual.texi.
+
+INFO-DIR-SECTION Development
+START-INFO-DIR-ENTRY
+* toolsmanual: (toolsmanual).      Developing software with GNU
+END-INFO-DIR-ENTRY
+
+
+File: toolsmanual.info,  Node: Programs with many source files,  Next: Building libraries,  Prev: Compiling simple programs,  Up: Compiling with Makefiles
+
+Programs with many source files
+===============================
+
+   Now let's consider the case where you have a much larger program made
+of source files `foo1.c', `foo2.c', `foo3.c' and header files
+`header1.h' and `header2.h'.  One way to compile the program is like
+this:
+     % gcc foo1.c foo2.c foo3.c -o foo
+
+This is fine when you have only a few files to deal with. Eventually,
+when you have more than a few dozen files, it becomes wasteful to
+compile all of the files, all the time, every time you make a change in
+only one of the files. For this reason, the compiler allows you to
+compile every file separately into an intermediate file called "object
+file", and link all the object files together at the end.  This can be
+done with the following commands:
+     % gcc -c foo1.c
+     % gcc -c foo2.c
+     % gcc -c foo3.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+
+The first three commands generate the object files `foo1.o', `foo2.o',
+`foo3.o' and the last command links them together to the final
+executable file `foo'. The `*.o' suffix is reserved for use only by
+object files.
+
+   If you make a change only in `foo1.c', then you can rebuild `foo'
+like this:
+     % gcc -c foo1.c
+     % gcc foo1.o foo2.o foo3.o -o foo
+
+The object files `foo2.o' and `foo3.o' do not need to be rebuilt since
+only `foo1.c' changed, so it is not necessary to recompile them.
+
+   Object files `*.o' contain definitions of variables and subroutines
+written out in "assembly" (machine language "pseudocode"). Most of
+these definitions will eventually be embedded in the final executable
+program at a specific address. At this stage however these memory
+addresses are not known so they are being refered to symbolically. These
+symbolic references are called "symbols". It is possible to list the
+symbols defined in an object file with the `nm' command.  For example:
+     % nm xmalloc.o
+              U error
+              U malloc
+              U realloc
+     00000000 D xalloc_exit_failure
+     00000000 t xalloc_fail
+     00000004 D xalloc_fail_func
+     00000014 R xalloc_msg_memory_exhausted
+     00000030 T xmalloc
+     00000060 T xrealloc
+
+The first column lists the symbol's address within the object file, when
+the symbol is actually defined in that object file.  The second column
+lists the symbol type. The third column is the symbolic name of the
+symbol. In the final executable, these names become irrelevant.  The
+following types commonly occur:
+`T'
+     A function definition
+
+`t'
+     A private function definition. Such functions are defined in C with
+     the keyword `static'.
+
+`D'
+     A global variable
+
+`R'
+     A read-only (`const') global variable
+
+`U'
+     A symbol used but not defined in this object file.
+
+For more details, see the `Binutils manual'.
+
+   The job of the compiler is to translate all the C source files to
+object files containing a corresponding set of symbolic definitions.
+It is the job of another program, the "linker", to put the object files
+together, resolve and evaluate all the symbolic addresses, and build a
+complete machine language program that can actually be executed.  When
+you ask `gcc' to link the object files into an executable, the compiler
+is actually running the linker to do the job.
+
+   During the process of linking, all the machine language instructions
+that refer to a specific memory address need to be modified to use the
+correct addresses within the executable, as oppposed to the addresses
+within their object file. This becomes an issue when you want to your
+program to load and link compiled object files during run-time instead
+of compile-time.  To make such "dynamic linking" possible, your symbols
+need to be "relocatable". This means that your symbols definitions must
+be correct no matter where you place them in memory. There should be no
+memory addresses that need to be modified. One way to do this is by
+refering to memory addresses within the object file by giving an offset
+from the refering address. Memory addresses outside the object file must
+be treated as "interlibrary dependencies" and you must tell the compiler
+what you expect them to be when you attempt to build relocatable
+machine code.  Unfortunately some flavours of Unix do not handle
+interlibrary dependencies correctly. Fortunately, all of this mess can
+be dealt with in a uniform way, to the extent that this is possible, by
+using GNU Libtool.  *Note Using Libtool::, for more details.
+
+   On GNU and Unix, all compiled languages compile to object files, and
+it is possible, in principle, to link object files that have originated
+from source files written in different programming languages. For
+example it is possible to link source code written in Fortran together
+with source code written in C or C++. In such cases, you need to know
+how the compiler converts the names with which the program language
+calls its constructs (such as variable, subroutines, etc.) to symbol
+names.  Such conversions, when they actually happen, are called
+"name-mangling". Both C++ and Fortran do name-mangling. C however is a
+very nice language, because it does absolutely no name-mangling.  This
+is why when you want to write code that you want to export to many
+programming languages, it is best to write it in C.  *Note Using
+Fortran effectively::, for more details on how to deal with the
+name-mangling done by Fortran compilers.
+
+
+File: toolsmanual.info,  Node: Building libraries,  Next: Dealing with header files,  Prev: Programs with many source files,  Up: Compiling with Makefiles
+
+Building libraries
+==================
+
+   In many cases a collection of object files form a logical unit that
+is used by more than one executable. On both GNU and Unix systems, it
+is possible to collect such object files and form a "library". On the
+GNU system, to create a library, you use the `ar' command:
+     ar cru libfoo.a foo1.o foo2.o foo3.o
+
+This will create a file `libfoo.a' from the object files `foo1.o',
+`foo2.o' and `foo3.o'. The suffix `*.a' is reserved for object file
+libraries.  Before using the library, it needs to be "blessed" by a
+program called `ranlib':
+     % ranlib libfoo.a
+
+The GNU system, and most Unix systems require that you run `ranlib',
+but there have been some Unix systems where doing so is not necessary.
+In fact there are Unix systems, like some versions of SGI's Irix, that
+don't even have the `ranlib' command!
+
+   The reason for this is historical. Originally `ar' was meant to be
+used merely for packaging files together. The more well known program
+`tar' is a descendent of `ar' that was designed to handle making such
+archives on a tape device. Now that tape devices are more or less
+obsolete, `tar' is playing the role that was originally meant for `ar'.
+As for `ar', way back, some people thought to use it to package `*.o'
+files. However the linker wanted a symbol table to be passed along with
+the archive. So the `ranlib' program was written to generate that table
+and add it to the `*.a' file.  Then some Unix vendors thought that if
+they incorporated `ranlib' to `ar' then users wouldn't have to worry
+about forgetting to call `ranlib'. So they provided `ranlib' but it did
+nothing. Some of the more evil ones dropped it all-together breaking
+many people's scripts.
+
+   Once you have a library, you can link it with other object files just
+as if it were an object file itself. For example
+     % gcc bar.o libfoo.a -o foo
+
+using `libfoo.a' as defined above, is equivalent to writing
+     % gcc bar.o foo1.o foo2.o foo3.o -o foo
+
+Libraries are particularly useful when they are "installed".  To
+install a library you need to move the file `libfoo.a' to a standard
+directory. The actual location of that directory depends on your
+compiler. The GNU compiler looks for installed libraries in `/usr/lib'
+and `/usr/local/lib'. Because many Unix systems also use the GNU
+compiler, it is safe to say that both of these directories are standard
+in these systems too. However there are some Unix compilers that don't
+look at `/usr/local/lib' by default.  Once a library is installed, it
+can be used in any project from any current directory to compile an
+executable that uses the subroutines that that library provides. You
+can direct the compiler to link an installed library with a set of
+executable files to form an executable by using the `-l' flag like this:
+     % gcc -o foo bar.o -lfoo
+
+Note that if the filename of the library is `libfoo.a', the
+corresponding argument to the `-l' flag must be only the substring
+`foo', hence `-lfoo'. Libraries must be named with names that have the
+form `lib*.a'. If you have installed the `libfoo.a' library in a
+non-standard directory, you can tell the linker to look for the library
+in that directory as well by using the `-L' flag.  For example, if the
+library was installed in `/home/lf/lib' then we would have to invoke
+the linking like this:
+     gcc -o bar bar.o -L/home/lf/lib -lfoo
+
+The `-L' flag must appear before the `-l' flag.
+
+   Some people like to pass `-L.' to the compiler so they can link
+uninstalled libraries in the current working directory using the `-l'
+flag instead of typing in their full filenames. The idea is that they
+think "it looks better" that way. Actually this is considered bad style.
+You should use the `-l' flag to link only libraries that have already
+been installed and use the full pathnames to link in uninstalled
+libraries.  The reason why this is important is because, even though it
+makes no difference when dealing with ordinary libraries, it makes a
+lot of difference when you are working with "shared" libraries.
+(_FIXME: Crossreference_).  It makes a difference whether or not you
+are linking to an uninstalled or installed _shared_ library, and in
+that case the `-l' semantics mean that you are linking an installed
+shared library. Please stick to this rule, even if you are not using
+shared libraries, to make it possible to switch to using shared
+libraries without too much hassle.
+
+   Also, if you are linking in more than one library, please pay
+attention to the order with which you link your libraries.  When the
+linker links a library, it does not embed into the executable code the
+entire library, but only the symbols that are needed from the library.
+In order for the linker to know what symbols are really needed from any
+given library, it must have already parsed all the other libraries and
+object files that depend on that library! This implies that you first
+link your object files, then you link the higher-level libraries, then
+the lower-level libraries. If you are the author of the libraries, you
+must write your libraries in such a manner, that the dependency graph
+of your libraries is a tree. If two libraries depend on each other
+bidirectionally, then you may have trouble linking them in. This
+suggests that they should be one library instead!
+
+
+File: toolsmanual.info,  Node: Dealing with header files,  Next: The GPL and libraries,  Prev: Building libraries,  Up: Compiling with Makefiles
+
+Dealing with header files
+=========================
+
+   In general libraries are composed of many `*.c' files that compile
+to object files, and a few "header files" (`*.h'). The header files
+declare the resources that are defined by the library and need to be
+included by any source files that use the library's resources.  In
+general a library comes with two types of header files: "public" and
+"private". The public header files declare resources that you want to
+make accessible to other software.  The private header files declare
+resources that are meant to be used only for developing the library
+itself. To make an installed library useful, it is also necessary to
+install the corresponding public header files.  The standard directory
+for installing header files is `/usr/include'.  The GNU compiler also
+understands `/usr/local/include' as an alternative directory.  When the
+compiler encounters the directive
+     #include <foo.h>
+
+it searches these standard directories for `foo.h'.  If you have
+installed the header files in a non-standard directory, you can tell
+the compiler to search for them in that directory by using the `-I'
+flag. For example, to build a program `bar' from a source file `bar.c'
+that uses the `libfoo' library installed at `/home/username' you would
+need to do the following:
+     % gcc -c -I/home/lf/include bar.c
+     % gcc -o bar bar.o -L/home/lf/lib -lfoo
+
+You can also do it in one step:
+     % gcc -I/home/lf/include -o bar bar.o -L/home/lf/lib -lfoo
+
+For portability, it is better that the `-I' appear before the filenames
+of the source files that we want to compile.
+
+   A good coding standard is to distringuish private from public header
+files in your source code by including private header files like
+     #include "private.h"
+
+and public header files like
+     #include <public.h>
+
+in your implementation of the library, even when the public header
+files are not yet installed while building the library. This way source
+code can be moved in or out of the library without needing to change the
+header file inclusion semantics from `<..>' to `".."' back and forth.
+In order for this to work however, you must tell the compiler to search
+for "installed" header files in the current directory too.  To do that
+you must pass the `-I' flag with the current directory `.' as argument
+(`-I.').
+
+   In many cases a header file needs to include other header files, and
+it is very easy for some header files to be included more than once.
+When this happens, the compiler will complain about multiple
+declarations of the same symbols and throw an error. To prevent this
+from happening, please surround the contents of your header files with
+C preprocessor conditional like this:
+     #ifndef __defined_foo_h
+     #define __defined_hoo_h
+     [...contents...]
+     #endif
+
+The defined macro `__defined_foo_h' is used as a flag to indicate that
+the contents of this header file have been included. To make sure that
+each one of these macros is unique to only one header file, please
+combine the prefix `__defined' with the pathname of the header file
+when it gets installed. If your header file is meant to be installed as
+in `/usr/local/include/foo.h' or `/usr/include/foo.h' then use
+`__defined_foo_h'. If your header files is meant to be installed in a
+subdirectory like `/usr/include/dir/foo.h' then please use
+`__defined_dir_foo_h' instead.
+
+   In principle, every library can be implemented using only one public
+header file and perhaps only one private header file. There are
+problems with this approach however:
+   * This header file grows to be very large and slows down compilation
+     by processing many symbols declarations that are not relevant to
+     the specific source file that is being compiled.
+
+   * If you change the contents of the header file, it will be
+     difficult to determine the minimum set of object files that need
+     to be rebuilt since the change could reflect to all of them, in
+     principle. So you will end up rebuilding the entire library
+     unnecessarily.
+
+For small libraries, these problems are not very serious. For large
+libraries however, you may need to split the one large header file to
+many smaller files. Sometimes a good approach is to have a matching
+header file for each source file, meaning that if there is a `foo.c'
+there should be a `foo.h'. Some other times it is better to distribute
+declarations among header files by splitting the library's provided
+resources to various logical categories and declaring each category on a
+separate header file. It is up to the developer to decide how to do
+this best.
+
+   Once this decision is made, a few issues still remain:
+   * We don't want to burden the users of the library that use the
+     library's features extensively with including many header files.
+     It should be possible to declare the entire library with only one
+     inclusion.
+
+   * The more header files we use, the more likely it is that their
+     filenames conflict with the filenames of header files from other
+     installed libraries.
+
+One way of preventing the filename conflicts is to install the library's
+header files in a subdirectory bellow the standard directory for
+installing header files. Then we install one header file in the standard
+directory itself that includes all the header files in the subdirectory.
+
+   For example, if the Foo library wants to install headers `foo1.h',
+`foo2.h' and `foo3.h', it can install them under `/usr/include/foo' and
+install in `/usr/include/' only a one header file `foo.h' containing
+only:
+     #include <foo/foo1.h>
+     #include <foo/foo2.h>
+     #include <foo/foo3.h>
+
+Please name this "central" header and the directory for the subsidiary
+headers consistently after the corresponding library.  So the
+`libfoo.a' library should install a central header named `foo.h' and
+all subsidiary headers under the subdirectory `foo'.
+
+   The subsidiary header files should be guarded with preprocessor
+conditionals, but it is not necessary to also guard the central header
+file that includes them. To make the flag macros used in these
+preprocessor conditionals unique, you should include the directory name
+in the flag macro's name.  For example, `foo/foo1.h' should be guarded
+with
+     #ifndef __defined_foo_foo1_h
+     #define __defined_foo_foo1_h
+     [...contents...]
+     #endif
+
+and similarly with `foo/foo2.h' and `foo/foo3.h'.
+
+   This approach creates yet another problem that needs to be
+addressed. If you recall, we suggested that you use the `include "..."'
+semantics for private header files and the `include <...>' semantics
+for public header files.  This means that when you include the public
+header file `foo1.h' from one of the source files of the library
+itself, you should write:
+     #include <foo/foo1.h>
+
+Unfortunately, if you place the `foo1.h' in the same directory as the
+file that attempts to include it, using these semantics, it will not
+work, because there is no subdirectory `foo' during compile time.
+
+   The simplest way to resolve this is by placing all of the source code
+for a given library under a directory and all such header files in a
+subdirectory named `foo'. The GNU build system in general requires that
+all the object files that build a specific library be under the same
+directory. This means that the C files must be in the same directory.
+It is okey however to place header files in a subdirectory.
+
+   This will also work if you have many directories, each containing the
+sources for a separate library, and a source file in directory `bar',
+for example, tries to include the header file `<foo/foo1.h>' from a
+directory `foo' bellow the directory containing the source code for the
+library `libfoo'. To make it work, just pass `-I' flags to the compiler
+for every directory of containing the source code of every library in
+the package.  *Note Libraries with Automake::, for more details.  It
+will also work even if there are already old versions of `foo/foo1.h'
+installed in a standard directory like `/usr/include', because the
+compiler will first search under the directories mentioned in the `-I'
+flags before trying the standard directories.
+
+
+File: toolsmanual.info,  Node: The GPL and libraries,  Next: The language runtime libraries,  Prev: Dealing with header files,  Up: Compiling with Makefiles
+
+The GPL and libraries
+=====================
+
+   A very common point of contention is whether or not using a software
+library in your program, makes your program derived work from that
+library.  For example, suppose that your program uses the `readline ()'
+function which is defined in the library `libreadline.a'. To do this,
+your program needs to link with this library. Whether or not this makes
+the program derived work makes a big difference. The readline library is
+free software published under the GNU General Public License, which
+requires that any derived work must also be free software and published
+under the same terms. So, if your program is derived work, you have to
+free it; if not, then you are not required to by the law.
+
+   When you link the library with your object files to create an
+executable, you are copying code from the library and combining it with
+code from your object files to create a new work. As a result, the
+executable is derived work. It doesn't matter if you create the
+executable by hand by running an assembler and putting it together
+manually, or if you automate the process by letting the compiler do it
+for you. Legally, you are doing the same thing.
+
+   Some people feel that linking to the library dynamically avoids
+making the executable derived work of the library. A dynamically linked
+executable does not embed a copy of the library. Instead, it contains
+code for loading the library from the disk during run-time.  However,
+the executable is still derived work.  The law makes no distinction
+between static linking and dynamic linking. So, when you compile an
+executable and you link it dynamically to a GPLed library, the
+executable must be distributed as free software with the library. This
+also means that you can not link dynamically both to a GPLed library
+and a proprietary library because the licenses of the two libraries
+conflict. The best way to resolve such conflicts is by replacing the
+proprietary library with a free one, or by convincing the owners of the
+proprietary library to license it as free software.
+
+   The law is actually pretty slimy about what is derived work. In the
+entertainment industry, if you write an original story that takes
+placed in the established universe of a Hollywood serial, like Star
+Trek, in which you use characters from that serial, like Captain Kirk,
+your story is actually derived work, according to the law, and
+Paramount can claim rights to it. Similarly, a dynamically linked
+executable does not contain a copy of the library itself, but it does
+contain code that refers to the library, and it is not self-contained
+without the library.
+
+   Note that there is no conflict when a GPLed utility is invoked by a
+proprietary program or vice versa via a `system ()' call.  There is a
+very specific reason why this is allowed: When you were given a copy of
+the invoked program, you were given permission to run it.  As a
+technical matter, on Unix systems and the GNU system, "using" a program
+means forking some process that is already running to create a new
+process and loading up the program to take over the new process, until
+it exits. This is exactly what the `system ()' call does, so permission
+to use a program implies that you have permission to call it from any
+other program via `system ()'. This way, you can run GNU programs under
+a proprietary `sh' shell on Unix, and you can invoke proprietary
+programs from a GNU program. However, a free program that _depends_ on
+a proprietary program for its operation can not be included in a free
+operating system, because the proprietary program would also have to be
+distributed with the system.
+
+   Because any program that uses a library becomes derived work of that
+library, the GNU project occasionally uses another license, the "Lesser
+GPL", (often called LGPL) to copyleft libraries. The LGPL protects the
+freedom of the library, just like the GPL does,  but allows proprietary
+executables to link and use LGPLed libraries. However, this permission
+should only be given when it benefits the free software community, and
+not to be nice to proprietary software developers. There's no moral
+reason why you should let them use your code if they don't let you use
+theirs.  *Note The LGPL vs the GPL::, for a detailed discussion of this
+issue.
+
+
+File: toolsmanual.info,  Node: The language runtime libraries,  Next: Basic Makefile concepts,  Prev: The GPL and libraries,  Up: Compiling with Makefiles
+
+The language runtime libraries.
+===============================
+
+   When you compile ordinary programs, like the hello world program the
+compiler will automatically link to your program a library called
+`libc.a'. So when you type
+     % gcc -c hello.c
+     % gcc -o hello hello.o
+
+what is actually going on behind the scenes is:
+     % gcc -c hello.c
+     % gcc -o hello hello.c -lc
+
+To see why this is necessary, try `nm' on `hello.o':
+     % nm hello.o
+     00000000 t gcc2_compiled.
+     00000000 T main
+              U printf
+
+The file `hello.o' defines the symbol `main', but it marks the symbol
+`printf' as undefined. The reason for this is that `printf' is not a
+built-in keyword of the C programming language, but a function call
+that is defined by the `libc.a' library. Most of the facilities of the
+C programming language are defined by this library.  The include files
+`stdio.h', `stdlib.h', and so on are only header files that declare
+parts of the C library. You can read all about the C library in the
+`Libc manual'.
+
+   The catch is that there are many functions that you may consider
+standard features of C that are not included in the `libc.a' library
+itself.  For example, all the math functions that are declared in
+`math.h' are defined in a library called `libm.a' which is _not_ linked
+by default. So if your program is using math functions and including
+`math.h', then you need to explicitly link the math library by passing
+the `-lm' flag. The reason for this particular separation is that
+mathematicians are very picky about the way their math is being
+computed and they may want to use their own implementation of the math
+functions instead of the standard implementation. If the math functions
+were lumped into `libc.a' it wouldn't be possible to do that.
+
+   For example, consider the following program that prompts for a number
+and prints its square root:
+`dude.c'
+          #include <stdio.h>
+          #include <math.h>
+          
+          int
+          main ()
+          {
+            double a;
+            printf ("a = ");
+            scanf ("%f", &a);
+            printf ("sqrt(a) = %f", sqrt(a));
+          }
+
+To compile this program you will need to do:
+     % gcc -o dude dude.c -lm
+
+otherwise you will get an error message from the linker about `sqrt'
+being an unresolved symbol.
+
+   On GNU, the `libc.a' library is very comprehensive. On many Unix
+systems however, when you use system-level features you may need to
+link additional system libraries such as `libbsd.a', `libsocket.a',
+`libnsl.a', etc.  If you are linking C++ code, the C++ compiler will
+link both `libc.a' and the C++ standard library `libstdc++.a'.  If you
+are also using GNU C++ features however, you will explicitly need to
+link `libg++.a' yourself.  Also if you are linking Fortran and C code
+together you must also link the Fortran run-time libraries. These
+libraries have non-standard names and depend on the Fortran compiler
+that you use.  (*note Using Fortran effectively::) Finally, a very
+common problem is encountered when you are writing X applications. The
+X libraries and header files like to be placed in non-standard
+locations so you must provide system-dependent `-I' and `-L' flags so
+that the compiler can find them. Also the most recent version of X
+requires you to link in some additional libraries on top of `libX11.a'
+and some rare systems require you to link some additional system
+libraries to access networking features (recall that X is built on top
+of the sockets interface and it is essentially a communications
+protocol between the computer running the program and computer that
+controls the screen in which the X program is displayed.)  _FIXME:
+Crossreferences, if we explain all this in more details_.
+
+   Because it is necessary to link system libraries to form an
+executable, under copyright law, the executable is derived work from
+the system libraries.  This means that you must pay attention to the
+license terms of these libraries.  The GNU `libc' library is under the
+LGPL license which allows you to link and distribute both free and
+proprietary executables. The `stdc++' library is also under terms that
+permit the distribution of proprietary executables. The `libg++'
+library however only permits you to build free executables. If you are
+on a GNU system, including Linux-based GNU systems, the legalese is
+pretty straightforward. If you are on a proprietary Unix system, you
+need to be more careful. The GNU GPL does not allow GPLed code to be
+linked against proprietary library. Because on Unix systems, the system
+libraries are proprietary, their terms also may not allow you to
+distribute executables derived from them. In practice, they do however,
+since proprietary Unix systems do want to attract proprietary
+applications.  In the same spirit, the GNU GPL also makes an exception
+and explicitly permits the linking of GPL code with proprietary system
+libraries, provided that these libraries are a major component of the
+operating system (i.e. they are part of the compiler, or the kernel,
+and so on), *unless* the copy of the library itself accompanies the
+executable!
+
+   This includes proprietary `libc.a' libraries, the `libdxml.a'
+library in Digital Unix, proprietary Fortran system libraries like
+`libUfor.a', and the X11 libraries.
+
+
+File: toolsmanual.info,  Node: Basic Makefile concepts,  Next: More about Makefiles,  Prev: The language runtime libraries,  Up: Compiling with Makefiles
+
+Basic Makefile concepts
+=======================
+
+   To build a very large program, you need an extended set of
+invocations to the `gcc' compiler and utilities like `ar', `ranlib'.
+As we explained (*note Programs with many source files::) if you make
+changes only to a few files in your source code, it is not necessary to
+rebuild everything; you only need to rebuild the object files that get
+to change because of your modifications and link those together with
+all the other object files to form an updated executable. The `make'
+utility was written mainly to automate rebuilding software by
+determining the minimum set of commands that need to be called to do
+this, and invoking them for you in the right order. It can also handle,
+many other tasks. For example, you can use `make' to install your
+program's files in the standard directories, and clean up the object
+files when you no longer need them.
+
+   To learn all about `make' and especially `GNU Make', please read the
+excellent `GNU Make manual'. In general, to use the GNU build system
+you don't need to know the most esoteric aspects of the GNU make,
+because makefiles will be automatically compiled for you from higher
+level descriptions. However it is important to understand the basic
+aspects of `make' to use the GNU build system effectively. In the
+following sections we will explain only these basic aspects.
+
+   The `make' utility reads its instructions from a file named
+`Makefile' in the current directory. `make' itself has no knowledge
+about the syntax of the files that it works with, and it relies on the
+instructions in `Makefile' to figure out what it needs to do. A
+makefile is essentially a list of "rules". Each rule has the form:
+     TARGET: DEPENDENCIES
+     <TAB> COMMAND
+     <TAB> .....
+     <TAB> .....
+     [BLANK LINE]
+
+The <TAB>s are mandatory. The blank line at the end of the rule
+definition is not necessary when using GNU make but it is a good idea
+if you would like backwards compatibility with Unix.
+   * The "target" is either the name of a file that is generated by a
+     program or the name of an action to carry out. Object files and
+     executable files are examples of files that are generated by other
+     programs. Cleaning up the object files is an example of an action
+     that we might want to carry out. Targets that correspond to an
+     action are sometimes called "phony targets".
+
+   * In general a "dependency" is a file that is used as input to
+     create a target. If a target has more than one dependencies, they
+     must be seperated by spaces, but they must remain on the same
+     line. It is possible for a target to have no dependencies. In that
+     case, the space after the semicolon must be left blank. It is also
+     possible for a target, even one that represents an action, to be a
+     dependency for another target.
+
+   * The "commands" following the target and the dependencies must be
+     prepended with <TAB>. If the target is a file, then the commands
+     explain how to create that file. If the target is an action, then
+     the commands describe the action. These commands are your usual
+     shell commands that you get to type in your prompt.
+
+When you invoke `make' you must tell it which target you want to build.
+If you don't specify a target, then `make' will build the first target
+that is mentioned in the makefile.
+
+   When we talk about `make' "building" a target, we mean that we want
+`make' to do the following things:
+  1. "Build" the dependencies. If a dependency is a file written by
+     _you_, this means do nothing. If a dependency is a target defined
+     elsewhere in the makefile, this means _build that target first_,
+     which recurses this two-step process.
+
+  2. If at least one of the dependencies is "newer" than the target, or
+     the file with the name of the target does not exist, then invoke
+     the commands that correspond to the target. If the target is a
+     file, then the commands should create the file. If the target is
+     an action, then the commands will not create any file, but they
+     will carry out the action.
+
+Assuming that both a dependency and the target are files, we say that
+the dependency is "newer" than the target, if the dependency was last
+modified more recently than the target.  The target then should be
+rebuild to reflect the most recent modifications of the dependency.
+
+   If the requested target exists as a file, and there are no
+dependencies newer than the target, then `make' will do nothing except
+printing a message saying that it has nothing to do. If the requested
+target is an action, no file will ever exist having the same name as
+the name describing the action, so every time you ask `make' to build
+that target, it will always carry out your request. If one of the
+dependencies is a target corresponding to an action, `make' will always
+attempt to build it and consequently always carry out that action.
+These three observations are only corollaries of the general algorithm.
+
+   To see how all this comes together in practice let's write a
+`Makefile' for compiling the hello world program. The simplest way to
+do this is with the following makefile:
+     hello: hello.c
+     <TAB> gcc -o hello hello.c
+
+This simply says that the target `hello' is being built from the file
+`hello.c' by invoking the `gcc' command
+     % gcc -o hello hello.c
+
+A more complicated way of doing the same thing is by explicitly building
+the intermediate object file:
+     hello: hello.o
+     <TAB> gcc -o hello hello.o
+     
+     hello.o: hello.c
+     <TAB> gcc -c hello.c
+
+Note that the target that we really want to build, `hello' is listed
+first, to make sure that it is the default target.  Finally, we can add
+two more phony targets `install' and `clean' to install the hello world
+program and clean up the build after installation.  We get then the
+following:
+     hello: hello.o
+     <TAB> gcc -o hello hello.o
+     
+     hello.o: hello.c
+     <TAB> gcc -c hello.c
+     
+     clean:
+     <TAB> rm -f hello hello.o
+     
+     install: hello
+     <TAB> mkdir -p /usr/local/bin
+     <TAB> rm -f /usr/local/bin
+     <TAB> cp hello /usr/local/bin/hello
+
+The `clean' needs no dependencies since it just does what it does.
+However, the `install' target needs to first make sure that the file
+`hello' exists before attempting to install it, so it is necessary to
+list `hello' as a dependency to `install'.
+
+   Please note that this simple `Makefile' is for illustration only,
+and it is far from ideal. For example, we use the `mkdir' command to
+make sure that the installation directory exists before attempting an
+install, but the `-p' flag is not portable in Unix. Also, we usually
+want to use a BSD compatible version of the `install' utility to
+install executables instead of `cp'. Fortunately, you will almost never
+have to worry about writing `clean' and `install' targets, because
+those will be generated for you automatically by Automake.
+
+
+File: toolsmanual.info,  Node: More about Makefiles,  Prev: Basic Makefile concepts,  Up: Compiling with Makefiles
+
+More about Makefiles
+====================
+
+   Now let's consider a more complicated example. Suppose that we want
+to build a program `foo' whose source code is four source files
+     foo1.c, foo2.c, foo3.c, foo4.c
+
+and three header files:
+     gleep1.h, gleep2.h, gleep3.h
+
+Suppose also, for the sake of argument, that
+  1. `foo1.c' includes `gleep2.h' and `gleep3.h'
+
+  2. `foo2.c' includes `gleep1.h'
+
+  3. `foo3.c' includes `gleep1.h' and `gleep2.h'
+
+  4. `foo4.c' includes `gleep3.h'
+        To build the executable file `foo', we need to build the object
+files `foo1.o', `foo2.o', `foo3.o' and `foo4.o' that correspond to the
+source files and link them together.  If any of the `*.c' files is
+modified, then only the corresponding object file and the executable
+need to be updated. However, if one of the header files is modified,
+then all the object files whose corresponding `*.c' file includes the
+modified header file should be rebuilt.  It follows that each of the
+object files depends on the corresponding `*.c' file and all the header
+files that that file includes.  We get then the following `Makefile':
+     foo: foo1.o foo2.o foo3.o foo4.o
+     <TAB> gcc -o foo1.o foo2.o foo3.o foo4.o
+     
+     foo1.o: foo1.c gleep2.h gleep3.h
+     <TAB> gcc -c foo1.c
+     
+     foo2.o: foo2.c gleep1.h
+     <TAB> gcc -c foo2.c
+     
+     foo3.o: foo3.c gleep1.h gleep2.h
+     <TAB> gcc -c foo3.c
+     
+     foo4.o: foo4.c gleep3.h
+     <TAB> gcc -c foo4.c
+     
+     clean:
+     <TAB> rm -f foo foo1.o foo2.o foo3.o foo4.o
+     
+     install: foo
+     <TAB> mkdir -p /usr/local/bin
+     <TAB> rm -f /usr/local/bin/foo
+     <TAB> cp foo /usr/local/bin/foo
+
+This idea can be easily generalized for any program. If you would like
+to build more than one programs, then you should add a phony target in
+the beginning that depends on the programs that you want to build.  The
+usual way we do this is by adding a line like
+     all: prog1 prog2 prog3
+
+to the beginning of the `Makefile'.
+
+   Unfortunately, this `Makefile' has a lot of unnecessary redundancy:
+   * All object files get built the same way. It would be nice then, if
+     we didn't have to write a rule for every one of them and instead
+     describe how it's done in general.
+
+   * If we decide to change the compiler used, we would would need to
+     edit the `Makefile' in 6 places. It should be easier than that.
+
+   * The list of object files `foo1.o, ..., foo4.o' appears in at least
+     two places.
+
+   * The directory name `/usr/local/bin' appears in two places.
+
+This redundancy can be eliminated by using "makefile variables" and
+"abstract rules".
+
+   * "Makefile variables" are actually more like macro definitions.
+     The syntax for defining a "makefile variable" is:
+          VARIABLE = VALUE
+
+     Then, in every other rule or variable definition, the symbol
+     $(VARIABLE) is substituted with VALUE.
+
+   * An "abstract rule" is a definition that explains how to build a
+     file `*.S2' from a file `*.S1', where S1 and S2 are suffixes. The
+     general syntax for an abstract rule is:
+          .S1.S2:
+          <TAB> COMMAND
+          <TAB> COMMAND
+          <TAV> .....
+
+     where S1 is the suffix of the source file, and S2 is the suffix of
+     the corresponded generated file and COMMAND is the set of commands
+     that generate `*.S2' from  `*.S1'.  Note that no dependencies are
+     mentioned, because dependencies don't make sense in the general
+     case. They must be explicitly provided for each individual case
+     separately.
+
+In the context of an abstract rule, the following punctuation marks have
+the following meanings:
+`$<'
+     are the dependencies that changed causing the target to need to be
+     rebuilt
+
+`$@'
+     is the target
+
+`$^'
+     are _all_ the dependencies for the current rule
+
+For example, the abstract rule for building an object file from a source
+file is:
+     .c.o:
+     <TAB> gcc -c $<
+
+Similarly, the rule for building the executable file from a set of
+object files is:
+     .o:
+     <TAB> gcc $^ -o $@
+
+Note that because executables don't have a suffix, we only mention the
+suffix of the object files. When only one suffix appears, it is assumed
+that it is suffix S1 and that suffix S2 is the empty string.
+
+   The suffixes involved in your abstract rules, need to be listed in a
+directory tha takes the form:
+     .SUFFIXES: S1 S2 ... SN
+
+where S1, S2, etc. are suffixes. Also, if you've written an abstract
+rule, you still need to write rules where you mention the specific
+targets and their dependencies, except that you can omit the
+command-part since they are covered by the abstract rule.
+
+   Putting all of this together, we can enhance our `Makefile' like
+this:
+     CC = gcc
+     CFLAGS = -Wall -g
+     OBJECTS = foo1.o foo2.o foo3.o foo4.o
+     PREFIX = /usr/local
+     
+     .SUFFIXES: .c .o
+     
+     .c.o:
+     <TAB> $(CC) $(CFLAGS) -c $<
+     
+     .o:
+     <TAB> $(CC) $(CFLAGS) $^ -o $@
+     
+     foo: $(OBJECTS)
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+     
+     clean:
+     <TAB> rm -f $(OBJECTS)
+     
+     install: foo
+     <TAB> mkdir -p $(PREFIX)/bin
+     <TAB> rm -f $(PREFIX)/bin/foo
+     <TAB> cp foo $(PREFIX)/bin/foo
+
+The only part of this Makefile that still requires some thinking on your
+part, is the part where you list the object files and their
+dependencies:
+     foo1.o: foo1.c gleep2.h gleep3.h
+     foo2.o: foo2.c gleep1.h
+     foo3.o: foo3.c gleep1.h gleep2.h
+     foo4.o: foo4.c gleep3.h
+
+Note however, that in principle even that can be automatically
+generated.  Even though the `make' utility does not understand C source
+code and can not determine the dependencies, the GNU C compiler can.
+If you use the `-MM' flag, then the compiler will compute and output
+the dependency lines that you need to include in your Makefile. For
+example:
+     % gcc -MM foo1.c
+     foo1.o: foo1.c gleep2.h gleep3.h
+     % gcc -MM foo2.c
+     foo2.o: foo2.c gleep1.h
+     % gcc -MM foo3.c
+     foo3.o: foo3.c gleep1.h gleep2.h
+     % gcc -MM foo4.c
+     foo4.o: foo4.c gleep3.h
+
+Unfortunately, unlike all the other compiler features we have described
+up until now, this feature is not portable in Unix. If you have
+installed the GNU compiler on your Unix system however, then you can
+also do this.
+
+   Dealing with dependencies is one of the major drawbacks of writing
+makefiles by hand. Another drawback is that even though we have moved
+many of the parameters to makefile variables, these variables still
+need to be adjusted by somebody. There is something rude about asking
+the installer to edit `Makefile'.  Developers that ask their users to
+edit `Makefile' make their user's life more difficult in an
+unacceptable way. Yet another annoyance is writing `clean', `install'
+and such targets. Doing so every time you write a makefile gets to be
+tedious on the long run. Also, because these targets are, in a way,
+mission critical, it is really important not to make mistakes when you
+are writing them. Finally, if you want to use multiple directories for
+every one of your libraries and programs, you need to setup your
+makefiles to recursively call `make' on the subdirectories, write a
+whole lot of makefiles, and have a way of propagating configuration
+information to every one of these makefiles from a centralized source.
+
+   These problems are not impossible to deal with, but you need a lot of
+experience in makefile writing to overcome them. Most developers don't
+want to bother as much with all this, and would rather be debugging
+ther source code. The GNU build system helps you set up your source code
+to make this possible. For the same example, the GNU developer only
+needs to write the following `Makefile.am' file:
+     bin_PROGRAMS = foo
+     foo_SOURCES = foo1.c foo2.c foo3.c foo4.c
+     noinst_HEADERS = gleep1.h gleep2.h gleep3.h
+
+and set a few more things up. This file is then compiled into an
+intermediate file, called `Makefile.in', by Automake, and during
+installation the final `Makefile' is generated from `Makefile.in' by a
+shell script called `configure'. This shell script is provided by the
+developer and it is also automatically generated with Autoconf.  For
+more details see *Note Hello world example with Autoconf and Automake::.
+
+   In general you will not need to be writing makefiles by hand. It is
+useful however to understand how makefiles work and how to write
+abstract rules.
+
+
+File: toolsmanual.info,  Node: The GNU build system,  Next: Using Automake,  Prev: Compiling with Makefiles,  Up: Top
+
+The GNU build system
+********************
+
+   The GNU build system has two goals. The first is to simplify the
+development of portable programs. The second is to simplify the
+building of programs that are distributed as source code. The first
+goal is achieved by the automatic generation of a `configure' shell
+script, which configures the source code to the installer platform. The
+second goal is achieved by the automatic generation of Makefiles and
+other shell scripts that are typically used in the building process.
+This way the developer can concentrate on debugging per source code,
+instead of per overly complex Makefiles.  And the installer can compile
+and install the program directly from the source code distribution by a
+simple and automatic procedure.
+
+* Menu:
+
+* Introducing the GNU tools::
+* Installing the GNU build system::
+* Hello world example with Autoconf and Automake::
+* Understanding the hello world example::
+* Using configuration headers::
+* Maintaining the documentation files::
+* Organizing your project in subdirectories::
+* Applying the GPL::
+* Handling version numbers::
+* Hello world with acmkdir::
+

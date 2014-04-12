@@ -1,0 +1,317 @@
+@chapter X11 programming with Autoconf
+
+This chapter hasn't really been written yet. I plan to write quite a bit
+here about programming in X windows. I might mention Mesa and Tcl/Tk.
+Also an obligatory mention of GTK would make sense, although GTK has a 
+whole tutorial of its own. For now this chapter is the temporary home
+of the following sections. Sorry for the mess.
+
+@c ===========================================================================
+
+@section Configuring X11 libraries
+
+If you want to write programs that use X11 graphics, you need to link with
+the appropriate X11 libraries. The X11 windowing system is a networked 
+@dfn{client/server} system. The @dfn{server} is the computer to which the 
+monitor that
+you use is connected. The @dfn{client} is some other computer that wants to
+bring up a window on your computer over the network. In most cases client
+and server are the same computer in which case a @dfn{loopback network} is 
+used. In either case, a network connection must be established, and packets
+containing windowing information must be exchanged between client and server.
+The protocol used for these exchanges is standard, but there are more than
+one implementations of the protocol. In the PC platform there are 3 
+implementations, @code{XFree86} and two commercial implementations.
+This causes a problem: there is no standard way to link in these
+libraries.
+
+With this tutorial we distribute another @code{m4} file: @file{x11.m4} to
+deal with this issue. Consider the following program:
+
+  #ifdef HAVE_CONFIG_H
+  #include <config.h>
+  #endif
+  #include <iostream.h>
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+  #include <X11/keysym.h>
+  #include <X11/Xresource.h>
+  #include <X11/Xos.h>
+  #include <X11/Xatom.h>
+  
+  main()
+  {
+   Display *display;
+   display = XOpenDisplay(NULL);
+   if (display == NULL)
+   { cout << "You are remotely logged in." << endl; }
+   else
+   { 
+    cout << "You can do X11 graphics." << endl; 
+    XCloseDisplay(display);
+   }
+  }
+
+This program attempts to connect to the X server. It can be used to detect
+whether you are logged in from the console or whether you are remotely
+logged in with no graphics capabilities enabled.
+To compile it, make sure that @file{x11.m4} is present in your @file{m4}
+directory and then write the following in your @file{configure.in}:
+  AC_INIT
+  AM_CONFIG_HEADER(config.h)
+  AM_INIT_AUTOMAKE(hellox,1.0)
+  LF_CONFIGURE_CXX
+  LF_CPP_PORTABILITY
+  LF_SET_OPTIMIZATION
+  LF_SET_WARNINGS
+  LF_PATH_XLIB
+  AC_OUTPUT(Makefile)
+and the following in your @file{Makefile.am}
+  bin_PROGRAMS = foo
+  foo_SOURCES  = foo.cc
+  foo_LDADD    = $(XLIB)
+and that's all there is to it.
+
+It is quite unusual however that you will be using the Xlib library directly.
+If your intention is to write a GUI-driven application, then the best way
+to do that is to use Tcl/Tk. Unfortunately, linking these libraries is not
+straightforward either.
+@itemize @bullet
+@item
+Firstly, different versions of the libraries are called differently.
+There's @file{libtcl8.0.a}, @file{libtcl7.6.a} and so on depending on the
+version.
+@item
+Even within the same versions, some operating systems don't like dots in
+library names. And as a result in these systems you might see 
+@file{libtcl80.a}, @file{libtcl76.a}, etc. instead.
+@item
+Some operating systems will also require that you link in @file{libdl.a} to
+handle dynamic loading, a feature which is used by Tcl. Others may not even
+have such a library available.
+@end itemize
+To deal with these issues, @file{x11.m4} introduces the following additional
+macros:
+@itemize @bullet
+@item
+@strong{LF_CONFIG_TCL}:
+This macro detects how to link in the Tcl library and exports a variable
+@code{TCL_LIBS} containing the link sequence.
+In your @file{configure.in} add:
+  LF_CONFIG_TCL
+and in your @file{Makefile.am} add:
+  program_LDADD = ... $(TCL_LIBS)
+and you're in bussiness
+@item
+@strong{LF_CONFIG_TK}:
+This macro detects how to link the Tk library and exports the link sequence
+in @code{TK_LIBS}. To use, in your @file{configure.in} add:
+  LF_CONFIG_TCL
+  LF_CONFIG_TK
+and in your @file{Makefile.am} add:
+  program_LDADD = ... $(TK_LIBS) $(TCL_LIBS)
+which will expand to the Right Thing. Note that you need not call
+@file{LF_PATH_XLIB} yourself. It is done for you, and all the necessary
+linking for the X11 libraries is in $(TK_LIBS).
+@end itemize
+
+The Tcl/Tk libraries may not be necessarily installed in your system. 
+But you can download and compile a distribution from
+@code{http://sunscript.sun.com/}.
+The distributions are free software.
+
+@c =========================================================================
+
+@section Adding embedded text
+
+In some cases, we want to embed text to the executable file of an application.
+This may be on-line help pages, or it maybe a script of some sort that we
+intend to execute during the application execution. Whatever the reason,
+if we want to compile this application to a stand-alone executable it is
+necessary to embed the text in the source code. Personally, I've encountered
+this situation in my @emph{Modular Tcl} project where my intention is
+to embed Tcl scripts to my application. A solution using 
+@samp{automake} and @samp{autoconf} is now discussed.
+
+Suppose that that the text we want to include is in the following text files:
+  stuff1.txt, stuff2.txt, stuff3.txt, ...
+The first thing we need to do is create a header file for these text files.
+The header file must look like this:
+  // -* stuff.h
+  #ifndef __defined_stuff_h
+  #define __defined_stuff_h
+
+  extern int stuff1_txt_length;
+  extern int stuff2_txt_length;
+  extern int stuff3_txt_length;
+
+  extern char *stuff1_txt[];
+  extern char *stuff2_txt[];
+  extern char *stuff3_txt[];
+
+  #endif
+This header file is to be included by all source files that want to access
+the embedded text. Access is granted through the @code{extern} keyword which
+implies that the actual assignments for these variables are done at another
+object file. A thing to note is that the name of these variables is the 
+filename of the text files with the dots transformed to underscores.
+
+The object file containing the proper definitions is compiled by a perl
+script called @file{txtc.pl}. To compile @file{stuff1.txt} one would
+call the script like this:
+  $ perl /path/txtc.pl g++ stuff.o stuff1.txt stuff2.txt stuff3.txt
+The first argument is the name of the compiler that will build the object
+file.
+The second argument is the name of the desired object file. Following
+are the text files we wish to embed.
+The script will build a file called @file{stuff.cc} (as inferred by the
+name of the target object file) with the following contents:
+  char *stuff1_txt[] = { "line1", "line2", ..., "last line", NULL };
+  int  stuff1_txt_length = (number of lines);
+  ..... and so on for stuff2.txt, stuff3.txt .....
+Then it will call the compiler from the first argument to compile this
+into an objecct file and delete the intermediate @file{stuff.cc}.
+
+To embed text correctly into C++ in this manner the text must be processed
+in the following manner:
+@itemize @bullet
+@item
+The character @code{\} needs to be escaped.
+@item
+The quotes @code{"} also need to be escaped
+@item
+Finally any whitespace after a final @code{\} is deleted. This feature
+is useful in some cases where the embedded text is a script.
+@end itemize
+@noindent
+It is assumed that the text file contains only 7bit characters.
+To make all this work out we need to do the following:
+@itemize @bullet
+@item
+Under your @file{m4} directory place the file @file{txtc.m4}. It contains
+the definition for an autoconf macro that you will be needing.
+@item
+In your @file{configure.in} add the following line:
+  LF_PROG_TXTC
+This will check to see if the perl script @file{txtc.pl} is present in the
+current directory. It will also check for @file{perl}. As output, it will
+export in the variable @code{$(TXTC)} the correct calling sequence for
+calling the perl script. The absolute path to @file{txtc.pl} is used.
+@item
+In your @file{Makefile.am} add a rule like this, to define how to compile
+text files into object files:
+  SUFFIXES = .txt
+  @txtc_target@
+@item
+If you are linking the text files into a library then list them in 
+@code{LIBADD}:
+  libfoo_a_LIBADD = stuff1.o stuff2.o stuff3.o
+  EXTRA_DIST = stuff1.txt stuff2.txt stuff3.txt
+If you are linking them into an application, then list them in @code{LDADD}:
+  program_LDADD = .... stuff1.o stuff2.o stuff3.o
+@end itemize
+ 
+This will do it all. But note that the header file must be written by hand!
+
+@c =========================================================================
+
+@section Deep packages with local installation
+
+When making a package, you can organize it as a @dfn{flat} package or
+a @dfn{deep} package. In a flat package, all the source files are placed
+under @code{src} without any subdirectory structure. In a deep package,
+libraries and groups of executables are seperated by a subdirectory
+structure. The perennial problem with deep packages is dealing with 
+interdirectory dependencies. What do you do if to compile one library you
+need header files from another library in another directory? What do you do if 
+to compile the test suite of your library you need to link in another library
+that has just been compiled in a different directory? 
+
+One approach is to just put all these interdependent things in the same
+directory. This is not very unreasonable since the @code{Makefile.am}
+can document quite thoroughly where each file belongs, in case you need to
+split them up in the future. On the other hand, this solution becomes less
+and less preferable as your project grows. You may not want to clutter
+a directory with source code for too many different things. What do you
+do then?
+
+The second approach is to be careful about these dependencies and include
+the appropriate @code{INCLUDE} and @code{LDFLAGS} assignments at the top
+of your @code{Makefile.am}. So, if the stuff in a directory depends on
+stuff in other directories, you might have to add weird-looking lines to you
+@code{Makefile.am} that look like this:
+  INCLUDES = -I../dir1 -I../dir2 -I../../dir3  (...)
+  LDFLAGS  = -L../dir1 -L../dir2 -L../../dir3  (...)
+This solution is good if you know that your project is not really going
+to grow in terms of directories. The only problem is that this approach
+doesn't scale well either. Eventually, you will need to write too much of
+this stuff, and if you happen to want to rename a directory, then
+you will need to go and change it @emph{everywhere}.
+
+There is an approach that scales much better and is more laziness-compatible.
+The idea is to have two directories at the top-level of your source tree:
+@file{include/} and @file{lib/}. After compiling a directory-level, send
+all the header files to @file{include} and all the library files to 
+@file{lib}. In other words, do a temporary installation of the libraries
+during compilation so that the next directory level will know exactly
+where to go to find them. In fact, as a lucky break, if you use the
+@code{config.h} header file, @samp{automake} will already pass around
+an @code{-L} and @code{-I} flag to the toplevel directory of your package
+to find the @file{config.h} header file. These flags will also let the
+compiler find all the header files placed under @file{include} and 
+all the library files placed under @file{lib}. 
+
+To make this happen, add the following call in your @file{configure.in}:
+  LF_LOCAL_INSTALL
+and the following lines at the top of your @file{Makefile.am}
+  all-local: local-install-lib local-install-include
+  @local_install_lib_target@
+  @local_install_include_target@
+The @code{all-local} target is just a phony target. Any commands or phony
+targets you place here are executed after the default target (@code{all})
+is built. The @code{local-install-lib} target will install the libraries,
+and the @code{local-install-include} target will install the include files.
+The next two lines get substituted by Autoconf to the following targets:
+@itemize @bullet
+@item
+@strong{local_install_include_target}
+  local_includedir = $(top_builddir)/include
+  INCLUDES = -I$(local_includedir)
+  
+  local-install-include:
+        $(mkinstalldirs) $(local_includedir)
+        @list='$(include_HEADERS)'; for p in $$list; do \
+           if test -f $(srcdir)/$$p ; then \
+             echo " $(INSTALL_DATA) $(srcdir)/$$p $(local_includedir)/$$p"; \
+             $(INSTALL_DATA) $(srcdir)/$$p $(local_includedir)/$$p; \
+           else :; fi; \
+        done
+@item
+@strong{local_install_lib_target}
+  local_libdir = $(top_builddir)/lib
+  LDFLAGS = -L$(local_libdir)
+  
+  local-install-lib:
+        $(mkinstalldirs) $(local_libdir)
+        @list='$(lib_LIBRARIES)'; for p in $$list; do \
+          if test -f $$p; then \
+            echo " $(INSTALL_DATA) $$p $(local_libdir)/$$p"; \
+            $(INSTALL_DATA) $$p $(local_libdir)/$$p; \
+            echo " $(RANLIB) $(local_libdir)/$$p"; \
+            $(RANLIB) $(local_libdir)/$$p; \
+          else :; fi; \
+        done
+@end itemize
+
+This macro is included automatically under @code{local.m4} by
+@samp{acmkdir}. However it is @strong{not} automatically included in the
+@file{configure.in} file. If you wish to use this future, you have to
+activate it manually. 
+
+This feature is experimental. I do not yet know how it interacts with
+making shared libraries, so there may be some enhancements in the 
+next release. On the other hand, I already use it a lot in my research
+code, therefore I will do my best to keep it stable.
+
+@strong{I plan to substitute this feature with something else. What that will be I don't know yet, but I will know when I finish my pencil and paper math and get back to development for my research.}
+

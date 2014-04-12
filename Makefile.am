@@ -1,0 +1,47 @@
+# Copyright (C) 1988 Eleftherios Gkioulekas <lf@amath.washington.edu>
+# Copyright (C) 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
+#  
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+SUBDIRS = m4 doc lib misc src
+
+EXTRA_DIST = debian reconf
+
+DISTCLEANFILES = *~ .DS_Store autoscan.log
+
+MAINTAINERCLEANFILES = configure.scan
+
+configure.scan:
+	autoscan
+
+distclean-local:
+	rm -f @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
+	rm -rf autom4te.cache || rmdir autom4te.cache
+
+rpm rpm-bin rpm-src rpm-sign rpm-sig: @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.bz2
+	case $@ in \
+	    rpm) \
+		rpmflags="-ta";; \
+	    rpm-bin) \
+		rpmflags="-tb";; \
+	    rpm-src) \
+		rpmflags="-ts";; \
+	    rpm-sig | \
+	    rpm-sign) \
+		rpmflags="--sign -ta";; \
+	esac; \
+	rpmbuild $${rpmflags} @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.bz2
+
+.PHONY: rpm rpm-bin rpm-src rpm-sign

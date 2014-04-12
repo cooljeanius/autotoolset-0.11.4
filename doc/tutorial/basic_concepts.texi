@@ -1,0 +1,1246 @@
+@c Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
+@c  
+@c Permission is granted to make and distribute verbatim copies of
+@c this manual provided the copyright notice and this permission notice
+@c are preserved on all copies.
+@c  
+@c Permission is granted to process this file through TeX and print the
+@c results, provided the printed document carries copying permission
+@c notice identical to this one except for the removal of this paragraph
+@c (this paragraph not being relevant to the printed manual).
+@c  
+@c Permission is granted to copy and distribute modified versions of this
+@c manual under the conditions for verbatim copying, provided that the
+@c entire resulting derived work is distributed under the terms of a 
+@c permission notice identical to this one.
+@c  
+@c Permission is granted to copy and distribute translations of this manual
+@c into another language, under the above conditions for modified versions,
+@c except that this permission notice may be stated in a translation
+@c approved by the Free Software Foundation
+@c  
+
+@node Introduction to the GNU build system, Writing Good Programs, Copying, Top
+@chapter Introduction to the GNU build system
+
+@menu
+* Installing a GNU package::    
+* Installing the GNU build system::  
+* Hello world example::         
+* Understanding the hello world example::  
+* Using configuration headers::  
+* Maintaining the documentation files::  
+* Organizing your project in subdirectories::  
+* Hello world with an attitude::  
+* Tracking version numbers::    
+@end menu
+
+@node Installing a GNU package, Installing the GNU build system, Introduction to the GNU build system, Introduction to the GNU build system
+@section Installing a GNU package
+
+When you download an autoconfiguring package , it usually has a filename like:
+@file{foo-1.0.tar.gz} where the number is a @dfn{version number}.
+To install it, first you have to unpack the
+package to a directory someplace:
+@example
+% gunzip foo-1.0.tar.gz
+% tar xf foo-1.0.tar
+@end example
+Then you enter the directory and look for files like @file{README} or
+@file{INSTALL} that explain what you need to do. Almost always this amounts
+to typing the following commands:
+@example
+% cd foo-1.0
+% ./configure 
+% make
+% make check
+% su
+# make install
+@end example
+@noindent
+The @samp{configure} command invokes a shell script that is distributed
+with the package that configures the package for you automatically. 
+First it probes your system through a set of tests that allow it to
+determine things it needs to know, and then it uses this knowledge to
+generate automatically a @file{Makefile} from a template stored in a file
+called @file{Makefile.in}. When you invoke @samp{make} with no argument,
+it executes the default target of the generated @samp{Makefile}. 
+That
+target will compile your source code, but will not install it. 
+If your software comes with self-tests then you can compile and run them by
+typing @samp{make check}. 
+To install
+your software, you need to explicitly invoke @samp{make} again with 
+the target @samp{install}. In order for @samp{make} to work, you must
+make the directory where the @file{Makefile} is located the current 
+directory. 
+
+During installation, the following files
+go to the following places:
+@example
+Executables   -> /usr/local/bin
+Libraries     -> /usr/local/lib
+Header files  -> /usr/local/include
+Man pages     -> /usr/local/man/man?
+Info files    -> /usr/local/info
+@end example
+@noindent
+where @samp{foo} is the name of the package.
+The @file{/usr/local} directory is called the @dfn{prefix}. The default
+prefix is always @file{/usr/local} but you can set it to anything you like
+when you call @samp{configure} by adding a @samp{--prefix} option.
+For example, suppose that you are not a privilidged user, so you can not
+install anything in @file{/usr/local}, but you would still like to install
+the package for your own use. Then you can tell the @samp{configure} 
+script to install the package in your home directory @samp{/home/username}:
+@example
+% ./configure --prefix=/home/username
+% make
+% make check
+% make install
+@end example
+@noindent
+The @samp{--prefix} argument tells @samp{configure} where you want to
+install your package, and @samp{configure} will take that into account and
+build the proper makefile automatically.
+
+The @samp{configure} script is compiled by @samp{autoconf} from the contents
+of a file called @file{configure.ac}. These files are very easy to maintain,
+and in this tutorial we will teach you how they work. The @file{Makefile.in}
+file is also compiled by @samp{automake} from a very high-level specification 
+stored in a file called @samp{Makefile.am}. The developer then only needs
+to maintain @samp{configure.ac} and @samp{Makefile.am}. As it turns out,
+these are so much easier to work with than Makefiles and so much more
+powerful, that you will find
+that you will not want to go back to Makefiles ever again once you get
+the hang of it.
+
+In some packages, the @samp{configure} script supports many more options
+than just @samp{--prefix}. To find out about these options you should
+consult the file @file{INSTALL} and @file{README} that are traditionally
+distributed with the package, and also look at @samp{configure}'s self
+documenting facility:
+@example
+% configure --help
+@end example
+@noindent
+Configure scripts can also report the version of Autoconf that generated
+them:
+@example
+% configure --version
+@end example
+@noindent
+The makefiles generated by @samp{automake} support a few more targets for
+undoing the installation process to various levels. More specifically:
+@itemize @bullet
+@item
+If @code{configure} or @code{make} did it, @code{make distclean} undoes it.
+@item
+If @code{make} did it, @code{make clean} undoes it.
+@item
+If @code{make install} did it, @code{make uninstall} undoes it.
+@end itemize
+
+Also, in the spirit of free redistributable code, there are targets for
+cutting a source code distribution. If you type
+@example
+% make dist
+@end example
+@noindent
+it will rebuild the @file{foo-1.0.tar.gz} file that you started with.
+If you modified the source, the modifications will be included in the
+distribution (and you should probably change the version number).
+Before putting a distribution up on FTP, you can test its integrity
+with:
+@example
+% make distcheck
+@end example
+@noindent
+This makes the distribution, then unpacks it in a temporary subdirectory
+and tries to configure it, build it, run the test-suite, and check if the
+installation script works. If everything is okey then you're told that
+your distribution is ready.
+
+Once you go through this tutorial, you'll have the know-how you need to
+develop autoconfiguring programs with such powerful Makefiles. 
+
+@c ---------------------------------------------------------------------
+
+@node Installing the GNU build system, Hello world example, Installing a GNU package, Introduction to the GNU build system
+@section Installing the GNU build system
+
+It is not unusual to be stuck on a system that does not have the GNU build
+tools installed. If you do have them installed, check to see whether you
+have the most recent versions. To do that type:
+@example
+% autoconf --version
+% automake --version
+% libtool --version
+@end example
+@noindent
+If you don't have any of the above packages, you need to get a copy and
+install them on your computer. The distribution filenames for the GNU build
+tools, sans the version numbers, are:
+@example
+autoconf-*.tar.gz
+automake-*.tar.gz
+libtool-*.tar.gz
+@end example
+@noindent
+Before installing these packages however, you will need to install the 
+following needed packages from the FSF:
+@example
+make-*.tar.gz
+m4-*.tar.gz
+texinfo-*.tar.gz
+tar-*.shar.gz
+@end example
+@noindent
+You will need the GNU versions of @code{make}, @code{m4} and 
+@code{tar} even if your system already has native versions of these utilities.
+To check whether you do have the GNU versions see whether they accept the 
+@code{--version} flag. If you have proprietory versions of @code{make} or
+@code{m4}, rename them and then install the GNU ones. 
+You will also need to install @emph{Perl}, the @emph{GNU C compiler},
+and the @emph{TeX} typesetter.
+
+It is important to note that the end user will only need a decent shell
+and a working @code{make} to build a source code distribution. The developer 
+however needs to gather all of these tools in order to create the distribution.
+
+Finally, to install @emph{Autotoolset} begin by installing the following
+additional utilities from FSF:
+@example
+bash-*.tar.gz
+sharutils-*.tar.gz
+@end example
+@noindent
+and then install
+@example
+autotools-*.tar.gz
+@end example
+@noindent
+You should be able to obtain a copy of Autotoolset from the same site from 
+which you received this document.
+
+The installation process, for most of these tools is rather straightforward:
+@example
+% ./configure
+% make
+% make check
+% make install
+@end example
+@noindent
+Most of these tools include documentation which you can build with
+@example
+% make dvi
+@end example
+@noindent
+Exceptions to the rule are Perl, the GNU C compiler and TeX which have a more
+complicated installation procedure. However, you are very likely to have these
+installed already.
+
+@c --------------------------------------------------------------------------
+
+@node Hello world example, Understanding the hello world example, Installing the GNU build system, Introduction to the GNU build system
+@section Hello world example
+
+To get started we will show you how to do the Hello world program using
+@samp{autoconf} and @samp{automake}. In the fine tradition of @sc{k&r}, the
+C version of the hello world program is:
+@example
+#include <stdio.h>
+main()
+@{
+ printf("Howdy world!\n");
+@}
+@end example
+@noindent
+Call this @file{hello.c} and place it under an empty directory.
+Simple programs like this can be compiled and ran directly with the
+following commands:
+@example
+% gcc hello.c -o hello
+% hello
+@end example
+@noindent
+If you are on a Unix system instead of a GNU system, your compiler might 
+be called @samp{cc} but the usage will be pretty much the same. 
+
+Now to do the same thing the @samp{autoconf} and @samp{automake} way
+create first the following files:
+
+@table @file
+@item Makefile.am
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c
+@end example
+@item configure.ac
+@example
+AC_INIT([Hello Program],[1.0],
+        [Author Of The Program <aotp@@zxcv.com>],
+        [hello])
+AC_CONFIG_AUX_DIR(config)
+AM_INIT_AUTOMAKE([dist-bzip2])
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+@end example
+@end table
+
+@noindent
+Now run @samp{autoconf}:
+@example
+% aclocal
+% autoconf
+@end example
+@noindent
+This will create the shell script @file{configure}.
+Next, create the config directory and run @samp{automake}:
+@example
+% mkdir config
+% automake -a
+configure.ac: installing `config/install-sh'
+configure.ac: installing `config/mkinstalldirs'
+configure.ac: installing `config/missing'
+Makefile.am: installing `./INSTALL'
+Makefile.am: required file `./NEWS' not found
+Makefile.am: required file `./README' not found
+Makefile.am: installing `./COPYING'
+Makefile.am: required file `./AUTHORS' not found
+Makefile.am: required file `./ChangeLog' not found
+Makefile.am: installing `config/depcomp'
+@end example
+@noindent
+The first time you do this, you get a spew of messages. 
+It says that @samp{automake} installed a whole bunch
+of cryptic stuff: @file{install-sh}, @file{mkinstalldirs}, @file{missing} 
+and @file{decomp}. These are shell scripts that are needed by the
+makefiles that @samp{automake} generates. You don't have to worry about what 
+they do. It also complains that the following files are not around:
+@example
+INSTALL, COPYING, NEWS, README, AUTHORS, ChangeLog
+@end example
+@noindent
+These files are required to be present by the GNU coding standards, and
+we discuss them in detail in 
+@ref{Maintaining the documentation files}.
+At this point, it is important to at least touch these files, otherwise
+if you attempt to do a @samp{make distcheck} it will deliberately fail.
+To make these files exist, type:
+@example
+% touch NEWS README AUTHORS ChangeLog
+@end example
+@noindent
+and to make Automake aware of the existence of these files, rerun it:
+@example
+% automake -a
+@end example
+@noindent
+You can assume that the generated @file{Makefile.in} is correct, only
+when Automake completes without any error messages.
+
+Now the package is exactly in the state that the end-user will find
+it when person unpacks it from a source code distribution. For future
+reference, we will call this state @dfn{autoconfiscated}.
+Being in an autoconfiscated state means that, you are ready to type:
+@example
+% ./configure
+% make
+% ./hello
+@end example
+@noindent
+to compile and run the hello world program. If you really want to install it,
+go ahead and call the @samp{install} target:
+@example
+# make install
+@end example
+@noindent
+To undo installation, that is to @dfn{uninstall} the package, do:
+@example
+# make uninstall
+@end example
+@noindent
+If you didn't use the @samp{--prefix} argument to point to your home directory,
+or a directory in which you have permissions to write and execute,
+you may need to be superuser to invoke the install and uninstall commands.
+If you feel like cutting a source code distribution, type:
+@example
+make distcheck
+@end example
+@noindent
+This will create a file called @file{hello-0.1.tar.gz} in the current
+working directory that contains the project's source code, and test it
+out to see whether all the files are actually included and whether the
+source code passes the regression test suite. 
+
+In order to do all of the above, you need to use the
+GNU @samp{gcc} compiler. Automake depends on @samp{gcc}'s ability to
+compute dependencies. Also, the @samp{distcheck} target requires 
+GNiU make and GNU tar.
+
+The GNU build tools assume that there are two types of hats that people
+like to wear: the 
+@dfn{developer} hat and the @dfn{installer} hat. Developers develop
+the source code and create the source code distribution.
+Installers just want to compile and install a source code distribution on
+their system. In the free software community, the same people get to wear
+either hat depending on what they want to do. If you are a developer, then
+you need to install the entire GNU build system, period
+(@pxref{Installing the GNU build system}).
+If you are an installer, then all you need to compile and install a
+GNU package is a minimal @samp{make} utility and a minimal shell.
+Any native Unix shell and @samp{make} will work. 
+
+Both Autoconf and Automake take special
+steps to ensure that packages generated through the @samp{distcheck}
+target can be easily installed with minimal tools. Autoconf generates
+@file{configure} shell scripts that use only portable Bourne shell features.
+(@emph{FIXME: Crossrefence: Portable shell programming})
+Automake ensures that the source code is in an autoconfiscated state
+when it is unpacked. It also regenerates the makefiles before adding them
+to the distribution, such that the installer targets
+(@samp{all}, @samp{install}, @samp{uninstall}, @samp{check}, @samp{clean},
+@samp{distclean}) do not depend on GNU make features. The regenerated
+makefiles also do not use the @samp{gcc} cruft to compute dependencies.
+Instead, precomputed dependencies are included in the regenerated makefiles,
+and the dependencies generation mechanism is disabled. This will allow
+the end-user to compile the package using a native compiler, if the GNU
+compiler is not available. For future reference we will call this the
+@dfn{installer state}.
+
+Now wear your installer hat, and install @file{hello-0.1.tar.gz}:
+@example
+% gunzip hello-0.1.tar.gz
+% tar xf hello-0.1.tar
+% cd hello-0.1
+% configure
+% make 
+% ./hello
+@end example
+@noindent
+This is the full circle. The distribution compiles, and by typing
+@samp{make install} it installs. If you need to switch back to the
+developer hat, then you should rerun @samp{automake} to get regenerate
+the makefiles. 
+
+When you run the @samp{distcheck} target, @samp{make} will create the
+source code distribution @samp{hello-0.1.tar.gz} @emph{and} it will
+pretend that it is an installer and see if it the distribution can be
+unpacked, configured, compiled and installed. It will also run the
+test suite, if one is bundled. If you would like to skip these tests,
+then run the @samp{dist} target instead:
+@example
+% make dist
+@end example
+@noindent
+Nevertheless, running @samp{distcheck} is extremely helpful in debugging
+your build cruft. Please never release a distribution without getting
+it through @samp{distcheck}. If you make daily distributions for off-site
+backup, please do pass them through @samp{distcheck}. If there are 
+files missing from your distribution, the @samp{distcheck} target will
+detect them. If you fail to notice such problems, then your backups
+will be incomplete leading you to a false sense of security.
+
+@c -------------------------------------------------------------------------
+
+@node Understanding the hello world example, Using configuration headers, Hello world example, Introduction to the GNU build system
+@section Understanding the hello world example
+
+When you made the @file{hello-0.1.tar.gz} distribution, most of the files
+were automatically generated. The only files that were actually written
+by your fingers were:
+@table @file
+@item hello.c
+@example
+#include <stdio.h>
+main()
+@{
+ printf("Howdy, world!\n");
+@}
+@end example
+@noindent
+@item Makefile.am
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c
+@end example
+@noindent
+@item configure.ac
+@example
+AC_INIT([Hello Program],[1.0],
+        [Author Of The Program <aotp@@zxcv.com>],
+        [hello])
+AC_CONFIG_AUX_DIR(config)
+AM_INIT_AUTOMAKE([dist-bzip2])
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+@end example
+@noindent
+@end table
+In this section we explain briefly what the files @file{Makefile.am}
+and @file{configure.ac} mean.
+
+The language of @file{Makefile.am} is a @dfn{logic language}. There is no
+explicit statement of execution. Only a statement of relations from which
+execution is inferred. On the other hand, the language of @file{configure.ac}
+is @dfn{procedural}. Each line of @file{configure.ac} is a command that 
+is executed. 
+
+Seen in this light, here's what the @file{configure.ac} commands shown do:
+@itemize @bullet
+@item
+The @code{AC_INIT} command process any command-line arguments and perform 
+various initializations and verifications. The first parameter is the name
+of the package The second parameter is the version of the package. The third
+parameter is optional and should be an e-mail to which users should send bug 
+reports. The fourth parameter is also optional and is used when the name of
+the generated tar file of the project differs from the first parameter.
+@item
+The @code{AC_CONFIG_AUX_DIR} command instructs autoconf/automake to create
+their auxiliary scripts in an auxiliary directory. This way, the root directory
+of the package is kept cleaner.
+@item
+The @code{AM_INIT_AUTOMAKE} performs some further initializations that are
+related to the fact that we are using @samp{automake}. The parameter is a list
+of options that control the behavior of automake.
+@item
+The @code{AC_PROG_CC} checks to see which C compiler you have.
+@item
+The @code{AC_PROG_INSTALL} checks to see whether your system has a BSD
+compatible install utility. If not then it uses @file{install-sh} which
+@file{automake} will install at the root of your package directory if it's
+not there yet.
+@item
+The @code{AC_CONFIG_FILES} is a list of the files that should be generated
+by the configure script, by processing other files, usually with the same
+name, plus the extension ``.in''
+@item
+The @code{AC_OUTPUT} tells the configure script to generate the files 
+specified in the list of @code{AC_CONFIG_FILES}, usually this is to generate
+the file @file{Makefile} from the file @file{Makefile.in}
+@end itemize
+
+The @file{Makefile.am} is more obvious. The first line specifies the name
+of the program we are building. The second line specifies the source files
+that compose the program.
+
+For now, as far as @file{configure.ac} is concerned you need to know the
+following additional facts:
+@itemize @bullet
+@item
+If you are building a library, then your configure script must determine
+how to handle @samp{ranlib}. To do that, add the @code{AC_PROG_RANLIB} 
+command.
+@item
+If you want to have your makefiles call recursively makefiles at subdirectories
+then the configure script needs to be told to find out how to do that.
+For this purpose you add the @code{AC_PROG_MAKE_SET} command.
+@item
+If you have any makefiles in subdirectories you must also put them in the
+@code{AC_CONFIG_FILES} statement like this:
+@example
+AC_AC_CONFIG_FILES([
+        Makefile
+        dir1/Makefile
+        dir2/Makefile
+        ])
+@end example
+@noindent
+@end itemize
+
+Now consider the commands that are used to build the hello world distribution:
+@example
+% aclocal
+% autoconf
+% touch README AUTHORS NEWS ChangeLog
+% mkdir config
+% automake -a 
+configure.ac: installing `config/install-sh'
+configure.ac: installing `config/mkinstalldirs'
+configure.ac: installing `config/missing'
+Makefile.am: installing `./INSTALL'
+Makefile.am: installing `./COPYING'
+Makefile.am: installing `config/depcomp'
+% ./configure
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc... gcc3
+checking for a BSD-compatible install... /usr/bin/install -c
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: executing depfiles commands
+% make
+source='hello.c' object='hello.o' libtool=no \
+depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+depmode=gcc3 /bin/sh ./config/depcomp \
+gcc -DPACKAGE_NAME=\"Hello\ Program\" -DPACKAGE_TARNAME=\"hello\" 
+   -DPACKAGE_VERSION=\"1.0\" -DPACKAGE_STRING=\"Hello\ Program\ 1.0\" 
+   -DPACKAGE_BUGREPORT=\"Author\ Of\ The\ Program\ \<aotp@@zxcv.com\>\" 
+   -DPACKAGE=\"hello\" -DVERSION=\"1.0\"  -I. -I.     -g -O2 
+   -c `test -f 'hello.c' || echo './'`hello.c
+gcc  -g -O2   -o hello  hello.o
+@end example
+@noindent
+The first four commands bring the package in autoconfiscated state. The
+remaining two commands do the actual configuration and building. More
+specifically:
+@itemize @bullet
+@item
+The @samp{aclocal} command installs a file called @file{aclocal.m4}. Normally,
+in that file you are supposed to place the definitions of any @samp{autoconf} 
+macros that you've written that happen to be in use in @file{configure.ac}.
+We will teach you how to write @samp{autoconf} macros later.
+The @samp{automake} utility uses the @code{AM_INIT_AUTOMAKE} macro which is
+not part of the standard @samp{autoconf} macros. For this reason, it's
+definition needs to be placed in @file{aclocal.m4}. If you call @samp{aclocal}
+with no arguments then it will generate the appropriate @file{aclocal.m4} file.
+Later we will show you how to use @samp{aclocal} to also install your
+own @samp{autoconf} macros.
+@item
+The @samp{autoconf} command combines the @file{aclocal.m4} and 
+@file{configure.ac} files and produces the @file{configure} script.
+And now we are in bussiness.
+@item
+The @samp{touch} command makes the files @file{README} and friends exist.
+It is important that these files exist before calling Automake, because
+Automake decides whether to include them in a distribution by checking
+if they exist at the time that you invoke @samp{automake}. Automake
+@emph{must} decide to include these files, because when you type
+@samp{make distcheck} the presense of these files will be required.
+@item
+The @samp{mkdir config} command is necessary to create the directory specified
+in the @code{AC_CONFIG_AUX_DIR} command. 
+@item
+The @samp{automake} command compiles a @file{Makefile.in} file from
+@file{Makefile.am} and the -a parameter makes it install various files that 
+are required either by the GNU coding standards or by the makefile that will 
+be generated, in case they are missing.
+@end itemize
+
+The @file{configure} script probes your platform and generates makefiles
+that are customized for building the source code on your platform. The 
+specifics of how the probing should be done are programmed in 
+@file{configure.ac}. The generated makefiles are based on templates
+that appear in @file{Makefile.in} files. In order for these templates
+to cooperate with @file{configure} and produce makefiles that conform
+to the GNU coding standards they need to contain a tedious amount of boring
+stuff. This is where Automake comes in. Automake generates the
+@file{Makefile.in} files from the more terse description in
+@file{Makefile.am}. As you have seen in the example, @file{Makefile.am}
+files can be very simple in simple cases. Once you have customized makefiles,
+your make utility takes over.
+
+@c -------------------------------------------------------------------------
+
+@node Using configuration headers, Maintaining the documentation files, Understanding the hello world example, Introduction to the GNU build system
+@section Using configuration headers
+
+If you inspect the output of @samp{make} while compiling the hello world
+example, you will see that the generated Makefile is passing @samp{-D}
+flags to the compiler that define the macros @code{PACKAGE} and @code{VERSION}.
+These macros are assigned the arguments that are passed to the 
+@code{AM_INIT_AUTOMAKE} command in @file{configure.ac}. 
+One of the ways in which @file{configure} customizes your source code to
+a specific platform is by getting such C preprocessors defined. The 
+definition is requested by appropriate commands in the @file{configure.ac}.
+The @code{AM_INIT_AUTOMAKE} command is one such command. 
+
+The GNU build system by default implements C preprocessor macro definitions
+by passing @samp{-D} flags to the compiler. When there is too many of these
+flags, we have two problems: the @samp{make} output becomes hard to read,
+and more importantly we are running the risk of hitting the buffer limits
+of braindead Unix implementations of @samp{make}. To work around this problem,
+you can ask Autoconf to use another approach in which all macros are
+defined in a special header file that is included in all the sources.
+This header file is called a @dfn{configuration header}.
+
+A hello world program using this technique looks like this
+@table @file
+@item configure.ac
+@example
+AC_INIT([Hello Program],[1.0],
+        [Author Of The Program <aotp@@zxcv.com>],
+        [hello])
+AC_CONFIG_AUX_DIR(config)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE([dist-bzip2])
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_CONFIG_FILES([Makefile])
+AC_OUTPUT
+@end example
+@noindent
+@item Makefile.am
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c
+@end example
+@noindent
+@item hello.c
+@example
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#include <stdio.h>
+main()
+@{
+ printf("Howdy, partner!\n");
+@}
+@end example
+@noindent
+@end table
+@noindent
+To request the use of a configuration header we use the 
+@code{AM_CONFIG_HEADER} command. The configuration header must
+be installed conditionally with the following three lines:
+@example
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+@end example
+@noindent
+It is important that @file{config.h} is the first thing that gets included.
+Now autoconfiscate the source code by typing:
+@example
+% aclocal
+% autoconf
+% autoheader
+% touch NEWS README AUTHORS ChangeLog
+% mkdir config
+% automake -a
+configure.ac: installing `config/install-sh'
+configure.ac: installing `config/mkinstalldirs'
+configure.ac: installing `config/missing'
+Makefile.am: installing `./INSTALL'
+Makefile.am: installing `./COPYING'
+Makefile.am: installing `config/depcomp'
+@end example
+@noindent
+It is important to type these commands in the order shown. The difference
+between this, and what we did in @ref{Hello world example} is that 
+we had to run a new program: @samp{autoheader}. This program scans 
+@file{configure.ac} and generates a template file @file{config.h.in} listing
+all the C preprocessor macros that might be defined and comments that should
+accompany the macros describing what they do. When you run @file{configure},
+it will load in @file{config.h.in} and use it to generate the final
+@file{config.h} that will be used by the source code during compilation.
+
+Now you can go ahead and build the program:
+@example
+% configure
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc... gcc3
+checking for a BSD-compatible install... /usr/bin/install -c
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+% make
+make  all-am
+make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello2'
+source='hello.c' object='hello.o' libtool=no \
+depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+depmode=gcc3 /bin/sh ./config/depcomp \
+gcc -DHAVE_CONFIG_H -I. -I. -I.     -g -O2 -c `test -f 'hello.c' || 
+   echo './'`hello.c
+gcc  -g -O2   -o hello  hello.o
+make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello2'
+@end example
+@noindent
+Note that now instead of multiple @code{-D} flags, there is only one 
+such flag passed: @code{-DHAVE_CONFIG_H}. Also, appropriate @code{-I}
+flags are passed to make sure that @file{hello.c} can find and include
+@file{config.h}.
+To test the distribution, type:
+@example
+% make distcheck
+......
+========================
+hello-0.1.tar.gz is ready for distribution
+========================
+@end example
+@noindent
+and it should all work out.
+
+The @file{config.h} files go a long way back in history. In the past, there
+used to be packages where you would have to manually edit @file{config.h}
+files and adjust the macros you wanted defined by hand. This made these
+packages very difficult to install because they required intimate knowledge
+of your operating system. For example, it was not unusual to see a comment
+saying @emph{``if your system has a broken vfork, then define this macro''}.
+Many installers found this frustrating because they didn't really know how
+to configure the esoteric details of the @file{config.h} files. 
+With autoconfiscated source code all of these details can be taken care
+of automatically, shifting this burden from the installer to the developer
+where it belongs.
+
+@c -------------------------------------------------------------------------
+
+@node Maintaining the documentation files, Organizing your project in subdirectories, Using configuration headers, Introduction to the GNU build system
+@section Maintaining the documentation files
+
+Every software project must have its own directory. A minimal ``project''
+is the example that we described in @ref{Hello world example}. In general,
+even a minimal project must have the files:
+@example
+README, INSTALL, AUTHORS, THANKS, NEWS, ChangeLog
+@end example
+@noindent
+Before distributing your source code, it
+is important to write the real contents of these files.
+In this section we give a summary overview
+on how these files should be maintained. For more details, please see
+the @emph{GNU coding standards} as published by the FSF.
+
+@itemize @bullet
+@item
+@strong{The README file:}
+Every distribution must contain this file. This is the file that the
+installer must read @emph{fully} after unpacking the distribution and
+before configuring it. You should briefly explain the purpose of the
+distribution, and reference all other documentation available. Instructions
+for installing the package normally belong in the @file{INSTALL} file.
+However if you have something that you feel the installer @emph{should}
+know then mention it in this file. 
+@item
+@strong{The INSTALL file:}
+Because the GNU installation procedure is streamlined, a standard 
+@file{INSTALL} file will be created for you automatically by @code{Automake}.
+If you have something very important to say, it may be best to say it in
+the @file{README} file instead. the @file{INSTALL} file is mostly for
+the benefit of people who've never installed a GNU package before. 
+However, if your package is very unusual, you may decide that it is
+best to modify the standard INSTALL file or write your own. 
+@item 
+@strong{The AUTHORS file:}
+If you maintain a package for the Free Software Foundation, then this file
+should collect a fairly exact copy of the trace, normally kept in file
+@file{/gd/gnuorg/assignments} on the FSF machines, for all legal paper 
+exchanges between contributors and the GNU project. The file might have
+an introductor blurb similar to this one:
+@example
+Authors of PACKAGE
+
+The following contributions warranted legal paper exchanges 
+with the Free Software Foundation. Also see files ChangeLog 
+and THANKS
+@end example
+@noindent
+If you do not maintain the project, then you should do the legal paperwork
+yourself and record it here. If you choose not to do the paperwork, then
+you should still list who the contributors are and what files they
+have worked on. When you list the files, indicate whether they created
+the file or whether they modified it. For example:
+@example
+Random J. Hacker:
+  entire files  -> foo1.c , foo2.c , foo3.c 
+  modifications -> foo4.c , foo5.c
+@end example
+@noindent
+@item 
+@strong{The THANKS file:}
+All distributions should contain a @file{THANKS} file containing 
+a two column list of the contributors, one per line, alphabetically
+sorted. The left column gives the contributor's name, while the right
+column gives the last known good email address for this contributor.
+This list should be introduced with a wording similar to this one:
+@example
+PACKAGE THANKS file
+
+PACKAGE has originally been written by ORIGINAL AUTHOR. Many
+people further contributed to PACKAGE by reporting problems,
+suggesting various improvements or submitting actual code.
+Here is a list of these people. Help me keep it complete and
+exempt of errors.
+@end example
+@noindent
+The easiest policy with this file is to thank everyone who contributes
+to the project, without judging the value of the contribution. 
+
+Unlike @file{AUTHORS}, the @file{THANKS} file is not maintained for
+legal reasons. It is maintained to thank all the contributors that
+helped you out in your project. The @file{AUTHORS} file can not be
+used for this purpose because certain contributions, like bug reports
+or ideas and suggestions do not require legal paper exchanges. 
+
+You can also decide to send some kind of special greeting when you
+initially add a name to your @file{THANKS} file. The mere presense
+of a name in @file{THANKS} is then a flag to you that the initial 
+greeting has been sent.
+@item
+@strong{The NEWS file:}
+This is where you tell the users about the major features of this
+distribution. You needn't go into details, but you do need to list 
+all the major features. The GNU coding standards explain in more detail
+how to structure this file.
+@item 
+@strong{The ChangeLog file}:
+Use this file to record all the changes that you make to your source code.
+If your source code is distributed among many subdirectories, and there
+is reason enough to think of the contents of the subdirectories as 
+different subpackages,then please maintain
+a separate @file{ChangeLog} file for each subdirectory. For example,
+although there is usually no need to maintain a @file{ChangeLog} for 
+your documentation, if you do decide to maintain one anyway, it should be
+separate from your sources @file{ChangeLog}.
+
+The @emph{GNU coding standards} explain in a lot of detail how you should
+structure a @file{ChangeLog}, so you should read about it there.
+The basic idea is to record @emph{semi-permenant modifications} you make to 
+your source code. It is not necessary to continuously record changes
+that you make while you are experimenting with something. But once you
+decide that you got a modification worked out, then you should record
+Please do record version releases on the central @file{ChangeLog}
+(@pxref{Tracking version numbers}).
+This way, it will be possible to tell what changes happened between
+versions.
+
+You can automate @file{ChangeLog} maintance with 
+Emacs using the @code{M-x add-change-log-entry-other-window}. It may be
+easier to bind a key (for example @kbd{f8}) to this command by adding:
+@example
+(global-set-key [f8] 'add-change-log-entry-other-window)
+@end example
+@noindent
+to your @file{.emacs} file. Then, after having made a modification and
+@emph{while} the cursor is still at the place where you made the modification,
+press @kbd{f8} and record your entry.
+Recently Emacs has decided to use
+the ISO 8601 standard for dates which is: @code{YYYY-MM-DD} (year-month-date).
+A typical @file{ChangeLog} entry looks like this:
+@example
+1998-05-17  Eleftherios Gkioulekas  <lf@@amath.washington.edu>
+
+ * src/acmkdir.sh: Now acmkdir will put better default content
+   to the files README, NEWS, AUTHORS, THANKS
+@end example
+@noindent
+Every entry contains all the changes you made within the period of a day.
+The most recent changes
+are listed at the top, the older changes slowly scroll to the bottom.
+@item 
+@strong{COPYING}
+This file contains the copyright permissions for your distribution,
+in particular the General Public License.
+This file will be generated for you automatically. 
+Copyright is a very important concern in the free software community.
+For the legal aspects of copyright see @ref{Understanding Copyright}.
+For the philosophical aspects of copyright see @ref{Philosophical issues}.
+@strong{FIXME: CROSSREFERENCE DISCUSSION OF COPYRIGHT IN NEXT CHAPTER}
+@end itemize
+
+The @samp{acmkdir} utility will automatically create templates for these
+files that you can start from. 
+
+@c -------------------------------------------------------------------------
+
+@node Organizing your project in subdirectories, Hello world with an attitude, Maintaining the documentation files, Introduction to the GNU build system
+@section Organizing your project in subdirectories
+
+If your program is very small, you can place all your files in the
+top-level directory, like we did in the Hello World example 
+(@pxref{Hello world example}). Such packages are called @dfn{shallow}.
+
+In general, it is prefered to organize your package as a @dfn{deep package}.
+In a deep package, the documentation files
+@example
+README, INSTALL, AUTHORS, THANKS, ChangeLog, COPYING
+@end example
+@noindent
+as well as the build cruft are placed at the top-level directory, and 
+the rest of the files are placed in subdirectories. It is standard
+practice to use the following subdirectories:
+@table @samp
+@item src
+The actual source code that gets compiled. Every library
+should have it's own subdirectory. Executables should get their own
+directory as well. If each executable corresponds only to one or two files
+then it is sensible to put them all under the same directory. If your 
+executables need more source files, or they can be seperated in distinct
+classes of functionalities you may like to regroup them under multiple
+directories. Feel free to use your judgement on how to do this best.
+It is easiest to place the library test suites on the same directory with
+the library source code. If that does not sit well with you however, you
+should put the test suite for each library in subdirectories @emph{under} that
+library's directory. It is a massively bad idea to put the test suites
+for different libraries under the same directory.
+@item lib
+An optional directory where you put portability-related source code.
+This is mainly replacement implementation for system calls that
+are unavailable on some systems. You can also put tools here that you commonly
+use accross many different packages, tools that are tool simple to just
+make libraries out of every one of them. Common files encountered here
+are files that replace system calls to the GNU C library that are not
+available in proprietary C libraries. 
+@item doc
+A directory containing the documentation for your package.
+You have the creative freedom to present the documentation in any way that is 
+effective. However
+the prefered way to document software is by using Texinfo. Texinfo has the 
+advantage that you can produce both on-line help as well as nice printed
+books from the same source. Documentation is discussed in more detail
+in @xref{Maintaining Documentation}.
+@item m4 
+A directory containing @samp{m4} files that you package may need to 
+@emph{install}. 
+These files define new @samp{autoconf} macros that you
+should make available to other developers who want to use your libraries.
+This is discussed in more detail in @strong{FIXME: crossreference}.
+@item intl
+A directory containing boilerplate portability source code that allows
+your program to speak in many human languages. The contents of this
+directory are automatically maintained by @samp{gettext}.
+(@strong{FIXME: crossreference})
+@item po
+A directory containing message catalogs for your software package. 
+This is where the maintainer places the translations of his software
+in multiple human languages.
+(@strong{FIXME: crossreference})
+@end table
+Automake makes it very easy to maintain multidirectory source code
+packages, so you shouldn't shy away from taking advantage of it.
+Multidirectory packages are more convenient for most projects. 
+
+@c -------------------------------------------------------------------------
+
+@node Hello world with an attitude, Tracking version numbers, Organizing your project in subdirectories, Introduction to the GNU build system
+@section Hello world with an attitude -- How to do it with acmkdir
+
+In the package autotoolset, we provide an utility called @file{acmkdir} that
+will automatically perform most of the required steps for you.
+
+With the package installed in your system, run @file{acmkdir} with the last 
+argument equal to the directory name you want to create. The script will ask you
+some questions as follows:
+
+@example
+% acmkdir -t traditional hello3
+Ready to create a new distribution skeleton directory.
+The current working directory is:
+ --> /home/mroberto/programs/autotoolset
+If you make a mistake and need to abort, press ctrl-C.
+
+Name of distribution: hello
+Your full name:       Marcelo Roberto Jimenez
+Your email address:   mroberto@@nospan.cetuc.puc-rio.br
+
+Do you want to proceed? (y/n) y
++ Mode is traditional
++ Making directory hello3
++ Making src directory
++ Making doc directory
++ Making m4 directory
++ Making config directory
++ Making default text files
++ Making INSTALL file link
++ Running reconf
+- aclocal.
+- autoconf.
+- autoheader.
+- automake.
+configure.ac: installing `config/install-sh'
+configure.ac: installing `config/mkinstalldirs'
+configure.ac: installing `config/missing'
+Makefile.am: installing `./INSTALL'
+Makefile.am: installing `./COPYING'
+
+Distribution directory is ready.
+Please make sure to keep the files AUTHORS, NEWS, README, THANKS up to
+date before cutting a distribution.
+@end example
+
+Now create the file @file{hello.c} in the directory @file{src}, using your 
+favorite text editor, e.g. @file{emacs}. Also edit @file{src/Makefile.am} to
+include the lines
+@example
+bin_PROGRAMS = hello
+hello_SOURCES = hello.c
+@end example
+and run @file{automake -a} to create the file @file{config/depmod}.
+Now the project is ready and you can run @file{./configure} and @file{make}.
+
+@example
+% cd hello3/src
+% emacs hello.c
+% emacs Makefile.am
+% cd ..
+% automake -a
+src/Makefile.am: installing `config/depcomp'
+% ./configure
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for style of include used by make... GNU
+checking dependency style of gcc... gcc3
+checking for a BSD-compatible install... /usr/bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for egrep... grep -E
+checking for AIX... no
+checking for strerror in -lcposix... no
+checking for ANSI C header files... yes
+checking for sys/types.h... yes
+checking for sys/stat.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for memory.h... yes
+checking for strings.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for unistd.h... yes
+checking minix/config.h usability... no
+checking minix/config.h presence... no
+checking for minix/config.h... no
+checking for ANSI C header files... (cached) yes
+checking for ranlib... ranlib
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating README
+config.status: creating doc/Makefile
+config.status: creating m4/Makefile
+config.status: creating src/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+% make
+make  all-recursive
+make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
+Making all in m4
+make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/m4'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/m4'
+Making all in src
+make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/src'
+source='hello.c' object='hello.o' libtool=no \
+depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
+depmode=gcc3 /bin/sh ../config/depcomp \
+gcc -DHAVE_CONFIG_H -I. -I. -I..     -g -O2 -c `test -f 'hello.c' || echo './'`hello.c
+gcc  -g -O2   -o hello  hello.o
+make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/src'
+Making all in doc
+make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/doc'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/doc'
+make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
+make[2]: Nothing to be done for `all-am'.
+make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
+make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
+@end example
+
+@c -------------------------------------------------------------------------
+
+@node Tracking version numbers,  , Hello world with an attitude, Introduction to the GNU build system
+@section Tracking version numbers 
+
+Common sense requires that you
+identify the various releases of your software package with a
+@emph{version number}. If you use the GNU build system, then you indicate
+the name of the package and the version number in @file{configure.ac}
+in the line that invokes the @samp{AC_INIT} macro. In the
+hello world example (@pxref{Hello world example}) we used the following
+line to set the version number equal to 1.0:
+
+@example
+AC_INIT([Hello Program],[1.0],
+        [Author Of The Program <aotp@@zxcv.com>],
+        [hello])
+@end example
+@noindent
+You must increase your version number every time you publically release a new 
+version of your program. Just before the release, it is a very good idea to 
+update your @file{ChangeLog} and note the release of a new version. This way,
+when someone inspects your @file{ChangeLog}, person will be able to determine
+what changes happened between two specific versions. 
+We suggest that 
+when you are about to make a release, that you use 
+
+@example
+% make distcheck
+@end example
+@noindent
+to build a distribution and apply the test suite to validate it. Once you
+get this to work, change your version number in @file{configure.ac}, record 
+an entry in @file{ChangeLog} saying that you are cutting the new version, 
+and without making any other changes do 
+
+@example
+% make dist
+@end example
+@noindent
+to rebuild the distribution without having to wait for the test suite to
+run all over again.
+
+Most packages declare their version with two integers: a
+@dfn{major number} and a @dfn{minor number} that are separated by a dot 
+in the middle. In our example above, the major number is 0 and the minor
+number is 1. The minor number should be updated when you release a version
+that contains new features and improvements over the old version.
+The major number should be updated when the incremental improvements bring
+your program into a new level of maturity and stability. Some of your
+users may not want to follow every release that comes out, but they would
+like to upgrade when there's a significant amount of features to warrant
+such an upgrade. You should increase the major number when, in your judgement,
+you believe that it is time for these users to upgrade along with everyone
+else. 
+
+When beginning a new project, you should start counting your major number
+from 0, and your minor number from 1. Please exercise good judgement on
+when to increment your major number to 1. In general versions 0.x mean that
+the software is still under development and may not be stable. When you release
+version 1.0, you are telling people that your software has developed to the
+point that you recommend it for general use. In some cases, releasing
+version 2.0 means that your software has significantly @emph{matured} from
+user feedback.
+
+Sometimes, it is useful to use a third integer for writing 
+version numbers for ``unofficial'' releases.
+This third integer is usually used with
+bleeding-edge @dfn{prereleases} of the software that contain the most recent
+bug fixes and features but are not as well tested and reviewed as the most 
+recent official release. Possible version successions can look like:
+
+@example
+1.0, 1.1, 1.2, 1.2.1, 1.2.2, 1.2.3, 1.3, ...
+@end example
+@noindent
+Please use only two integers for official releases
+so that it is easy to distinguish them from prereleases.
