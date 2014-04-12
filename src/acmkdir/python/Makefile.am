@@ -24,3 +24,5 @@ dist_autotoolsetpython_DATA = \
 	src.dtml.Makefile.am.zope \
 	src.www.Makefile.am.zope \
 	src.interfaces.Makefile.am.zope
+
+python_PYTHON = install_data.py setup.py __init__.py

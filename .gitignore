@@ -26,3 +26,5 @@ src/gpl/gpl
 src/mkconfig/mkconfig
 src/txtc/mktxtc
 *(Autosaved)*
+*.cache
+*~

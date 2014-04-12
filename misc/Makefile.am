@@ -24,3 +24,5 @@ $(SCRIPT1): $(srcdir)/../src/version.sh $(srcdir)/$(SCRIPT1).sh
 	echo "#! " $(BASH) > $@
 	cat $(srcdir)/../src/version.sh $(srcdir)/$@.sh >> $@
 	chmod ugo+x $@
+
+noinst_SCRIPTS = $(SCRIPT1) buildinstall finalize

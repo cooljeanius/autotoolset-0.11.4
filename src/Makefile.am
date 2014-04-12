@@ -13,3 +13,5 @@ SUBDIRS = emacs acconfig acmkdir gpl txtc mkconfig
 EXTRA_DIST = version.sh.in version.pl.in
 
 DISTCLEANFILES = .DS_Store
+
+noinst_SCRIPTS = version.pl version.sh

@@ -27,17 +27,18 @@ dnl distribution terms that you use for the rest of that program.
 #   LF_CHECK_CXX_FLAG(-flag1 -flag2 -flag3 ...)
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_CHECK_CXX_FLAG,[
+AC_DEFUN([LF_CHECK_CXX_FLAG],[
+  AC_REQUIRE([AC_PROG_CXX])
   echo 'void f(){}' > conftest.cc
   for i in $1
   do
-    AC_MSG_CHECKING([whether $CXX accepts $i])
-    if test -z "`${CXX} $i -c conftest.cc 2>&1`"
+    AC_MSG_CHECKING([whether ${CXX} accepts ${i}])
+    if test -z "`${CXX} ${i} -c conftest.cc 2>&1`"
     then
-      CXXFLAGS="${CXXFLAGS} $i"
-      AC_MSG_RESULT(yes)
+      CXXFLAGS="${CXXFLAGS} ${i}"
+      AC_MSG_RESULT([yes])
     else
-      AC_MSG_RESULT(no)
+      AC_MSG_RESULT([no])
     fi
   done
   rm -f conftest.cc conftest.o
@@ -51,17 +52,18 @@ AC_DEFUN(LF_CHECK_CXX_FLAG,[
 #  LF_CHECK_CC_FLAG(-flag1 -flag2 -flag3 ...)
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_CHECK_CC_FLAG,[
+AC_DEFUN([LF_CHECK_CC_FLAG],[
+  AC_REQUIRE([AC_PROG_CC])
   echo 'void f(){}' > conftest.c
   for i in $1
   do
-    AC_MSG_CHECKING([whether $CC accepts $i])
-    if test -z "`${CC} $i -c conftest.c 2>&1`"
+    AC_MSG_CHECKING([whether ${CC} accepts ${i}])
+    if test -z "`${CC} ${i} -c conftest.c 2>&1`"
     then
-      CFLAGS="${CFLAGS} $i"
-      AC_MSG_RESULT(yes)
+      CFLAGS="${CFLAGS} ${i}"
+      AC_MSG_RESULT([yes])
     else
-      AC_MSG_RESULT(no)
+      AC_MSG_RESULT([no])
     fi
   done
   rm -f conftest.c conftest.o
@@ -75,7 +77,8 @@ AC_DEFUN(LF_CHECK_CC_FLAG,[
 #  LF_CHECK_F77_FLAG(-flag1 -flag2 -flag3 ...)
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_CHECK_F77_FLAG,[
+AC_DEFUN([LF_CHECK_F77_FLAG],[
+  AC_REQUIRE([AC_PROG_F77])
   cat << EOF > conftest.f
 c....:++++++++++++++++++++++++
       PROGRAM MAIN
@@ -84,13 +87,13 @@ c....:++++++++++++++++++++++++
 EOF
   for i in $1
   do
-    AC_MSG_CHECKING([whether $F77 accepts $i])
-    if test -z "`${F77} $i -c conftest.f 2>&1`"
+    AC_MSG_CHECKING([whether ${F77} accepts ${i}])
+    if test -z "`${F77} ${i} -c conftest.f 2>&1`"
     then
-      FFLAGS="${FFLAGS} $i"
-      AC_MSG_RESULT(yes)  
+      FFLAGS="${FFLAGS} ${i}"
+      AC_MSG_RESULT([yes])  
     else
-      AC_MSG_RESULT(no)
+      AC_MSG_RESULT([no])
     fi
   done
   rm -f conftest.f conftest.o
@@ -102,26 +105,26 @@ EOF
 # compilers. 
 # ----------------------------------------------------------------------
 
-AC_DEFUN(LF_SET_WARNINGS,[
-  dnl Check for --with-warnings
+AC_DEFUN([LF_SET_WARNINGS],[
+  dnl# Check for --with-warnings
   AC_MSG_CHECKING([whether user wants warnings])
-  AC_ARG_WITH(warnings,
-              [  --with-warnings         Turn on warnings],
-              [ lf_warnings=yes ], [ lf_warnings=no ])
-  AC_MSG_RESULT($lf_warnings)
+  AC_ARG_WITH([warnings],
+              [AS_HELP_STRING([--with-warnings],[Turn on warnings])],
+              [lf_warnings=yes],[lf_warnings=no])
+  AC_MSG_RESULT([${lf_warnings}])
   
-  dnl Warnings for the two main compilers
+  dnl# Warnings for the two main compilers:
   cc_warning_flags="-Wall"
   cxx_warning_flags="-Wall -Woverloaded-virtual -Wtemplate-debugging"
-  if test $lf_warnings = yes
+  if test "x${lf_warnings}" = "xyes"
   then
     if test -n "${CC}"
     then
-      LF_CHECK_CC_FLAG($cc_warning_flags)
+      LF_CHECK_CC_FLAG([${cc_warning_flags}])
     fi
     if test -n "${CXX}" 
     then
-      LF_CHECK_CXX_FLAG($cxx_warning_flags)
+      LF_CHECK_CXX_FLAG([${cxx_warning_flags}])
     fi
   fi
 ])

@@ -29,9 +29,9 @@ dnl the libtool macros get shoved into aclocal.m4
 dnl Also, we shouldn't have to force people to install libtool, if all
 dnl they want to do is Fortran.
 
-AC_DEFUN(LF_PROG_NM,
+AC_DEFUN([LF_PROG_NM],
 [AC_MSG_CHECKING([for BSD-compatible nm])
-AC_CACHE_VAL(ac_cv_path_NM,
+AC_CACHE_VAL([ac_cv_path_NM],
 [case "$NM" in
 /* | [A-Za-z]:\\*)
   ac_cv_path_NM="$NM" # Let the user override the test with a path.
@@ -58,7 +58,7 @@ AC_CACHE_VAL(ac_cv_path_NM,
   test -z "$ac_cv_path_NM" && ac_cv_path_NM=nm
   ;;
 esac])
-NM="$ac_cv_path_NM"
-AC_MSG_RESULT([$NM])
-AC_SUBST(NM)
+NM="${ac_cv_path_NM}"
+AC_MSG_RESULT([${NM}])
+AC_SUBST([NM])
 ])

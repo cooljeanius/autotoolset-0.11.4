@@ -92,8 +92,8 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = src/acmkdir/python
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
-	$(top_srcdir)/config/mkinstalldirs \
-	$(dist_autotoolsetpython_DATA)
+	$(top_srcdir)/config/mkinstalldirs $(python_PYTHON) \
+	$(top_srcdir)/config/py-compile $(dist_autotoolsetpython_DATA)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/lf_bash.m4 \
 	$(top_srcdir)/m4/lf_txtc.m4 $(top_srcdir)/configure.ac
@@ -149,7 +149,12 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(autotoolsetpythondir)"
+am__py_compile = PYTHON=$(PYTHON) $(SHELL) $(py_compile)
+am__installdirs = "$(DESTDIR)$(pythondir)" \
+	"$(DESTDIR)$(autotoolsetpythondir)"
+am__pep3147_tweak = \
+  sed -e 's|\.py$$||' -e 's|[^/]*$$|__pycache__/&.*.py|'
+py_compile = $(top_srcdir)/config/py-compile
 DATA = $(dist_autotoolsetpython_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -191,12 +196,16 @@ FC_DEFINE = @FC_DEFINE@
 FFLAGS = @FFLAGS@
 FLIBS = @FLIBS@
 GREP = @GREP@
+HELP2MAN = @HELP2MAN@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
+LEXLIB = @LEXLIB@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LN_S = @LN_S@
@@ -226,6 +235,8 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 TXTC = @TXTC@
 VERSION = @VERSION@
+YACC = @YACC@
+YFLAGS = @YFLAGS@
 ZCAT = @ZCAT@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -301,6 +312,7 @@ dist_autotoolsetpython_DATA = \
 	src.www.Makefile.am.zope \
 	src.interfaces.Makefile.am.zope
 
+python_PYTHON = install_data.py setup.py __init__.py
 all: all-am
 
 .SUFFIXES:
@@ -334,6 +346,54 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-pythonPYTHON: $(python_PYTHON)
+	@$(NORMAL_INSTALL)
+	@list='$(python_PYTHON)'; dlist=; list2=; test -n "$(pythondir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(pythondir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(pythondir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then b=; else b="$(srcdir)/"; fi; \
+	  if test -f $$b$$p; then \
+	    $(am__strip_dir) \
+	    dlist="$$dlist $$f"; \
+	    list2="$$list2 $$b$$p"; \
+	  else :; fi; \
+	done; \
+	for file in $$list2; do echo $$file; done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(pythondir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(pythondir)" || exit $$?; \
+	done || exit $$?; \
+	if test -n "$$dlist"; then \
+	  $(am__py_compile) --destdir "$(DESTDIR)" \
+	                    --basedir "$(pythondir)" $$dlist; \
+	else :; fi
+
+uninstall-pythonPYTHON:
+	@$(NORMAL_UNINSTALL)
+	@list='$(python_PYTHON)'; test -n "$(pythondir)" || list=; \
+	py_files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$py_files" || exit 0; \
+	dir='$(DESTDIR)$(pythondir)'; \
+	pyc_files=`echo "$$py_files" | sed 's|$$|c|'`; \
+	pyo_files=`echo "$$py_files" | sed 's|$$|o|'`; \
+	py_files_pep3147=`echo "$$py_files" | $(am__pep3147_tweak)`; \
+	echo "$$py_files_pep3147";\
+	pyc_files_pep3147=`echo "$$py_files_pep3147" | sed 's|$$|c|'`; \
+	pyo_files_pep3147=`echo "$$py_files_pep3147" | sed 's|$$|o|'`; \
+	st=0; \
+	for files in \
+	  "$$py_files" \
+	  "$$pyc_files" \
+	  "$$pyo_files" \
+	  "$$pyc_files_pep3147" \
+	  "$$pyo_files_pep3147" \
+	; do \
+	  $(am__uninstall_files_from_dir) || st=$$?; \
+	done; \
+	exit $$st
 install-dist_autotoolsetpythonDATA: $(dist_autotoolsetpython_DATA)
 	@$(NORMAL_INSTALL)
 	@list='$(dist_autotoolsetpython_DATA)'; test -n "$(autotoolsetpythondir)" || list=; \
@@ -396,7 +456,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(autotoolsetpythondir)"; do \
+	for dir in "$(DESTDIR)$(pythondir)" "$(DESTDIR)$(autotoolsetpythondir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -449,7 +509,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-dist_autotoolsetpythonDATA
+install-data-am: install-dist_autotoolsetpythonDATA \
+	install-pythonPYTHON
 
 install-dvi: install-dvi-am
 
@@ -493,7 +554,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-dist_autotoolsetpythonDATA
+uninstall-am: uninstall-dist_autotoolsetpythonDATA \
+	uninstall-pythonPYTHON
 
 .MAKE: install-am install-strip
 
@@ -504,10 +566,11 @@ uninstall-am: uninstall-dist_autotoolsetpythonDATA
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am install-man \
 	install-pdf install-pdf-am install-ps install-ps-am \
-	install-strip installcheck installcheck-am installdirs \
-	maintainer-clean maintainer-clean-generic mostlyclean \
-	mostlyclean-generic pdf pdf-am ps ps-am tags-am uninstall \
-	uninstall-am uninstall-dist_autotoolsetpythonDATA
+	install-pythonPYTHON install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
+	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
+	pdf-am ps ps-am tags-am uninstall uninstall-am \
+	uninstall-dist_autotoolsetpythonDATA uninstall-pythonPYTHON
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

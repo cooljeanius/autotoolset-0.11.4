@@ -30,8 +30,8 @@ dnl distribution terms that you use for the rest of that program.
 # 3. Checks whether the compiler accepts the -g 
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_CONFIGURE_CC,[
-  dnl Sing the song
+AC_DEFUN([LF_CONFIGURE_CC],[
+  dnl# Sing the song:
   AC_PROG_CC
   AC_PROG_CPP
   AC_AIX

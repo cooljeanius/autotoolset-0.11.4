@@ -60,7 +60,7 @@ dnl END ACCONFIG
 # if one is available. The default is to prefer the GNU compilers.
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_PROG_F77_PREFER_NATIVE_VERSION,[
+AC_DEFUN([LF_PROG_F77_PREFER_NATIVE_VERSION],[
   lf_f77_prefer_native_version="yes"
 ])
 
@@ -69,7 +69,7 @@ AC_DEFUN(LF_PROG_F77_PREFER_NATIVE_VERSION,[
 # if possible.
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_PROG_F77_PREFER_F2C_COMPATIBILITY,[
+AC_DEFUN([LF_PROG_F77_PREFER_F2C_COMPATIBILITY],[
   lf_f77_prefer_native_version="no"
 ])
 
@@ -84,7 +84,7 @@ AC_DEFUN(LF_PROG_F77_PREFER_F2C_COMPATIBILITY,[
 # 3) The proprietary compiler
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_PROG_F77,[
+AC_DEFUN([LF_PROG_F77],[
   dnl Initialize the following use variables to false
   dnl These variables indicate which compiler we want to use
   lf_f77_use_f2c=false
@@ -260,7 +260,7 @@ AC_DEFUN(LF_PROG_F77,[
 # -lF77 -lI77
 # --------------------------------------------------------------------------
 
-AC_DEFUN(LF_PROG_F2C,[
+AC_DEFUN([LF_PROG_F2C],[
   dnl No matter what happens next, we want to link in the math libraries
   dnl Late night fart: Mount, mount, mount...mount the dump tape please.
   FLIBS=""
@@ -372,7 +372,7 @@ EOF
 # Otherwise, it is set to be an empty string.
 # ---------------------------------------------------------------------------
 
-AC_DEFUN(LF_PROG_F77_IS_G77,[
+AC_DEFUN([LF_PROG_F77_IS_G77],[
   AC_MSG_CHECKING([whether we are using GNU Fortran])
   if AC_TRY_COMMAND([$F77 --version]) | egrep 'GNU Fortran' >/dev/null 2>&1
   then
@@ -389,7 +389,7 @@ AC_DEFUN(LF_PROG_F77_IS_G77,[
 # Requires maybe the NM variable to be set to the nm program?
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_CHECK_F77_UPPERCASE_NAMES,[
+AC_DEFUN([LF_CHECK_F77_UPPERCASE_NAMES],[
   AC_MSG_CHECKING([whether $F77 uses uppercase external names])
   lf_cv_f77_uppercase_names=no
   cat > conftest.f <<EOF
@@ -409,7 +409,7 @@ EOF
   rm -f conftest.f
 ])
 
-AC_DEFUN(LF_CHECK_F77_APPEND_UNDERSCORE,[
+AC_DEFUN([LF_CHECK_F77_APPEND_UNDERSCORE],[
   AC_MSG_CHECKING([whether $F77 appends underscores to external names])
   lf_cv_f77_append_underscore=no
   cat > conftest.f <<EOF
@@ -441,7 +441,7 @@ EOF
 # The answer; "yes" or "no" is stored in lf_f77_is_f2c_compatible
 # -------------------------------------------------------------------------
 
-AC_DEFUN(LF_F77_IS_F2C_COMPATIBLE,[
+AC_DEFUN([LF_F77_IS_F2C_COMPATIBLE],[
   AC_MSG_CHECKING([whether $F77 is f2c compatible])
   trap 'rm -f ftest* ctest* core; exit 1' 1 3 15
   lf_f77_is_f2c_compatible=no
@@ -504,7 +504,7 @@ EOF
 # ALSO: requires ac_cv_prog_gcc
 # --------------------------------------------------------------------------
 
-AC_DEFUN(LF_PATH_F77_LIBS,[
+AC_DEFUN([LF_PATH_F77_LIBS],[
   AC_MSG_CHECKING(for Fortran libraries)
   dnl
   dnl Write a minimal program and compile it with -v. I don't know
@@ -687,10 +687,4 @@ AC_DEFUN(LF_PATH_F77_LIBS,[
   AC_MSG_RESULT([$FLIBS])
   AC_SUBST(FLIBS)
 ])
-
-
-
-
-
-
 

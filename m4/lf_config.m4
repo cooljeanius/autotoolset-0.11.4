@@ -63,7 +63,7 @@ dnl libs       -> The -l flags required to link library
 dnl includedir -> The -I flags required to include headers for library
 dnl ----------------------------------------------------------------------
 
-AC_DEFUN(LF_INSTALLS_LIBRARY,[
+AC_DEFUN([LF_INSTALLS_LIBRARY],[
   lf_config_LIBRARIES="$lf_config_LIBRARIES $1"
   lf_config_$1_FIELDS="$1:$2:$3:$4:$5"
 ])
@@ -77,15 +77,15 @@ dnl This will create a file called "config-database" and will define
 dnl @CONFIGDATABASE@ to substitute the contents of that file to the
 dnl template for the config script.
 dnl -----------------------------------------------------------------------
-AC_DEFUN(LF_CONFIG_SCRIPT,[
-  dnl Clear up the database file
+AC_DEFUN([LF_CONFIG_SCRIPT],[
+  dnl# Clear up the database file:
   rm -f config-database
   touch config-database
 
-  dnl Record the LIBRARIES entry
+  dnl# Record the LIBRARIES entry:
   echo "LIBRARIES=\"${lf_config_LIBRARIES}\"" >> config-database
   
-  dnl Now loop over and create entries for individual libraries
+  dnl# Now loop over and create entries for individual libraries:
   for lf_config_library in $lf_config_LIBRARIES
   do
     AC_MSG_RESULT([registering library ${lf_config_library}])
@@ -96,19 +96,19 @@ AC_DEFUN(LF_CONFIG_SCRIPT,[
                  printf("%s_DESCRIPTION=\"%s\"\n",[$]1,[$]5) }' >> config-database
  done
 
-  dnl Now punch in the database
+  dnl# Now punch in the database:
   CONFIGDATABASE="./config-database"
   AC_SUBST_FILE(CONFIGDATABASE)
 ])
 
-dnl -------------------------------------------------------------------------
+dnl#-----------------------------------------------------------------------
 dnl Usage:
 dnl   LF_NEED_LIBRARY_PACKAGE(FOO_CONFIG,config-script,version)
 dnl Negotiate whether we have a recent enough version of a desired collection
 dnl of libraries.
-dnl -------------------------------------------------------------------------
+dnl#-----------------------------------------------------------------------
 
-AC_DEFUN(LF_NEED_LIBRARY_PACKAGE,[
+AC_DEFUN([LF_NEED_LIBRARY_PACKAGE],[
   dnl Check whether the config script exists
   AC_PATH_PROG($1,$2,no)
   if test "x[$]$1" = "xno"
@@ -179,7 +179,7 @@ main()
   fi
 ])
  
-dnl ------------------------------------------------------------------------
+dnl#-----------------------------------------------------------------------
 dnl Usage:
 dnl  LF_QUERY_LIBRARY_SPECIFIC(libname,config-script,flag,variable)
 dnl Invoke the configure script and obtain information for a specific 
@@ -191,22 +191,22 @@ dnl                  LF_NEED_LIBRARY_PACKAGE macro
 dnl flag          -> can be one of: cflags, libs, libs-only-L, libs-onlyl,
 dnl                  prefix, exec-prefix, etc....
 dnl variable      -> the variable where we'd like to store the answer
-dnl ------------------------------------------------------------------------
+dnl#-----------------------------------------------------------------------
 
-AC_DEFUN(LF_QUERY_LIBRARY_SPECIFIC,[
+AC_DEFUN([LF_QUERY_LIBRARY_SPECIFIC],[
   dnl Now get the information 
   $4="`[$]$2 --$3 $1`"
   AC_SUBST($4)
 ])
 
-dnl -------------------------------------------------------------------------
-dnl Usage:
-dnl   LF_QUERY_LIBRARY(libname,config-script,Lflags,lflags,cflags)
-dnl Invoke the configure script and obtain ALL information for a 
-dnl given library.
-dnl ------------------------------------------------------------------------- 
+dnl#-----------------------------------------------------------------------
+dnl# Usage:
+dnl#   LF_QUERY_LIBRARY(libname,config-script,Lflags,lflags,cflags)
+dnl# Invoke the configure script and obtain ALL information for a 
+dnl# given library.
+dnl#-----------------------------------------------------------------------
 
-AC_DEFUN(LF_QUERY_LIBRARY,[
+AC_DEFUN([LF_QUERY_LIBRARY],[
   echo "checking for $1 in [$]$2"
   LF_QUERY_LIBRARY_SPECIFIC($1,$2,libs-only-L,$3)
   echo " -- linker lags: [$]$3"

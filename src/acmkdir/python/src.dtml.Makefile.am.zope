@@ -6,8 +6,3 @@ pkgdata_DATA =
 
 EXTRA_DIST = $(DATA) Makefile.am Makefile.in
 
-
-
-
-
-

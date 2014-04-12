@@ -28,8 +28,9 @@
 #  
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# Foundation, Inc., 59 Temple Place: Suite 330, Boston, MA 02111-1307, USA.
 #  
+
 
 VPATH = @srcdir@
 am__is_gnu_make = test -n '$(MAKEFILE_LIST)' && test -n '$(MAKELEVEL)'
@@ -153,12 +154,13 @@ am__uninstall_files_from_dir = { \
     || { echo " ( cd '$$dir' && rm -f" $$files ")"; \
          $(am__cd) "$$dir" && rm -f $$files; }; \
   }
-am__installdirs = "$(DESTDIR)$(lispdir)"
+am__installdirs = "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(lispdir)"
 lispLISP_INSTALL = $(INSTALL_DATA)
 LISP = $(lisp_LISP)
 am__ELFILES = gpl-copying.el gpl.el texinfo-xtra.el
 am__ELCFILES = $(am__ELFILES:.el=.elc)
 ELCFILES = $(LISP:.el=.elc)
+DATA = $(lisp_DATA)
 am__tagged_files = $(HEADERS) $(SOURCES) $(TAGS_FILES) $(LISP)
 # Read a list of newline-separated strings from the standard input,
 # and print each of them once, without duplicates.  Input order is
@@ -217,12 +219,16 @@ FC_DEFINE = @FC_DEFINE@
 FFLAGS = @FFLAGS@
 FLIBS = @FLIBS@
 GREP = @GREP@
+HELP2MAN = @HELP2MAN@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_SCRIPT = @INSTALL_SCRIPT@
 INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
 LDFLAGS = @LDFLAGS@
+LEX = @LEX@
+LEXLIB = @LEXLIB@
+LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LN_S = @LN_S@
@@ -252,6 +258,8 @@ SHELL = @SHELL@
 STRIP = @STRIP@
 TXTC = @TXTC@
 VERSION = @VERSION@
+YACC = @YACC@
+YFLAGS = @YFLAGS@
 ZCAT = @ZCAT@
 abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
@@ -314,6 +322,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lisp_LISP = texinfo-xtra.el gpl.el gpl-copying.el
 EXTRA_DIST = $(lisp_LISP)
+lisp_DATA = $(lisp_LISP)
 all: all-am
 
 .SUFFIXES:
@@ -394,6 +403,27 @@ uninstall-lispLISP:
 
 clean-lisp:
 	-rm -f $(ELCFILES)
+install-lispDATA: $(lisp_DATA)
+	@$(NORMAL_INSTALL)
+	@list='$(lisp_DATA)'; test -n "$(lispdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(lispdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(lispdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(lispdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(lispdir)" || exit $$?; \
+	done
+
+uninstall-lispDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(lisp_DATA)'; test -n "$(lispdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(lispdir)'; $(am__uninstall_files_from_dir)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -479,9 +509,9 @@ distdir: $(DISTFILES)
 	done
 check-am: all-am
 check: check-am
-all-am: Makefile $(LISP) $(ELCFILES)
+all-am: Makefile $(LISP) $(ELCFILES) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(lispdir)"; do \
+	for dir in "$(DESTDIR)$(lispdir)" "$(DESTDIR)$(lispdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -534,7 +564,7 @@ info: info-am
 
 info-am:
 
-install-data-am: install-lispLISP
+install-data-am: install-lispDATA install-lispLISP
 
 install-dvi: install-dvi-am
 
@@ -578,7 +608,7 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-lispLISP
+uninstall-am: uninstall-lispDATA uninstall-lispLISP
 
 .MAKE: install-am install-strip
 
@@ -588,14 +618,13 @@ uninstall-am: uninstall-lispLISP
 	html-am info info-am install install-am install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
-	install-info-am install-lispLISP install-man install-pdf \
-	install-pdf-am install-ps install-ps-am install-strip \
-	installcheck installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic pdf \
-	pdf-am ps ps-am tags tags-am uninstall uninstall-am \
-	uninstall-lispLISP
+	install-info-am install-lispDATA install-lispLISP install-man \
+	install-pdf install-pdf-am install-ps install-ps-am \
+	install-strip installcheck installcheck-am installdirs \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-generic pdf pdf-am ps ps-am tags tags-am uninstall \
+	uninstall-am uninstall-lispDATA uninstall-lispLISP
 
-#EXTRA_DIST = $(lisp_LISP) gpl-python.patch 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -38,8 +38,10 @@ AM_PROG_AR
 AC_PROG_CPP
 AC_PROG_CXX
 AC_PROG_INSTALL
+AM_PROG_LEX
 AC_PROG_LN_S
 AC_PROG_RANLIB
+AC_PROG_YACC
 AC_F77_LIBRARY_LDFLAGS
 AC_FC_LIBRARY_LDFLAGS
 AC_FC_SRCEXT([f])
@@ -72,6 +74,17 @@ AC_PATH_PROG([ZCAT],[zcat],[not found])
 if test "x${ZCAT}" = "xnot found"; then
  AC_MSG_ERROR([Cannot build without zcat])
 fi
+
+dnl# GNU help2man creates man pages from --help output; in many cases, this
+dnl# is sufficient, and obviates the need to maintain man pages separately.
+dnl# However, this means invoking executables, which we generally cannot do
+dnl# when cross-compiling, so we test to avoid that (the variable
+dnl# "cross_compiling" is set by AC_PROG_CC).
+AS_IF([test "x${cross_compiling}" = "xno"],[
+  AM_MISSING_PROG([HELP2MAN],[help2man])
+],[
+  HELP2MAN=:
+])
 
 AM_PATH_LISPDIR
 AM_PATH_PYTHON

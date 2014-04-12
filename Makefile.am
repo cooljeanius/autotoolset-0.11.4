@@ -17,11 +17,15 @@
 
 SUBDIRS = m4 doc lib misc src
 
-EXTRA_DIST = debian reconf
+dist_doc_DATA = README
+
+EXTRA_DIST = debian reconf fix-timestamp.sh
 
 DISTCLEANFILES = *~ .DS_Store autoscan.log
 
 MAINTAINERCLEANFILES = configure.scan
+
+noinst_SCRIPTS = fix-timestamp.sh
 
 configure.scan:
 	autoscan

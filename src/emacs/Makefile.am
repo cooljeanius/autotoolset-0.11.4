@@ -12,9 +12,10 @@
 #  
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+# Foundation, Inc., 59 Temple Place: Suite 330, Boston, MA 02111-1307, USA.
 #  
 
 lisp_LISP = texinfo-xtra.el gpl.el gpl-copying.el
 EXTRA_DIST = $(lisp_LISP)
-#EXTRA_DIST = $(lisp_LISP) gpl-python.patch 
+ 
+lisp_DATA = $(lisp_LISP)

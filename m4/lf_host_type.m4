@@ -29,7 +29,7 @@ dnl ACCONFIG TEMPLATE
 dnl #undef YOUR_OS
 dnl END ACCONFIG
 
-AC_DEFUN(LF_HOST_TYPE, [
+AC_DEFUN([LF_HOST_TYPE],[
   AC_CANONICAL_HOST
   if test -z "$host"
   then
