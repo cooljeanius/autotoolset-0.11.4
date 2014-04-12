@@ -1,4 +1,4 @@
-This is toolsmanual.info, produced by makeinfo version 4.2 from
+This is toolsmanual.info, produced by makeinfo version 4.13 from
 toolsmanual.texi.
 
 INFO-DIR-SECTION Development
@@ -8,114 +8,108 @@ END-INFO-DIR-ENTRY
 
 
 Indirect:
-toolsmanual.info-1: 217
-toolsmanual.info-2: 47069
-toolsmanual.info-3: 96998
-toolsmanual.info-4: 143152
-toolsmanual.info-5: 189933
-toolsmanual.info-6: 238535
-toolsmanual.info-7: 287468
-toolsmanual.info-8: 335659
+toolsmanual.info-1: 218
+toolsmanual.info-2: 289394
 
 Tag Table:
 (Indirect)
-Node: Top217
-Node: Preface3517
-Ref: Preface-Footnote-110774
-Ref: Preface-Footnote-210822
-Node: Copying10968
-Node: Acknowledgements13356
-Node: Installing GNU software14670
-Node: Installing a GNU package15641
-Node: The Makefile standards19867
-Node: Configuration options24611
-Node: Doing a VPATH build29406
-Node: Making a binary distribution32155
-Node: Using GNU Emacs33587
-Ref: Using GNU Emacs-Footnote-135971
-Node: Installing GNU Emacs36066
-Node: Basic Emacs concepts38963
-Ref: Basic Emacs concepts-Footnote-146567
-Ref: Basic Emacs concepts-Footnote-246826
-Node: Configuring GNU Emacs47069
-Node: Using vi emulation57064
-Node: Navigating source code67357
-Node: Using Emacs as an email client76239
-Node: Handling patches84725
-Node: Inserting copyright notices with Emacs85062
-Node: Hacker sanity with Emacs87067
-Node: Further reading on Emacs88110
-Node: Compiling with Makefiles93085
-Node: Compiling simple programs93625
-Node: Programs with many source files96998
-Node: Building libraries102514
-Node: Dealing with header files107979
-Node: The GPL and libraries116287
-Node: The language runtime libraries120747
-Node: Basic Makefile concepts126199
-Node: More about Makefiles133313
-Node: The GNU build system141898
-Node: Introducing the GNU tools143152
-Node: Installing the GNU build system147351
-Node: Hello world example with Autoconf and Automake149561
-Node: Understanding the hello world example156544
-Node: Using configuration headers164455
-Node: Maintaining the documentation files168736
-Node: Organizing your project in subdirectories176771
-Node: Applying the GPL180425
-Node: Handling version numbers186142
-Ref: Handling version numbers-Footnote-1189813
-Node: Hello world with acmkdir189933
-Node: Using Automake194300
-Node: Simple use of Automake194778
-Node: General Automake principles203284
-Node: Installation standard directories212015
-Node: Libraries with Automake219541
-Node: Applications with Automake219844
-Node: Dealing with built sources220068
-Node: Embedded text with Automake222178
-Node: Scripts with Automake228974
-Node: Emacs Lisp with Automake235461
-Node: Guile with Automake238297
-Node: Data files with Automake238535
-Node: Using Libtool240209
-Node: Using C effectively240347
-Node: Using Fortran effectively240508
-Node: Fortran compilers and linkage242912
-Node: Walkthrough a simple example250593
-Node: Portability problems with Fortran250862
-Node: Other Fortran dialects256048
-Node: Popular free software in Fortran258273
-Node: Internationalization258516
-Node: Maintaining Documentation258725
-Node: Browsing documentation259180
-Node: Writing proper manuals259381
-Node: Introduction to Texinfo259775
-Node: Markup in Texinfo259971
-Node: GNU Emacs support for Texinfo260162
-Node: Writing man pages260371
-Node: Writing documentation with LaTeX260571
-Node: Creating a LaTeX package260796
-Node: Further reading about LaTeX261015
-Node: Portable shell programming261199
-Node: Writing Autoconf macros261391
-Node: Legal issues with Free Software261583
-Node: Understanding Copyright262420
-Ref: Understanding Copyright-Footnote-1267801
-Node: Software patents267957
-Node: Export restrictions on encryption software272243
-Ref: Export restrictions on encryption software-Footnote-1275782
-Node: Philosophical issues275896
-Node: The Right to Read277681
-Node: What is Free Software287468
-Node: Why software should not have owners289023
-Node: Why free software needs free documentation301479
-Node: Categories of software307429
-Node: Confusing words319478
-Node: Licensing Free Software324819
-Node: What is Copyleft325898
-Node: Why you should use the GPL329852
-Node: The LGPL vs the GPL335659
-Node: GNU GENERAL PUBLIC LICENSE339718
+Node: Top218
+Node: Preface3515
+Ref: Preface-Footnote-110764
+Ref: Preface-Footnote-210812
+Node: Copying10958
+Node: Acknowledgements13343
+Node: Installing GNU software14654
+Node: Installing a GNU package15626
+Node: The Makefile standards19858
+Node: Configuration options24615
+Node: Doing a VPATH build29434
+Node: Making a binary distribution32190
+Node: Using GNU Emacs33629
+Ref: Using GNU Emacs-Footnote-136014
+Node: Installing GNU Emacs36109
+Node: Basic Emacs concepts39022
+Ref: Basic Emacs concepts-Footnote-146645
+Ref: Basic Emacs concepts-Footnote-246904
+Node: Configuring GNU Emacs47147
+Node: Using vi emulation57138
+Node: Navigating source code67441
+Node: Using Emacs as an email client76343
+Node: Handling patches84846
+Node: Inserting copyright notices with Emacs85188
+Node: Hacker sanity with Emacs87206
+Node: Further reading on Emacs88254
+Node: Compiling with Makefiles93239
+Node: Compiling simple programs93780
+Node: Programs with many source files97171
+Node: Building libraries102701
+Node: Dealing with header files108183
+Node: The GPL and libraries116518
+Node: The language runtime libraries120983
+Node: Basic Makefile concepts126437
+Node: More about Makefiles133556
+Node: The GNU build system142111
+Node: Introducing the GNU tools143366
+Node: Installing the GNU build system147577
+Node: Hello world example with Autoconf and Automake149800
+Node: Understanding the hello world example156818
+Node: Using configuration headers164733
+Node: Maintaining the documentation files169021
+Node: Organizing your project in subdirectories177029
+Node: Applying the GPL180693
+Node: Handling version numbers186383
+Ref: Handling version numbers-Footnote-1190067
+Node: Hello world with acmkdir190187
+Node: Using Automake194555
+Node: Simple use of Automake195037
+Node: General Automake principles203559
+Node: Installation standard directories212287
+Node: Libraries with Automake219822
+Node: Applications with Automake220130
+Node: Dealing with built sources220359
+Node: Embedded text with Automake222448
+Node: Scripts with Automake229241
+Node: Emacs Lisp with Automake235592
+Node: Guile with Automake238434
+Node: Data files with Automake238679
+Node: Using Libtool240354
+Node: Using C effectively240496
+Node: Using Fortran effectively240661
+Node: Fortran compilers and linkage243066
+Node: Walkthrough a simple example250773
+Node: Portability problems with Fortran251047
+Node: Other Fortran dialects256233
+Node: Popular free software in Fortran258471
+Node: Internationalization258719
+Node: Maintaining Documentation258929
+Node: Browsing documentation259390
+Node: Writing proper manuals259601
+Node: Introduction to Texinfo260002
+Node: Markup in Texinfo260208
+Node: GNU Emacs support for Texinfo260409
+Node: Writing man pages260628
+Node: Writing documentation with LaTeX260838
+Node: Creating a LaTeX package261073
+Node: Further reading about LaTeX261302
+Node: Portable shell programming261496
+Node: Writing Autoconf macros261694
+Node: Legal issues with Free Software261892
+Node: Understanding Copyright262747
+Ref: Understanding Copyright-Footnote-1268133
+Node: Software patents268289
+Node: Export restrictions on encryption software272580
+Ref: Export restrictions on encryption software-Footnote-1276124
+Node: Philosophical issues276238
+Node: The Right to Read278042
+Node: What is Free Software287834
+Node: Why software should not have owners289394
+Node: Why free software needs free documentation301855
+Node: Categories of software307810
+Node: Confusing words319864
+Node: Licensing Free Software325210
+Node: What is Copyleft326308
+Node: Why you should use the GPL330267
+Node: The LGPL vs the GPL336079
+Node: GNU GENERAL PUBLIC LICENSE340143
 
 End Tag Table

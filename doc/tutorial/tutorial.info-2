@@ -1,5 +1,4 @@
-This is tutorial.info, produced by makeinfo version 4.3 from
-tutorial.texi.
+This is tutorial.info, produced by makeinfo version 4.13 from tutorial.texi.
 
 INFO-DIR-SECTION Miscellaneous
 START-INFO-DIR-ENTRY
@@ -7,951 +6,1140 @@ START-INFO-DIR-ENTRY
 END-INFO-DIR-ENTRY
 
 
-File: tutorial.info,  Node: Maintaining the documentation files,  Next: Organizing your project in subdirectories,  Prev: Using configuration headers,  Up: Introduction to the GNU build system
+File: tutorial.info,  Node: Freeing your software,  Prev: Other legal concerns,  Up: Legal issues with Free Software
 
-Maintaining the documentation files
-===================================
+A.3 Freeing your software
+=========================
 
-   Every software project must have its own directory. A minimal
-"project" is the example that we described in *Note Hello world
-example::. In general, even a minimal project must have the files:
-     README, INSTALL, AUTHORS, THANKS, NEWS, ChangeLog
+Both copyright and patent laws are being used mainly to destroy our
+"freedom" to cooperate with our fellow hackers.  By freedom we refer to
+three things: the freedom to use software, the freedom to modify it and
+improve it, and the freedom to redistribute it with the modifications
+and improvements so that the whole community benefits. Combined with
+the possible default assignment of your rights to an employer or
+university, the laws can actually interfere even with your ability to
+write computer programs for a hobby and cooperate with other hackers on
+that basis!
 
-Before distributing your source code, it is important to write the real
-contents of these files.  In this section we give a summary overview on
-how these files should be maintained. For more details, please see the
-_GNU coding standards_ as published by the FSF.
+   To defend our freedoms from those who would like to take them from
+us, the free software community uses the General Public License, also
+known as the GPL. In broads strokes, the GPL does the following:
+   * Grants you unrestricted permission to run the software and
+     maintain as many copies as you like. You can also make personal
+     custom modifications and use them freely. The GNU GPL does not
+     restrict what you do in the privacy of your own computer in any
+     way. On the contrary it waives all the restrictions that the
+     copyright law applies to private use.  It only kicks in when you
+     distribute the software you have received to other people.
 
-   * *The README file:* Every distribution must contain this file. This
-     is the file that the installer must read _fully_ after unpacking
-     the distribution and before configuring it. You should briefly
-     explain the purpose of the distribution, and reference all other
-     documentation available. Instructions for installing the package
-     normally belong in the `INSTALL' file.  However if you have
-     something that you feel the installer _should_ know then mention
-     it in this file.
+   * Grants permission to redistribute the software or modified
+     versions (derived work) provided that you do so *only* under the
+     terms of the GNU public license. This means that if you make any
+     changes, they must also be free. This protects the freedom of the
+     package by forbidding someone to make a free version proprietary.
+     This measure is called "copyleft" because it subverts the
+     copyright law to do the opposite of what copyright is normally
+     used for (i.e. to prevent a user to make a proprietary package
+     free). The GNU GPL does not oblidge you to distribute your
+     modifications. It only requires that you distribute them freely,
+     _if_ you choose to distribute them at all. The decision of whether
+     or not to distribute your derived work is entirely up to you.  The
+     freedom to choose _not_ to distribute your modifications is as
+     important as the freedom to distribute them. The GPL grants you
+     both freedoms.
 
-   * *The INSTALL file:* Because the GNU installation procedure is
-     streamlined, a standard `INSTALL' file will be created for you
-     automatically by `Automake'.  If you have something very important
-     to say, it may be best to say it in the `README' file instead. the
-     `INSTALL' file is mostly for the benefit of people who've never
-     installed a GNU package before.  However, if your package is very
-     unusual, you may decide that it is best to modify the standard
-     INSTALL file or write your own.
+   * Disclaims all warranty to protect the authors from lawsuits,
+     including various implied warranties such as the warranty for
+     "merchantability" and "fitness for a particular purpose".
 
-   * *The AUTHORS file:* If you maintain a package for the Free
-     Software Foundation, then this file should collect a fairly exact
-     copy of the trace, normally kept in file `/gd/gnuorg/assignments'
-     on the FSF machines, for all legal paper exchanges between
-     contributors and the GNU project. The file might have an
-     introductor blurb similar to this one:
-          Authors of PACKAGE
-          
-          The following contributions warranted legal paper exchanges
-          with the Free Software Foundation. Also see files ChangeLog
-          and THANKS
+   * Protects the software's freedom from patents as much as this is
+     possible.  The scenario that we want to avoid is someone receiving
+     the source code, and then filing a patent application for the
+     algorithms it uses, effectively making the software proprietary.
+     If you do that, the GPL will forbid you from redistributing the
+     software as well as derived work. So you will not want to do it.
+     The patent law itself will prevent someone else, who distributes a
+     competing product, to patent the algorithm if your implementation
+     predates his.
 
-     If you do not maintain the project, then you should do the legal
-     paperwork yourself and record it here. If you choose not to do the
-     paperwork, then you should still list who the contributors are and
-     what files they have worked on. When you list the files, indicate
-     whether they created the file or whether they modified it. For
-     example:
-          Random J. Hacker:
-            entire files  -> foo1.c , foo2.c , foo3.c
-            modifications -> foo4.c , foo5.c
+   The purpose of the GPL is to use the copyright law to encourage a
+world in which software is not copyrighted. If copyright didn't cover
+software, then we would all be free to use, modify and redistribute
+software, _and_ we would not be able to restrict others from enjoying
+these freedoms because there would be no law giving anyone such power.
+One way to grant the freedoms to the users of your software is to
+revoke your copyright on the software completely. This is called putting
+your work in the "public domain". The problem with this is that it only
+grants the freedoms. It does not create the reality in which no-one can
+take these freedoms away from derived works. In fact the copyright law
+covers by default derived works regardless of whether the original was
+public domain or copyrighted. By distributing your work under the GPL,
+you grant the same freedoms, and at the same time you protect these
+freedoms from hoarders.
 
-   * *The THANKS file:* All distributions should contain a `THANKS'
-     file containing a two column list of the contributors, one per
-     line, alphabetically sorted. The left column gives the
-     contributor's name, while the right column gives the last known
-     good email address for this contributor.  This list should be
-     introduced with a wording similar to this one:
-          PACKAGE THANKS file
-          
-          PACKAGE has originally been written by ORIGINAL AUTHOR. Many
-          people further contributed to PACKAGE by reporting problems,
-          suggesting various improvements or submitting actual code.
-          Here is a list of these people. Help me keep it complete and
-          exempt of errors.
+   The GNU GPL is a legal instrument that has been designed to create a
+safe haven in which software can be written free from copyright law
+encumberence. It allows developers to freely share their work with a
+friendly community that is also willing to share theirs, and at the
+same time protect them from being exploited by publishers of proprietary
+software. Many developers would not contribute to our community without
+this protection.
 
-     The easiest policy with this file is to thank everyone who
-     contributes to the project, without judging the value of the
-     contribution.
+   To apply the GPL to your programs you need to do the following
+things:
+   * Attach a copy of the GNU public license to the toplevel directory
+     of your source code in a file called `COPYING'.
 
-     Unlike `AUTHORS', the `THANKS' file is not maintained for legal
-     reasons. It is maintained to thank all the contributors that
-     helped you out in your project. The `AUTHORS' file can not be used
-     for this purpose because certain contributions, like bug reports
-     or ideas and suggestions do not require legal paper exchanges.
+   * Include a legal notice to _every_ file that you want covered by
+     the GPL, saying that it is covered by the GPL. It is important
+     that all files that constitute source code must include this
+     notice, including `Makefile.am', `configure.in' files and shell
+     scripts.  The legal notice should look like this:
+          // Copyright (C) (years) (Your Name) <your@email.address>
+          //
+          // This program is free software; you can redistribute it and/or
+          // modify it under the terms of the GNU General Public License
+          // as published by the Free Software Foundation; either
+          // version 2 of the License, or (at your option) any later
+          // version.
+          //
+          // This program is distributed in the hope that it will be useful,
+          // but WITHOUT ANY WARRANTY; without even the implied warranty of
+          // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+          // GNU General Public License for more details.
+          //
+          // You should have received a copy of the GNU General Public License
+          // along with this program; if not, write to the Free Software
+          // Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+     If you have assigned your copyright to an organization, like the
+     Free Software Foundation, then you should probably fashion your
+     copyright notice like this:
+          // Copyright (C) (years) Free Software Foundation
+          // (your name) <your@email.address> (initial year)
+          // etc...
+     This legal notice works like a subroutine. By invoking it, you
+     invoke the full text of the GNU General Public License which is
+     too lengthy to include in every source file. Where you see
+     `(years)' you need to list all the years in which you finished
+     preparing a version that was actually released, and which was an
+     ancestor to the current version. This list is _not_ the list of
+     years in which versions were released. It is a list of years in
+     which versions, later released, were completed. If you finish a
+     version on Dec 31, 1997 and release it on Jan 1, 1998, you need to
+     include 1997, but you do not need to include 1998. This rule is
+     complicated, but it is dictated by international copyright law.
 
-     You can also decide to send some kind of special greeting when you
-     initially add a name to your `THANKS' file. The mere presense of a
-     name in `THANKS' is then a flag to you that the initial greeting
-     has been sent.
+   * Use the `AUTHORS' file to keep records of who wrote what. These
+     records will be important if you decide at some point to register
+     your copyright. They are also important if you plan to assign your
+     work to the FSF, because they will want to register the copyright.
+     We discuss this in more detail later.
 
-   * *The NEWS file:* This is where you tell the users about the major
-     features of this distribution. You needn't go into details, but
-     you do need to list all the major features. The GNU coding
-     standards explain in more detail how to structure this file.
+   * If you modify someone else's GPL covered file make sure to comply
+     with section 2 of the GPL. To do that place notices stating that
+     you changed the file and the date of the change. Also your program
+     should advertise the fact that it is free software, that there is
+     no warranty and that it can be redistributed under the condition
+     of the GPL. A standard way of doing this is to make your program
+     output this notice when it is passed the `--version' command-line
+     flag. For details please read the GPL.
 
-   * *The ChangeLog file*: Use this file to record all the changes that
-     you make to your source code.  If your source code is distributed
-     among many subdirectories, and there is reason enough to think of
-     the contents of the subdirectories as different subpackages,then
-     please maintain a separate `ChangeLog' file for each subdirectory.
-     For example, although there is usually no need to maintain a
-     `ChangeLog' for your documentation, if you do decide to maintain
-     one anyway, it should be separate from your sources `ChangeLog'.
+   If you are unfamiliar with all this legalese you may find it
+surprising; you might even find it stupid. This is a very natural
+reaction. Until 1980, software copyright was not taken seriously in the
+US. In fact copyrights then had to be registered in order to be valid,
+and it was very natural for people to just copy software around, even
+though they knew it was illegal. It took significant amounts of
+lobbying and propaganda by proprietary publishers to cultivate the
+current litigious paranoia over copyrights and "convince" the public
+that helping out their neighbour by giving them an unauthorized copy is
+not only illegal, but it also "morally wrong". Even though copyright
+laws are international, through treaties, there are many countries in
+the world, where this brainwashing hasn't yet taken place, and where
+people still make unauthorized copies of software for their friends
+with no second thoughts. Such people are being described with smear
+words like "pirates" by publishers and their lawyers, but it is not
+true that these people do what they do because of a malicious intent.
+These people do what they do, because it is natural for them to be nice
+and help their friends.
 
-     The _GNU coding standards_ explain in a lot of detail how you
-     should structure a `ChangeLog', so you should read about it there.
-     The basic idea is to record _semi-permenant modifications_ you
-     make to your source code. It is not necessary to continuously
-     record changes that you make while you are experimenting with
-     something. But once you decide that you got a modification worked
-     out, then you should record Please do record version releases on
-     the central `ChangeLog' (*note Tracking version numbers::).  This
-     way, it will be possible to tell what changes happened between
-     versions.
-
-     You can automate `ChangeLog' maintance with Emacs using the `M-x
-     add-change-log-entry-other-window'. It may be easier to bind a key
-     (for example `f8') to this command by adding:
-          (global-set-key [f8] 'add-change-log-entry-other-window)
-
-     to your `.emacs' file. Then, after having made a modification and
-     _while_ the cursor is still at the place where you made the
-     modification, press `f8' and record your entry.  Recently Emacs
-     has decided to use the ISO 8601 standard for dates which is:
-     `YYYY-MM-DD' (year-month-date).  A typical `ChangeLog' entry looks
-     like this:
-          1998-05-17  Eleftherios Gkioulekas  <lf@amath.washington.edu>
-          
-           * src/acmkdir.sh: Now acmkdir will put better default content
-             to the files README, NEWS, AUTHORS, THANKS
-
-     Every entry contains all the changes you made within the period of
-     a day.  The most recent changes are listed at the top, the older
-     changes slowly scroll to the bottom.
-
-   * *COPYING* This file contains the copyright permissions for your
-     distribution, in particular the General Public License.  This file
-     will be generated for you automatically.  Copyright is a very
-     important concern in the free software community.  For the legal
-     aspects of copyright see *Note Understanding Copyright::.  For the
-     philosophical aspects of copyright see *Note Philosophical
-     issues::.  *FIXME: CROSSREFERENCE DISCUSSION OF COPYRIGHT IN NEXT
-     CHAPTER*
-
-   The `acmkdir' utility will automatically create templates for these
-files that you can start from.
-
-
-File: tutorial.info,  Node: Organizing your project in subdirectories,  Next: Hello world with an attitude,  Prev: Maintaining the documentation files,  Up: Introduction to the GNU build system
-
-Organizing your project in subdirectories
-=========================================
-
-   If your program is very small, you can place all your files in the
-top-level directory, like we did in the Hello World example (*note
-Hello world example::). Such packages are called "shallow".
-
-   In general, it is prefered to organize your package as a "deep
-package".  In a deep package, the documentation files
-     README, INSTALL, AUTHORS, THANKS, ChangeLog, COPYING
-
-as well as the build cruft are placed at the top-level directory, and
-the rest of the files are placed in subdirectories. It is standard
-practice to use the following subdirectories:
-`src'
-     The actual source code that gets compiled. Every library should
-     have it's own subdirectory. Executables should get their own
-     directory as well. If each executable corresponds only to one or
-     two files then it is sensible to put them all under the same
-     directory. If your executables need more source files, or they can
-     be seperated in distinct classes of functionalities you may like
-     to regroup them under multiple directories. Feel free to use your
-     judgement on how to do this best.  It is easiest to place the
-     library test suites on the same directory with the library source
-     code. If that does not sit well with you however, you should put
-     the test suite for each library in subdirectories _under_ that
-     library's directory. It is a massively bad idea to put the test
-     suites for different libraries under the same directory.
-
-`lib'
-     An optional directory where you put portability-related source
-     code.  This is mainly replacement implementation for system calls
-     that are unavailable on some systems. You can also put tools here
-     that you commonly use accross many different packages, tools that
-     are tool simple to just make libraries out of every one of them.
-     Common files encountered here are files that replace system calls
-     to the GNU C library that are not available in proprietary C
-     libraries.
-
-`doc'
-     A directory containing the documentation for your package.  You
-     have the creative freedom to present the documentation in any way
-     that is effective. However the prefered way to document software
-     is by using Texinfo. Texinfo has the advantage that you can
-     produce both on-line help as well as nice printed books from the
-     same source. Documentation is discussed in more detail in *Note
-     Maintaining Documentation::.
-
-`m4'
-     A directory containing `m4' files that you package may need to
-     _install_.  These files define new `autoconf' macros that you
-     should make available to other developers who want to use your
-     libraries.  This is discussed in more detail in *FIXME:
-     crossreference*.
-
-`intl'
-     A directory containing boilerplate portability source code that
-     allows your program to speak in many human languages. The contents
-     of this directory are automatically maintained by `gettext'.
-     (*FIXME: crossreference*)
-
-`po'
-     A directory containing message catalogs for your software package.
-     This is where the maintainer places the translations of his
-     software in multiple human languages.  (*FIXME: crossreference*)
-Automake makes it very easy to maintain multidirectory source code
-packages, so you shouldn't shy away from taking advantage of it.
-Multidirectory packages are more convenient for most projects.
+   One problem with this attitude is that many of us don't want to
+disobey the law, because copyright is an indiscriminate weapon that
+cuts both ways.  We prefer therefore to beat the hoarders at their own
+game. This means that we can not use, modify or distribute programs
+that are not distributed with a copyright notice and appropriate
+permissions, because the default status of such programs is that _no
+permissions are granted whatsoever_.  If you write a program that you
+want to share with other people, then please apply the terms of the GPL
+to the copies that you distribute, so that your friends can use, modify
+and share the program with their friends, without breaking any laws and
+to protect your contribution to our community from the hoarders. Please
+do not violate copyright law.  Instead, say no to proprietary software
+and use free software on the free GNU/Linux operating system.
 
 
-File: tutorial.info,  Node: Hello world with an attitude,  Next: Tracking version numbers,  Prev: Organizing your project in subdirectories,  Up: Introduction to the GNU build system
+File: tutorial.info,  Node: Philosophical issues,  Prev: Legal issues with Free Software,  Up: Top
 
-Hello world with an attitude - How to do it with acmkdir
-========================================================
+Appendix B Philosophical issues
+*******************************
 
-   In the package autotoolset, we provide an utility called `acmkdir'
-that will automatically perform most of the required steps for you.
+The GNU development tools were written primarily to aid the development
+of "free software". The free software movement was born by important
+philosophical concerns, and it is these concerns that motivate many
+software developers to contribute their code to our community.  In this
+appendix we include a few articles written by Richard Stallman that
+discuss these concerns. The text of these articles is copyrighted and
+included here with permission from the following terms:
 
-   With the package installed in your system, run `acmkdir' with the
-last argument equal to the directory name you want to create. The
-script will ask you some questions as follows:
+   *Copying Notice*
+     Copyright (C) 1998 Free Software Foundation Inc
+     59 Temple Place, Suite 330, Boston, MA 02111, USA
+     Verbatim copying and distribution is permitted in any medium,
+     provided this notice is preserved.
 
-     % acmkdir -t traditional hello3
-     Ready to create a new distribution skeleton directory.
-     The current working directory is:
-      --> /home/mroberto/programs/autotoolset
-     If you make a mistake and need to abort, press ctrl-C.
-     
-     Name of distribution: hello
-     Your full name:       Marcelo Roberto Jimenez
-     Your email address:   mroberto@nospan.cetuc.puc-rio.br
-     
-     Do you want to proceed? (y/n) y
-     + Mode is traditional
-     + Making directory hello3
-     + Making src directory
-     + Making doc directory
-     + Making m4 directory
-     + Making config directory
-     + Making default text files
-     + Making INSTALL file link
-     + Running reconf
-     - aclocal.
-     - autoconf.
-     - autoheader.
-     - automake.
-     configure.ac: installing `config/install-sh'
-     configure.ac: installing `config/mkinstalldirs'
-     configure.ac: installing `config/missing'
-     Makefile.am: installing `./INSTALL'
-     Makefile.am: installing `./COPYING'
-     
-     Distribution directory is ready.
-     Please make sure to keep the files AUTHORS, NEWS, README, THANKS up to
-     date before cutting a distribution.
-
-   Now create the file `hello.c' in the directory `src', using your
-favorite text editor, e.g. `emacs'. Also edit `src/Makefile.am' to
-include the lines
-     bin_PROGRAMS = hello
-     hello_SOURCES = hello.c
-   and run `automake -a' to create the file `config/depmod'.  Now the
-project is ready and you can run `./configure' and `make'.
-
-     % cd hello3/src
-     % emacs hello.c
-     % emacs Makefile.am
-     % cd ..
-     % automake -a
-     src/Makefile.am: installing `config/depcomp'
-     % ./configure
-     checking for a BSD-compatible install... /usr/bin/install -c
-     checking whether build environment is sane... yes
-     checking for gawk... gawk
-     checking whether make sets $(MAKE)... yes
-     checking for gcc... gcc
-     checking for C compiler default output... a.out
-     checking whether the C compiler works... yes
-     checking whether we are cross compiling... no
-     checking for suffix of executables...
-     checking for suffix of object files... o
-     checking whether we are using the GNU C compiler... yes
-     checking whether gcc accepts -g... yes
-     checking for gcc option to accept ANSI C... none needed
-     checking for style of include used by make... GNU
-     checking dependency style of gcc... gcc3
-     checking for a BSD-compatible install... /usr/bin/install -c
-     checking how to run the C preprocessor... gcc -E
-     checking for egrep... grep -E
-     checking for AIX... no
-     checking for strerror in -lcposix... no
-     checking for ANSI C header files... yes
-     checking for sys/types.h... yes
-     checking for sys/stat.h... yes
-     checking for stdlib.h... yes
-     checking for string.h... yes
-     checking for memory.h... yes
-     checking for strings.h... yes
-     checking for inttypes.h... yes
-     checking for stdint.h... yes
-     checking for unistd.h... yes
-     checking minix/config.h usability... no
-     checking minix/config.h presence... no
-     checking for minix/config.h... no
-     checking for ANSI C header files... (cached) yes
-     checking for ranlib... ranlib
-     configure: creating ./config.status
-     config.status: creating Makefile
-     config.status: creating README
-     config.status: creating doc/Makefile
-     config.status: creating m4/Makefile
-     config.status: creating src/Makefile
-     config.status: creating config.h
-     config.status: executing depfiles commands
-     % make
-     make  all-recursive
-     make[1]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
-     Making all in m4
-     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/m4'
-     make[2]: Nothing to be done for `all'.
-     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/m4'
-     Making all in src
-     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/src'
-     source='hello.c' object='hello.o' libtool=no \
-     depfile='.deps/hello.Po' tmpdepfile='.deps/hello.TPo' \
-     depmode=gcc3 /bin/sh ../config/depcomp \
-     gcc -DHAVE_CONFIG_H -I. -I. -I..     -g -O2 -c `test -f 'hello.c' || echo './'`hello.c
-     gcc  -g -O2   -o hello  hello.o
-     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/src'
-     Making all in doc
-     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3/doc'
-     make[2]: Nothing to be done for `all'.
-     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3/doc'
-     make[2]: Entering directory `/home/mroberto/programs/autotoolset/hello3'
-     make[2]: Nothing to be done for `all-am'.
-     make[2]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
-     make[1]: Leaving directory `/home/mroberto/programs/autotoolset/hello3'
-
-
-File: tutorial.info,  Node: Tracking version numbers,  Prev: Hello world with an attitude,  Up: Introduction to the GNU build system
-
-Tracking version numbers
-========================
-
-   Common sense requires that you identify the various releases of your
-software package with a _version number_. If you use the GNU build
-system, then you indicate the name of the package and the version
-number in `configure.ac' in the line that invokes the `AC_INIT' macro.
-In the hello world example (*note Hello world example::) we used the
-following line to set the version number equal to 1.0:
-
-     AC_INIT([Hello Program],[1.0],
-             [Author Of The Program <aotp@zxcv.com>],
-             [hello])
-
-You must increase your version number every time you publically release
-a new version of your program. Just before the release, it is a very
-good idea to update your `ChangeLog' and note the release of a new
-version. This way, when someone inspects your `ChangeLog', person will
-be able to determine what changes happened between two specific
-versions.  We suggest that when you are about to make a release, that
-you use
-
-     % make distcheck
-
-to build a distribution and apply the test suite to validate it. Once
-you get this to work, change your version number in `configure.ac',
-record an entry in `ChangeLog' saying that you are cutting the new
-version, and without making any other changes do
-
-     % make dist
-
-to rebuild the distribution without having to wait for the test suite to
-run all over again.
-
-   Most packages declare their version with two integers: a "major
-number" and a "minor number" that are separated by a dot in the middle.
-In our example above, the major number is 0 and the minor number is 1.
-The minor number should be updated when you release a version that
-contains new features and improvements over the old version.  The major
-number should be updated when the incremental improvements bring your
-program into a new level of maturity and stability. Some of your users
-may not want to follow every release that comes out, but they would
-like to upgrade when there's a significant amount of features to warrant
-such an upgrade. You should increase the major number when, in your
-judgement, you believe that it is time for these users to upgrade along
-with everyone else.
-
-   When beginning a new project, you should start counting your major
-number from 0, and your minor number from 1. Please exercise good
-judgement on when to increment your major number to 1. In general
-versions 0.x mean that the software is still under development and may
-not be stable. When you release version 1.0, you are telling people
-that your software has developed to the point that you recommend it for
-general use. In some cases, releasing version 2.0 means that your
-software has significantly _matured_ from user feedback.
-
-   Sometimes, it is useful to use a third integer for writing version
-numbers for "unofficial" releases.  This third integer is usually used
-with bleeding-edge "prereleases" of the software that contain the most
-recent bug fixes and features but are not as well tested and reviewed
-as the most recent official release. Possible version successions can
-look like:
-
-     1.0, 1.1, 1.2, 1.2.1, 1.2.2, 1.2.3, 1.3, ...
-
-Please use only two integers for official releases so that it is easy
-to distinguish them from prereleases.
-
-
-File: tutorial.info,  Node: Writing Good Programs,  Next: Using GNU Emacs,  Prev: Introduction to the GNU build system,  Up: Top
-
-Writing Good Programs
-*********************
+   All of these articles, and others are distributed on the web at:
+`http://www.gnu.org/philosophy/index.html'
 
 * Menu:
 
-* Why good code is important::
-* Choosing a good programming language::
-* Developing libraries::
-* Developing applications::
-* Free software is good software::
-* Invoking the gpl utility::
-* Inserting notices with Emacs::
+* Why software should not have owners::
+* Why free software needs free documentation::
+* Copyleft; Pragmatic Idealism::
+* The X Windows Trap::
+* Categories of software::
+* Confusing words::
 
 
-File: tutorial.info,  Node: Why good code is important,  Next: Choosing a good programming language,  Prev: Writing Good Programs,  Up: Writing Good Programs
+File: tutorial.info,  Node: Why software should not have owners,  Next: Why free software needs free documentation,  Prev: Philosophical issues,  Up: Philosophical issues
 
-Why good code is important
+B.1 Why software should not have owners
+=======================================
+
+Digital information technology contributes to the world by making it
+easier to copy and modify information. Computers promise to make this
+easier for all of us.
+
+   Not everyone wants it to be easier. The system of copyright gives
+software programs "owners", most of whom aim to withhold software's
+potential benefit from the rest of the public.  They would like to be
+the only ones who can copy and modify the software that we use.
+
+   The copyright system grew up with printing--a technology for mass
+production copying. Copyright fit in well with this technology because
+it restricted only the mass producers of copies. It did not take
+freedom away from readers of books. An ordinary reader, who did not own
+a printing press, could copy books only with pen and ink, and few
+readers were sued for that.
+
+   Digital technology is more flexible than the printing press: when
+information has digital form, you can easily copy it to share it with
+others. This very flexibility makes a bad fit with a system like
+copyright. That's the reason for the increasingly nasty and draconian
+measures now used to enforce software copyright.  Consider these four
+practices of the Software Publishers Association (SPA):
+
+   * Massive propaganda saying it is wrong to disobey the owners to
+     help your friend.
+
+   * Solicitation for stool pigeons to inform on their coworkers and
+     colleagues.
+
+   * Raids (with police help) on offices and schools, in which people
+     are told they must prove they are innocent of illegal copying.
+
+   * Prosecution (by the US government, at the SPA's request) of people
+     such as MIT's David LaMacchia, not for copying software (he is not
+     accused of copying any), but merely for leaving copying facilities
+     unguarded and failing to censor their use.
+
+   All four practices resemble those used in the former Soviet Union,
+where every copying machine had a guard to prevent forbidden copying,
+and where individuals had to copy information secretly and pass it from
+hand to hand as "samizdat". There is of course a difference: the motive
+for information control in the Soviet Union was political; in the US
+the motive is profit. But it is the actions that affect us, not the
+motive. Any attempt to block the sharing of information, no matter why,
+leads to the same methods and the same harshness.
+
+   Owners make several kinds of arguments for giving them the power to
+control how we use information:
+   * *Name calling*: Owners use smear words such as "piracy" and
+     "theft", as well as expert terminology such as "intellectual
+     property" and "damage", to suggest a certain line of thinking to
+     the public--a simplistic analogy between programs and physical
+     objects.
+
+     Our ideas and intuitions about property for material objects are
+     about whether it is right to _take an object away_ from someone
+     else. They don't directly apply to _making a copy_ of something.
+     But the owners ask us to apply them anyway.
+
+   * *Exaggeration*: Owners say that they suffer "harm" or "economic
+     loss" when users copy programs themselves. But the copying has no
+     direct effect on the owner, and it harms no one. The owner can
+     lose only if the person who made the copy would otherwise have
+     paid for one from the owner.
+
+     A little thought shows that most such people would not have bought
+     copies. Yet the owners compute their "losses" as if each and every
+     one would have bought a copy. That is exaggeration--to put it
+     kindly.
+
+   * *The law*: Owners often describe the current state of the law, and
+     the harsh penalties they can threaten us with. Implicit in this
+     approach is the suggestion that today's law reflects an
+     unquestionable view of morality--yet at the same time, we are
+     urged to regard these penalties as facts of nature that can't be
+     blamed on anyone.
+
+     This line of persuasion isn't designed to stand up to critical
+     thinking; it's intended to reinforce a habitual mental pathway.
+
+     It's elementary that laws don't decide right and wrong.  Every
+     American should know that, forty years ago, it was against the law
+     in many states for a black person to sit in the front of a bus;
+     but only racists would say sitting there was wrong.
+
+   * *Natural rights*: Authors often claim a special connection with
+     programs they have written, and go on to assert that, as a result,
+     their desires and interests concerning the program simply outweigh
+     those of anyone else--or even those of the whole rest of the
+     world. (Typically companies, not authors, hold the copyrights on
+     software, but we are expected to ignore this discrepancy.)
+
+     To those who propose this as an ethical axiom--the author is more
+     important than you--I can only say that I, a notable software
+     author myself, call it bunk.
+
+     But people in general are only likely to feel any sympathy with
+     the natural rights claims for two reasons.
+
+     One reason is an overstretched analogy with material objects. When
+     I cook spaghetti, I do object if someone else eats it, because
+     then I cannot eat it. His action hurts me exactly as much as it
+     benefits him; only one of us can eat the spaghetti, so the
+     question is, which? The smallest distinction between us is enough
+     to tip the ethical balance.
+
+     But whether you run or change a program I wrote affects you
+     directly and me only indirectly. Whether you give a copy to your
+     friend affects you and your friend much more than it affects me. I
+     shouldn't have the power to tell you not to do these things. No
+     one should.
+
+     The second reason is that people have been told that natural
+     rights for authors is the accepted and unquestioned tradition of
+     our society.
+
+     As a matter of history, the opposite is true. The idea of natural
+     rights of authors was proposed and decisively rejected when the US
+     Constitution was drawn up. That's why the Constitution only
+     permits a system of copyright and does not require one; that's why
+     it says that copyright must be temporary. It also states that the
+     purpose of copyright is to promote progress--not to reward
+     authors. Copyright does reward authors somewhat, and publishers
+     more, but that is intended as a means of modifying their behavior.
+
+     The real established tradition of our society is that copyright
+     cuts into the natural rights of the public--and that this can only
+     be justified for the public's sake.
+
+   * *Economics* The final argument made for having owners of software
+     is that this leads to production of more software.
+
+     Unlike the others, this argument at least takes a legitimate
+     approach to the subject. It is based on a valid goal--satisfying
+     the users of software. And it is empirically clear that people
+     will produce more of something if they are well paid for doing so.
+
+     But the economic argument has a flaw: it is based on the
+     assumption that the difference is only a matter of how much money
+     we have to pay. It assumes that "production of software" is what
+     we want, whether the software has owners or not.
+
+     People readily accept this assumption because it accords with our
+     experiences with material objects.  Consider a sandwich, for
+     instance. You might well be able to get an equivalent sandwich
+     either free or for a price. If so, the amount you pay is the only
+     difference.  Whether or not you have to buy it, the sandwich has
+     the same taste, the same nutritional value, and in either case you
+     can only eat it once. Whether you get the sandwich from an owner
+     or not cannot directly affect anything but the amount of money you
+     have afterwards.
+
+     This is true for any kind of material object--whether or not it
+     has an owner does not directly affect what it is, or what you can
+     do with it if you acquire it.
+
+     But if a program has an owner, this very much affects what it is,
+     and what you can do with a copy if you buy one. The difference is
+     not just a matter of money. The system of owners of software
+     encourages software owners to produce something--but not what
+     society really needs. And it causes intangible ethical pollution
+     that affects us all.
+
+     What does society need? It needs information that is truly
+     available to its citizens--for example, programs that people can
+     read, fix, adapt, and improve, not just operate. But what software
+     owners typically deliver is a black box that we can't study or
+     change.
+
+     Society also needs freedom. When a program has an owner, the users
+     lose freedom to control part of their own lives.
+
+     And above all society needs to encourage the spirit of voluntary
+     cooperation in its citizens. When software owners tell us that
+     helping our neighbors in a natural way is "piracy", they pollute
+     our society's civic spirit.
+
+     This is why we say that free software is a matter of freedom, not
+     price.
+
+     The economic argument for owners is erroneous, but the economic
+     issue is real. Some people write useful software for the pleasure
+     of writing it or for admiration and love; but if we want more
+     software than those people write, we need to raise funds.
+
+     For ten years now, free software developers have tried various
+     methods of finding funds, with some success.  There's no need to
+     make anyone rich; the median US family income, around $35k, proves
+     to be enough incentive for many jobs that are less satisfying than
+     programming.
+
+     For years, until a fellowship made it unnecessary, I made a living
+     from custom enhancements of the free software I had written. Each
+     enhancement was added to the standard released version and thus
+     eventually became available to the general public. Clients paid me
+     so that I would work on the enhancements they wanted, rather than
+     on the features I would otherwise have considered highest priority.
+
+     The Free Software Foundation (FSF), a tax-exempt charity for free
+     software development, raises funds by selling GNU CD-ROMs,
+     T-shirts, manuals, and deluxe distributions, (all of which users
+     are free to copy and change), as well as from donations. It now
+     has a staff of five programmers, plus three employees who handle
+     mail orders.
+
+     Some free software developers make money by selling support
+     services. Cygnus Support, with around 50 employees [when this
+     article was written], estimates that about 15 per cent of its
+     staff activity is free software development--a respectable
+     percentage for a software company.
+
+     Companies including Intel, Motorola, Texas Instruments and Analog
+     Devices have combined to fund the continued development of the
+     free GNU compiler for the language C. Meanwhile, the GNU compiler
+     for the Ada language is being funded by the US Air Force, which
+     believes this is the most cost-effective way to get a high quality
+     compiler. [Air Force funding ended some time ago; the GNU Ada
+     Compiler is now in service, and its maintenance is funded
+     commercially.]
+
+     All these examples are small; the free software movement is still
+     small, and still young. But the example of listener-supported
+     radio in this country [the US] shows it's possible to support a
+     large activity without forcing each user to pay.
+
+   As a computer user today, you may find yourself using a proprietary
+program. If your friend asks to make a copy, it would be wrong to
+refuse. Cooperation is more important than copyright. But underground,
+closet cooperation does not make for a good society. A person should
+aspire to live an upright life openly with pride, and this means saying
+"No" to proprietary software.
+
+   You deserve to be able to cooperate openly and freely with other
+people who use software. You deserve to be able to learn how the
+software works, and to teach your students with it. You deserve to be
+able to hire your favorite programmer to fix it when it breaks.
+
+   You deserve free software.
+
+
+File: tutorial.info,  Node: Why free software needs free documentation,  Next: Copyleft; Pragmatic Idealism,  Prev: Why software should not have owners,  Up: Philosophical issues
+
+B.2 Why free software needs free documentation
+==============================================
+
+The biggest deficiency in free operating systems is not in the
+software-it is the lack of good free manuals that we can include in
+these systems. Many of our most important programs do not come with
+full manuals. Documentation is an essential part of any software
+package; when an important free software package does not come with a
+free manual, that is a major gap. We have many such gaps today.
+
+   Once upon a time, many years ago, I thought I would learn Perl. I
+got a copy of a free manual, but I found it hard to read. When I asked
+Perl users about alternatives, they told me that there were better
+introductory manuals-but those were not free.
+
+   Why was this? The authors of the good manuals had written them for
+O'Reilly Associates, which published them with restrictive terms-no
+copying, no modification, source files not available-which exclude them
+from the free software community.
+
+   That wasn't the first time this sort of thing has happened, and (to
+our community's great loss) it was far from the last. Proprietary manual
+publishers have enticed a great many authors to restrict their manuals
+since then. Many times I have heard a GNU user eagerly tell me about a
+manual that he is writing, with which he expects to help the GNU
+project-and then had my hopes dashed, as he proceeded to explain that
+he had signed a contract with a publisher that would restrict it so that
+we cannot use it.
+
+   Given that writing good English is a rare skill among programmers, we
+can ill afford to lose manuals this way.
+
+   Free documentation, like free software, is a matter of freedom, not
+price.  The problem with these manuals was not that O'Reilly Associates
+charged a price for printed copies-that in itself is fine. (The Free
+Software Foundation sells printed copies of free GNU manuals, too.)
+But GNU manuals are available in source code form, while these manuals
+are available only on paper. GNU manuals come with permission to copy
+and modify; the Perl manuals do not. These restrictions are the
+problems.
+
+   The criterion for a free manual is pretty much the same as for free
+software: it is a matter of giving all users certain freedoms.
+Redistribution (including commercial redistribution) must be permitted,
+so that the manual can accompany every copy of the program, on-line or
+on paper. Permission for modification is crucial too.
+
+   As a general rule, I don't believe that it is essential for people
+to have permission to modify all sorts of articles and books. The
+issues for writings are not necessarily the same as those for software.
+For example, I don't think you or I are obliged to give permission to
+modify articles like this one, which describe our actions and our views.
+
+   But there is a particular reason why the freedom to modify is
+crucial for documentation for free software. When people exercise their
+right to modify the software, and add or change its features, if they
+are conscientious they will change the manual too-so they can provide
+accurate and usable documentation with the modified program. A manual
+which forbids programmers to be conscientious and finish the job, or
+more precisely requires them to write a new manual from scratch if they
+change the program, does not fill our community's needs.
+
+   While a blanket prohibition on modification is unacceptable, some
+kinds of limits on the method of modification pose no problem. For
+example, requirements to preserve the original author's copyright
+notice, the distribution terms, or the list of authors, are ok. It is
+also no problem to require modified versions to include notice that
+they were modified, even to have entire sections that may not be
+deleted or changed, as long as these sections deal with nontechnical
+topics. (Some GNU manuals have them.)
+
+   These kinds of restrictions are not a problem because, as a practical
+matter, they don't stop the conscientious programmer from adapting the
+manual to fit the modified program. In other words, they don't block the
+free software community from doing its thing with the program and the
+manual together.
+
+   However, it must be possible to modify all the technical content of
+the manual; otherwise, the restrictions do block the community, the
+manual is not free, and so we need another manual.
+
+   Unfortunately, it is often hard to find someone to write another
+manual when a proprietary manual exists. The obstacle is that many
+users think that a proprietary manual is good enough-so they don't see
+the need to write a free manual. They do not see that the free
+operating system has a gap that needs filling.
+
+   Why do users think that proprietary manuals are good enough? Some
+have not considered the issue. I hope this article will do something to
+change that.
+
+   Other users consider proprietary manuals acceptable for the same
+reason so many people consider proprietary software acceptable: they
+judge in purely practical terms, not using freedom as a criterion. These
+people are entitled to their opinions, but since those opinions spring
+from values which do not include freedom, they are no guide for those
+of us who do value freedom.
+
+   Please spread the word about this issue. We continue to lose manuals
+to proprietary publishing. If we spread the word that proprietary
+manuals are not sufficient, perhaps the next person who wants to help
+GNU by writing documentation will realize, before it is too late, that
+he must above all make it free.
+
+   We can also encourage commercial publishers to sell free, copylefted
+manuals instead of proprietary ones. One way you can help this is to
+check the distribution terms of a manual before you buy it, and prefer
+copylefted manuals to non-copylefted ones.
+
+
+File: tutorial.info,  Node: Copyleft; Pragmatic Idealism,  Next: The X Windows Trap,  Prev: Why free software needs free documentation,  Up: Philosophical issues
+
+B.3 Copyleft; Pragmatic Idealism
+================================
+
+Every decision a person makes stems from the person's values and goals.
+People can have many different goals and values; fame, profit, love,
+survival, fun, and freedom, are just some of the goals that a good
+person might have.  When the goal is to help others as well as oneself,
+we call that idealism.
+
+   My work on free software is motivated by an idealistic goal:
+spreading freedom and cooperation.  I want to encourage free software
+to spread, replacing proprietary software which forbids cooperation,
+and thus make our society better.
+
+   That's the basic reason why the GNU General Public License is written
+the way it is-as a copyleft.  All code added to a GPL-covered program
+must be free software, even if it is put in a separate file.  I make my
+code available for use in free software, and not for use in proprietary
+software, in order to encourage other people who write software to make
+it free as well.  I figure that since proprietary software developers
+use copyright to stop us from sharing, we cooperators can use copyright
+to give other cooperators an advantage of their own: they can use our
+code.
+
+   Not everyone who uses the GNU GPL has this goal.  Many years ago, a
+friend of mine was asked to rerelease a copylefted program under
+non-copyleft terms, and he responded more or less like this:
+     Sometimes I work on free software, and sometimes I work on
+     proprietary software-but when I work on proprietary software, I
+     expect to get _paid_.
+   He was willing to share his work with a community that shares
+software, but saw no reason to give a handout to a business.  His goal
+was different from mine, but he decided that the GNU GPL was useful for
+his goal too.
+
+   If you want to accomplish something in the world, idealism is not
+enough-you need to choose a method which works to achieve the goal.  In
+other words, you need to be "pragmatic." Is the GPL pragmatic?  Let's
+look at its results.
+
+   Consider GNU C++.  Why do we have a free C++ compiler?  Only because
+the GNU GPL said it had to be free.  GNU C++ was developed by an
+industry consortium, MCC, starting from the GNU C compiler.  MCC
+normally makes its work as proprietary as can be.  But they made the
+C++ front end free software, because the GNU GPL said that was the only
+way they could release it.  The C++ front end included many new files,
+but since they were meant to be linked with GCC, the GPL did applied to
+them.  The benefit to our community is evident.
+
+   Consider GNU Objective C.  NeXT initially wanted to make this front
+end proprietary; they proposed to release it as .o files, and let users
+link them with the rest of GCC, thinking this might be a way around the
+GPL's requirements.  But our lawyer said that this would not evade the
+requirements, that it was not allowed.  And so they made the Objective
+C front end free software.
+
+   Those examples happened years ago, but the GNU GPL continues to
+bring us more free software.
+
+   Many GNU libraries are covered by the GNU Library General Public
+License, but not all.  One GNU library which is covered by the ordinary
+GNU GPL is Readline, which implements command-line editing.  A month
+ago, I found out about a non-free program which was designed to use
+Readline, and told the developer this was not allowed.  He could have
+taken command-line editing out of the program, but what he actually did
+was rerelease it under the GPL.  Now it is free software.
+
+   The programmers who write improvements to GCC (or Emacs, or Bash, or
+Linux, or any GPL-covered program) are often employed by companies or
+universities.  When the programmer wants to return his improvements to
+the community, and see his code in the next release, the boss may say,
+"Hold on there-your code belongs to us!  We don't want to share it; we
+have decided to turn your improved version into a proprietary software
+product."
+
+   Here the GNU GPL comes to the rescue.  The programmer shows the boss
+that this proprietary software product would be copyright infringement,
+and the boss realizes that he has only two choices: release the new
+code as free software, or not at all.  Almost always he lets the
+programmer do as he intended all along, and the code goes into the next
+release.
+
+   The GNU GPL is not Mr. Nice Guy.  It says "no" to some of the things
+that people sometimes want to do.  There are users who say that this is
+a bad thing-that the GPL "excludes" some proprietary software
+developers who "need to be brought into the free software community".
+
+   But we are not excluding them from our community; they are choosing
+not to enter.  Their decision to make software proprietary is a
+decision to stay out of our community.  Being in our community means
+joining in cooperation with us; we cannot "bring them into our
+community" if they don't want to join.
+
+   What we _can_ do is offer them an inducement to join.  The GNU GPL is
+designed to make an inducement from our existing software: "If you will
+make your software free, you can use this code."  Of course, it won't
+win 'em all, but it wins some of the time.
+
+   Proprietary software development does not contribute to our
+community, but its developers often want handouts from us.  Free
+software users can offer free software developers strokes for the
+ego-recognition and gratitude-but it can be very tempting when a
+business tells you, "Just let us put your package in our proprietary
+program, and your program will be used by many thousands of people!"
+The temptation can be powerful, but in the long run we are all better
+off if we resist it.
+
+   The temptation and pressure are harder to recognize when they come
+indirectly, through free software organizations that have adopted a
+policy of catering to proprietary software.  The X Consortium (and its
+successor, the Open Group) offers an example: funded by companies that
+made proprietary software, they have strived for a decade to persuade
+programmers not to use copyleft.  Now that the Open Group has made
+X11R6.4 non-free software, those of us who resisted that pressure are
+glad that we did.
+
+   Pragmatically speaking, thinking about greater long-term goals will
+strengthen your will to resist this pressure.  If you focus your mind
+on the freedom and community that you can build by staying firm, you
+will find the strength to do it.  "Stand for something, or you will
+fall for nothing."
+
+   And if cynics ridicule freedom, ridicule community...if "hard nosed
+realists" say that profit is the only ideal...just ignore them, and use
+copyleft all the same.
+
+
+File: tutorial.info,  Node: The X Windows Trap,  Next: Categories of software,  Prev: Copyleft; Pragmatic Idealism,  Up: Philosophical issues
+
+B.4 The X Windows Trap
+======================
+
+To copyleft or not to copyleft?  That is one of the major controversies
+in the free software community.  The idea of copyleft is that we should
+fight fire with fire-that we should use copyright to make sure our code
+stays free.  The GNU GPL is one example of a copyleft license.
+
+   Some free software developers prefer non-copyleft distribution.
+Non-copyleft licenses such as the XFree86 and BSD licenses are based on
+the idea of never saying no to anyone-not even to someone who seeks to
+use your work as the basis for restricting other people.  Non-copyleft
+licensing does nothing wrong, but it misses the opportunity to actively
+protect our freedom to change and redistribute software.  For that, we
+need copyleft.
+
+   For many years, the X Consortium was the chief opponent of copyleft.
+It exerted both moral suasion and pressure to discourage free software
+developers from copylefting their programs.  It used moral suasion by
+suggesting that it is not nice to say no.  It used pressure through its
+rule that copylefted software could not be in the X Distribution.
+
+   Why did the X Consortium adopt this policy?  It had to do with their
+definition of success.  The X Consortium defined success as
+popularity-specifically, getting computer companies to use X Windows.
+This definition put the computer companies in the driver's seat.
+Whatever they wanted, the X Consortium had to help them get it.
+
+   Computer companies normally distribute proprietary software.  They
+wanted free software developers to donate their work for such use.  If
+they had asked for this directly, people would have laughed.  But the X
+Consortium, fronting for them, could present this request as an
+unselfish one.  "Join us in donating our work to proprietary software
+developers," they said, suggesting that this is a noble form of
+self-sacrifice.  "Join us in achieving popularity", they said,
+suggesting that it was not even a sacrifice.
+
+   But self-sacrifice is not the issue: tossing away the defenses of
+copyleft, which protect the freedom of everyone in the community, is
+sacrificing more than yourself.  Those who granted the X Consortium's
+request entrusted the community's future to the good will of the X
+Consortium.
+
+   This trust was misplaced.  In its last year, the X Consortium made a
+plan to restrict the forthcoming X11R6.4 release so that it will not be
+free software.  They decided to start saying no, not only to
+proprietary software developers, but to our community as well.
+
+   There is an irony here.  If you said yes when the X Consortium asked
+you not to use copyleft, you put the X Consortium in a position to
+license and restrict its version of your program, along with its own
+code.
+
+   Te X Consortium did not carry out this plan.  Instead it closed down
+and transferred X development to the Open Group, whose staff are now
+carrying out a similar plan.  To give them credit, when I asked them to
+release X11R6.4 under the GNU GPL in parallel with their planned
+restrictive license, they were willing to consider the idea.  (They
+were firmly against staying with the old X11 distribution terms.)
+Before they said yes or no to this proposal, it had already failed for
+another reason: the XFree86 group follows the X Consortium's old
+policy, and will not accept copylefted software.
+
+   Even if the X Consortium and the Open Group had never planned to
+restrict X, someone else could have done it.  Non-copylefted software
+is vulnerable from all directions; it lets anyone make a non-free
+version dominant, if he will invest sufficient resources to add some
+important feature using proprietary code.  Users who choose software
+based on technical characteristics, rather than on freedom, could
+easily be lured to the non-free version for short term convenience.
+
+   The X Consortium and Open Group can no longer exert moral suasion by
+saying that it is wrong to say no.  This will make it easier to decide
+to copyleft your X-related software.
+
+   When you work on the core of X, on programs such as the X server,
+Xlib, and Xt, there is a practical reason not to use copyleft.  The
+XFree86 group does an important job for the community in maintaining
+these programs, and the benefit of copylefting our changes would be
+less than the harm done by a fork in development.  So it is better to
+work with the XFree86 group and not copyleft our changes on these
+programs.  Likewise for utilities such as xset and xrdb, which are
+close to the core of X, and which do not need major improvements.  At
+least we know that the XFree86 group has a firm commitment to
+developing these programs as free software.
+
+   The issue is different for programs outside the core of X:
+applications, window managers, and additional libraries and widgets.
+There is no reason not to copyleft them, and we should copyleft them.
+
+   In case anyone feels the pressure exerted by the criteria for
+inclusion in X Distributions, the GNU project will undertake to
+publicize copylefted packages that work with X.  If you would like to
+copyleft something, and you worry that its omission from X
+Distributions will impede its popularity, please ask us to help.
+
+   At the same time, it is better if we do not feel too much need for
+popularity.  When a businessman tempts you with "more popularity", he
+may try to convince you that his use of your program is crucial to its
+success.  Don't believe it!  If your program is good, it will find many
+users anyway; you don't need to feel desperate for any particular
+users, and you will be stronger if you do not.  You can get an
+indescribable sense of joy and freedom by responding, "Take it or leave
+it-that's no skin off my back."  Often the businessman will turn around
+and accept the program with copyleft, once you call the bluff.
+
+   Friends, free software developers, don't repeat a mistake.  If we do
+not copyleft our software, we put its future at the mercy of anyone
+equipped with more resources than scruples.  With copyleft, we can
+defend freedom, not just for ourselves, but for our whole community.
+
+
+File: tutorial.info,  Node: Categories of software,  Next: Confusing words,  Prev: The X Windows Trap,  Up: Philosophical issues
+
+B.5 Categories of software
 ==========================
 
-   When you work on a software project, one of your short-term goals is
-to solve a problem at hand. If you are doing this because someone asked
-you to solve the problem, then all you need to do to look good in per
-eyes is to deliver a program that works. Nevetheless, regardless of how
-little person may appreciate this, doing just that is not good enough.
-Once you have code that gives the right answer to a specific set of
-problems, you will want to make improvements to it. As you make these
-improvements, you would like to have proof that your code's known
-reliability hasn't regressed. Also, tomorrow you will want to move on
-to a different set of related problems by repeating as little work as
-possible. Finally, one day you may want to pass the project on to
-someone else or recruit another developer to help you out with certain
-parts. You need to make it possible for the other person to get up to
-speed without reinventing your efforts.  To accomplish these equally
-important goals you need to write _good_ code.
+Here is a glossary of various categories of software that are often
+mentioned in discussions of free software. It explains which categories
+overlap or are part of other categories.
+
+   * *Free software*: Free software is software that comes with
+     permission for anyone to use, copy, and distribute, either
+     verbatim or with modifications, either gratis or for a fee. In
+     particular, this means that source code must be available. "If
+     it's not source, it's not software."
+
+     If a program is free, then it can potentially be included in a free
+     operating system such as GNU, or free GNU/Linux systems .
+
+     There are many different ways to make a program free--many
+     questions of detail, which could be decided in more than one way
+     and still make the program free. Some of the possible variations
+     are described below.
+
+     Free software is a matter of freedom, not price. But proprietary
+     software companies sometimes use the term "free software" to refer
+     to price. Sometimes they mean that you can obtain a binary copy at
+     no charge; sometimes they mean that a copy is included on a
+     computer that you are buying. This has nothing to do with what we
+     mean by free software in the GNU project.
+
+     Because of this potential confusion, when a software company says
+     its product is free software, always check the actual distribution
+     terms to see whether users really have all the freedoms that free
+     software implies. Sometimes it really is free software; sometimes
+     it isn't.
+
+     Many languages have two separate words for "free" as in freedom
+     and "free" as in zero price. For example, French has "libre" and
+     "gratuit". English has a word "gratis" that refers unambiguously
+     to price, but no common adjective that refers unambiguously to
+     freedom. This is unfortunate, because such a word would be useful
+     here.
+
+     Free software is often more reliable than non-free software.
+
+   * *Open Source software*: The term "open source" software is used by
+     some people to mean more or less the same thing as free software.
+
+   * *Public domain software*: Public domain software is software that
+     is not copyrighted. It is a special case of non-copylefted free
+     software, which means that some copies or modified versions may
+     not be free at all.
+
+     Sometimes people use the term "public domain" in a loose fashion
+     to mean "free" or "available gratis." However, "public domain" is
+     a legal term and means, precisely, "not copyrighted". For clarity,
+     we recommend using "public domain" for that meaning only, and
+     using other terms to convey the other meanings.
+
+   * *Copylefted software*: Copylefted software is free software whose
+     distribution terms do not let redistributors add any additional
+     restrictions when they redistribute or modify the software. This
+     means that every copy of the software, even if it has been
+     modified, must be free software.
+
+     In the GNU Project, we copyleft almost all the software we write,
+     because our goal is to give every user the freedoms implied by the
+     term "free software." See Copylefted for more explanation of how
+     copyleft works and why we use it.
+
+     Copyleft is a general concept; to actually copyleft a program, you
+     need to use a specific set of distribution terms. There are many
+     possible ways to write copyleft distribution terms.
+
+   * *Non-copylefted free software*: Non-copylefted free software comes
+     from the author with permission to redistribute and modify, and
+     also to add additional restrictions to it.
+
+     If a program is free but not copylefted, then some copies or
+     modified versions may not be free at all. A software company can
+     compile the program, with or without modifications, and distribute
+     the executable file as a proprietary software product.
+
+     The X Window System illustrates this. The X Consortium releases
+     X11 with distribution terms that make it non-copylefted free
+     software. If you wish, you can get a copy which has those
+     distribution terms and is free. However, there are non-free
+     versions as well, and there are popular workstations and PC
+     graphics boards for which non-free versions are the only ones that
+     work. If you are using this hardware, X11 is not free software for
+     you.
+
+   * *GPL-covered software*: The GNU GPL is one specific set of
+     distribution terms for copylefting a program. The GNU Project uses
+     it as the distribution terms for most GNU software.
+
+   * *The GNU system*: The GNU system is a complete free Unix-like
+     operating system.
+
+     A Unix-like operating system consists of many programs. We have
+     been accumulating components for this system since 1984; the first
+     test release of a "complete GNU system" was in 1996.  We hope that
+     in a year or so this system will be mature enough to recommend it
+     for ordinary users.
+
+     The GNU system includes all the GNU software, as well as many
+     other packages such as the X Window System and TeX which are not
+     GNU software.
+
+     Since the purpose of GNU is to be free, every single component in
+     the GNU system has to be free software. They don't all have to be
+     copylefted, however; any kind of free software is legally suitable
+     to include if it helps meet technical goals. We can and do use
+     non-copylefted free software such as the X Window System.
+
+   * *GNU software*: GNU software is software that is released under
+     the auspices of the GNU Project. Most GNU software is copylefted,
+     but not all; however, all GNU software must be free software.
+
+     Some GNU software is written by staff of the Free Software
+     Foundation, but most GNU software is contributed by volunteers.
+     Some contributed software is copyrighted by the Free Software
+     Foundation; some is copyrighted by the contributors who wrote it.
+
+   * *Semi-free software*: Semi-free software is software that is not
+     free, but comes with permission for individuals to use, copy,
+     distribute, and modify (including distribution of modified
+     versions) for non-profit purposes. PGP is an example of a
+     semi-free program.
+
+     Semi-free software is much better than proprietary software, but
+     it still poses problems, and we cannot use it in a free operating
+     system.
+
+     The restrictions of copyleft are designed to protect the essential
+     freedoms for all users. For us, the only justification for any
+     substantive restriction on using a program is to prevent other
+     people from adding other restrictions. Semi-free programs have
+     additional restrictions, motivated by purely selfish goals.
+
+     It is impossible to include semi-free software in a free operating
+     system. This is because the distribution terms for the operating
+     system as a whole are the conjunction of the distribution terms
+     for all the programs in it. Adding one semi-free program to the
+     system would make the system as a whole just semi-free. There are
+     two reasons we do not want that to happen:
+        * We believe that free software should be for
+          everyone-including businesses, not just schools and
+          hobbyists. We want to invite business to use the whole GNU
+          system, and therefore we must not include a semi-free program
+          in it.
+
+        * Commercial distribution of free operating systems, including
+          Linux-based GNU systems, is very important, and users
+          appreciate being able to buy commercial CD-ROM distributions.
+          Including one semi-free program in an operating system would
+          cut off commercial CD-ROM distribution for it.
+     The Free Software Foundation itself is non-commercial, and
+     therefore we would be legally permitted to use a semi-free program
+     "internally". But we don't do that, because that would undermine
+     our efforts to obtain a program which we could also include in GNU.
+
+     If there is a job that needs doing with software, then until we
+     have a free program to do the job, the GNU system has a gap.  We
+     have to tell volunteers, "We don't have a program yet to do this
+     job in GNU, so we hope you will write one." If we ourselves used a
+     semi-free program to do the job, that would undermine what we say;
+     it would take away the impetus (on us, and on others who might
+     listen to our views) to write a free replacement. So we don't do
+     that.
+
+   * *Proprietary software*: Proprietary software is software that is
+     not free or semi-free.  Its use, redistribution or modification is
+     prohibited, or requires you to ask for permission, or is
+     restricted so much that you effectively can't do it freely.
+
+     The Free Software Foundation follows the rule that we cannot
+     install any proprietary program on our computers except
+     temporarily for the specific purpose of writing a free replacement
+     for that very program. Aside from that, we feel there is no
+     possible excuse for installing a proprietary program.
+
+     For example, we felt justified in installing Unix on our computer
+     in the 1980s, because we were using it to write a free replacement
+     for Unix. Nowadays, since free operating systems are available,
+     the excuse is no longer applicable; we have eliminated all our
+     non-free operating systems, and any new computer we install must
+     run a completely free operating system.
+
+     We don't insist that users of GNU, or contributors to GNU, have to
+     live by this rule. It is a rule we made for ourselves. But we hope
+     you will decide to follow it too.
+
+   * *Freeware*: The term "freeware" has no clear accepted definition,
+     but it is commonly used for packages which permit redistribution
+     but not modification (and their source code is not available).
+     These packages are not free software, so please don't use
+     "freeware" to refer to free software.
+
+   * *Shareware*: Shareware is software which comes with permission for
+     people to redistribute copies, but says that anyone who continues
+     to use a copy is required to pay a license fee.
+
+     Shareware is not free software, or even semi-free. There are two
+     reasons it is not:
+        * For most shareware, source code is not available; thus you
+          cannot modiy the program at all.
+
+        * Shareware does not come with permission to make a copy and
+          install it without paying a license fee, not even for
+          individuals engaging in nonprofit activity. (In practice,
+          people often disregard the distribution terms and do this
+          anyway, but the terms don't permit it.)
+
+   * *Commercial Software*: Commercial software is software being
+     developed by a business which aims to make money from the use of
+     the software.  "Commercial" and "proprietary" are not the same
+     thing! Most commercial software is proprietary , but there is
+     commercial free software, and there is non-commercial non-free
+     software.
+
+     For example, GNU Ada is always distributed under the terms of the
+     GNU GPL, and every copy is free software; but its developers sell
+     support contracts. When their salesmen speak to prospective
+     customers, sometimes the customers say, "We would feel safer with
+     a commercial compiler." The salesmen reply, "GNU Ada is a
+     commercial compiler; it happens to be free software."
+
+     For the GNU Project, the emphasis is in the other order: the
+     important thing is that GNU Ada is free software; whether it is
+     commercial is not a crucial question. However, the additional
+     development of GNU Ada that results from the business that
+     supports it is definitely beneficial.
 
 
-File: tutorial.info,  Node: Choosing a good programming language,  Next: Developing libraries,  Prev: Why good code is important,  Up: Writing Good Programs
-
-Choosing a good programming language
-====================================
-
-   To write a good software, you must use the appropriate programming
-language and use it well. To make your software free, it should be
-possible to compile it with free tools on a free operating system.
-Therefore, you should avoid using programming languages that do not
-have a free compiler.
-
-   The C programming language is the native language of GNU, and the
-GNU coding standards encourage you to program in C. The main advantages
-of C are that it can be compiled with the system's native compiler,
-many people know C, and it is easy to learn. Nevertheless, C has
-weaknesses: it forces you to manually manage memory allocation, and any
-mistakes you might make can lead to very difficult bugs. Also C forces
-you to program at a low level. Sometimes it is desirable to program at
-a low level, but there are also cases where you want to build on a
-higher level.
-
-   For projects where you would like a higher-level _compiled_ language,
-the recommended choice is to use C++.  The GNU project distributes a
-free C++ compiler and nowadays most GNU systems that have a C compiler
-also have the free C++ compiler. The main advantage of C++ is that it
-will automatically manage dynamic memory allocation for you.  C++ also
-has a lot of powerful features that allow you to program at a higher
-level than C, bringing you closer to the algorithms and the concepts
-involved, and making it easier to write robust programs. At the same
-time, C++ does not hide low-level details from you and you have the
-freedom to do the same low-level hacks that you had in C, if you choose
-to.  In fact C++ is 99% backwards compatible with C and it is very easy
-to mix C and C++ code. Finally, C++ is an industry standard. As a
-result, it has been used to solve a variety of real-world problems and
-its specification has evolved for many years to make it a powerful and
-mature language that can tackle such problems effectively. The C++
-specification was frozen and became an ANSI standard in 1998.
-
-   One of the disadvantages of C++ is that C++ object files compiled by
-different C++ compilers can not be linked together.  In order to
-compile C++ to machine language, a lot of compilation issues need to be
-defered to the linking stage. Because object file formats are not
-traditionally sophisticated enough to handle these issues, C++
-compilers do various ugly kludges. The problem is that different
-compilers do these kludges differently, making object files accross
-compilers incompatible. This is not a terrible problem, since object
-files are incompatible accross different platforms anyways. It is only
-a problem when you want to use more than one compiler on the same
-platform.  Another disadvantage of C++ is that it is harder to
-interface a C++ library to another language, than it is to interface a
-C library. Finally not as many people know C++ as well as they know C,
-and C++ is a very extensive and difficult language to master.  However
-these disadvantages must be weighted against the advantages.  There is
-a price to using C++ but the price comes with a reward.
-
-   If you need a higher-level _interpreted_ language, then the
-recommended choice is to use Guile. Guile is the GNU variant of Scheme,
-a LISP-like programming language. Guile is an interpreted language, and
-you can write full programs in Guile, or use the Guile interpreter
-interactively.  Guile is compatible with the R4RS standard but provides
-a lot of GNU extensions. The GNU extensions are so extensive that it is
-possible to write entire applications in Guile. Most of the low-level
-facilities that are available in C, are also available in Guile.
-
-   What makes the Guile implementation of Scheme special is not the
-extensions themselves, but the fact that it it is very easy for any
-developer to add their own extensions to Guile, by implementing them in
-C.  By combining C and Guile you leverage the advantages of both
-compiled and interpreted languages.  Performance critical functionality
-can be implemented in C and higher-level software development can be
-done in Guile.  Also, because Guile is interpreted, when you make your
-C code available through an extended Guile interpreter, then the user
-can also use the functionality of that code interactively through the
-interpreter.
-
-   The idea of extensible interpreted languages is not new.  Other
-examples of extensible interpreted languages are Perl, Python and Tcl.
-What sets Guile apart from these languages is the elegance of Scheme.
-Scheme is the holy grail in the quest for a programming language that
-can be extended to support any programming paradigm by using the least
-amount of syntax. Scheme has natural support for both arbitrary
-precision integer arithmetic and floating point arithmetic. The
-simplicity of Scheme syntax, and the completeness of Guile, make it
-very easy to implement specialized scripting languages simply by
-translating them to Scheme. In Scheme algorithms and data are
-interchangable. As a result, it is easy to write Scheme programs that
-manipulate Scheme source code.  This makes Scheme an ideal language for
-writing programs that manipulate algorithms instead of data, such as
-programs that do symbolic algebra.  Because Scheme can manipulate its
-own source code, a Scheme program can save its state by writing Scheme
-source code into a file, and by parsing it later to load it back up
-again. This feature alone is one reason why engineers should use Guile
-to configure and drive numerical simulations.
-
-   Some people like to use Fortran 77.  This is in many ways a good
-language for developing the computational core of scientific
-applications. We do have free compilers for Fortran 77, so using it
-does not restrict our freedom.  (*note Fortran with Autoconf::) Also,
-Fortran 77 is an aggresively optimizable language, and this makes it
-very attractive to engineers that want to write code optimized for
-speed.  Unfortunately, Fortran 77 can not do well _anything_ except
-array-oriented numerical computations.  Managing input/output is
-unnecessarily difficult with Fortran, and there's even computational
-areas, such as infinite precision integer arithmetic and symbolic
-computation that are not supported.
-
-   There are many variants of Fortran like Fortran 90, and HPF.
-Fortran 90 attempts, quite miserably, to make Fortran 77 more like C++.
-HPF allows engineers to write numerical code that runs on parallel
-computers. These variants should be avoided for two reasons:
-  1. There are no free compilers for Fortran 90 or HPF.  If you happen
-     to use a proprietary operating system, you might as well make use
-     of proprietary compilers if they generate highly optimized code
-     and that is important to you.  Nevertheless, in order for your
-     software to be freed, it should be possible to compile it with
-     free tools on a free operating system.  Because it is possible to
-     make parallel computers using GNU/Linux (see the Beowulf project),
-     parallelized software can also be free.  Therefore both Fortran 90
-     and HPF should be avoided.
-
-  2. Another problem with these variants is that they are ad hoc
-     languages that have been invented to enable Fortran to do things
-     that it can not do by design. Eventually, when engineers will like
-     to do things that Fortran 90 can't do either, it will be necessary
-     to extend Fortran again, rewrite the compilers and produce yet
-     another variant. What engineers need is a programming language
-     that has the ability to self extend itself by writing software in
-     the same programming language. The C++ programming language can do
-     this without loss of performance. The departmentalization of
-     disciplines in academia has made it very difficult for such a
-     project to take off. Despite that, there is ongoing research in
-     this area.  (for example, see the Blitz++ project)
-
-It is almost impossible to write good programs entirely in Fortran, so
-please use Fortran only for the numerical core of your application and
-do the bookeeping tasks, including input/output using a more appropriate
-language.
-
-   If you have written a program entirely in Fortran, please do not ask
-anyone else to maintain your code, unless person is like you and also
-knows only Fortran. If Fortran is the only language that you know, then
-please learn at least C and C++ and use Fortran only when necessary.
-Please do not hold the opinion that contributions in science and
-engineering are "true" contributions and software development is just a
-"tool".  This bigotted attitude is behind the thousands of lines of
-ugly unmaintainable code that goes around in many places. Good software
-development can be an important contribution in its own right, and
-regardless of what your goals are, please appreciate it and encourage
-it. To maximize the benefits of good software, please make your
-software free.  (*FIXME: Crossreference copyright section in this
-chapter*)
-
-
-File: tutorial.info,  Node: Developing libraries,  Next: Developing applications,  Prev: Choosing a good programming language,  Up: Writing Good Programs
-
-Developing libraries
-====================
-
-   The key to better code is to focus away from developing monolithic
-throw-away hacks that do only one job, and focus on developing
-"libraries" (*FIXME: crossreference*). Break down the original problem
-to parts, and the parts to smaller parts, until you get down to simple
-subproblems that can be easily tested, and from which you can construct
-solutions for both the original problem and future variants. Every
-library that you write is a legacy that you can share with other
-developers, that want to solve similar problems. Each library will
-allow these other developers to focus on their problem and not have to
-reinvent the parts that are common with your work from scratch. You
-should definetely make libraries out of subproblems that are likely to
-be broadly useful.  Please be very liberal in what you consider
-"broadly useful".  Please program in a defensive way that renders
-reusable as much code as possible, regardless of whether or not you
-plan to reuse it in the near future.  The final application should
-merely have to assemble all the libraries together and make their
-functionality accessible to the user through a good interface.
-
-   It is very important for each of your libraries to have a complete
-"test suite". The purpose of the test suite is to detect bugs in the
-library and to prove to you or convince you, the developer, that the
-library works. A test suite is composed of a collection of test programs
-that link with your libraries and experiment with the features provided
-by the library. These test programs should return with
-     exit(0);
-
-if they do not detect anything wrong with the library and with
-     exit(1);
-
-if they detect problems. The test programs should not be installed with
-the rest of the package. They are meant to be run after your software
-is compiled and before it is installed. Therefore, they should be
-written so that they can run using the compiled but uninstalled files
-of the library.  Test programs should not output messages by default.
-They should run completely quietly and communicate with the environment
-in a yes or no fashion using the `exit' code. However, it is useful for
-test programs to output debugging information when they fail during
-development. Statements that output such information should be
-surrounded by conditional directives like this:
-     #if INSPECT_ERRORS
-      printf("Division by zero: %d / %d\n",a,b);
-     #endif
-
-This way it becomes easy to switch them on or off upon demand. The
-prefered way to manipulate a macro like this `INSPECT_ERRORS' is by
-adding a switch to your `configure' script. You can do this by adding
-the following lines to `configure.in':
-     AC_ARG_WITH(inspect,
-       [  --with-inspect           Inspect test suite errors],
-       [ AC_DEFINE(INSPECT_ERRORS, 1, "Inspect test suite errors")],
-       [ AC_DEFINE(INSPECT_ERRORS, 0, "Inspect test suite errors")])
-
-After the library is debugged, the debug statements should not be
-removed. If a future version of the library regresses and an old test
-begins to fail again, it will be useful to be able to reactivate the
-same error messages that were useful in debugging the test when it was
-first put together, and it may be necessary to add a few new ones.
-
-   The best time to write each test program is _as soon as it is
-possible!_.  You should not be lazy, and you should not just keep
-throwing in code after code after code. The minute there is enough code
-in there to put together some kind of test program, _just do it!_ When
-you write new code, it is easy to think that you are producing work
-with every new line of code that is written. The reality is that you
-_know_ you have produced new work everytime you write working a test
-program for new features, and _not a minute before_.  Another time when
-you should definetely write a test program is when you find a bug while
-ordinarily using the library. Then, write a test program that triggers
-the bug, fix the bug, and keep the test in your test suite.  This way,
-if a future modification reintroduces the same bug it will be detected.
-
-   Please document your library as you go. The best time to update your
-documentation is immediately after you get new test programs checking
-out new futures. You might feel that you are too busy to write
-documentation, but the truth of the matter is that you will _always_ be
-too busy.  In fact, if you are a busy person, you are likely to have
-many other obligations bugging you around for your attention. There may
-be times that you have to stay away from a project for a large amount
-of time.  If you have consistently been maintaining documentation, it
-will help you refocus on your project even after many months of absense.
-
-
-File: tutorial.info,  Node: Developing applications,  Next: Free software is good software,  Prev: Developing libraries,  Up: Writing Good Programs
-
-Developing applications
-=======================
-
-   "Applications" are complete executable programs that can be run by
-the end-user. With library-oriented development the actual functionality
-is developed by writing libraries and debugged by developing test-suites
-for each library. With command-line oriented applications, the
-application source code parses the arguments that are passed to it by
-the user, and calls up the right functions in the library to carry out
-the user's requests. With GUI (1) applications, the application source
-code creates the "widgets" that compose the interface, binds them to
-"actions", and then enters an event loop. Each action is implemented in
-terms of the functionality provided by the appropriate library.
-
-   It should be possible to implement applications by using relatively
-few application-specific source files, since most of the functionality
-is actually done in libraries. In some cases, the application is simple
-enough that it would be an overkill to package its functionality as a
-library. Nevertheless, in such cases please separate the source code
-that handles actual functionality from the source code that handles the
-user interface. Also, please always separate the code that handles
-input/output with the code that does actual computations.  If these
-aspects of your source code are sufficiently separated then you make it
-easier for other people to reuse parts of your code in their
-applications.  You also make it easier of yourself to switch to
-library-oriented development when your application grows and is no
-longer "simple enough".
-
-   Library-oriented development allows you to write good and robust
-applications.  In return it requires discipline. Sometimes you may need
-to add experimental functionality that is not available through your
-libraries.  The right thing to do is to extend the appropriate library.
-The easy thing to do is to implement it as part of your
-application-specific source code. If the feature is experimental and
-undergoing many changes, it may be best to go with the easy approach at
-first. Still, when the feature matures, please migrate it to the
-appropriate library, document it, and take it out of the application
-source code. What we mean by discipline is doing these migrations, when
-the time is right, despite pressures from "real life", such as
-deadlines, pointy-haired bosses, and nuclear terrorism. A rule of thumb
-for deciding when to migrate code to a library is when you find
-yourself cut-n-pasting chunks of code from application to application.
-If you do not do the right thing, your code will become increasingly
-harder to debug, harder to maintain, and less reliable.
-
-   Applications should also be documented, especially the ones that are
-command-line oriented. Application documentation should be thorough in
-explaining to the user all the things that he needs to know to use the
-application effectively and should be distributed separately from the
-application itself. Nevertheless, applications should recognize the
-`--help' switch and output a synopsis of how the application is used.
-Applications should also recognize the `--version' switch and state
-their version number. The easiest way to make applications understand
-these two switches is to use the GNU Argp library (_FIXME:
-crossreference_).
-
-   ---------- Footnotes ----------
-
-   (1) GUI is an abbreviation for "graphical user interface"
-
-
-File: tutorial.info,  Node: Free software is good software,  Next: Invoking the gpl utility,  Prev: Developing applications,  Up: Writing Good Programs
-
-Free software is good software
-==============================
-
-   One of the reasons why you should write good code is because it
-allows you to make your code robust, reliable and most useful to your
-needs.  Another reason is to make it useful to other people too, and
-make it easier for them to work with your code and reuse it for their
-own work.  In order for this to be possible, you need to give worry
-about a few obnoxious legal issues.
-
-
-File: tutorial.info,  Node: Invoking the gpl utility,  Next: Inserting notices with Emacs,  Prev: Free software is good software,  Up: Writing Good Programs
-
-Invoking the `gpl' utility
-==========================
-
-   Maintaining these legalese notices can be quite painful after some
-time.  To ease the burden, Autotools distributes a utility called `gpl'.
-This utility will conveniently generate for you all the legal wording
-you will ever want to use. It is important to know that this
-application is not approved in any way by the Free Software Foundation.
-By this I mean that I haven't asked their opinion of it yet.
-
-   To create the file `COPYING' type:
-     % gpl -l COPYING
-
-If you want to include a copy of the GPL in your documentation, you can
-generate a copy in texinfo format like this:
-     % gpl -lt gpl.texi
-
-Also, every time you want to create a new file, use the `gpl' to
-generate the copyright notice. If you want it covered by the GPL use the
-"standard notice". If you want to invoke the Guile-like permissions,
-then also use the "library notice". If you want to grant unlimited
-permissions, meaning no copyleft, use the "special notice".  The `gpl'
-utility takes many different flags to take into account the different
-commenting conventions.
-   * For a C file, create the standard notice with
-          % gpl -c file.c
-
-     the library notice with
-          % gpl -cL file.c
-
-     and the special notice with
-          % gpl -cS file.c
-
-   * For a C++ file, create the standard notice with
-          % gpl -cc file.cc
-
-     the library notice with
-          % gpl -ccL file.cc
-
-     and the special notice with
-          % gpl -ccS file.cc
-
-   * For a shells script (bash, perl) that uses hash marks for
-     commenting, create the standard notice with
-          % gpl -sh foo.pl
-
-     the library notice with
-          % gpl -shL foo.tcl
-
-     and the special notice with
-          % gpl -shS foo.pl
-
-     It does not make sense to use the library notice, if no executable
-     is being formed from this file. If however, you parse that file
-     into C code that is then compiled into object code, then you may
-     consider using the library notice on it instead of the special
-     notice. One of the features provided by Autotools allows you to
-     embed text, such as Tcl scripts, into the executable. In that
-     case, you can use the library notice to license the original text.
-
-   * For files that define autoconf macros:
-          % gpl -m4 file.m4
-
-     In general, we exempt autoconf macro files from the GNU GPL
-     because the terms of autoconf also exclude its output, the
-     `configure' script, from the GPL.
-
-   * For `Makefile.am', or files that describe targets:
-          % gpl -am Makefile.am
-
-     For these we also exempt them from the GPL because they are so
-     trivial that it makes no sense to add copyleft protection.
-
-
-File: tutorial.info,  Node: Inserting notices with Emacs,  Prev: Invoking the gpl utility,  Up: Writing Good Programs
-
-Inserting notices with Emacs
-============================
-
-   If you are using _GNU Emacs_, then you can insert these copyright
-notices on-demand while you're editing your source code. Autotools
-bundles two Emacs packages: `gpl' and `gpl-copying' which provide you
-with equivalents of the `gpl' command that can be run under Emacs. These
-packages will be byte-compiled and installed automatically for you while
-installing Autotools.
-
-   To use these packages, in your `.emacs' you must declare your
-identity by adding the following commands:
-     (setq user-mail-address "me@here.com")
-     (setq user-full-name "My Name")
-
-Then you must require the packages to be loaded:
-     (require 'gpl)
-     (require 'gpl-copying)
-
-These packages introduce a set of Emacs commands all of which are
-prefixed as `gpl-'. To invoke any of these commands press `M-x', type
-the name of the command and press enter.
-
-   The following commands will generate notices for your source code:
-`gpl-c'
-     Insert the standard GPL copyright notice using C commenting.
-
-`gpl-cL'
-     lnsert the standard GPL copyright notice using C commenting,
-     followed by a Guile-like library exception. This notice is used by
-     the Guile library. You may want to use it for libraries that you
-     write that implement some type of a standard that you wish to
-     encourage.  You will be prompted for the name of your package.
-
-`gpl-cc'
-     Insert the standard GPL copyright notice using C++ commenting.
-
-`gpl-ccL'
-     Insert the standard GPL copyright notice using C++ commenting,
-     followed by a Guile-like library exception. You will be prompted
-     for the name of your package
-
-`gpl-sh'
-     Insert the standard GPL copyright notice using shell commenting
-     (i.e. has marks).
-
-`gpl-shL'
-     Insert the standard GPL copyright notice using shell commenting,
-     followed by a Guile-like library exception. This can be useful for
-     source files, like Tcl files, which are executable code that gets
-     linked in to form an executable, and which use hash marks for
-     commenting.
-
-`gpl-shS'
-     Insert the standard GPL notice using shell commenting, followed by
-     the special Autoconf exception. This is useful for small shell
-     scripts that are distributed as part of a build system.
-
-`gpl-m4'
-     Insert the standard GPL copyright notice using m4 commenting (i.e.
-     dnl) and the special Autoconf exception. This is the prefered
-     notice for new Autoconf macros.
-
-`gpl-el'
-     Insert the standard GPL copyright notice using Elisp commenting.
-     This is useful for writing Emacs extension files in Elisp.  The
-following commands will generate notices for your source code:
-`gpl-insert-copying-texinfo'
-     Insert a set of paragraphs very similar to the ones appearing at
-     the Copying section of this manual. It is a good idea to include
-     this notice in an `unnumbered' chapter titled "Copying" in the
-     Texinfo documentation of your source code. You will be prompted
-     for the title of your package. That title will substitute the word
-     _Autotools_ as it appears in the corresponding section in this
-     manual.
-
-`gpl-insert-license-texinfo'
-     Insert the full text of the GNU General Public License in Texinfo
-     format.  If your documentation is very extensive, it may be a good
-     idea to include this notice either at the very beginning of your
-     manual, or at the end.  You should include the full license, if
-     you plan to distribute the manual separately from the package as a
-     printed book.
-
-
-File: tutorial.info,  Node: Using GNU Emacs,  Next: Compiling with Makefiles,  Prev: Writing Good Programs,  Up: Top
-
-Using GNU Emacs
-***************
-
-* Menu:
-
-* Introduction to Emacs::
-* Installing GNU Emacs::
-* Configuring GNU Emacs::
-* Using vi emulation::
-* Using Emacs as an IDE::
-* Inserting copyright notices with Emacs::
-* Using Emacs as an email client::
-* Handling patches::
-* Further reading on Emacs::
+File: tutorial.info,  Node: Confusing words,  Prev: Categories of software,  Up: Philosophical issues
+
+B.6 Confusing words
+===================
+
+There are a number of words and phrases which we recommend avoiding,
+either because they are ambiguous or because they imply an opinion that
+we hope you may not entirely agree with.
+
+   * *For free*: If you want to say that a program is free software,
+     please don't say that it is available "for free." That term
+     specifically means "for zero price."  Free software is a matter of
+     freedom, not price.
+
+     Free software is often available for free-for example, on many FTP
+     servers. But free software copies are also available for a price on
+     CD-ROMs, and proprietary software copies may occasionally be
+     available for free.
+
+   * *Freeware*: Please don't use the term "freeware" as a synonym for
+     "free software." The term "freeware" was used often in the 1980s
+     for programs released only as executables, with source code not
+     available.  Today it has no clear definition.
+
+   * *Give away software*: It's misleading to use the term "give away"
+     to mean "distribute a program as free software." It has the same
+     problem as "for free": it implies the issue is price, not freedom.
+
+   * *Intellectual property*: Publishers and lawyers like to describe
+     copyright as "intellectual property." This term carries a hidden
+     assumption--that the most natural way to think about the issue of
+     copying is based on an analogy with physical objects, and our
+     ideas of them as property.
+
+     But this analogy overlooks the crucial difference between material
+     objects and information: information can be copied and shared
+     almost effortlessly, while material objects can't be. Basing your
+     thinking on this analogy is tantamount to ignoring that difference.
+
+     Even the US legal system does not entirely accept this analogy,
+     since it does not treat copyrights just like physical object
+     property rights.
+
+     If you don't want to limit yourself to this way of thinking, it is
+     best to avoid using the term "intellectual property" in your words
+     and thoughts.
+
+     A suggestion has been made to use the term "intellectual policy"
+     instead of `intellectual property."
+
+   * *Piracy*: Publishers often refer to prohibited copying as
+     "piracy." In this way, they imply that illegal copying is
+     ethically equivalent to attacking ships on the high seas,
+     kidnaping and murdering the people on them.
+
+     If you don't believe that illegal copying is just like kidnaping
+     and murder, you might prefer not to use the word "piracy" to
+     describe it. Neutral terms such as "prohibited copying" or
+     "illegal copying" are available for use instead. Some of us might
+     even prefer to use a positive term such as "sharing information
+     with your neighbor."
+
+   * *Protection*: Publishers' lawyers love to use the term
+     "protection" to describe copyright. This word carries the
+     implication of preventing destruction or suffering; therefore, it
+     encourages people to identify with the owner and publisher who
+     benefit from copyright, rather than with the users who are
+     restricted by it.
+
+     It is easy to avoid "protection" and use neutral terms instead. For
+     example, instead of "Copyright protection lasts a very long time,"
+     you can say, "Copyright lasts a very long time."
+
+   * *Sell software*: The term "sell software" is ambiguous. Strictly
+     speaking, exchanging a copy of a free program for a sum of money
+     is "selling"; but people usually associate the term "sell" with
+     proprietary restrictions on the subsequent use of the software.
+     You can be more precise, and prevent confusion, by saying either
+     "distributing copies of a program for a fee" or "imposing
+     proprietary restrictions on the use of a program," depending on
+     what you mean.
+
+   * *Theft*: Copyright apologists often use words like "stolen" and
+     "theft" to describe copyright infringement. At the same time, they
+     ask us to treat the legal system as an authority on ethics: if
+     copying is forbidden, it must be wrong.
+
+     So it is pertinent to mention that the legal system-at least in the
+     US-rejects the idea that copyright infringement is "theft".
+     Copyright advocates who use terms like "stolen" are
+     misrepresenting the authority that they appeal to.
+
+     The idea that laws decide what is right or wrong is mistaken in
+     general.  Laws are, at their best, an attempt to achieve justice;
+     to say that laws define justice or ethical conduct is turning
+     things upside down.
+
 
