@@ -1,40 +1,61 @@
 # Copyright (C) 1988 Eleftherios Gkioulekas <lf@amath.washington.edu>
-#  
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- 
+
 #!/bin/sh
 rm -f config.cache
 rm -f acconfig.h
 
-## If using libtool
-#echo "libtoolize..."
-#libtoolize --force
+## secret variable that can be set to allow original behavior:
+if test -z "${FORCE_USE_OF_ORIGINAL_RECONF}"; then
+  if test -x `which autoreconf`; then
+    echo "you have autoreconf present on your system, just run that instead of this."
+    exit
+  fi
+fi
+
+## If using libtool:
+if test -e libtool; then
+  ## "libtoolize" can be called many different things, so allow the user to
+  ## set it:
+  if test -n "${LIBTOOLIZE}"; then
+    echo "${LIBTOOLIZE}..."
+	${LIBTOOLIZE} --copy --force --automake
+  ## libtool is not always installed automatically along with autoconf, so
+  ## check for existence before trying to run:
+  elif test -x `which libtoolize`; then
+    echo "libtoolize..."
+	libtoolize --copy --force --automake
+  fi
+fi
 
 echo "- aclocal..."
-aclocal -I m4
+aclocal --force --warnings=all -I m4 --install
 
 echo "- autoconf..."
-autoconf
+autoconf --force --warnings=all
 
-## If using the c header
-#echo "- autoheader..."
-#autoheader
+## If using the c header:
+if test -e config.h.in; then
+  ## autoheader is part of autoconf, so impose no further conditions:
+  echo "- autoheader..."
+  autoheader --force --warnings=all
+fi
 
 echo "- automake..."
-#automake -a -v
-automake -a
+automake --add-missing --copy --force-missing --warnings=all
 
 echo "- ready!"
 exit

@@ -93,6 +93,17 @@ CLEANFILES += f2c.h f2c-main.c f2c_comp.in
 
 clean-local:
 	rm -rf fortran || rmdir fortran
+else
+## (not USE_F2C)
+
+# still build, just not as part of the normal build process:
+TESTS = mkfortran mkf2c mkf2c_comp
+
+# only maintainers should be running the tests:
+MAINTAINERCLEANFILES = f2c.h f2c-main.c f2c_comp.in
+
+maintainer-clean-local:
+	rm -rf fortran || rmdir fortran
 
 endif
 ## (end USE_F2C)

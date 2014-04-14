@@ -49,6 +49,7 @@ AC_DEFUN([LF_LINK_HEADERS],[
   if test -z "${lf_link_headers}"
   then
     lf_link_headers="we are all Kosh"
+    AC_MSG_WARN([removing existing ${srcdir}/include directory])
     rm -rf "${srcdir}/include"
   fi
 
@@ -95,6 +96,13 @@ AC_DEFUN([LF_LINK_HEADERS],[
       echo "Warning: No Headers file for ${srcdir}/${lf_dir}"
     fi
   done
+  if test -d ${lf_directory} && test -z "`ls ${lf_directory}`"
+  then
+    echo >> ${lf_directory}/.gitignore
+  elif test -d include && test -z "`ls include`"
+  then
+    echo >> include/.gitignore
+  fi
 ])
 
 #--------------------------------------------------------------------------

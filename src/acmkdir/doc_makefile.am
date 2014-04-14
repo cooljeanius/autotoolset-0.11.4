@@ -32,9 +32,8 @@ TEXIDOC   = $(PERL)  $(srcdir)/texidoc.pl
 TEXI2HTML = $(PERL)  $(srcdir)/texi2html.pl
 TEXIRM    = $(SHELL) $(srcdir)/texirm.sh
 
-# FIXME: I really need an autoconf macro for this documentation crap.
-# (how about "LF_USE_TEXIDOC"? that should subst this...)
-TEXI2DVI = texi2dvi
+## ("TEXI2DVI" should be subst-ed by the use of the "LF_USE_TEXIDOC"
+## autoconf macro in the configure script)
 
 # Target for building the texinfo file from the documentation:
 $(texifile): $(documentation)

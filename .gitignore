@@ -19,9 +19,6 @@ lib/lib*.a
 *.o
 *.elc
 src/acconfig/acconfig
-src/acmkdir/acmkdir
-src/acmkdir/mkf2c*
-src/acmkdir/mkfortran
 src/gpl/gpl
 src/mkconfig/mkconfig
 src/txtc/mktxtc
@@ -34,3 +31,4 @@ autotoolset-*.*.*/*
 *.tar.bz2
 lex.yy.c
 config.includes
+conf*/*.awk
