@@ -14,10 +14,10 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-# The following rules are for m4 files
+# The following rules are for m4 files:
 m4datadir = $(datadir)/aclocal
 
-# List your m4 macros here
+# List your m4 macros here:
 m4macros = \
 	lf_assert.m4 \
 	lf_bash.m4 \
@@ -32,8 +32,9 @@ m4macros = \
 	lf_texidoc.m4 \
 	lf_txtc.m4 \
 	lf_warnings.m4 \
-	lf_x11.m4
+	lf_x11.m4 \
+	lf_envvars.m4
 
-# The following is boilerplate
+# The following is boilerplate:
 m4data_DATA = $(m4macros) 
 EXTRA_DIST = $(m4data_DATA) 

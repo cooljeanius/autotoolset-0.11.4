@@ -67,3 +67,32 @@ mkf2c_comp: $(srcdir)/f2c_comp.sh
 	$(SHAR) f2c_comp.in > mkf2c_comp
 	chmod ugo+x mkf2c_comp
 	rm -f f2c_comp.in
+
+## should be set by autoconf calling the "LF_PROG_F77" macro somewhere:
+if USE_F2C
+all: run_mkfortran run_mkf2c run_mkf2c_comp
+
+run_mkfortran: mkfortran
+	./mkfortran
+.PHONY: run_mkfortran
+
+run_mkf2c: mkf2c
+	./mkf2c
+.PHONY: run_mkf2c
+
+run_mkf2c_comp: mkf2c_comp
+	./mkf2c_comp
+.PHONY: run_mkf2c_comp
+
+f2c.h: run_mkf2c
+f2c-main.c: run_mkf2c
+f2c_comp.in: run_mkf2c_comp
+
+BUILT_SOURCES = f2c.h f2c-main.c f2c_comp.in
+CLEANFILES += f2c.h f2c-main.c f2c_comp.in
+
+clean-local:
+	rm -rf fortran || rmdir fortran
+
+endif
+## (end USE_F2C)

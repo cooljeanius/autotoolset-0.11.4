@@ -30,38 +30,42 @@ AM_INIT_AUTOMAKE([dist-bzip2 dist-shar gnits])
 AM_MAINTAINER_MODE
 
 # Compiler stuff:
-AC_DEFUN([AC_REQUIRE_CC],[
-  AC_REQUIRE([AC_PROG_CC])
-])
-AC_REQUIRE_CC
+LF_CONFIGURE_CC
 AM_PROG_AR
-AC_PROG_CPP
-AC_PROG_CXX
+LF_CONFIGURE_CXX
 AC_PROG_INSTALL
 AM_PROG_LEX
 AC_PROG_LN_S
+AC_PROG_MKDIR_P
+LF_PROG_NM
 AC_PROG_RANLIB
 AC_PROG_YACC
-AC_F77_LIBRARY_LDFLAGS
-AC_FC_LIBRARY_LDFLAGS
-AC_FC_SRCEXT([f])
-AC_FC_PP_SRCEXT([f])
-AC_FC_PP_DEFINE
-AC_FC_FREEFORM
-AC_FC_LINE_LENGTH([unlimited])
-AC_FC_CHECK_BOUNDS
+LF_PROG_F77_ALL_CHECKS
+LF_SET_WARNINGS
+
+# docs:
+LF_USE_TEXIDOC
+
+dnl# GNU help2man creates man pages from --help output; in many cases, this
+dnl# is sufficient, and obviates the need to maintain man pages separately.
+dnl# However, this means invoking executables, which we generally cannot do
+dnl# when cross-compiling, so we test to avoid that (the variable
+dnl# "cross_compiling" is set by AC_PROG_CC).
+AS_IF([test "x${cross_compiling}" = "xno"],[
+  AM_MISSING_PROG([HELP2MAN],[help2man])
+],[
+  HELP2MAN=:
+])
 
 # Shell related stuff:
-AC_SYS_INTERPRETER
 LF_PROG_BASH
-AC_DEFUN([AC_REQUIRE_AWK],[
-  AC_REQUIRE([AC_PROG_AWK])
-])
-AC_REQUIRE_AWK
 LF_PROG_TXTC
 
-AC_PATH_PROGS([PERL],[perl perl5],[not found])
-if test "x${PERL}" = "xnot found"; then
+if test "x${PERL}" = "x"; then
+  test -z "${PERL}"
+  AC_PATH_PROGS([PERL],[perl perl5],[not found])
+fi
+if test "x${PERL}" = "xnot found" || test "x${PERL}" = "xnope"; then
  AC_MSG_ERROR([Cannot build without perl])
 fi
 
@@ -75,35 +79,42 @@ if test "x${ZCAT}" = "xnot found"; then
  AC_MSG_ERROR([Cannot build without zcat])
 fi
 
-dnl# GNU help2man creates man pages from --help output; in many cases, this
-dnl# is sufficient, and obviates the need to maintain man pages separately.
-dnl# However, this means invoking executables, which we generally cannot do
-dnl# when cross-compiling, so we test to avoid that (the variable
-dnl# "cross_compiling" is set by AC_PROG_CC).
-AS_IF([test "x${cross_compiling}" = "xno"],[
-  AM_MISSING_PROG([HELP2MAN],[help2man])
-],[
-  HELP2MAN=:
+m4_ifdef([AM_PATH_LISPDIR],[
+  test -z "${lispdir}"
+  AM_PATH_LISPDIR
+],[m4_ifdef([LF_PATH_LISPDIR],[
+    test -z "${lf_emacs_prefix}"
+    LF_PATH_LISPDIR
+  ])
 ])
-
-AM_PATH_LISPDIR
 AM_PATH_PYTHON
 
-# C configuration stuff
+# C configuration stuff:
 AC_FUNC_ALLOCA
 AC_FUNC_MALLOC
-AC_CHECK_FUNCS([exit strlen strcpy strcat])
+AC_CHECK_FUNCS([exit strcat])
+AC_CHECK_FUNCS_ONCE([strlen strcpy])
 AC_CHECK_FUNCS([getopt_long],[],[
 	AC_LIBOBJ([getopt])
 	AC_LIBOBJ([getopt1])
 ])
 AC_REPLACE_FUNCS([getopt])
+AC_HEADER_STDBOOL dnl# also "_CHECK"s it
 AC_CHECK_HEADERS([getopt.h libintl.h long-options.h xalloca.h])
+AC_HEADER_ASSERT
+
+# X:
+LF_PATH_XLIB
 
 #
-# Files to be generated
+# Files to be generated:
 #
 AC_CONFIG_FILES([misc/buildinstall],[chmod u+x misc/buildinstall])
+
+# These are tentative in their use:
+LF_LINK_HEADERS
+LF_SET_INCLUDES
+# (the one with the expletive in its name is unsurprisingly broken)
 
 AC_CONFIG_FILES([
 	Makefile

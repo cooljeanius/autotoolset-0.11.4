@@ -91,12 +91,19 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
+@USE_F2C_TRUE@am__append_1 = f2c.h f2c-main.c f2c_comp.in
 subdir = src/acmkdir
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/config/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/lf_bash.m4 \
-	$(top_srcdir)/m4/lf_txtc.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/lf_assert.m4 \
+	$(top_srcdir)/m4/lf_bash.m4 $(top_srcdir)/m4/lf_cc.m4 \
+	$(top_srcdir)/m4/lf_cxx.m4 $(top_srcdir)/m4/lf_fortran.m4 \
+	$(top_srcdir)/m4/lf_host_type.m4 $(top_srcdir)/m4/lf_local.m4 \
+	$(top_srcdir)/m4/lf_nm.m4 $(top_srcdir)/m4/lf_texidoc.m4 \
+	$(top_srcdir)/m4/lf_txtc.m4 $(top_srcdir)/m4/lf_warnings.m4 \
+	$(top_srcdir)/m4/lf_x11.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -230,6 +237,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
+CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -242,6 +250,8 @@ EGREP = @EGREP@
 EMACS = @EMACS@
 EMACSLOADPATH = @EMACSLOADPATH@
 EXEEXT = @EXEEXT@
+F2C = @F2C@
+F2CFLAGS = @F2CFLAGS@
 F77 = @F77@
 FC = @FC@
 FCFLAGS = @FCFLAGS@
@@ -249,6 +259,9 @@ FCFLAGS_F = @FCFLAGS_F@
 FCFLAGS_f = @FCFLAGS_f@
 FCLIBS = @FCLIBS@
 FC_DEFINE = @FC_DEFINE@
+FC_MODEXT = @FC_MODEXT@
+FC_MODINC = @FC_MODINC@
+FC_MODOUT = @FC_MODOUT@
 FFLAGS = @FFLAGS@
 FLIBS = @FLIBS@
 GREP = @GREP@
@@ -262,6 +275,9 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LF_DVIPS = @LF_DVIPS@
+LF_TEXI2DVI = @LF_TEXI2DVI@
+LIBM = @LIBM@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LN_S = @LN_S@
@@ -269,6 +285,7 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -285,12 +302,21 @@ PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHAR = @SHAR@
 SHELL = @SHELL@
 STRIP = @STRIP@
+TEX = @TEX@
+TEXI2HTML = @TEXI2HTML@
 TXTC = @TXTC@
 VERSION = @VERSION@
+XLIB = @XLIB@
+XMKMF = @XMKMF@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 YACC = @YACC@
 YFLAGS = @YFLAGS@
 ZCAT = @ZCAT@
@@ -303,6 +329,7 @@ ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
 ac_ct_FC = @ac_ct_FC@
+ac_empty = @ac_empty@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -315,8 +342,10 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 builddir = @builddir@
+canonical_host_type = @canonical_host_type@
 datadir = @datadir@
 datarootdir = @datarootdir@
+default_includes = @default_includes@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
@@ -365,7 +394,7 @@ bin_SCRIPTS = \
 	mkfortran \
 	mkf2c_comp
 
-CLEANFILES = $(bin_SCRIPTS)
+CLEANFILES = $(bin_SCRIPTS) $(am__append_1)
 DISTCLEANFILES = .DS_Store
 EXTRA_DIST = \
 	acmkdir.sh \
@@ -378,7 +407,9 @@ EXTRA_DIST = \
 	m4_makefile.am
 
 SUBDIRS = python
-all: all-recursive
+@USE_F2C_TRUE@BUILT_SOURCES = f2c.h f2c-main.c f2c_comp.in
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-recursive
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
@@ -638,14 +669,16 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-recursive
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-recursive
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
 	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(autotoolsetdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-recursive
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-recursive
 install-exec: install-exec-recursive
 install-data: install-data-recursive
 uninstall: uninstall-recursive
@@ -677,9 +710,11 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+@USE_F2C_FALSE@clean-local:
 clean: clean-recursive
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-local mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f Makefile
@@ -743,12 +778,13 @@ ps-am:
 
 uninstall-am: uninstall-autotoolsetDATA uninstall-binSCRIPTS
 
-.MAKE: $(am__recursive_targets) install-am install-strip
+.MAKE: $(am__recursive_targets) all check install install-am \
+	install-strip
 
 .PHONY: $(am__recursive_targets) CTAGS GTAGS TAGS all all-am check \
-	check-am clean clean-generic cscopelist-am ctags ctags-am \
-	distclean distclean-generic distclean-tags distdir dvi dvi-am \
-	html html-am info info-am install install-am \
+	check-am clean clean-generic clean-local cscopelist-am ctags \
+	ctags-am distclean distclean-generic distclean-tags distdir \
+	dvi dvi-am html html-am info info-am install install-am \
 	install-autotoolsetDATA install-binSCRIPTS install-data \
 	install-data-am install-dvi install-dvi-am install-exec \
 	install-exec-am install-html install-html-am install-info \
@@ -789,6 +825,27 @@ mkf2c_comp: $(srcdir)/f2c_comp.sh
 	$(SHAR) f2c_comp.in > mkf2c_comp
 	chmod ugo+x mkf2c_comp
 	rm -f f2c_comp.in
+
+@USE_F2C_TRUE@all: run_mkfortran run_mkf2c run_mkf2c_comp
+
+@USE_F2C_TRUE@run_mkfortran: mkfortran
+@USE_F2C_TRUE@	./mkfortran
+@USE_F2C_TRUE@.PHONY: run_mkfortran
+
+@USE_F2C_TRUE@run_mkf2c: mkf2c
+@USE_F2C_TRUE@	./mkf2c
+@USE_F2C_TRUE@.PHONY: run_mkf2c
+
+@USE_F2C_TRUE@run_mkf2c_comp: mkf2c_comp
+@USE_F2C_TRUE@	./mkf2c_comp
+@USE_F2C_TRUE@.PHONY: run_mkf2c_comp
+
+@USE_F2C_TRUE@f2c.h: run_mkf2c
+@USE_F2C_TRUE@f2c-main.c: run_mkf2c
+@USE_F2C_TRUE@f2c_comp.in: run_mkf2c_comp
+
+@USE_F2C_TRUE@clean-local:
+@USE_F2C_TRUE@	rm -rf fortran || rmdir fortran
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -97,8 +97,14 @@ subdir = doc
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/config/mkinstalldirs
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/lf_bash.m4 \
-	$(top_srcdir)/m4/lf_txtc.m4 $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/lf_assert.m4 \
+	$(top_srcdir)/m4/lf_bash.m4 $(top_srcdir)/m4/lf_cc.m4 \
+	$(top_srcdir)/m4/lf_cxx.m4 $(top_srcdir)/m4/lf_fortran.m4 \
+	$(top_srcdir)/m4/lf_host_type.m4 $(top_srcdir)/m4/lf_local.m4 \
+	$(top_srcdir)/m4/lf_nm.m4 $(top_srcdir)/m4/lf_texidoc.m4 \
+	$(top_srcdir)/m4/lf_txtc.m4 $(top_srcdir)/m4/lf_warnings.m4 \
+	$(top_srcdir)/m4/lf_x11.m4 $(top_srcdir)/m4/libtool.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/config/mkinstalldirs
@@ -202,6 +208,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
+CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
 CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
@@ -214,6 +221,8 @@ EGREP = @EGREP@
 EMACS = @EMACS@
 EMACSLOADPATH = @EMACSLOADPATH@
 EXEEXT = @EXEEXT@
+F2C = @F2C@
+F2CFLAGS = @F2CFLAGS@
 F77 = @F77@
 FC = @FC@
 FCFLAGS = @FCFLAGS@
@@ -221,6 +230,9 @@ FCFLAGS_F = @FCFLAGS_F@
 FCFLAGS_f = @FCFLAGS_f@
 FCLIBS = @FCLIBS@
 FC_DEFINE = @FC_DEFINE@
+FC_MODEXT = @FC_MODEXT@
+FC_MODINC = @FC_MODINC@
+FC_MODOUT = @FC_MODOUT@
 FFLAGS = @FFLAGS@
 FLIBS = @FLIBS@
 GREP = @GREP@
@@ -234,6 +246,9 @@ LDFLAGS = @LDFLAGS@
 LEX = @LEX@
 LEXLIB = @LEXLIB@
 LEX_OUTPUT_ROOT = @LEX_OUTPUT_ROOT@
+LF_DVIPS = @LF_DVIPS@
+LF_TEXI2DVI = @LF_TEXI2DVI@
+LIBM = @LIBM@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LN_S = @LN_S@
@@ -241,6 +256,7 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
+NM = @NM@
 OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
@@ -257,12 +273,21 @@ PYTHON_PLATFORM = @PYTHON_PLATFORM@
 PYTHON_PREFIX = @PYTHON_PREFIX@
 PYTHON_VERSION = @PYTHON_VERSION@
 RANLIB = @RANLIB@
+SED = @SED@
 SET_MAKE = @SET_MAKE@
 SHAR = @SHAR@
 SHELL = @SHELL@
 STRIP = @STRIP@
+TEX = @TEX@
+TEXI2HTML = @TEXI2HTML@
 TXTC = @TXTC@
 VERSION = @VERSION@
+XLIB = @XLIB@
+XMKMF = @XMKMF@
+X_CFLAGS = @X_CFLAGS@
+X_EXTRA_LIBS = @X_EXTRA_LIBS@
+X_LIBS = @X_LIBS@
+X_PRE_LIBS = @X_PRE_LIBS@
 YACC = @YACC@
 YFLAGS = @YFLAGS@
 ZCAT = @ZCAT@
@@ -275,6 +300,7 @@ ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
 ac_ct_FC = @ac_ct_FC@
+ac_empty = @ac_empty@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
 am__quote = @am__quote@
@@ -287,8 +313,10 @@ build_cpu = @build_cpu@
 build_os = @build_os@
 build_vendor = @build_vendor@
 builddir = @builddir@
+canonical_host_type = @canonical_host_type@
 datadir = @datadir@
 datarootdir = @datarootdir@
+default_includes = @default_includes@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@

@@ -21,7 +21,7 @@ dist_doc_DATA = README
 
 EXTRA_DIST = debian reconf fix-timestamp.sh
 
-DISTCLEANFILES = *~ .DS_Store autoscan.log
+DISTCLEANFILES = *~ m4/*~ .DS_Store autoscan.log
 
 MAINTAINERCLEANFILES = configure.scan
 

@@ -33,3 +33,4 @@ autotoolset-*.*.*/*
 *.tar.gz
 *.tar.bz2
 lex.yy.c
+config.includes

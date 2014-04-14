@@ -17,8 +17,9 @@ tutorial_TEXINFOS = \
 	legal.texi \
 	philosophy.texi
 
+## should be set by autoconf calling the "LF_USE_TEXIDOC" macro:
 html-local: tutorial.texi
-	texi2html tutorial.texi || makeinfo --html tutorial.texi
+	$(TEXI2HTML) tutorial.texi || $(MAKEINFO) --html tutorial.texi
 
 CLEANFILES = tutorial.html tutorial_foot.html tutorial_toc.html
 
