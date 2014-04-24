@@ -1,14 +1,17 @@
 - Change:
 
 - Update:
-	* Autotools info pages still use deprecated autoconf/automake syntax.
+    * The Autotoolset info pages still use deprecated autoconf/automake
+      syntax.
 
 - Fix:
-	* The following warning is beeing reported while byte compiling gpl.el:
+    * The following warning is beeing reported while byte compiling gpl.el:
 While compiling toplevel forms in file /home/mroberto/programs/autotools/autotools.new/autotools-0.2.0/=build/src/emacs/elc.25629/gpl.el:
   ** assignment to free variable user-company-name
 
 - Doubts:
-	* What's the file src/acmkdir/python/new_install_python.txt? It has zero size.
+    * What is/was the file src/acmkdir/python/new_install_python.txt? It
+      has zero size.
 
-	* Maybe we could use the primary PYTHON in src/acmkdir/python/Makefile.am?
+    * Maybe we could use the primary PYTHON in
+      src/acmkdir/python/Makefile.am (not sure if already done by now?)?

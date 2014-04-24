@@ -1,9 +1,10 @@
-Autotools THANKS file
+Autotoolset THANKS file
 
-Autotools  has originally been written by Eleftherios Gkioulekas.
-Many people have further contributed to Autotools by reporting problems, 
-suggesting various improvements, or submitting actual code. Here is
-a list of these people. Help me keep it complete and exempt of errors.
+The Autotoolset package was originally written by Eleftherios Gkioulekas.
+Many people have further contributed to the Autotoolset package by
+reporting problems, suggesting various improvements, or submitting actual
+code. Here is a list of these people. Help me keep it complete and exempt
+of errors.
 
 John Eaton <jwe@bevo.che.wisc.edu>
 Francois Pinard <pinard@iro.umontreal.ca>
@@ -14,3 +15,4 @@ Lionel Cons <Lionel.Cons@cern.ch>
 Dennis Barbier <barbier@chopin.polytechnique.fr>
 Karl Dalley <ball8@eden.com>
 Nathan Myers <ncm@cantrip.org>
+Eric Gallager

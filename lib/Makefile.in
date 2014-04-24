@@ -106,7 +106,7 @@ am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
 libautotools_a_AR = $(AR) $(ARFLAGS)
 libautotools_a_DEPENDENCIES = @ALLOCA@ @LIBOBJS@
-am_libautotools_a_OBJECTS = long-options.$(OBJEXT)
+am_libautotools_a_OBJECTS = libautotools_a-long-options.$(OBJEXT)
 libautotools_a_OBJECTS = $(am_libautotools_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -124,6 +124,10 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
 am__mv = mv -f
+AM_V_lt = $(am__v_lt_@AM_V@)
+am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
+am__v_lt_0 = --silent
+am__v_lt_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
@@ -327,8 +331,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_HEADERS = getopt.h long-options.h xalloca.h
 noinst_LIBRARIES = libautotools.a
-libautotools_a_SOURCES = long-options.c 
+libautotools_a_SOURCES = long-options.c long-options.h
 libautotools_a_LIBADD = @ALLOCA@ @LIBOBJS@
+libautotools_a_CFLAGS = -Wall -Wimplicit -Wextra
 all: all-am
 
 .SUFFIXES:
@@ -382,7 +387,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/getopt.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/getopt1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/malloc.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/long-options.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libautotools_a-long-options.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -397,6 +402,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(COMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+libautotools_a-long-options.o: long-options.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libautotools_a_CFLAGS) $(CFLAGS) -MT libautotools_a-long-options.o -MD -MP -MF $(DEPDIR)/libautotools_a-long-options.Tpo -c -o libautotools_a-long-options.o `test -f 'long-options.c' || echo '$(srcdir)/'`long-options.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libautotools_a-long-options.Tpo $(DEPDIR)/libautotools_a-long-options.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='long-options.c' object='libautotools_a-long-options.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libautotools_a_CFLAGS) $(CFLAGS) -c -o libautotools_a-long-options.o `test -f 'long-options.c' || echo '$(srcdir)/'`long-options.c
+
+libautotools_a-long-options.obj: long-options.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libautotools_a_CFLAGS) $(CFLAGS) -MT libautotools_a-long-options.obj -MD -MP -MF $(DEPDIR)/libautotools_a-long-options.Tpo -c -o libautotools_a-long-options.obj `if test -f 'long-options.c'; then $(CYGPATH_W) 'long-options.c'; else $(CYGPATH_W) '$(srcdir)/long-options.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/libautotools_a-long-options.Tpo $(DEPDIR)/libautotools_a-long-options.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='long-options.c' object='libautotools_a-long-options.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libautotools_a_CFLAGS) $(CFLAGS) -c -o libautotools_a-long-options.obj `if test -f 'long-options.c'; then $(CYGPATH_W) 'long-options.c'; else $(CYGPATH_W) '$(srcdir)/long-options.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

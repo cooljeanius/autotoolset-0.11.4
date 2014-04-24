@@ -63,6 +63,7 @@ extern char *config_txt[];
 
 void usage(int f)
 {
+#pragma unused (f)
  printf("Usage: mkconfig [FILE]\n"
         "Create a 'foo-config.in' template for a new package.\n"
         "If 'foo' is the name of your package, and you need your package\n"
@@ -92,9 +93,9 @@ int main(int argc, char *argv[])
  int i;
 
  parse_long_options(argc, argv, "mkconfig", PACKAGE, VERSION, usage);
-	if (argc != 2) {
-		usage_error();
-	}
+ if (argc != 2) {
+  usage_error();
+ }
  filename = alloca(strlen(argv[1]) + strlen("-config.in") + 1);
  strcpy(filename, argv[1]);
  strcat(filename, "-config.in");

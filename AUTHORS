@@ -1,8 +1,8 @@
-Authors of Autotools.
+Authors of the Autotoolset package.
 See also the files THANKS and ChangeLog
 
-Eleftherios Gkioulekas designed and implemented Autotools, with the 
-following exceptions:
+Eleftherios Gkioulekas designed and implemented the Autotoolset package,
+with the  following exceptions:
 
 * Francois Pinard (and the Gnit-picker gang)
   - Wrote the GNITS coding standards under doc/gnits/*
@@ -24,3 +24,6 @@ following exceptions:
 * Lionel Cons 
   - Wrote texi2html which is distributed in src/texi2html.pl
     See: http://wwwcn1.cern.ch/dci/texi2html/texi2htm
+
+* Eric Gallager
+  - created this fork for GitHub

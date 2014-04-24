@@ -4,5 +4,6 @@ SUFFIXES = .txt
 	$(TXTC) $< 
 
 bin_PROGRAMS = mkconfig
+mkconfig_CFLAGS = -Wall -Wimplicit -Wextra
 mkconfig_SOURCES = mkconfig.c config.txt
 mkconfig_LDADD = ../../lib/libautotools.a
