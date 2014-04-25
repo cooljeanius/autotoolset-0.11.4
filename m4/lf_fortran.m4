@@ -835,8 +835,8 @@ AC_DEFUN([LF_PROG_F77_ALL_CHECKS],[
   AC_F77_IMPLICIT_NONE([:],[:],[:])
   AC_FC_IMPLICIT_NONE([:],[:],[:])
   AC_REQUIRE([AC_FC_MODULE_EXTENSION])
-  AC_FC_MODULE_FLAG([],[:])
-  AC_FC_MODULE_OUTPUT_FLAG([],[:])
+  AC_FC_MODULE_FLAG([cd ${srcdir}],[cd ${srcdir}])
+  AC_FC_MODULE_OUTPUT_FLAG([cd ${srcdir}],[cd ${srcdir}])
 ])
 
 dnl# tests left out: A bunch (basically any ones where I was unable to

@@ -11756,10 +11756,10 @@ fi
 $as_echo "$ac_cv_fc_module_flag" >&6; }
 if test "$ac_cv_fc_module_flag" != unknown; then
   FC_MODINC=$ac_cv_fc_module_flag
-
+  cd ${srcdir}
 else
   FC_MODINC=
-  :
+  cd ${srcdir}
 fi
 
 # Ensure trailing whitespace is preserved in a Makefile.
@@ -11830,10 +11830,10 @@ fi
 $as_echo "$ac_cv_fc_module_output_flag" >&6; }
 if test "$ac_cv_fc_module_output_flag" != unknown; then
   FC_MODOUT=$ac_cv_fc_module_output_flag
-
+  cd ${srcdir}
 else
   FC_MODOUT=
-  :
+  cd ${srcdir}
 fi
 
 # Ensure trailing whitespace is preserved in a Makefile.
@@ -14126,7 +14126,7 @@ fi
 # Files to be generated:
 #
 if test ! -e misc/buildinstall.in; then
-  ls misc/* || (ls && pwd) || pwd
+  ls misc/* || (echo "ls:" && ls && echo "pwd:" && pwd) || pwd
 else
   stat misc/buildinstall.in
 fi

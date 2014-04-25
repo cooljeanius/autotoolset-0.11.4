@@ -121,7 +121,7 @@ LF_PATH_XLIB
 # Files to be generated:
 #
 if test ! -e misc/buildinstall.in; then
-  ls misc/* || (ls && pwd) || pwd
+  ls misc/* || (echo "ls:" && ls && echo "pwd:" && pwd) || pwd
 else
   stat misc/buildinstall.in
 fi
