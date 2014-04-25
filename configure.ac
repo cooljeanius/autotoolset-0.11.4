@@ -28,6 +28,12 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_LIBOBJ_DIR([lib])
 AM_INIT_AUTOMAKE([dist-bzip2 dist-shar gnits])
 AM_MAINTAINER_MODE
+AC_DEFUN([AM_TAP_TEST_DRIVER],[
+  AC_REQUIRE_AUX_FILE([tap-driver.sh])
+  AC_REQUIRE([AC_PROG_AWK])
+  test -z "${TEST_LOG_DRIVER}"
+])
+AM_TAP_TEST_DRIVER
 
 # Compiler stuff:
 LF_CONFIGURE_CC
@@ -115,7 +121,7 @@ LF_PATH_XLIB
 # Files to be generated:
 #
 if test ! -e misc/buildinstall.in; then
-  ls misc/*
+  ls misc/* || (ls && pwd) || pwd
 else
   stat misc/buildinstall.in
 fi

@@ -92,6 +92,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 @USE_F2C_TRUE@am__append_1 = f2c.h f2c-main.c f2c_comp.in
+@USE_F2C_FALSE@am__append_2 = $(TESTS)
 subdir = src/acmkdir
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/config/mkinstalldirs \
@@ -573,16 +574,9 @@ bin_SCRIPTS = \
 
 CLEANFILES = $(bin_SCRIPTS) $(am__append_1)
 DISTCLEANFILES = .DS_Store
-EXTRA_DIST = \
-	acmkdir.sh \
-	fortran.tar.gz \
-	f2c_comp.sh \
-	f2c-main.c.src \
-	f2c.h.src \
-	new_install.txt \
-	doc_makefile.am \
-	m4_makefile.am
-
+EXTRA_DIST = acmkdir.sh fortran.tar.gz f2c_comp.sh f2c-main.c.src \
+	f2c.h.src new_install.txt doc_makefile.am m4_makefile.am \
+	$(am__append_2)
 SUBDIRS = python
 @USE_F2C_TRUE@BUILT_SOURCES = f2c.h f2c-main.c f2c_comp.in
 

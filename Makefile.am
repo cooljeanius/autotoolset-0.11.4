@@ -19,6 +19,9 @@ SUBDIRS = m4 doc lib misc src
 
 dist_doc_DATA = README
 
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+                  $(top_srcdir)/build-aux/tap-driver.sh
+
 EXTRA_DIST = debian reconf fix-timestamp.sh txtc.sh
 
 MOSTLYCLEANFILES = config.h.in~ acconfig.h

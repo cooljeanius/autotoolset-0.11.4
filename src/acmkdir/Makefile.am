@@ -99,6 +99,8 @@ else
 # still build, just not as part of the normal build process:
 TESTS = mkfortran mkf2c mkf2c_comp
 
+EXTRA_DIST += $(TESTS)
+
 # only maintainers should be running the tests:
 MAINTAINERCLEANFILES = f2c.h f2c-main.c f2c_comp.in
 

@@ -109,7 +109,8 @@ DIST_COMMON = INSTALL NEWS README AUTHORS ChangeLog THANKS \
 	$(top_srcdir)/config/ar-lib $(top_srcdir)/config/compile \
 	$(top_srcdir)/config/config.guess \
 	$(top_srcdir)/config/config.sub \
-	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing
+	$(top_srcdir)/config/install-sh $(top_srcdir)/config/missing \
+	$(top_srcdir)/config/tap-driver.sh
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/lf_assert.m4 \
 	$(top_srcdir)/m4/lf_bash.m4 $(top_srcdir)/m4/lf_cc.m4 \
@@ -420,6 +421,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = m4 doc lib misc src
 dist_doc_DATA = README
+TEST_LOG_DRIVER = env AM_TAP_AWK='$(AWK)' $(SHELL) \
+                  $(top_srcdir)/build-aux/tap-driver.sh
+
 EXTRA_DIST = debian reconf fix-timestamp.sh txtc.sh
 MOSTLYCLEANFILES = config.h.in~ acconfig.h
 DISTCLEANFILES = *~ m4/*~ .DS_Store autoscan.log

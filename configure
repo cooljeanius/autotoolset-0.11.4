@@ -3342,6 +3342,12 @@ fi
 
 
 
+
+
+
+  test -z "${TEST_LOG_DRIVER}"
+
+
 # Compiler stuff:
 DEPDIR="${am__leading_dot}deps"
 
@@ -14120,7 +14126,7 @@ fi
 # Files to be generated:
 #
 if test ! -e misc/buildinstall.in; then
-  ls misc/*
+  ls misc/* || (ls && pwd) || pwd
 else
   stat misc/buildinstall.in
 fi
