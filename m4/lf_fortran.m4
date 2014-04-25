@@ -821,8 +821,6 @@ AC_DEFUN([LF_PROG_F77_ALL_CHECKS],[
   AC_REQUIRE([AC_FC_DUMMY_MAIN])
   AC_REQUIRE([AC_F77_MAIN])
   AC_REQUIRE([AC_FC_MAIN])
-  AC_REQUIRE([AC_FC_FREEFORM])
-  AC_REQUIRE([AC_FC_FIXEDFORM])
   AC_FC_LINE_LENGTH([unlimited])
   AC_REQUIRE([AC_FC_CHECK_BOUNDS])
   AC_REQUIRE([AC_FC_IMPLICIT_NONE])
@@ -834,4 +832,4 @@ AC_DEFUN([LF_PROG_F77_ALL_CHECKS],[
 dnl# tests left out: one for f77 dummy main, one for f77 wrappers
 dnl# (indirectly calls the one for f77 dummy main), one for disallowing f77
 dnl# implicit declarations, the regular fortran wrappers one, too
-
+dnl# and a bunch of others
