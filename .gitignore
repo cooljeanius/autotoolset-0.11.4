@@ -9,7 +9,9 @@ config.h
 */*deps/*.*o
 */*/*deps/*.*o
 autotoolset.spec
+misc/autotoolset.spec
 misc/buildinstall
+!misc/buildinstall.in
 misc/makerpm.sh
 src/version.pl
 src/version.sh

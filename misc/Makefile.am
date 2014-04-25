@@ -17,7 +17,9 @@
 
 SCRIPT1=makerpm
 
-EXTRA_DIST=autotoolset.spec buildinstall finalize $(SCRIPT1)
+EXTRA_DIST=autotoolset.spec.in buildinstall.in $(SCRIPT1).sh
+
+EXTRA_DIST+=autotoolset.spec buildinstall finalize $(SCRIPT1)
 
 $(SCRIPT1): $(srcdir)/../src/version.sh $(srcdir)/$(SCRIPT1).sh
 	rm -f $@

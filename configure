@@ -13200,6 +13200,7 @@ fi
 
 
 
+
 for ac_header in getopt.h libintl.h long-options.h xalloca.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
@@ -14118,6 +14119,11 @@ fi
 #
 # Files to be generated:
 #
+if test ! -e misc/buildinstall.in; then
+  ls misc/*
+else
+  stat misc/buildinstall.in
+fi
 ac_config_files="$ac_config_files misc/buildinstall"
 
 

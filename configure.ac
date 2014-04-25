@@ -100,6 +100,7 @@ AC_CHECK_FUNCS([getopt_long],[],[
 ])
 AC_REPLACE_FUNCS([getopt])
 AC_DEFUN([AC_REQUIRE_STDBOOL],[
+  AC_REQUIRE([AC_HEADER_STDC])
   AC_REQUIRE([AC_HEADER_STDBOOL])
   AC_REQUIRE([AC_CHECK_HEADER_STDBOOL])
 ])
@@ -113,6 +114,11 @@ LF_PATH_XLIB
 #
 # Files to be generated:
 #
+if test ! -e misc/buildinstall.in; then
+  ls misc/*
+else
+  stat misc/buildinstall.in
+fi
 AC_CONFIG_FILES([misc/buildinstall],[chmod u+x misc/buildinstall])
 
 # These are tentative in their use:
