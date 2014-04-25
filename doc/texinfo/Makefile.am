@@ -17,3 +17,5 @@
 EXTRA_DIST = texinfo-refcard.ps
 
 ps-local: texinfo-refcard.ps
+	ls *.ps
+.PHONY: ps-local

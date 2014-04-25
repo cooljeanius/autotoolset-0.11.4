@@ -11351,7 +11351,7 @@ else
     FCFLAGS_f=$ac_cv_fc_srcext_f
   fi
 
-
+  :
 fi
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -11425,7 +11425,7 @@ else
     FCFLAGS_f=$ac_cv_fc_pp_srcext_f
   fi
 
-
+  :
 fi
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
@@ -11433,7 +11433,9 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-  ac_ext=${ac_fc_srcext-f}
+  if test "x${ac_cv_fc_pp_srcext_f}" != "xunknown"; then
+    test ! -z "${ac_cv_fc_pp_srcext_f}"
+    ac_ext=${ac_fc_srcext-f}
 ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
 ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_fc_compiler_gnu
@@ -11558,6 +11560,7 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
+  fi
 
 
 
@@ -14120,6 +14123,7 @@ ac_config_files="$ac_config_files misc/buildinstall"
 
 # These are tentative in their use:
 
+
   # Find out how to link files if we have NOT done so already:
   if test -z "${LN_S}"
   then
@@ -14172,7 +14176,7 @@ $as_echo "$as_me: WARNING: removing existing ${srcdir}/include directory" >&2;}
     export MKINSTALLDIRS=:
   fi
   echo "running ${MKINSTALLDIRS} \"${lf_directory}\""
-  ${MKINSTALLDIRS} "${lf_directory}"
+  ${MKINSTALLDIRS} "${lf_directory}" 2>&1
 
   # Link them:
   lf_subdirs="`echo `"
@@ -14246,7 +14250,7 @@ ac_config_files="$ac_config_files Makefile txtc.sh doc/Makefile doc/gnits/Makefi
 
 
 #
-# Output the files
+# Output the files:
 #
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure

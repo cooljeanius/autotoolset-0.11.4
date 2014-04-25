@@ -147,6 +147,6 @@ AC_CONFIG_FILES([
 	])
 
 #
-# Output the files
+# Output the files:
 #
 AC_OUTPUT

@@ -661,6 +661,14 @@ uninstall-am:
 	pdf-am ps ps-am tags tags-am uninstall uninstall-am
 
 
+docs:
+	for my_subdir in $(SUBDIRS); do \
+	  $(MAKE) -C $${my_subdir}; \
+	  $(MAKE) -C $${my_subdir} html; \
+	done
+
+.PHONY: docs
+
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

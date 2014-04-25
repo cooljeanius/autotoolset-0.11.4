@@ -822,9 +822,12 @@ AC_DEFUN([LF_PROG_F77_ALL_CHECKS],[
   AC_FC_DUMMY_MAIN([],[:])
   AC_REQUIRE([AC_F77_MAIN])
   AC_REQUIRE([AC_FC_MAIN])
-  AC_FC_SRCEXT([f],[],[:])
-  AC_FC_PP_SRCEXT([f],[],[:])
-  AC_FC_PP_DEFINE([],[:])
+  AC_FC_SRCEXT([f],[:],[:])
+  AC_FC_PP_SRCEXT([f],[:],[:])
+  if test "x${ac_cv_fc_pp_srcext_f}" != "xunknown"; then
+    test ! -z "${ac_cv_fc_pp_srcext_f}"
+    AC_FC_PP_DEFINE([],[:])
+  fi
   AC_FC_FREEFORM([],[:])
   AC_FC_FIXEDFORM([],[:])
   AC_FC_LINE_LENGTH([unlimited],[],[:])
@@ -836,6 +839,7 @@ AC_DEFUN([LF_PROG_F77_ALL_CHECKS],[
   AC_FC_MODULE_OUTPUT_FLAG([],[:])
 ])
 
-dnl# tests left out: A bunch (any ones where I was unable to redefine their
-dnl# failure action)
+dnl# tests left out: A bunch (basically any ones where I was unable to
+dnl# redefine their failure action, or which called another macro without
+dnl# redefining its failure condition)
 

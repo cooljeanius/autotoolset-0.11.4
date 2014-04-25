@@ -19,3 +19,11 @@ SUBDIRS = gnits manual notes texinfo tutorial
 EXTRA_DIST = html
 
 DISTCLEANFILES = .DS_Store html/.DS_Store *~ html/*~
+
+docs:
+	for my_subdir in $(SUBDIRS); do \
+	  $(MAKE) -C $${my_subdir}; \
+	  $(MAKE) -C $${my_subdir} html; \
+	done
+
+.PHONY: docs

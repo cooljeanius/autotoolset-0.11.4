@@ -822,9 +822,11 @@ uninstall-am: uninstall-dvi-am uninstall-html-am uninstall-info-am \
 
 html-local: tutorial.texi
 	$(TEXI2HTML) tutorial.texi || $(MAKEINFO) --html tutorial.texi
+.PHONY: html-local
 
 maintainer-clean-local:
 	rm -rf tutorial || rmdir tutorial
+.PHONY: maintainer-clean-local
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

@@ -33,6 +33,7 @@ dnl# distribution terms that you use for the rest of that program.
 # ------------------------------------------------------------------------
 
 AC_DEFUN([LF_LINK_HEADERS],[
+  AC_REQUIRE([AC_PROG_MKDIR_P])
   # Find out how to link files if we have NOT done so already:
   if test -z "${LN_S}"
   then
@@ -76,7 +77,7 @@ AC_DEFUN([LF_LINK_HEADERS],[
     export MKINSTALLDIRS=:
   fi
   echo "running ${MKINSTALLDIRS} \"${lf_directory}\""
-  ${MKINSTALLDIRS} "${lf_directory}"
+  ${MKINSTALLDIRS} "${lf_directory}" 2>&1
 
   # Link them:
   lf_subdirs="`echo $1`"
