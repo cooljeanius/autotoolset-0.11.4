@@ -28,6 +28,7 @@ AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_LIBOBJ_DIR([lib])
 AM_INIT_AUTOMAKE([dist-bzip2 dist-shar gnits])
 AM_MAINTAINER_MODE
+cd ${srcdir}
 AC_DEFUN([AM_TAP_TEST_DRIVER],[
   AC_REQUIRE_AUX_FILE([tap-driver.sh])
   AC_REQUIRE([AC_PROG_AWK])
@@ -40,6 +41,7 @@ LF_CONFIGURE_CC
 AM_PROG_AR
 LF_CONFIGURE_CXX
 AC_PROG_INSTALL
+cd ${srcdir}
 AM_PROG_LEX
 AC_PROG_LN_S
 AC_PROG_MKDIR_P
@@ -64,6 +66,7 @@ AS_IF([test "x${cross_compiling}" = "xno"],[
 ])
 
 # Shell related stuff:
+cd ${srcdir}
 LF_PROG_BASH
 LF_PROG_TXTC
 
@@ -116,6 +119,7 @@ AC_HEADER_ASSERT
 
 # X:
 LF_PATH_XLIB
+cd ${srcdir}
 
 #
 # Files to be generated:

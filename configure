@@ -3341,6 +3341,7 @@ fi
   MAINT=$MAINTAINER_MODE_TRUE
 
 
+cd ${srcdir}
 
 
 
@@ -6790,6 +6791,7 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+cd ${srcdir}
 for ac_prog in flex lex
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
@@ -12277,6 +12279,7 @@ else
 fi
 
 # Shell related stuff:
+cd ${srcdir}
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether #! works in shell scripts" >&5
 $as_echo_n "checking whether #! works in shell scripts... " >&6; }
 if ${ac_cv_sys_interpreter+:} false; then :
@@ -14121,6 +14124,7 @@ fi
   XLIB="${X_LIBS} ${X_PRE_LIBS} -lX11 ${X_EXTRA_LIBS}"
 
 
+cd ${srcdir}
 
 #
 # Files to be generated:
