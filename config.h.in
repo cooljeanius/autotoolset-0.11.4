@@ -23,6 +23,10 @@
 /* Define to 1 if the F77 compiler appends underscores */
 #undef F77_APPEND_UNDERSCORE
 
+/* Define to dummy `main' function (if any) required to link to the Fortran
+   libraries. */
+#undef F77_DUMMY_MAIN
+
 /* Define to alternate name for `main' routine that is called from a `main' in
    the Fortran libraries. */
 #undef F77_MAIN

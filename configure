@@ -663,6 +663,9 @@ FC_MODOUT
 ac_empty
 FC_MODINC
 FC_MODEXT
+FC_DEFINE
+FCFLAGS_F
+FCFLAGS_f
 FCLIBS
 ac_ct_FC
 FCFLAGS
@@ -2277,6 +2280,14 @@ else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 $4
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -2298,6 +2309,14 @@ if ac_fn_c_try_compile "$LINENO"; then :
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 $4
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -10586,119 +10605,6 @@ ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
 ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
 ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
-ac_ext=${ac_fc_srcext-f}
-ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
-ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_fc_compiler_gnu
-
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for dummy main to link with Fortran libraries" >&5
-$as_echo_n "checking for dummy main to link with Fortran libraries... " >&6; }
-if ${ac_cv_fc_dummy_main+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_fc_dm_save_LIBS=$LIBS
- LIBS="$LIBS $FCLIBS"
- ac_fortran_dm_var=FC_DUMMY_MAIN
- ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
- # First, try linking without a dummy main:
- cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_fortran_dummy_main=none
-else
-  ac_cv_fortran_dummy_main=unknown
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-
- if test $ac_cv_fortran_dummy_main = unknown; then
-   for ac_func in MAIN__ MAIN_ __main MAIN _MAIN __MAIN main_ main__ _main; do
-     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-#define $ac_fortran_dm_var $ac_func
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  ac_cv_fortran_dummy_main=$ac_func; break
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-   done
- fi
- ac_ext=${ac_fc_srcext-f}
-ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
-ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_fc_compiler_gnu
- ac_cv_fc_dummy_main=$ac_cv_fortran_dummy_main
- rm -rf conftest*
- LIBS=$ac_fc_dm_save_LIBS
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_dummy_main" >&5
-$as_echo "$ac_cv_fc_dummy_main" >&6; }
-FC_DUMMY_MAIN=$ac_cv_fc_dummy_main
-if test "$FC_DUMMY_MAIN" != unknown; then :
-  if test $FC_DUMMY_MAIN != none; then
-
-cat >>confdefs.h <<_ACEOF
-#define FC_DUMMY_MAIN $FC_DUMMY_MAIN
-_ACEOF
-
-  if test "x$ac_cv_fc_dummy_main" = "x$ac_cv_f77_dummy_main"; then
-
-$as_echo "#define FC_DUMMY_MAIN_EQ_F77 1" >>confdefs.h
-
-  fi
-fi
-else
-  { { $as_echo "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
-$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
-as_fn_error $? "linking to Fortran libraries from C fails
-See \`config.log' for more details" "$LINENO" 5; }
-fi
-
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
 ac_ext=f
 ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
 ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
@@ -10727,6 +10633,14 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 #  undef $ac_fortran_dm_var
 #endif
 #define main $ac_func
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -10800,6 +10714,14 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 #  undef $ac_fortran_dm_var
 #endif
 #define main $ac_func
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -10839,6 +10761,100 @@ cat >>confdefs.h <<_ACEOF
 _ACEOF
 
 
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Fortran flag needed to accept free-form source" >&5
+$as_echo_n "checking for Fortran flag needed to accept free-form source... " >&6; }
+if ${ac_cv_fc_freeform+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_fc_freeform=unknown
+ac_fc_freeform_FCFLAGS_save=$FCFLAGS
+for ac_flag in none -ffree-form -FR -free -qfree -Mfree -Mfreeform \
+	       -freeform "-f free" -8 +source=free -nfix --nfix -Free
+do
+  test "x$ac_flag" != xnone && FCFLAGS="$ac_fc_freeform_FCFLAGS_save $ac_flag"
+  cat > conftest.$ac_ext <<_ACEOF
+
+  program freeform
+       ! FIXME: how to best confuse non-freeform compilers?
+       print *, 'Hello ', &
+          'world.'
+       end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  ac_cv_fc_freeform=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+FCFLAGS=$ac_fc_freeform_FCFLAGS_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_freeform" >&5
+$as_echo "$ac_cv_fc_freeform" >&6; }
+if test "x$ac_cv_fc_freeform" = xunknown; then
+  :
+else
+  if test "x$ac_cv_fc_freeform" != xnone; then
+    FCFLAGS="$FCFLAGS $ac_cv_fc_freeform"
+  fi
+
+fi
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Fortran flag needed to accept fixed-form source" >&5
+$as_echo_n "checking for Fortran flag needed to accept fixed-form source... " >&6; }
+if ${ac_cv_fc_fixedform+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_fc_fixedform=unknown
+ac_fc_fixedform_FCFLAGS_save=$FCFLAGS
+for ac_flag in none -ffixed-form -fixed -qfixed -Mfixed -fixedform "-f fixed" \
+	       +source=fixed -fix --fix -Fixed
+do
+  test "x$ac_flag" != xnone && FCFLAGS="$ac_fc_fixedform_FCFLAGS_save $ac_flag"
+  cat > conftest.$ac_ext <<_ACEOF
+
+C     This comment should confuse free-form compilers.
+      program main
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  ac_cv_fc_fixedform=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+FCFLAGS=$ac_fc_fixedform_FCFLAGS_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_fixedform" >&5
+$as_echo "$ac_cv_fc_fixedform" >&6; }
+if test "x$ac_cv_fc_fixedform" = xunknown; then
+  :
+else
+  if test "x$ac_cv_fc_fixedform" != xnone; then
+    FCFLAGS="$FCFLAGS $ac_cv_fc_fixedform"
+  fi
+
+fi
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -10889,7 +10905,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_line_length" >&5
 $as_echo "$ac_cv_fc_line_length" >&6; }
 if test "x$ac_cv_fc_line_length" = xunknown; then
-  as_fn_error 77 "Fortran does not accept long source lines" "$LINENO" 5
+  :
 else
   if test "x$ac_cv_fc_line_length" != xnone; then
     FCFLAGS="$FCFLAGS $ac_cv_fc_line_length"
@@ -10981,74 +10997,13 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_check_bounds" >&5
 $as_echo "$ac_cv_fc_check_bounds" >&6; }
 if test "x$ac_cv_fc_check_bounds" = xunknown; then
-  as_fn_error 77 "no Fortran flag for bounds checking found" "$LINENO" 5
+  :
 else
   if test "x$ac_cv_fc_check_bounds" != xnone; then
     FCFLAGS="$FCFLAGS $ac_cv_fc_check_bounds"
   fi
 
 fi
-ac_ext=c
-ac_cpp='$CPP $CPPFLAGS'
-ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
-ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_c_compiler_gnu
-
-ac_ext=${ac_fc_srcext-f}
-ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
-ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
-ac_compiler_gnu=$ac_cv_fc_compiler_gnu
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for flag to disallow Fortran implicit declarations" >&5
-$as_echo_n "checking for flag to disallow Fortran implicit declarations... " >&6; }
-if ${ac_cv_fc_implicit_none+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  ac_cv_fc_implicit_none=unknown
-ac_fc_implicit_none_FCFLAGS_save=$FCFLAGS
-for ac_flag in none -fimplicit-none -u -Wimplicit -implicitnone +implicit_none \
-               -qundef "-warn declarations" -in --in -AT "-e I" -Mdclchk \
-               "-u -warn errors"
-do
-  if test "x$ac_flag" != xnone; then
-    FCFLAGS="$ac_fc_implicit_none_FCFLAGS_save $ac_flag"
-  fi
-  cat > conftest.$ac_ext <<_ACEOF
-      program main
-
-      end
-_ACEOF
-if ac_fn_fc_try_compile "$LINENO"; then :
-  cat > conftest.$ac_ext <<_ACEOF
-      program main
-
-      i = 0
-      print *, i
-      end
-_ACEOF
-if ac_fn_fc_try_compile "$LINENO"; then :
-
-else
-  ac_cv_fc_implicit_none=$ac_flag; break
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-done
-rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
-FCFLAGS=$ac_fc_implicit_none_FCFLAGS_save
-
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_implicit_none" >&5
-$as_echo "$ac_cv_fc_implicit_none" >&6; }
-if test "x$ac_cv_fc_implicit_none" = xunknown; then
-  as_fn_error 77 "no Fortran flag to disallow implicit declarations found" "$LINENO" 5
-else
-  if test "x$ac_cv_fc_implicit_none" != xnone; then
-    FCFLAGS="$FCFLAGS $ac_cv_fc_implicit_none"
-  fi
-
-fi
-
 ac_ext=c
 ac_cpp='$CPP $CPPFLAGS'
 ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -11100,6 +11055,635 @@ FC_MODEXT=$ac_cv_fc_module_ext
 if test "$FC_MODEXT" = unknown; then
   FC_MODEXT=
 fi
+
+
+
+
+
+
+
+
+
+
+
+  ac_ext=f
+ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
+ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_f77_compiler_gnu
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for dummy main to link with Fortran 77 libraries" >&5
+$as_echo_n "checking for dummy main to link with Fortran 77 libraries... " >&6; }
+if ${ac_cv_f77_dummy_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_f77_dm_save_LIBS=$LIBS
+ LIBS="$LIBS $FLIBS"
+ ac_fortran_dm_var=F77_DUMMY_MAIN
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ # First, try linking without a dummy main:
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_fortran_dummy_main=none
+else
+  ac_cv_fortran_dummy_main=unknown
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+ if test $ac_cv_fortran_dummy_main = unknown; then
+   for ac_func in MAIN__ MAIN_ __main MAIN _MAIN __MAIN main_ main__ _main; do
+     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#define $ac_fortran_dm_var $ac_func
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_fortran_dummy_main=$ac_func; break
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+   done
+ fi
+ ac_ext=f
+ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
+ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_f77_compiler_gnu
+ ac_cv_f77_dummy_main=$ac_cv_fortran_dummy_main
+ rm -rf conftest*
+ LIBS=$ac_f77_dm_save_LIBS
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_f77_dummy_main" >&5
+$as_echo "$ac_cv_f77_dummy_main" >&6; }
+F77_DUMMY_MAIN=$ac_cv_f77_dummy_main
+if test "$F77_DUMMY_MAIN" != unknown; then :
+  if test $F77_DUMMY_MAIN != none; then
+
+cat >>confdefs.h <<_ACEOF
+#define F77_DUMMY_MAIN $F77_DUMMY_MAIN
+_ACEOF
+
+  if test "x$ac_cv_fc_dummy_main" = "x$ac_cv_f77_dummy_main"; then
+
+$as_echo "#define FC_DUMMY_MAIN_EQ_F77 1" >>confdefs.h
+
+  fi
+fi
+else
+  :
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+  ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for dummy main to link with Fortran libraries" >&5
+$as_echo_n "checking for dummy main to link with Fortran libraries... " >&6; }
+if ${ac_cv_fc_dummy_main+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_fc_dm_save_LIBS=$LIBS
+ LIBS="$LIBS $FCLIBS"
+ ac_fortran_dm_var=FC_DUMMY_MAIN
+ ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+ # First, try linking without a dummy main:
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_fortran_dummy_main=none
+else
+  ac_cv_fortran_dummy_main=unknown
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+
+ if test $ac_cv_fortran_dummy_main = unknown; then
+   for ac_func in MAIN__ MAIN_ __main MAIN _MAIN __MAIN main_ main__ _main; do
+     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#define $ac_fortran_dm_var $ac_func
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
+#ifdef FC_DUMMY_MAIN
+#ifndef FC_DUMMY_MAIN_EQ_F77
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int FC_DUMMY_MAIN() { return 1; }
+#endif
+#endif
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_c_try_link "$LINENO"; then :
+  ac_cv_fortran_dummy_main=$ac_func; break
+fi
+rm -f core conftest.err conftest.$ac_objext \
+    conftest$ac_exeext conftest.$ac_ext
+   done
+ fi
+ ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+ ac_cv_fc_dummy_main=$ac_cv_fortran_dummy_main
+ rm -rf conftest*
+ LIBS=$ac_fc_dm_save_LIBS
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_dummy_main" >&5
+$as_echo "$ac_cv_fc_dummy_main" >&6; }
+FC_DUMMY_MAIN=$ac_cv_fc_dummy_main
+if test "$FC_DUMMY_MAIN" != unknown; then :
+  if test $FC_DUMMY_MAIN != none; then
+
+cat >>confdefs.h <<_ACEOF
+#define FC_DUMMY_MAIN $FC_DUMMY_MAIN
+_ACEOF
+
+  if test "x$ac_cv_fc_dummy_main" = "x$ac_cv_f77_dummy_main"; then
+
+$as_echo "#define FC_DUMMY_MAIN_EQ_F77 1" >>confdefs.h
+
+  fi
+fi
+else
+  :
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+
+  ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Fortran flag to compile .f files" >&5
+$as_echo_n "checking for Fortran flag to compile .f files... " >&6; }
+if ${ac_cv_fc_srcext_f+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_ext=f
+ac_fcflags_srcext_save=$ac_fcflags_srcext
+ac_fcflags_srcext=
+ac_cv_fc_srcext_f=unknown
+case $ac_ext in #(
+  [fF]77) ac_try=f77;; #(
+  *) ac_try=f95;;
+esac
+for ac_flag in none -qsuffix=f=f -Tf "-x $ac_try"; do
+  test "x$ac_flag" != xnone && ac_fcflags_srcext="$ac_flag"
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  ac_cv_fc_srcext_f=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.$ac_objext conftest.f
+ac_fcflags_srcext=$ac_fcflags_srcext_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_srcext_f" >&5
+$as_echo "$ac_cv_fc_srcext_f" >&6; }
+if test "x$ac_cv_fc_srcext_f" = xunknown; then
+  :
+else
+  ac_fc_srcext=f
+  if test "x$ac_cv_fc_srcext_f" = xnone; then
+    ac_fcflags_srcext=""
+    FCFLAGS_f=""
+  else
+    ac_fcflags_srcext=$ac_cv_fc_srcext_f
+    FCFLAGS_f=$ac_cv_fc_srcext_f
+  fi
+
+
+fi
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+  ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Fortran flag to compile preprocessed .f files" >&5
+$as_echo_n "checking for Fortran flag to compile preprocessed .f files... " >&6; }
+if ${ac_cv_fc_pp_srcext_f+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_ext=f
+ac_fcflags_pp_srcext_save=$ac_fcflags_srcext
+ac_fcflags_srcext=
+ac_cv_fc_pp_srcext_f=unknown
+case $ac_ext in #(
+  [fF]77) ac_try=f77-cpp-input;; #(
+  *) ac_try=f95-cpp-input;;
+esac
+for ac_flag in none -ftpp -fpp -Tf "-fpp -Tf" -xpp=fpp -Mpreprocess "-e Z" \
+               -cpp -xpp=cpp -qsuffix=cpp=f "-x $ac_try" +cpp -Cpp; do
+  test "x$ac_flag" != xnone && ac_fcflags_srcext="$ac_flag"
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#if 0
+#include <ac_nonexistent.h>
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#if 1
+#include <ac_nonexistent.h>
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+
+else
+  ac_cv_fc_pp_srcext_f=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.$ac_objext conftest.f
+ac_fcflags_srcext=$ac_fcflags_pp_srcext_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_pp_srcext_f" >&5
+$as_echo "$ac_cv_fc_pp_srcext_f" >&6; }
+if test "x$ac_cv_fc_pp_srcext_f" = xunknown; then
+  :
+else
+  ac_fc_srcext=f
+  if test "x$ac_cv_fc_pp_srcext_f" = xnone; then
+    ac_fcflags_srcext=""
+    FCFLAGS_f=""
+  else
+    ac_fcflags_srcext=$ac_cv_fc_pp_srcext_f
+    FCFLAGS_f=$ac_cv_fc_pp_srcext_f
+  fi
+
+
+fi
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+  ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+ac_fc_pp_define_srcext_save=$ac_fc_srcext
+ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for Fortran flag to compile preprocessed .F files" >&5
+$as_echo_n "checking for Fortran flag to compile preprocessed .F files... " >&6; }
+if ${ac_cv_fc_pp_srcext_F+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_ext=F
+ac_fcflags_pp_srcext_save=$ac_fcflags_srcext
+ac_fcflags_srcext=
+ac_cv_fc_pp_srcext_F=unknown
+case $ac_ext in #(
+  [fF]77) ac_try=f77-cpp-input;; #(
+  *) ac_try=f95-cpp-input;;
+esac
+for ac_flag in none -ftpp -fpp -Tf "-fpp -Tf" -xpp=fpp -Mpreprocess "-e Z" \
+               -cpp -xpp=cpp -qsuffix=cpp=F "-x $ac_try" +cpp -Cpp; do
+  test "x$ac_flag" != xnone && ac_fcflags_srcext="$ac_flag"
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#if 0
+#include <ac_nonexistent.h>
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#if 1
+#include <ac_nonexistent.h>
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+
+else
+  ac_cv_fc_pp_srcext_F=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.$ac_objext conftest.F
+ac_fcflags_srcext=$ac_fcflags_pp_srcext_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_pp_srcext_F" >&5
+$as_echo "$ac_cv_fc_pp_srcext_F" >&6; }
+if test "x$ac_cv_fc_pp_srcext_F" = xunknown; then
+  as_fn_error $? "Fortran could not compile preprocessed .F files" "$LINENO" 5
+else
+  ac_fc_srcext=F
+  if test "x$ac_cv_fc_pp_srcext_F" = xnone; then
+    ac_fcflags_srcext=""
+    FCFLAGS_F=""
+  else
+    ac_fcflags_srcext=$ac_cv_fc_pp_srcext_F
+    FCFLAGS_F=$ac_cv_fc_pp_srcext_F
+  fi
+
+
+fi
+ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking how to define symbols for preprocessed Fortran" >&5
+$as_echo_n "checking how to define symbols for preprocessed Fortran... " >&6; }
+if ${ac_cv_fc_pp_define+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_fc_pp_define_srcext_save=$ac_fc_srcext
+ac_cv_fc_pp_define=unknown
+ac_fc_pp_define_FCFLAGS_save=$FCFLAGS
+for ac_flag in -D -WF,-D -Wp,-D -Wc,-D
+do
+  FCFLAGS="$ac_fc_pp_define_FCFLAGS_save ${ac_flag}FOOBAR ${ac_flag}ZORK=42"
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+#ifndef FOOBAR
+      choke me
+#endif
+#if ZORK != 42
+      choke me
+#endif
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  ac_cv_fc_pp_define=$ac_flag
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+  test x"$ac_cv_fc_pp_define" != xunknown && break
+done
+FCFLAGS=$ac_fc_pp_define_FCFLAGS_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_pp_define" >&5
+$as_echo "$ac_cv_fc_pp_define" >&6; }
+ac_fc_srcext=$ac_fc_pp_define_srcext_save
+if test "x$ac_cv_fc_pp_define" = xunknown; then
+  FC_DEFINE=
+  :
+else
+  FC_DEFINE=$ac_cv_fc_pp_define
+
+fi
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+
+
+
+
+  ac_ext=f
+ac_compile='$F77 -c $FFLAGS conftest.$ac_ext >&5'
+ac_link='$F77 -o conftest$ac_exeext $FFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_f77_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for flag to disallow Fortran 77 implicit declarations" >&5
+$as_echo_n "checking for flag to disallow Fortran 77 implicit declarations... " >&6; }
+if ${ac_cv_f77_implicit_none+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_f77_implicit_none=unknown
+ac_fc_implicit_none_FFLAGS_save=$FFLAGS
+for ac_flag in none -fimplicit-none -u -Wimplicit -implicitnone +implicit_none \
+               -qundef "-warn declarations" -in --in -AT "-e I" -Mdclchk \
+               "-u -warn errors"
+do
+  if test "x$ac_flag" != xnone; then
+    FFLAGS="$ac_fc_implicit_none_FFLAGS_save $ac_flag"
+  fi
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+      end
+_ACEOF
+if ac_fn_f77_try_compile "$LINENO"; then :
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+      i = 0
+      print *, i
+      end
+_ACEOF
+if ac_fn_f77_try_compile "$LINENO"; then :
+
+else
+  ac_cv_f77_implicit_none=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+FFLAGS=$ac_fc_implicit_none_FFLAGS_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_f77_implicit_none" >&5
+$as_echo "$ac_cv_f77_implicit_none" >&6; }
+if test "x$ac_cv_f77_implicit_none" = xunknown; then
+  :
+else
+  if test "x$ac_cv_f77_implicit_none" != xnone; then
+    FFLAGS="$FFLAGS $ac_cv_f77_implicit_none"
+  fi
+  :
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
+  ac_ext=${ac_fc_srcext-f}
+ac_compile='$FC -c $FCFLAGS $ac_fcflags_srcext conftest.$ac_ext >&5'
+ac_link='$FC -o conftest$ac_exeext $FCFLAGS $LDFLAGS $ac_fcflags_srcext conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_fc_compiler_gnu
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for flag to disallow Fortran implicit declarations" >&5
+$as_echo_n "checking for flag to disallow Fortran implicit declarations... " >&6; }
+if ${ac_cv_fc_implicit_none+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  ac_cv_fc_implicit_none=unknown
+ac_fc_implicit_none_FCFLAGS_save=$FCFLAGS
+for ac_flag in none -fimplicit-none -u -Wimplicit -implicitnone +implicit_none \
+               -qundef "-warn declarations" -in --in -AT "-e I" -Mdclchk \
+               "-u -warn errors"
+do
+  if test "x$ac_flag" != xnone; then
+    FCFLAGS="$ac_fc_implicit_none_FCFLAGS_save $ac_flag"
+  fi
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+  cat > conftest.$ac_ext <<_ACEOF
+      program main
+
+      i = 0
+      print *, i
+      end
+_ACEOF
+if ac_fn_fc_try_compile "$LINENO"; then :
+
+else
+  ac_cv_fc_implicit_none=$ac_flag; break
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+done
+rm -f conftest.err conftest.$ac_objext conftest.$ac_ext
+FCFLAGS=$ac_fc_implicit_none_FCFLAGS_save
+
+fi
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_implicit_none" >&5
+$as_echo "$ac_cv_fc_implicit_none" >&6; }
+if test "x$ac_cv_fc_implicit_none" = xunknown; then
+  as_fn_error 77 "no Fortran flag to disallow implicit declarations found" "$LINENO" 5
+else
+  if test "x$ac_cv_fc_implicit_none" != xnone; then
+    FCFLAGS="$FCFLAGS $ac_cv_fc_implicit_none"
+  fi
+  :
+fi
+
+ac_ext=c
+ac_cpp='$CPP $CPPFLAGS'
+ac_compile='$CC -c $CFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CC -o conftest$ac_exeext $CFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_c_compiler_gnu
+
 
 
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking Fortran 90 module inclusion flag" >&5
@@ -11166,7 +11750,7 @@ if test "$ac_cv_fc_module_flag" != unknown; then
 
 else
   FC_MODINC=
-  as_fn_error $? "unable to find compiler flag for module search path" "$LINENO" 5
+  :
 fi
 
 # Ensure trailing whitespace is preserved in a Makefile.
@@ -11240,30 +11824,11 @@ if test "$ac_cv_fc_module_output_flag" != unknown; then
 
 else
   FC_MODOUT=
-  as_fn_error $? "unable to find compiler flag to write module information to" "$LINENO" 5
+  :
 fi
 
 # Ensure trailing whitespace is preserved in a Makefile.
 ac_empty=""
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -12283,6 +12848,14 @@ else
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <alloca.h>
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -12344,6 +12917,14 @@ void *alloca (size_t);
 # endif
 #endif
 
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -12503,6 +13084,14 @@ else
 char *malloc ();
 #endif
 
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -12603,107 +13192,12 @@ esac
 fi
 
 
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for stdbool.h that conforms to C99" >&5
-$as_echo_n "checking for stdbool.h that conforms to C99... " >&6; }
-if ${ac_cv_header_stdbool_h+:} false; then :
-  $as_echo_n "(cached) " >&6
-else
-  cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-             #include <stdbool.h>
-             #ifndef bool
-              "error: bool is not defined"
-             #endif
-             #ifndef false
-              "error: false is not defined"
-             #endif
-             #if false
-              "error: false is not 0"
-             #endif
-             #ifndef true
-              "error: true is not defined"
-             #endif
-             #if true != 1
-              "error: true is not 1"
-             #endif
-             #ifndef __bool_true_false_are_defined
-              "error: __bool_true_false_are_defined is not defined"
-             #endif
-
-             struct s { _Bool s: 1; _Bool t; } s;
-
-             char a[true == 1 ? 1 : -1];
-             char b[false == 0 ? 1 : -1];
-             char c[__bool_true_false_are_defined == 1 ? 1 : -1];
-             char d[(bool) 0.5 == true ? 1 : -1];
-             /* See body of main program for 'e'.  */
-             char f[(_Bool) 0.0 == false ? 1 : -1];
-             char g[true];
-             char h[sizeof (_Bool)];
-             char i[sizeof s.t];
-             enum { j = false, k = true, l = false * true, m = true * 256 };
-             /* The following fails for
-                HP aC++/ANSI C B3910B A.05.55 [Dec 04 2003]. */
-             _Bool n[m];
-             char o[sizeof n == m * sizeof n[0] ? 1 : -1];
-             char p[-1 - (_Bool) 0 < 0 && -1 - (bool) 0 < 0 ? 1 : -1];
-             /* Catch a bug in an HP-UX C compiler.  See
-                http://gcc.gnu.org/ml/gcc-patches/2003-12/msg02303.html
-                http://lists.gnu.org/archive/html/bug-coreutils/2005-11/msg00161.html
-              */
-             _Bool q = true;
-             _Bool *pq = &q;
-
-#ifdef FC_DUMMY_MAIN
-#ifndef FC_DUMMY_MAIN_EQ_F77
-#  ifdef __cplusplus
-     extern "C"
-#  endif
-   int FC_DUMMY_MAIN() { return 1; }
-#endif
-#endif
-int
-main ()
-{
-
-             bool e = &s;
-             *pq |= q;
-             *pq |= ! q;
-             /* Refer to every declared value, to avoid compiler optimizations.  */
-             return (!a + !b + !c + !d + !e + !f + !g + !h + !i + !!j + !k + !!l
-                     + !m + !n + !o + !p + !q + !pq);
-
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_compile "$LINENO"; then :
-  ac_cv_header_stdbool_h=yes
-else
-  ac_cv_header_stdbool_h=no
-fi
-rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_header_stdbool_h" >&5
-$as_echo "$ac_cv_header_stdbool_h" >&6; }
-   ac_fn_c_check_type "$LINENO" "_Bool" "ac_cv_type__Bool" "$ac_includes_default"
-if test "x$ac_cv_type__Bool" = xyes; then :
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE__BOOL 1
-_ACEOF
 
 
-fi
 
 
-if test $ac_cv_header_stdbool_h = yes; then
 
-$as_echo "#define HAVE_STDBOOL_H 1" >>confdefs.h
-
-fi
- for ac_header in getopt.h libintl.h long-options.h xalloca.h
+for ac_header in getopt.h libintl.h long-options.h xalloca.h
 do :
   as_ac_Header=`$as_echo "ac_cv_header_$ac_header" | $as_tr_sh`
 ac_fn_c_check_header_mongrel "$LINENO" "$ac_header" "$as_ac_Header" "$ac_includes_default"
@@ -12866,6 +13360,14 @@ if test "$ac_x_libraries" = no; then
   cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 #include <X11/Xlib.h>
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -12960,6 +13462,14 @@ $as_echo_n "checking whether -R must be followed by a space... " >&6; }
     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -12985,6 +13495,14 @@ else
        cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 /* end confdefs.h.  */
 
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13039,6 +13557,14 @@ rm -f core conftest.err conftest.$ac_objext \
 extern "C"
 #endif
 char XOpenDisplay ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13075,6 +13601,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char dnet_ntoa ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13124,6 +13658,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char dnet_ntoa ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13192,6 +13734,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char gethostbyname ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13241,6 +13791,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char gethostbyname ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13305,6 +13863,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char connect ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13362,6 +13928,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char remove ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13419,6 +13993,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char shmat ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus
@@ -13479,6 +14061,14 @@ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
 extern "C"
 #endif
 char IceConnectionNumber ();
+#ifdef F77_DUMMY_MAIN
+
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+
+#endif
 #ifdef FC_DUMMY_MAIN
 #ifndef FC_DUMMY_MAIN_EQ_F77
 #  ifdef __cplusplus

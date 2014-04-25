@@ -99,7 +99,11 @@ AC_CHECK_FUNCS([getopt_long],[],[
 	AC_LIBOBJ([getopt1])
 ])
 AC_REPLACE_FUNCS([getopt])
-AC_HEADER_STDBOOL dnl# also "_CHECK"s it
+AC_DEFUN([AC_REQUIRE_STDBOOL],[
+  AC_REQUIRE([AC_HEADER_STDBOOL])
+  AC_REQUIRE([AC_CHECK_HEADER_STDBOOL])
+])
+AC_REQUIRE_STDBOOL
 AC_CHECK_HEADERS([getopt.h libintl.h long-options.h xalloca.h])
 AC_HEADER_ASSERT
 

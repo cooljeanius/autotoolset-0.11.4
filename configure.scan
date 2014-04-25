@@ -39,9 +39,12 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/acconfig/Makefile
                  src/acmkdir/Makefile
+                 src/acmkdir/fortran/Makefile
                  src/acmkdir/python/Makefile
                  src/emacs/Makefile
                  src/gpl/Makefile
                  src/mkconfig/Makefile
                  src/txtc/Makefile])
+AC_CONFIG_SUBDIRS([src/acmkdir/fortran/f2c
+                   src/acmkdir/fortran/libf2c])
 AC_OUTPUT
