@@ -19,7 +19,7 @@ SUBDIRS = m4 doc lib misc src
 
 dist_doc_DATA = README
 
-EXTRA_DIST = debian reconf fix-timestamp.sh
+EXTRA_DIST = debian reconf fix-timestamp.sh txtc.sh
 
 MOSTLYCLEANFILES = config.h.in~ acconfig.h
 

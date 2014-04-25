@@ -1,5 +1,9 @@
 language: C
 
+install:
+  # Prerequisites
+  - "sudo apt-get install sharutils"
+
 # try to build
 script: ./configure && make && make check
 
