@@ -11673,7 +11673,7 @@ fi
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_fc_implicit_none" >&5
 $as_echo "$ac_cv_fc_implicit_none" >&6; }
 if test "x$ac_cv_fc_implicit_none" = xunknown; then
-  as_fn_error 77 "no Fortran flag to disallow implicit declarations found" "$LINENO" 5
+  :
 else
   if test "x$ac_cv_fc_implicit_none" != xnone; then
     FCFLAGS="$FCFLAGS $ac_cv_fc_implicit_none"
