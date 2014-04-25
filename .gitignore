@@ -32,3 +32,4 @@ autotoolset-*.*.*/*
 lex.yy.c
 config.includes
 conf*/*.awk
+acconfig.h

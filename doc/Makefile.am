@@ -1,4 +1,4 @@
-# Copyright (C) 1988 Eleftherios Gkioulekas <lf@amath.washington.edu>
+# Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
 #  
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

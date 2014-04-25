@@ -1,6 +1,6 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
-# Copyright (C) 1988 Eleftherios Gkioulekas <lf@amath.washington.edu>
+# Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
 # Copyright (C) 2001 Thierry MICHEL <thierry@nekhem.com>
 # Copyright (C) 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
 #  

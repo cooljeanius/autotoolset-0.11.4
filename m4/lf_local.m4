@@ -1,4 +1,4 @@
-dnl# Copyright (C) 1988 Eleftherios Gkioulekas <lf@amath.washington.edu>
+dnl# Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
 dnl# 
 dnl# This program is free software; you can redistribute it and/or modify
 dnl# it under the terms of the GNU General Public License as published by

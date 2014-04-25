@@ -1,4 +1,4 @@
-# Copyright (C) 1988 Eleftherios Gkioulekas <lf@amath.washington.edu>
+# Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
 # Copyright (C) 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
 #  
 # This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@ dist_doc_DATA = README
 
 EXTRA_DIST = debian reconf fix-timestamp.sh
 
-MOSTLYCLEANFILES = config.h.in~
+MOSTLYCLEANFILES = config.h.in~ acconfig.h
 
 DISTCLEANFILES = *~ m4/*~ .DS_Store autoscan.log
 
@@ -31,6 +31,9 @@ noinst_SCRIPTS = fix-timestamp.sh
 
 configure.scan:
 	autoscan || touch configure.scan
+
+acconfig.h: aclocal.m4 configure.ac $(srcdir)/src/acconfig/acconfig.pl
+	$(PERL) $(srcdir)/src/acconfig/acconfig.pl
 
 distclean-local:
 	rm -f @PACKAGE_TARNAME@-@PACKAGE_VERSION@.tar.gz
