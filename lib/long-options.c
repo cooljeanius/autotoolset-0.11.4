@@ -66,20 +66,21 @@ parse_long_options (argc, argv, command_name, package, version, usage)
 
   if ((argc == 2)
       && (c = getopt_long(argc, argv, "+", long_options, (int *)0)) != EOF) {
-      switch (c) {
-		  case 'h':
-			  (*usage)(0);
-
-		  case 'v':
-			  printf("%s (%s) %s\n", command_name, package, version);
-			  exit(0);
-
-		  default:
-			  /* Do NOT process any other long-named options.  */
-			  break;
-	  }
+    switch (c) {
+      case 'h':
+	(*usage)(0);
+	/* Maybe make (*usage)() noreturn, but until then: */
+	/*FALLTHRU*/
+      case 'v':
+	printf("%s (%s) %s\n", command_name, package, version);
+	exit(0);
+	
+      default:
+	/* Do NOT process any other long-named options.  */
+	break;
+    }
   }
-
+  
   /* Restore previous value.  */
   opterr = saved_opterr;
 

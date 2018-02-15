@@ -1,5 +1,5 @@
-#                                               -*- Autoconf -*-
-# Process this file with autoconf to produce a configure script.
+dnl#                                               -*- Autoconf -*-
+dnl# Process this file with autoconf to produce a configure script.
 # Copyright (C) 1998 Eleftherios Gkioulekas <lf@amath.washington.edu>
 # Copyright (C) 2001 Thierry MICHEL <thierry@nekhem.com>
 # Copyright (C) 2003 Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>
@@ -20,7 +20,7 @@
  
 AC_INIT([GNU autotoolset],[0.11.4],
 	[Marcelo Roberto Jimenez <mroberto@cetuc.puc-rio.br>],
-	[autotoolset])
+	[autotoolset])dnl
 AC_CONFIG_SRCDIR([lib/alloca.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_AUX_DIR([config])
@@ -37,13 +37,13 @@ AC_DEFUN([AC_ENSURE_SRCDIR],[
     AC_MSG_NOTICE([making sure we are in "${srcdir}"])
     cd ${srcdir}
   fi
-])
+])dnl
 AC_ENSURE_SRCDIR
 AC_DEFUN([AM_TAP_TEST_DRIVER],[
-  AC_REQUIRE_AUX_FILE([tap-driver.sh])
-  AC_REQUIRE([AC_PROG_AWK])
+  AC_REQUIRE_AUX_FILE([tap-driver.sh])dnl
+  AC_REQUIRE([AC_PROG_AWK])dnl
   test -z "${TEST_LOG_DRIVER}"
-])
+])dnl
 AM_TAP_TEST_DRIVER
 
 # Compiler stuff:
@@ -59,6 +59,7 @@ LF_PROG_NM
 AC_PROG_RANLIB
 AC_PROG_YACC
 LF_PROG_F77_ALL_CHECKS
+LF_CHECK_CC_FLAG([-Wmissing-noreturn])
 LF_SET_WARNINGS
 
 # docs:
@@ -73,7 +74,7 @@ AS_IF([test "x${cross_compiling}" = "xno"],[
   AM_MISSING_PROG([HELP2MAN],[help2man])
 ],[
   HELP2MAN=:
-])
+])dnl
 
 # Shell related stuff:
 AC_ENSURE_SRCDIR
@@ -104,8 +105,8 @@ m4_ifdef([AM_PATH_LISPDIR],[
 ],[m4_ifdef([LF_PATH_LISPDIR],[
     test -z "${lf_emacs_prefix}"
     LF_PATH_LISPDIR
-  ])
-])
+  ])dnl
+])dnl
 AM_PATH_PYTHON
 
 # C configuration stuff:
@@ -116,13 +117,13 @@ AC_CHECK_FUNCS_ONCE([strlen strcpy])
 AC_CHECK_FUNCS([getopt_long],[],[
 	AC_LIBOBJ([getopt])
 	AC_LIBOBJ([getopt1])
-])
+])dnl
 AC_REPLACE_FUNCS([getopt])
 AC_DEFUN([AC_REQUIRE_STDBOOL],[
-  AC_REQUIRE([AC_HEADER_STDC])
-  AC_REQUIRE([AC_HEADER_STDBOOL])
-  AC_REQUIRE([AC_CHECK_HEADER_STDBOOL])
-])
+  AC_REQUIRE([AC_HEADER_STDC])dnl
+  AC_REQUIRE([AC_HEADER_STDBOOL])dnl
+  AC_REQUIRE([AC_CHECK_HEADER_STDBOOL])dnl
+])dnl
 AC_REQUIRE_STDBOOL
 AC_CHECK_HEADERS([getopt.h libintl.h long-options.h xalloca.h])
 AC_HEADER_ASSERT
@@ -139,7 +140,7 @@ if test ! -e misc/buildinstall.in; then
 else
   stat misc/buildinstall.in
 fi
-AC_CONFIG_FILES([misc/buildinstall],[chmod u+x misc/buildinstall])
+AC_CONFIG_FILES([misc/buildinstall],[chmod u+x misc/buildinstall])dnl
 
 # These are tentative in their use:
 LF_LINK_HEADERS
@@ -170,7 +171,7 @@ AC_CONFIG_FILES([
 	src/gpl/Makefile 
 	src/mkconfig/Makefile 
 	src/txtc/Makefile 
-	])
+	])dnl
 
 #
 # Output the files:
