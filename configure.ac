@@ -114,11 +114,16 @@ AC_FUNC_ALLOCA
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([exit strcat])
 AC_CHECK_FUNCS_ONCE([strlen strcpy])
+AC_MSG_CHECKING([getopt funcs])
+AC_MSG_RESULT([ ])
 AC_CHECK_FUNCS([getopt_long],[],[
 	AC_LIBOBJ([getopt])
 	AC_LIBOBJ([getopt1])
 ])dnl
+  ## also this way:
 AC_REPLACE_FUNCS([getopt])
+AC_MSG_CHECKING([headers])
+AC_MSG_RESULT([ ])
 AC_DEFUN([AC_REQUIRE_STDBOOL],[
   AC_REQUIRE([AC_HEADER_STDC])dnl
   AC_REQUIRE([AC_HEADER_STDBOOL])dnl
@@ -127,6 +132,11 @@ AC_DEFUN([AC_REQUIRE_STDBOOL],[
 AC_REQUIRE_STDBOOL
 AC_CHECK_HEADERS([getopt.h libintl.h long-options.h xalloca.h])
 AC_HEADER_ASSERT
+  ## keep autoscan post-2.70 happy:
+if test "x${ac_cv_header_unistd_h}" = "x"; then
+  test -z "${ac_cv_header_unistd_h}"
+  AC_CHECK_HEADERS([unistd.h])
+fi
 
 # X:
 LF_PATH_XLIB
