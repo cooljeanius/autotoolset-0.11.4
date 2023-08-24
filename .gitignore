@@ -36,3 +36,4 @@ config.includes
 conf*/*.awk
 acconfig.h
 *.dSYM
+.env.local
