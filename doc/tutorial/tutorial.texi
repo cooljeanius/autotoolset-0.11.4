@@ -76,7 +76,7 @@
 @subtitle Last updated, @value{UPDATED}
 @author @value{OWNER1}
 @r{@value{PLACE1}}
-@sp
+@sp 1
 @author @value{OWNER2}
 @r{@value{PLACE2}}
 @page

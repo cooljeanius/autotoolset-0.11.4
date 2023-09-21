@@ -1,4 +1,5 @@
-This is tutorial.info, produced by makeinfo version 4.13 from tutorial.texi.
+This is tutorial.info, produced by makeinfo version 4.8 from
+tutorial.texi.
 
 INFO-DIR-SECTION Miscellaneous
 START-INFO-DIR-ENTRY
@@ -7,100 +8,100 @@ END-INFO-DIR-ENTRY
 
 
 Indirect:
-tutorial.info-1: 213
-tutorial.info-2: 297927
+tutorial.info-1: 212
+tutorial.info-2: 297926
 
 Tag Table:
 (Indirect)
-Node: Top213
-Node: Preface3172
-Node: Acknowledgements11962
-Node: Copying13005
-Node: Introduction to the GNU build system15542
-Node: Installing a GNU package16066
-Node: Installing the GNU build system20915
-Node: Hello world example23225
-Node: Understanding the hello world example30474
-Node: Using configuration headers38946
-Node: Maintaining the documentation files45028
-Node: Organizing your project in subdirectories52451
-Node: Hello world with an attitude56113
-Node: Tracking version numbers61583
-Node: Writing Good Programs64962
-Node: Why good code is important65375
-Node: Choosing a good programming language66621
-Node: Developing libraries75776
-Node: Developing applications80685
-Ref: Developing applications-Footnote-184190
-Node: Free software is good software84252
-Node: Invoking the gpl utility84854
-Node: Inserting notices with Emacs87732
-Node: Using GNU Emacs91405
-Node: Introduction to Emacs91826
-Ref: Introduction to Emacs-Footnote-198198
-Ref: Introduction to Emacs-Footnote-298331
-Ref: Introduction to Emacs-Footnote-398421
-Node: Installing GNU Emacs98647
-Node: Configuring GNU Emacs100726
-Node: Using vi emulation107447
-Node: Using Emacs as an IDE117441
-Node: Inserting copyright notices with Emacs117812
-Node: Using Emacs as an email client118060
-Node: Handling patches118287
-Node: Further reading on Emacs118472
-Node: Compiling with Makefiles118634
-Node: Direct compilation118935
-Node: Enter Makefiles122896
-Node: Problems with Makefiles and workarounds131804
-Ref: Problems with Makefiles and workarounds-Footnote-1138733
-Node: Building libraries138826
-Node: Using Automake and Autoconf148648
-Node: Hello World revisited149204
-Node: OLD Using configuration headers154915
-Node: The building process162861
-Node: Some general advice163132
-Node: Standard organization with Automake172240
-Node: Programs and Libraries with Automake178882
-Node: General Automake principles187940
-Node: Simple Automake examples194691
-Node: Built sources198796
-Node: Installation directories.200852
-Node: Handling shell scripts204149
-Node: Handling other obscurities211553
-Node: Using Autotools213244
-Node: Introduction to Autotools213661
-Node: Compiler configuration with the LF macros214379
-Node: The features of LF_CPP_PORTABILITY218112
-Node: Writing portable C++225120
-Node: Hello world revisited again227610
-Node: Invoking acmkdir232137
-Node: Handling Embedded text235858
-Node: Handling very deep packages242807
-Node: C++ and Autoconf252967
-Node: Fortran with Autoconf253350
-Node: Introduction to Fortran support253693
-Node: Fortran compilers and linkage255929
-Node: Walkthrough a simple example263584
-Node: The gory details270088
-Node: Portability problems with Fortran279042
-Node: Maintaining Documentation285628
-Node: Writing proper manuals286041
-Node: Introduction to Texinfo286440
-Node: Markup in Texinfo286641
-Node: GNU Emacs support for Texinfo286837
-Node: Writing documentation with LaTeX287066
-Node: Creating a LaTeX package287308
-Node: Further reading about LaTeX287532
-Node: Legal issues with Free Software287737
-Node: Understanding Copyright288049
-Node: Other legal concerns292727
-Node: Freeing your software297927
-Node: Philosophical issues307961
-Node: Why software should not have owners309152
-Node: Why free software needs free documentation321609
-Node: Copyleft; Pragmatic Idealism327567
-Node: The X Windows Trap334326
-Node: Categories of software340547
-Node: Confusing words352574
+Node: Top212
+Node: Preface3171
+Node: Acknowledgements11961
+Node: Copying13004
+Node: Introduction to the GNU build system15541
+Node: Installing a GNU package16065
+Node: Installing the GNU build system20914
+Node: Hello world example23224
+Node: Understanding the hello world example30473
+Node: Using configuration headers38945
+Node: Maintaining the documentation files45027
+Node: Organizing your project in subdirectories52450
+Node: Hello world with an attitude56112
+Node: Tracking version numbers61582
+Node: Writing Good Programs64961
+Node: Why good code is important65374
+Node: Choosing a good programming language66620
+Node: Developing libraries75775
+Node: Developing applications80684
+Ref: Developing applications-Footnote-184189
+Node: Free software is good software84251
+Node: Invoking the gpl utility84853
+Node: Inserting notices with Emacs87731
+Node: Using GNU Emacs91404
+Node: Introduction to Emacs91825
+Ref: Introduction to Emacs-Footnote-198197
+Ref: Introduction to Emacs-Footnote-298330
+Ref: Introduction to Emacs-Footnote-398420
+Node: Installing GNU Emacs98646
+Node: Configuring GNU Emacs100725
+Node: Using vi emulation107446
+Node: Using Emacs as an IDE117440
+Node: Inserting copyright notices with Emacs117811
+Node: Using Emacs as an email client118059
+Node: Handling patches118286
+Node: Further reading on Emacs118471
+Node: Compiling with Makefiles118633
+Node: Direct compilation118934
+Node: Enter Makefiles122895
+Node: Problems with Makefiles and workarounds131803
+Ref: Problems with Makefiles and workarounds-Footnote-1138732
+Node: Building libraries138825
+Node: Using Automake and Autoconf148647
+Node: Hello World revisited149203
+Node: OLD Using configuration headers154914
+Node: The building process162860
+Node: Some general advice163131
+Node: Standard organization with Automake172239
+Node: Programs and Libraries with Automake178881
+Node: General Automake principles187939
+Node: Simple Automake examples194690
+Node: Built sources198795
+Node: Installation directories.200851
+Node: Handling shell scripts204148
+Node: Handling other obscurities211552
+Node: Using Autotools213243
+Node: Introduction to Autotools213660
+Node: Compiler configuration with the LF macros214378
+Node: The features of LF_CPP_PORTABILITY218111
+Node: Writing portable C++225119
+Node: Hello world revisited again227609
+Node: Invoking acmkdir232136
+Node: Handling Embedded text235857
+Node: Handling very deep packages242806
+Node: C++ and Autoconf252966
+Node: Fortran with Autoconf253349
+Node: Introduction to Fortran support253692
+Node: Fortran compilers and linkage255928
+Node: Walkthrough a simple example263583
+Node: The gory details270087
+Node: Portability problems with Fortran279041
+Node: Maintaining Documentation285627
+Node: Writing proper manuals286040
+Node: Introduction to Texinfo286439
+Node: Markup in Texinfo286640
+Node: GNU Emacs support for Texinfo286836
+Node: Writing documentation with LaTeX287065
+Node: Creating a LaTeX package287307
+Node: Further reading about LaTeX287531
+Node: Legal issues with Free Software287736
+Node: Understanding Copyright288048
+Node: Other legal concerns292726
+Node: Freeing your software297926
+Node: Philosophical issues307960
+Node: Why software should not have owners309151
+Node: Why free software needs free documentation321608
+Node: Copyleft; Pragmatic Idealism327566
+Node: The X Windows Trap334325
+Node: Categories of software340546
+Node: Confusing words352573
 
 End Tag Table

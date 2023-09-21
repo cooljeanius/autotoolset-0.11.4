@@ -1,4 +1,5 @@
-This is tutorial.info, produced by makeinfo version 4.13 from tutorial.texi.
+This is tutorial.info, produced by makeinfo version 4.8 from
+tutorial.texi.
 
 INFO-DIR-SECTION Miscellaneous
 START-INFO-DIR-ENTRY
@@ -616,7 +617,7 @@ to worry about what they do. It also complains that the following files
 are not around:
      INSTALL, COPYING, NEWS, README, AUTHORS, ChangeLog
    These files are required to be present by the GNU coding standards,
-and we discuss them in detail in *note Maintaining the documentation
+and we discuss them in detail in *Note Maintaining the documentation
 files::.  At this point, it is important to at least touch these files,
 otherwise if you attempt to do a `make distcheck' it will deliberately
 fail.  To make these files exist, type:
@@ -968,7 +969,7 @@ included.  Now autoconfiscate the source code by typing:
      Makefile.am: installing `./COPYING'
      Makefile.am: installing `config/depcomp'
    It is important to type these commands in the order shown. The
-difference between this, and what we did in *note Hello world example::
+difference between this, and what we did in *Note Hello world example::
 is that we had to run a new program: `autoheader'. This program scans
 `configure.ac' and generates a template file `config.h.in' listing all
 the C preprocessor macros that might be defined and comments that should
@@ -1038,7 +1039,7 @@ File: tutorial.info,  Node: Maintaining the documentation files,  Next: Organizi
 =======================================
 
 Every software project must have its own directory. A minimal "project"
-is the example that we described in *note Hello world example::. In
+is the example that we described in *Note Hello world example::. In
 general, even a minimal project must have the files:
      README, INSTALL, AUTHORS, THANKS, NEWS, ChangeLog
    Before distributing your source code, it is important to write the
@@ -1160,8 +1161,8 @@ please see the _GNU coding standards_ as published by the FSF.
      distribution, in particular the General Public License.  This file
      will be generated for you automatically.  Copyright is a very
      important concern in the free software community.  For the legal
-     aspects of copyright see *note Understanding Copyright::.  For the
-     philosophical aspects of copyright see *note Philosophical
+     aspects of copyright see *Note Understanding Copyright::.  For the
+     philosophical aspects of copyright see *Note Philosophical
      issues::.  *FIXME: CROSSREFERENCE DISCUSSION OF COPYRIGHT IN NEXT
      CHAPTER*
 
@@ -2246,18 +2247,18 @@ are some things that you might want to add to your `.emacs' file:
    * _FIXME: Explain how to get rid of the scrollbar_
 
    * If you are a vi user, and you would like to run a vi editor under
-     the Emacs system, then read *note Using vi emulation:: for more
+     the Emacs system, then read *Note Using vi emulation:: for more
      details.
 
    * To use Emacs effectively, we recommend that you configure Dired and
      bind certain function keys so that you can go in and out of Dired
-     effectively. Read *note Using Emacs as an IDE:: for more
+     effectively. Read *Note Using Emacs as an IDE:: for more
      configuration details.
 
    * Autotools distributes two Emacs packages. One for handling
      copyright notices and another one for handling Texinfo
-     documentation.  To set these packages up read *note Inserting
-     copyright notices with Emacs:: and *note GNU Emacs support for
+     documentation.  To set these packages up read *Note Inserting
+     copyright notices with Emacs:: and *Note GNU Emacs support for
      Texinfo::
 
    * If you would like to use Emacs to read your email, *Note Using
@@ -2510,11 +2511,11 @@ available to you, while you are in Viper's command mode:
 
     `.'
           Press this if you want to repeat the undo further.
-These are enough to get you started. Getting used to dealing with the
-modes and learning the commands is a matter of building finger habits.
-It may take you a week or two before you become comfortable with Viper.
-When Viper becomes second nature to you however, you won't want to
-tolerate what you used to use before.
+These are enough to get you started. Getting used to dealing with
+the modes and learning the commands is a matter of building finger
+habits. It may take you a week or two before you become comfortable
+with Viper. When Viper becomes second nature to you however, you won't
+want to tolerate what you used to use before.
 
 
 File: tutorial.info,  Node: Using Emacs as an IDE,  Next: Inserting copyright notices with Emacs,  Prev: Using vi emulation,  Up: Using GNU Emacs
@@ -6326,7 +6327,7 @@ code for the GNU project by making packages autoconfiguring. So, if you
 want to use these tools, you probably also want to know something about
 copyright issues. The following sections will focus primarily on the
 legal issues surrounding software. For a discussion of the
-philosophical issues please see *note Philosophical issues::.  At this
+philosophical issues please see *Note Philosophical issues::.  At this
 point, I should point out that *I am not a lawyer, this is not legal
 advice, and I do not represent the opinions of the Free Software
 Foundation*.
