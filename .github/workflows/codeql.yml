@@ -80,6 +80,7 @@ jobs:
         for srcfile in *.c; do \
           make "$(echo "${srcfile}" | sed "s/\.c/.o/g")" || stat "${srcfile}"; \
         done; \
+        if test -r .; then ls ./*.o; fi
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
