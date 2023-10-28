@@ -77,6 +77,7 @@ jobs:
     - name: Extra building
       run: |
         cd lib
+        # shellcheck disable=2001
         for srcfile in *.c; do \
           make "$(echo "${srcfile}" | sed "s/\.c/.o/g")" || stat "${srcfile}"; \
         done; \
