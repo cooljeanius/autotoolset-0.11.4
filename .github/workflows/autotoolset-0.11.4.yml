@@ -1,27 +1,31 @@
+---
 name: cooljeanius/autotoolset-0.11.4
 on:
   push:
     branches:
-    - "**/*"
+      - "**/*"
   pull_request:
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@v4
-#     # 'Transformers::TravisCI::Scripts::Dependencies' dependencies are currently unsupported
-#     # 'compiler' was not transformed because there is no suitable equivalent in GitHub Actions
-    - name: Dependencies
-      run: sudo apt-get update && sudo apt-get install sharutils
-    - name: Build
-      run: "./configure && make"
-    - name: Test
-      run: "make check"
-    # skipping distcheck for now because that currently fails with:
-    # zcat: can't stat: ./fortran.tar.gz (./fortran.tar.gz.Z): No such file or directory
+      - name: checkout
+        uses: actions/checkout@v4
+        # 'Transformers::TravisCI::Scripts::Dependencies' dependencies are
+        # currently unsupported
+        # 'compiler' was not transformed because there is no suitable
+        # equivalent in GitHub Actions
+      - name: Dependencies
+        run: sudo apt-get update && sudo apt-get install sharutils
+      - name: Build
+        run: "./configure && make"
+      - name: Test
+        run: "make check"
+        # skipping distcheck for now because that currently fails with:
+        # zcat: can't stat: ./fortran.tar.gz (./fortran.tar.gz.Z): No such file
+        # or directory
     strategy:
       matrix:
         compiler:
-        - clang
-        - gcc
+          - clang
+          - gcc
