@@ -44,10 +44,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ['c-cpp', 'python']
+        language: ['actions', 'c-cpp', 'python']
         # CodeQL supports the following languages:
-        # 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript',
-        # 'python', 'ruby', 'swift'
+        # 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin',
+        # 'javascript-typescript', 'python', 'ruby', 'swift'
         # Use 'java-kotlin' to analyze code written in Java, Kotlin, or both
         # Use 'javascript-typescript' to analyze code written in JavaScript,
         # TypeScript, or both
@@ -75,6 +75,7 @@ jobs:
           # queries: security-extended,security-and-quality
 
       - name: Dependencies
+        if: matrix.language == 'c-cpp'
         run: sudo apt-get install sharutils
 
       # Autobuild attempts to build any compiled languages
@@ -83,6 +84,7 @@ jobs:
         uses: github/codeql-action/autobuild@v4.37.6
 
       - name: Extra building
+        if: matrix.language == 'c-cpp'
         run: |
           cd lib
           # shellcheck disable=2001
