@@ -75,6 +75,7 @@ jobs:
           # queries: security-extended,security-and-quality
 
       - name: Dependencies
+        if: matrix.language == 'c-cpp'
         run: sudo apt-get install sharutils
 
       # Autobuild attempts to build any compiled languages
@@ -83,6 +84,7 @@ jobs:
         uses: github/codeql-action/autobuild@v4.37.6
 
       - name: Extra building
+        if: matrix.language == 'c-cpp'
         run: |
           cd lib
           # shellcheck disable=2001
