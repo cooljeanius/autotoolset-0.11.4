@@ -27,6 +27,7 @@ jobs:
         # zcat: can't stat: ./fortran.tar.gz (./fortran.tar.gz.Z): No such file
         # or directory
     strategy:
+      fail-fast: false
       matrix:
         compiler:
           - clang
