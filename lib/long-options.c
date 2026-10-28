@@ -48,13 +48,9 @@ static struct option const long_options[] =
  * Be careful not to gobble up `--'.  */
 
 void
-parse_long_options (argc, argv, command_name, package, version, usage)
-     int argc;
-     char **argv;
-     const char *command_name;
-     const char *package;
-     const char *version;
-     void (*usage)();
+parse_long_options(int argc, char **argv, const char *command_name,
+                   const char *package, const char *version,
+                   void (*usage)(int))
 {
   int c;
   int saved_opterr;
