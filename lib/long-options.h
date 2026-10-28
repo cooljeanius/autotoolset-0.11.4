@@ -17,15 +17,12 @@
 
 /* Written by Jim Meyering.  */
 
-#undef PARAMS
-#if defined (__STDC__) && __STDC__
-# define PARAMS(Args) Args
-#else
-# define PARAMS(Args) ()
-#endif
+#ifndef LONG_OPTIONS_H
+#define LONG_OPTIONS_H 1
 
-void
-  parse_long_options PARAMS ((int _argc, char **_argv,
-			      const char *_command_name,
-			      const char *_package,
-			      const char *_version, void (*_usage) (int)));
+extern void
+parse_long_options(int _argc, char **_argv, const char *_command_name,
+		   const char *_package, const char *_version,
+                   void (*_usage)(int));
+
+#endif /* !LONG_OPTIONS_H */
